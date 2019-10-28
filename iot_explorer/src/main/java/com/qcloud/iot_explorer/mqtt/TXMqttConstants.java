@@ -11,7 +11,7 @@ public interface TXMqttConstants {
     /**
      * 腾讯云唯一连接地址
      */
-    String DEFAULT_SERVER_URI = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    String DEFAULT_SERVER_URI = "ssl://iotcloud.tencentdevices.com:8883";
 
     /**
      * 云端保留主题的最大长度

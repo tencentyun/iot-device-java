@@ -48,22 +48,7 @@ public enum Status {
     ERR_MAX_APPENDING_REQUEST,
 
     /**
-     *  子设备初始状态
+     * 表示JSON构造错误
      */
-    SUBDEV_STAT_INIT,
-
-    /**
-     *  子设备在线状态
-     */
-    SUBDEV_STAT_ONLINE,
-
-    /**
-     *  子设备掉线状态
-     */
-    SUBDEV_STAT_OFFLINE,
-
-    /**
-     *  子设备不存在
-     */
-    SUBDEV_STAT_NOT_EXIST
+    ERR_JSON_CONSTRUCT
 }
