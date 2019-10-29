@@ -42,8 +42,15 @@ public class IoTMqttFragment extends Fragment {
     private Button mCloseConnectBtn;
     private Button mSubScribeBtn;
     private Button mUnSubscribeBtn;
-    private Button mPublishBtn;
+
+    private Button mPropertyReportBtn;
+    private Button mGetStatusBtn;
+
+    private Button mEventPostBtn;
+    private Button mEventsPostBtn;
+
     private Button mCheckFirmwareBtn;
+
     private Spinner mSpinner;
     private TextView mLogInfoText;
 
@@ -62,7 +69,6 @@ public class IoTMqttFragment extends Fragment {
     private final static String PRODUCT_ID = "product_id";
     private final static String DEVICE_NAME = "dev_name";
     private final static String DEVICE_PSK = "dev_psk";
-    private final static String TEST_TOPIC  = "test_topic";
     private final static String DEVICE_CERT = "dev_cert";
     private final static String DEVICE_PRIV  = "dev_priv";
 
@@ -79,7 +85,10 @@ public class IoTMqttFragment extends Fragment {
         mCloseConnectBtn = view.findViewById(R.id.close_connect);
         mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
         mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
-        mPublishBtn = view.findViewById(R.id.publish_topic);
+        mPropertyReportBtn = view.findViewById(R.id.property_report);
+        mGetStatusBtn = view.findViewById(R.id.get_status);
+        mEventPostBtn = view.findViewById(R.id.event_report);
+        mEventsPostBtn = view.findViewById(R.id.events_report);
         mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
         mSpinner = view.findViewById(R.id.spinner4);
         mLogInfoText = view.findViewById(R.id.log_info);
@@ -183,9 +192,10 @@ public class IoTMqttFragment extends Fragment {
             }
         });
 
-        mPublishBtn.setOnClickListener(new View.OnClickListener() {
+        mPropertyReportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //property report
                 if (mDataTemplateSample == null)
                     return;
                 // 要发布的数据
@@ -201,6 +211,33 @@ public class IoTMqttFragment extends Fragment {
 
                 // 需先在腾讯云控制台，增加自定义主题: data，用于更新自定义数据
                // mDataTemplateSample.publishTopic("data", data);
+            }
+        });
+
+        mGetStatusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                //get status
+            }
+        });
+
+        mEventPostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                //event post
+            }
+        });
+
+        mEventsPostBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                //events post
             }
         });
 

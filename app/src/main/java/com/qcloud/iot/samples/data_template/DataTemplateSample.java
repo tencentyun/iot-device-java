@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.qcloud.iot_explorer.common.Status;
 import com.qcloud.iot_explorer.data_template.TXDataTemplateClient;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttConstants;
@@ -128,6 +129,14 @@ public class DataTemplateSample {
         mMqttConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_TOPIC);
         mMqttConnection.unSubscribeTemplateTopic(EVENT_DOWN_TOPIC);
         mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_TOPIC);
+    }
+
+    public Status eventsPost(String events) {
+       return mMqttConnection.eventsPost(events);
+    }
+
+    public Status eventSinglePost(String eventId, String type, String params){
+        return  mMqttConnection.eventSinglePost(eventId, type, params);
     }
 
     public void checkFirmware() {

@@ -2,6 +2,7 @@ package com.qcloud.iot_explorer.data_template;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.SparseLongArray;
 
 import com.qcloud.iot_explorer.common.Status;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
@@ -10,6 +11,7 @@ import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_ACTION_REPLY;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_EVENT_POST;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_EVENT_REPLY;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CLEAR_CONTROL;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS;
@@ -21,15 +23,18 @@ import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPI
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_TOPIC;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_TOPIC;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.qcloud.iot_explorer.mqtt.TXMqttConstants.MQTT_SDK_VER;
@@ -38,6 +43,9 @@ public class TXDataTemplateClient extends TXMqttConnection {
     public static final String TAG = "TXDATATEMPLATE_" + MQTT_SDK_VER;
 
     private static AtomicInteger requestID = new AtomicInteger(0);
+
+    private HashMap<String, Long> mEventWaitList;
+    private long mEventWaitTimeout = 60*1000; //60s
 
     private String mPropertyDownStreamTopic;
     private String mPropertyUptreamTopic;
@@ -83,6 +91,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
                 break;
             case EVENT_DOWN_TOPIC:
                 topic = mEventDownStreamTopic;
+                mEventWaitList = new HashMap<>(100);
                 break;
             case ACTION_DOWN_TOPIC:
                 topic = mActionDownStreamTopic;
@@ -139,7 +148,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param message 消息内容
      * @return 发送请求成功时返回Status.OK;
      */
-    public Status publishTemplateMessage(TemplatePubTopic topicId, MqttMessage message) {
+    private Status publishTemplateMessage(TemplatePubTopic topicId, MqttMessage message) {
         String topic;
         switch (topicId) {
             case PROPERTY_UP_TOPIC:
@@ -187,7 +196,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
             object.put("method", METHOD_PROPERTY_GET_STATUS);
             object.put("clientToken", requestID.getAndIncrement());
             object.put("type", type);
-            if (true == showmeta)
+            if (showmeta)
                 object.put("showmeta", 1);
             else
                 object.put("showmeta", 0);
@@ -243,12 +252,14 @@ public class TXDataTemplateClient extends TXMqttConnection {
     //单个事件上报
     public Status eventSinglePost(String eventId, String type, String params) {
         JSONObject object = new JSONObject();
+        String clientToken =  String.valueOf(requestID.getAndIncrement());
+        long timestamp =  System.currentTimeMillis();
         try {
             object.put("method", METHOD_EVENT_POST);
-            object.put("clientToken", requestID.getAndIncrement());
+            object.put("clientToken", clientToken);
             object.put("eventId", eventId);
             object.put("type", type);
-            object.put("timestamp", System.currentTimeMillis());
+            object.put("timestamp", timestamp);
             object.put("params", params);
         } catch (Exception e) {
             Log.e(TAG, "eventSinglePost: failed!");
@@ -259,12 +270,20 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        Status ret = publishTemplateMessage(EVENT_UP_TOPIC, message);
+        if(Status.OK == ret) {
+            mEventWaitList.put(clientToken,timestamp); //加入到等待列表中
+            return Status.OK;
+        } else{
+            return Status.ERROR;
+        }
     }
 
     //多个事件上报
     public Status eventsPost(String events) {
         JSONObject object = new JSONObject();
+        String clientToken =  String.valueOf(requestID.getAndIncrement());
+        long timestamp =  System.currentTimeMillis();
         try {
             object.put("method", METHOD_EVENT_POST);
             object.put("clientToken", requestID.getAndIncrement());
@@ -278,7 +297,13 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        Status ret = publishTemplateMessage(EVENT_UP_TOPIC, message);
+        if(Status.OK == ret) {
+            mEventWaitList.put(clientToken,timestamp); //加入到等待列表中
+            return Status.OK;
+        } else{
+            return Status.ERROR;
+        }
     }
 
     //行为执行结果上报
@@ -299,7 +324,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(1); //qos 1
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        return  publishTemplateMessage(ACTION_UP_TOPIC, message);
     }
 
     /**
@@ -323,10 +348,10 @@ public class TXDataTemplateClient extends TXMqttConnection {
             } else if(method.equals(METHOD_PROPERTY_REPORT_INFO)) {
                 Log.d(TAG, "onPropertyCallBack: "+ method);
             } else {
-                Log.e(TAG, "onPropertyCallBack: invalid method : " + method);
+                Log.e(TAG, "onPropertyCallBack: invalid method:" + method);
             }
         } catch (Exception e) {
-            Log.e(TAG, "onPropertyCallBack: invalid message : " + message);
+            Log.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
     }
 
@@ -335,8 +360,31 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param message 消息内容
      */
     private void onEventMessageArrivedCallBack(MqttMessage message){
-        Log.d(TAG, "event message received : " + message);
-        // 查询列表中的event，然后调用相应的回调函数
+        Log.d(TAG, "event down stream message received : " + message);
+        // 查询列表中的event，并处理
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if(!method.equals(METHOD_EVENT_REPLY)) {
+                Log.e(TAG, "onEventMessageArrivedCallBack: invalid method:" + method);
+                return;
+            }
+            String clientToken = jsonObj.getString("clientToken");
+            long timestamp = mEventWaitList.get(clientToken);
+            if(timestamp - System.currentTimeMillis() > mEventWaitTimeout) {
+                Log.e(TAG, "onEventMessageArrivedCallBack: event reply timeout! ClientToken:" + clientToken);
+            } else {
+                mEventWaitList.remove(clientToken);
+                int code = jsonObj.getInt("code");
+                if(0 == code) {
+                    Log.d(TAG, "onEventMessageArrivedCallBack: event reply OK! ClientToken:" + clientToken);
+                } else {
+                    Log.e(TAG, "onEventMessageArrivedCallBack: event reply failed! ClientToken:" + clientToken + ",code:" + code);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "onEventMessageArrivedCallBack: invalid message:" + message);
+        }
     }
 
     /**
@@ -344,7 +392,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param message 消息内容
      */
     private void onActionMessageArrivedCallBack(MqttMessage message){
-        Log.d(TAG, "action message received : " + message);
+        Log.d(TAG, "action down stream message received : " + message);
         // 查询列表中的action，然后调用相应的回调函数
     }
 
