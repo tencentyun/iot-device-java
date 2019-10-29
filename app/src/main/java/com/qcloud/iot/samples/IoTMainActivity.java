@@ -27,10 +27,6 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private Button btnMqtt;
 
-    private Button btnShadow;
-
-    private Button btnRemoteService;
-
     private Button btnEntry;
 
     private int mCurrentFragment = R.id.btn_basic_function;
@@ -79,13 +75,10 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void initComponent() {
         // 初始化控件
-        btnShadow = (Button) findViewById(R.id.btn_shadow);
-        btnRemoteService = (Button) findViewById(R.id.btn_remote_service);
+
         btnEntry = (Button) findViewById(R.id.btn_entry_demo);
         btnMqtt = (Button) findViewById(R.id.btn_basic_function);
 
-        btnShadow.setOnClickListener(this);
-        btnRemoteService.setOnClickListener(this);
         btnEntry.setOnClickListener(this);
         btnMqtt.setOnClickListener(this);
 
@@ -160,8 +153,6 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.btn_basic_function:
                 btnMqtt.setBackgroundColor(Color.LTGRAY);
                 btnEntry.setBackgroundColor(Color.WHITE);
-                btnShadow.setBackgroundColor(Color.WHITE);
-                btnRemoteService.setBackgroundColor(Color.WHITE);
                 break;
 
         }

@@ -2,12 +2,11 @@ package com.qcloud.iot.samples.data_template;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
 
 import com.qcloud.iot_explorer.common.Status;
 import com.qcloud.iot_explorer.data_template.TXDataTemplateClient;
+import com.qcloud.iot_explorer.data_template.TXDataTemplateDownCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttConstants;
 import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.mqtt.TXOTACallBack;
 import com.qcloud.iot_explorer.mqtt.TXOTAConstansts;
@@ -16,11 +15,7 @@ import com.qcloud.iot_explorer.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_TOPIC;
@@ -131,12 +126,16 @@ public class DataTemplateSample {
         mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_TOPIC);
     }
 
-    public Status eventsPost(String events) {
-       return mMqttConnection.eventsPost(events);
+    public Status propertyReport(String params, String metadata, TXDataTemplateDownCallBack reportReplyCallBack) {
+        return mMqttConnection.propertyReport(params, metadata, reportReplyCallBack);
     }
 
-    public Status eventSinglePost(String eventId, String type, String params){
-        return  mMqttConnection.eventSinglePost(eventId, type, params);
+    public Status eventsPost(String events, TXDataTemplateDownCallBack eventReplyCallBack) {
+       return mMqttConnection.eventsPost(events, eventReplyCallBack);
+    }
+
+    public Status eventSinglePost(String eventId, String type, String params, TXDataTemplateDownCallBack eventReplyCallBack){
+        return  mMqttConnection.eventSinglePost(eventId, type, params, eventReplyCallBack);
     }
 
     public void checkFirmware() {

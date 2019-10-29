@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.qcloud.iot.R;
 import com.qcloud.iot.samples.data_template.DataTemplateSample;
 import com.qcloud.iot_explorer.common.Status;
+import com.qcloud.iot_explorer.data_template.TXDataTemplateDownCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.utils.TXLog;
@@ -26,9 +27,6 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class IoTMqttFragment extends Fragment {
 
@@ -56,9 +54,9 @@ public class IoTMqttFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://111.230.126.244:8883";
-    private String mProductID = "U8C4L26TXZ";
+    private String mProductID = "3INKNQFTGV";
     private String mDevName = "test";
-    private String mDevPSK  = "3k5h5Y2fDelf/VWv3PUPYA=="; //若使用证书验证，设为null
+    private String mDevPSK  = "GgsH+Dxb2hwQ5wS9EOZWbw=="; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
@@ -71,8 +69,6 @@ public class IoTMqttFragment extends Fragment {
     private final static String DEVICE_PSK = "dev_psk";
     private final static String DEVICE_CERT = "dev_cert";
     private final static String DEVICE_PRIV  = "dev_priv";
-
-    private AtomicInteger temperature = new AtomicInteger(0);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -175,8 +171,7 @@ public class IoTMqttFragment extends Fragment {
         mSubScribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 在腾讯云控制台增加自定义主题（权限为订阅和发布）：custom_data，用于接收IoT服务端转发的自定义数据。
-                // 本例中，发布的自定义数据，IoT服务端会在发给当前设备。
+                // 订阅explorer相关的主题
                 if (mDataTemplateSample == null)
                     return;
                 mDataTemplateSample.subscribeTopic();
@@ -198,19 +193,8 @@ public class IoTMqttFragment extends Fragment {
                 //property report
                 if (mDataTemplateSample == null)
                     return;
-                // 要发布的数据
-                Map<String, String> data = new HashMap<String, String>();
-                // 车辆类型
-                data.put("car_type", "suv");
-                // 车辆油耗
-                data.put("oil_consumption", "6.6");
-                // 车辆最高速度
-                data.put("maximum_speed", "205");
-                // 温度信息
-                data.put("temperature", String.valueOf(temperature.getAndIncrement()));
-
-                // 需先在腾讯云控制台，增加自定义主题: data，用于更新自定义数据
-               // mDataTemplateSample.publishTopic("data", data);
+                String params = "{\"power_switch\":0,\"color\":0,\"brightness\":0,\"name\":\"test\"}";
+                mDataTemplateSample.propertyReport(params, null, new SelfReportReplyCallback());
             }
         });
 
@@ -228,7 +212,10 @@ public class IoTMqttFragment extends Fragment {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
-                //event post
+                String eventId = "status_report";
+                String type = "info";
+                String params = "{\"status\":0,\"message\":\"\"}";
+                mDataTemplateSample.eventSinglePost(eventId, type, params, new SelfEventReplyCallback());
             }
         });
 
@@ -237,7 +224,10 @@ public class IoTMqttFragment extends Fragment {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
-                //events post
+                String events =  "[{\"eventId\":\"status_report\", \"type\":\"info\", \"timestamp\":" + System.currentTimeMillis() + ", \"params\":{\"status\":0,\"message\":\"\"}}," +
+                                 "{\"eventId\":\"low_voltage\", \"type\":\"alert\", \"timestamp\":"  + System.currentTimeMillis() + ", \"params\":{\"voltage\":1.26}}," +
+                                 "{\"eventId\":\"hardware_fault\", \"type\":\"fault\", \"timestamp\":" + System.currentTimeMillis() + ", \"params\":{\"name\":\"\",\"error_code\":1}}]";
+                mDataTemplateSample.eventsPost(events, new SelfEventReplyCallback());
             }
         });
 
@@ -257,6 +247,28 @@ public class IoTMqttFragment extends Fragment {
         if (mDataTemplateSample == null)
             return;
         mDataTemplateSample.disconnect();
+    }
+
+    /**
+     * 实现属性上报回复的回调接口
+     */
+    private class SelfReportReplyCallback extends TXDataTemplateDownCallBack {
+        @Override
+        public void onDownStreamCallBack(String replyMsg) {
+            //可根据自己需求进行处理属性上报回复，此处只打印
+            Log.d(TAG, "event down stream message received : " + replyMsg);
+        }
+    }
+
+    /**
+     * 实现事件回复的回调接口
+     */
+    private class SelfEventReplyCallback extends TXDataTemplateDownCallBack {
+        @Override
+        public void onDownStreamCallBack(String replyMsg) {
+            //可根据自己需求进行处理事件回复，此处只打印
+            Log.d(TAG, "event down stream message received : " + replyMsg);
+        }
     }
 
     /**

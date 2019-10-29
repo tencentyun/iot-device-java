@@ -29,25 +29,27 @@ public interface TXDataTemplateConstants {
      * property method
      */
     String METHOD_PROPERTY_REPORT = "report";
-    String METHOD_PROPERTY_REPORT_REPLY = "report_replay";
+    String METHOD_PROPERTY_REPORT_REPLY = "report_reply";
 
     String METHOD_PROPERTY_CONTROL = "control";
-    String METHOD_PROPERTY_CONTROL_REPLY = "control_replay";
+    String METHOD_PROPERTY_CONTROL_REPLY = "control_reply";
 
     String METHOD_PROPERTY_GET_STATUS = "get_status";
-    String METHOD_PROPERTY_GET_STATUS_REPLY = "get_status_replay";
+    String METHOD_PROPERTY_GET_STATUS_REPLY = "get_status_reply";
 
     String METHOD_PROPERTY_CLEAR_CONTROL = "clear_control";
-    String METHOD_PROPERTY_CLEAR_CONTROL_REPLY = "clear_control_replay";
+    String METHOD_PROPERTY_CLEAR_CONTROL_REPLY = "clear_control_reply";
 
     String METHOD_PROPERTY_REPORT_INFO = "report_info";
-    String METHOD_PROPERTY_REPORT_INFO_REPLY = "report_info_replay";
+    String METHOD_PROPERTY_REPORT_INFO_REPLY = "report_info_reply";
 
     /**
      * event method
      */
     String METHOD_EVENT_POST = "event_post";
+    String METHOD_EVENTS_POST = "events_post";
     String METHOD_EVENT_REPLY = "event_reply";
+    String METHOD_EVENTS_REPLY = "events_reply";
 
     /**
      * action method
