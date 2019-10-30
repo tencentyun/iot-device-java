@@ -31,6 +31,7 @@ public class DataTemplateSample {
     private String mDevPSK = "DEVICE-SECRET";
     private String mDevCertName = "DEVICE_CERT-NAME ";
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
+    private String mJsonFileName = "JSON_FILE_NAME";
     private Context mContext;
 
     private TXMqttActionCallBack mMqttActionCallBack;
@@ -49,7 +50,7 @@ public class DataTemplateSample {
         mContext = context;
     }
 
-    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack) {
+    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack, final String jsonFileName) {
         mBrokerURL = brokerURL;
         mProductID = productId;
         mDevName = devName;
@@ -58,22 +59,24 @@ public class DataTemplateSample {
         mDevKeyName = devKeyName;
         mContext = context;
         mMqttActionCallBack = mqttActionCallBack;
+        mJsonFileName = jsonFileName;
     }
 
-    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK,TXMqttActionCallBack mqttActionCallBack) {
+    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK,TXMqttActionCallBack mqttActionCallBack, final String jsonFileName) {
         mContext = context;
         mBrokerURL = brokerURL;
         mProductID = productId;
         mDevName = devName;
         mDevPSK = devPSK;
         mMqttActionCallBack = mqttActionCallBack;
+        mJsonFileName = jsonFileName;
     }
 
     /**
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXDataTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack);
+        mMqttConnection = new TXDataTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack, mJsonFileName);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);

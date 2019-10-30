@@ -61,6 +61,8 @@ public class IoTMqttFragment extends Fragment {
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
 
+    private final static String mJsonFileName = "light_sample.json";
+
     private EditText mItemText;
 
     private final static String BROKER_URL = "broker_url";
@@ -154,7 +156,7 @@ public class IoTMqttFragment extends Fragment {
                 mDevCert = settings.getString(DEVICE_CERT, mDevCert);
                 mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
 
-                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack());
+                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName);
                 mDataTemplateSample.connect();
             }
         });
