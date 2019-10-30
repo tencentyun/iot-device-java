@@ -205,20 +205,26 @@ public class TXDataTemplateClient extends TXMqttConnection {
 
     /**
      * 属性上报
-     * @param params 参数
-     * @param metadata 携带的metadata
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
      * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyReport(String params, String metadata, TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyReport(JSONObject property, JSONObject metadata,TXDataTemplateDownCallBack replyCallBack) {
+        //检查构造是否符合json文件中的定义
+        if(Status.OK != mDataTemplateJson.checkPropertyJson(property)){
+            TXLog.e(TAG, "propertyReport: invalid property json!");
+            return Status.PARAMETER_INVALID;
+        }
+
+        //构造发布信息
         JSONObject object = new JSONObject();
         String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
             object.put("method", METHOD_PROPERTY_REPORT);
             object.put("clientToken", clientToken);
             object.put("timestamp", System.currentTimeMillis());
-            JSONObject paramsJson = new JSONObject(params);
-            object.put("params", paramsJson);
+            object.put("params", property);
             if (null != metadata)
                 object.put("metadata", metadata);
         } catch (Exception e) {
@@ -232,7 +238,8 @@ public class TXDataTemplateClient extends TXMqttConnection {
 
         Status ret =  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
         if(Status.OK == ret) {
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack)); //加入到等待列表中
+            //加入到等待回复列表中
+            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
             return Status.OK;
         } else{
             return Status.ERROR;
@@ -247,10 +254,15 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status propertyGetStatus(String type, boolean showmeta, TXDataTemplateDownCallBack replyCallBack) {
+        if (!type.equals("report") && !type.equals("control")) {
+            TXLog.e(TAG, "propertyGetStatus: invalid type[%s]!", type);
+            return Status.PARAMETER_INVALID;
+        }
         JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
             object.put("method", METHOD_PROPERTY_GET_STATUS);
-            object.put("clientToken", requestID.getAndIncrement());
+            object.put("clientToken", clientToken);
             object.put("type", type);
             if (showmeta)
                 object.put("showmeta", 1);
@@ -265,29 +277,14 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
-    }
-
-    /**
-     * 清理控制信息
-     * @param replyCallBack 回复的回调函数
-     * @return 结果
-     */
-    public Status propertyClearControl(TXDataTemplateDownCallBack replyCallBack) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("method", METHOD_PROPERTY_CLEAR_CONTROL);
-            object.put("clientToken", requestID.getAndIncrement());
-        } catch (Exception e) {
-            TXLog.e(TAG, "propertyClearControl: failed!" );
-            return Status.ERR_JSON_CONSTRUCT;
+        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        if(Status.OK == ret) {
+            //加入到等待回复列表中
+            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
+            return Status.OK;
+        } else{
+            return Status.ERROR;
         }
-
-        MqttMessage message = new MqttMessage();
-        message.setQos(0);
-        message.setPayload(object.toString().getBytes());
-
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
     }
 
     /**
@@ -296,11 +293,12 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyReportInfo(String params, TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyReportInfo(JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
         JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
             object.put("method", METHOD_PROPERTY_REPORT_INFO);
-            object.put("clientToken", requestID.getAndIncrement());
+            object.put("clientToken", clientToken);
             object.put("params", params);
         } catch (Exception e) {
             TXLog.e(TAG, "propertyReportInfo: failed!");
@@ -311,7 +309,44 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        if(Status.OK == ret) {
+            //加入到等待回复列表中
+            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
+            return Status.OK;
+        } else{
+            return Status.ERROR;
+        }
+    }
+
+    /**
+     * 清理控制信息
+     * @param replyCallBack 回复的回调函数
+     * @return 结果
+     */
+    public Status propertyClearControl(TXDataTemplateDownCallBack replyCallBack) {
+        JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
+        try {
+            object.put("method", METHOD_PROPERTY_CLEAR_CONTROL);
+            object.put("clientToken", clientToken);
+        } catch (Exception e) {
+            TXLog.e(TAG, "propertyClearControl: failed!" );
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(object.toString().getBytes());
+
+        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        if(Status.OK == ret) {
+            //加入到等待回复列表中
+            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
+            return Status.OK;
+        } else{
+            return Status.ERROR;
+        }
     }
 
     /**
@@ -322,7 +357,13 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status eventSinglePost(String eventId, String type, String params, TXDataTemplateDownCallBack replyCallBack) {
+    public Status eventSinglePost(String eventId, String type, JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
+        //检查构造是否符合json文件中的定义
+        if(Status.OK != mDataTemplateJson.checkEventJson(eventId, type, params)){
+            TXLog.e(TAG, "eventSinglePost: invalid parameters!");
+            return Status.PARAMETER_INVALID;
+        }
+
         JSONObject object = new JSONObject();
         String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         long timestamp =  System.currentTimeMillis();
@@ -332,8 +373,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
             object.put("eventId", eventId);
             object.put("type", type);
             object.put("timestamp", timestamp);
-            JSONObject paramsJson = new JSONObject(params);
-            object.put("params", paramsJson);
+            object.put("params", params);
         } catch (Exception e) {
             TXLog.e(TAG, "eventSinglePost: failed!");
             return Status.ERR_JSON_CONSTRUCT;
@@ -358,14 +398,19 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status eventsPost(String events, TXDataTemplateDownCallBack replyCallBack) {
+    public Status eventsPost(JSONArray events, TXDataTemplateDownCallBack replyCallBack) {
+        //检查构造是否符合json文件中的定义
+        if(Status.OK != mDataTemplateJson.checkEventsJson(events)){
+            TXLog.e(TAG, "eventsPost: invalid parameters!");
+            return Status.PARAMETER_INVALID;
+        }
+
         JSONObject object = new JSONObject();
         String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
             object.put("method", METHOD_EVENTS_POST);
             object.put("clientToken", clientToken);
-            JSONArray  eventsJson = new JSONArray(events);
-            object.put("events", eventsJson);
+            object.put("events", events);
         } catch (Exception e) {
             TXLog.e(TAG, "eventsPost: failed!");
             return Status.ERR_JSON_CONSTRUCT;

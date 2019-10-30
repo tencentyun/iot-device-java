@@ -15,6 +15,8 @@ import com.qcloud.iot_explorer.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -129,15 +131,27 @@ public class DataTemplateSample {
         mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_TOPIC);
     }
 
-    public Status propertyReport(String params, String metadata, TXDataTemplateDownCallBack reportReplyCallBack) {
-        return mMqttConnection.propertyReport(params, metadata, reportReplyCallBack);
+    public Status propertyReport(JSONObject property, JSONObject metadata, TXDataTemplateDownCallBack reportReplyCallBack) {
+        return mMqttConnection.propertyReport(property, metadata, reportReplyCallBack);
     }
 
-    public Status eventsPost(String events, TXDataTemplateDownCallBack eventReplyCallBack) {
+    public Status propertyGetStatus(String type, boolean showmeta, TXDataTemplateDownCallBack replyCallBack) {
+        return mMqttConnection.propertyGetStatus(type, showmeta, replyCallBack);
+    }
+
+    public Status propertyReportInfo(JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
+        return mMqttConnection.propertyReportInfo(params, replyCallBack);
+    }
+
+    public Status propertyClearControl(TXDataTemplateDownCallBack clearControlReplyCallBack) {
+        return mMqttConnection.propertyClearControl(clearControlReplyCallBack);
+    }
+
+    public Status eventsPost(JSONArray events, TXDataTemplateDownCallBack eventReplyCallBack) {
        return mMqttConnection.eventsPost(events, eventReplyCallBack);
     }
 
-    public Status eventSinglePost(String eventId, String type, String params, TXDataTemplateDownCallBack eventReplyCallBack){
+    public Status eventSinglePost(String eventId, String type, JSONObject params, TXDataTemplateDownCallBack eventReplyCallBack){
         return  mMqttConnection.eventSinglePost(eventId, type, params, eventReplyCallBack);
     }
 

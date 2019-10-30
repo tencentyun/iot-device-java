@@ -25,6 +25,9 @@ import com.qcloud.iot_explorer.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 
@@ -43,6 +46,8 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mPropertyReportBtn;
     private Button mGetStatusBtn;
+    private Button mInfoReportBtn;
+    private Button mClearControlBtn;
 
     private Button mEventPostBtn;
     private Button mEventsPostBtn;
@@ -85,6 +90,8 @@ public class IoTMqttFragment extends Fragment {
         mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
         mPropertyReportBtn = view.findViewById(R.id.property_report);
         mGetStatusBtn = view.findViewById(R.id.get_status);
+        mInfoReportBtn = view.findViewById(R.id.report_info);
+        mClearControlBtn = view.findViewById(R.id.clear_control);
         mEventPostBtn = view.findViewById(R.id.event_report);
         mEventsPostBtn = view.findViewById(R.id.events_report);
         mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
@@ -195,8 +202,20 @@ public class IoTMqttFragment extends Fragment {
                 //property report
                 if (mDataTemplateSample == null)
                     return;
-                String params = "{\"power_switch\":0,\"color\":0,\"brightness\":0,\"name\":\"test\"}";
-                mDataTemplateSample.propertyReport(params, null, new SelfReportReplyCallback());
+                JSONObject property = new JSONObject();
+                try {
+                    property.put("power_switch",0);
+                    property.put("color",0);
+                    property.put("brightness",0);
+                    property.put("name","test");
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct property json failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return;
+                }
+
+                if(Status.OK != mDataTemplateSample.propertyReport(property, null, new SelfReportReplyCallback())) {
+                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
             }
         });
 
@@ -206,6 +225,47 @@ public class IoTMqttFragment extends Fragment {
                 if (mDataTemplateSample == null)
                     return;
                 //get status
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false, new SelfReportReplyCallback())) {
+                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
+
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false, new SelfReportReplyCallback())) {
+                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
+            }
+        });
+
+        mInfoReportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                //report info
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("system", "android");
+                    params.put("company", "tencent");
+                    params.put("module_softinfo", "V1.0");
+                }catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return;
+                }
+                if(Status.OK != mDataTemplateSample.propertyReportInfo(params, new SelfReportReplyCallback())) {
+                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
+
+            }
+        });
+
+        mClearControlBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                //clear control
+                if(Status.OK !=  mDataTemplateSample.propertyClearControl(new SelfReportReplyCallback())){
+                    mParent.printLogInfo(TAG, "clear control failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
             }
         });
 
@@ -216,8 +276,16 @@ public class IoTMqttFragment extends Fragment {
                     return;
                 String eventId = "status_report";
                 String type = "info";
-                String params = "{\"status\":0,\"message\":\"\"}";
-                mDataTemplateSample.eventSinglePost(eventId, type, params, new SelfEventReplyCallback());
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("status",0);
+                    params.put("message","");
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
+                if(Status.OK != mDataTemplateSample.eventSinglePost(eventId, type, params, new SelfEventReplyCallback())){
+                    mParent.printLogInfo(TAG, "single event post failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
             }
         });
 
@@ -226,10 +294,67 @@ public class IoTMqttFragment extends Fragment {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
-                String events =  "[{\"eventId\":\"status_report\", \"type\":\"info\", \"timestamp\":" + System.currentTimeMillis() + ", \"params\":{\"status\":0,\"message\":\"\"}}," +
-                                 "{\"eventId\":\"low_voltage\", \"type\":\"alert\", \"timestamp\":"  + System.currentTimeMillis() + ", \"params\":{\"voltage\":1.26}}," +
-                                 "{\"eventId\":\"hardware_fault\", \"type\":\"fault\", \"timestamp\":" + System.currentTimeMillis() + ", \"params\":{\"name\":\"\",\"error_code\":1}}]";
-                mDataTemplateSample.eventsPost(events, new SelfEventReplyCallback());
+                JSONArray events = new JSONArray();
+
+                //event:status_report
+                try {
+                    JSONObject event = new JSONObject();
+                    event.put("eventId","status_report");
+                    event.put("type", "info");
+                    event.put("timestamp", System.currentTimeMillis());
+
+                    JSONObject params = new JSONObject();
+                    params.put("status",0);
+                    params.put("message","");
+
+                    event.put("params", params);
+
+                    events.put(event);
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return;
+                }
+
+                //event:low_voltage
+                try {
+                    JSONObject event = new JSONObject();
+                    event.put("eventId","low_voltage");
+                    event.put("type", "alert");
+                    event.put("timestamp", System.currentTimeMillis());
+
+                    JSONObject params = new JSONObject();
+                    params.put("voltage",1.000000f);
+
+                    event.put("params", params);
+
+                    events.put(event);
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return;
+                }
+
+                //event:hardware_fault
+                try {
+                    JSONObject event = new JSONObject();
+                    event.put("eventId","hardware_fault");
+                    event.put("type", "fault");
+                    event.put("timestamp", System.currentTimeMillis());
+
+                    JSONObject params = new JSONObject();
+                    params.put("name","");
+                    params.put("error_code",1);
+
+                    event.put("params", params);
+
+                    events.put(event);
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return;
+                }
+
+                if(Status.OK != mDataTemplateSample.eventsPost(events, new SelfEventReplyCallback())){
+                    mParent.printLogInfo(TAG, "events post failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
             }
         });
 
