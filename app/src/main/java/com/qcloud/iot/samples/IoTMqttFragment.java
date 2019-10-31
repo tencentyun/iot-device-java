@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.qcloud.iot.R;
 import com.qcloud.iot.samples.data_template.DataTemplateSample;
 import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownCallBack;
+import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.utils.TXLog;
@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 public class IoTMqttFragment extends Fragment {
 
@@ -163,7 +164,7 @@ public class IoTMqttFragment extends Fragment {
                 mDevCert = settings.getString(DEVICE_CERT, mDevCert);
                 mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
 
-                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName);
+                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
                 mDataTemplateSample.connect();
             }
         });
@@ -180,7 +181,7 @@ public class IoTMqttFragment extends Fragment {
         mSubScribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 订阅explorer相关的主题
+                // 订阅相关的主题
                 if (mDataTemplateSample == null)
                     return;
                 mDataTemplateSample.subscribeTopic();
@@ -213,7 +214,7 @@ public class IoTMqttFragment extends Fragment {
                     return;
                 }
 
-                if(Status.OK != mDataTemplateSample.propertyReport(property, null, new SelfReportReplyCallback())) {
+                if(Status.OK != mDataTemplateSample.propertyReport(property, null)) {
                     mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
@@ -225,11 +226,11 @@ public class IoTMqttFragment extends Fragment {
                 if (mDataTemplateSample == null)
                     return;
                 //get status
-                if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false, new SelfReportReplyCallback())) {
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
                     mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
 
-                if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false, new SelfReportReplyCallback())) {
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false)) {
                     mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
@@ -250,7 +251,7 @@ public class IoTMqttFragment extends Fragment {
                     mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;
                 }
-                if(Status.OK != mDataTemplateSample.propertyReportInfo(params, new SelfReportReplyCallback())) {
+                if(Status.OK != mDataTemplateSample.propertyReportInfo(params)) {
                     mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
 
@@ -263,7 +264,7 @@ public class IoTMqttFragment extends Fragment {
                 if (mDataTemplateSample == null)
                     return;
                 //clear control
-                if(Status.OK !=  mDataTemplateSample.propertyClearControl(new SelfReportReplyCallback())){
+                if(Status.OK !=  mDataTemplateSample.propertyClearControl()){
                     mParent.printLogInfo(TAG, "clear control failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
@@ -283,7 +284,7 @@ public class IoTMqttFragment extends Fragment {
                 } catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
-                if(Status.OK != mDataTemplateSample.eventSinglePost(eventId, type, params, new SelfEventReplyCallback())){
+                if(Status.OK != mDataTemplateSample.eventSinglePost(eventId, type, params)){
                     mParent.printLogInfo(TAG, "single event post failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
@@ -352,7 +353,7 @@ public class IoTMqttFragment extends Fragment {
                     return;
                 }
 
-                if(Status.OK != mDataTemplateSample.eventsPost(events, new SelfEventReplyCallback())){
+                if(Status.OK != mDataTemplateSample.eventsPost(events)){
                     mParent.printLogInfo(TAG, "events post failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
@@ -377,24 +378,62 @@ public class IoTMqttFragment extends Fragment {
     }
 
     /**
-     * 实现属性上报回复的回调接口
+     * 实现下行消息处理的回调接口
      */
-    private class SelfReportReplyCallback extends TXDataTemplateDownCallBack {
+    private class SelfDownStreamCallBack extends TXDataTemplateDownStreamCallBack {
         @Override
-        public void onDownStreamCallBack(String replyMsg) {
-            //可根据自己需求进行处理属性上报回复，此处只打印
+        public void onReplyCallBack(String replyMsg) {
+            //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
             Log.d(TAG, "event down stream message received : " + replyMsg);
         }
-    }
 
-    /**
-     * 实现事件回复的回调接口
-     */
-    private class SelfEventReplyCallback extends TXDataTemplateDownCallBack {
         @Override
-        public void onDownStreamCallBack(String replyMsg) {
-            //可根据自己需求进行处理事件回复，此处只打印
-            Log.d(TAG, "event down stream message received : " + replyMsg);
+        public JSONObject onControlCallBack(JSONObject msg) {
+            Log.d(TAG, "control down stream message received : " + msg);
+            //do something
+
+            //output
+            try {
+                JSONObject result = new JSONObject();
+                result.put("code",0);
+                result.put("status", "some message wher errorsome message when error");
+                return result;
+            } catch (JSONException e) {
+                mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                return null;
+            }
+        }
+
+        @Override
+        public  JSONObject onActionCallBack(String actionId, JSONObject params){
+            TXLog.d(TAG, "action [%s] received, input:" + params, actionId);
+            //do something based action id and input
+            if(actionId.equals("blink")) {
+                try {
+                    Iterator<String> it = params.keys();
+                    while (it.hasNext()) {
+                        String key = it.next();
+                        TXLog.d(TAG,"Input parameter[%s]:" + params.get(key), key);
+                    }
+                    //construct result
+                    JSONObject result = new JSONObject();
+                    result.put("code",0);
+                    result.put("status", "some message wher errorsome message when error");
+
+                    // response based on output
+                    JSONObject response = new JSONObject();
+                    response.put("result", 0);
+
+                    result.put("response", response);
+                    return result;
+                } catch (JSONException e) {
+                    mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    return null;
+                }
+            } else if (actionId.equals("YOUR ACTION")) {
+                //do your action
+            }
+            return null;
         }
     }
 

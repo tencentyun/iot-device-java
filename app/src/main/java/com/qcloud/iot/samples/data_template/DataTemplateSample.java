@@ -5,7 +5,7 @@ import android.os.Environment;
 
 import com.qcloud.iot_explorer.common.Status;
 import com.qcloud.iot_explorer.data_template.TXDataTemplateClient;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownCallBack;
+import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.mqtt.TXOTACallBack;
@@ -20,9 +20,10 @@ import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+
 
 public class DataTemplateSample {
     private static final String TAG = "TXMQTT";
@@ -48,11 +49,14 @@ public class DataTemplateSample {
      */
     private static AtomicInteger requestID = new AtomicInteger(0);
 
+    TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
+
     public DataTemplateSample(Context context) {
         mContext = context;
     }
 
-    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack, final String jsonFileName) {
+    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
+                              final String jsonFileName,TXDataTemplateDownStreamCallBack downStreamCallBack) {
         mBrokerURL = brokerURL;
         mProductID = productId;
         mDevName = devName;
@@ -62,9 +66,11 @@ public class DataTemplateSample {
         mContext = context;
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
+        mDownStreamCallBack = downStreamCallBack;
     }
 
-    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK,TXMqttActionCallBack mqttActionCallBack, final String jsonFileName) {
+    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK,TXMqttActionCallBack mqttActionCallBack,
+                              final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         mContext = context;
         mBrokerURL = brokerURL;
         mProductID = productId;
@@ -72,13 +78,15 @@ public class DataTemplateSample {
         mDevPSK = devPSK;
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
+        mDownStreamCallBack = downStreamCallBack;
     }
 
     /**
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXDataTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack, mJsonFileName);
+        mMqttConnection = new TXDataTemplateClient( mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack,
+                                                    mJsonFileName, mDownStreamCallBack);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
@@ -116,9 +124,15 @@ public class DataTemplateSample {
      *
      */
     public void subscribeTopic() {
-        mMqttConnection.subscribeTemplateTopic(PROPERTY_DOWN_TOPIC, 0);
-        mMqttConnection.subscribeTemplateTopic(EVENT_DOWN_TOPIC, 0);
-        mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_TOPIC, 1);
+        if(Status.OK != mMqttConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)){
+           TXLog.e(TAG, "subscribeTopic: subscribe property down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)){
+           TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)){
+            TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+        }
     }
 
     /**
@@ -126,33 +140,39 @@ public class DataTemplateSample {
      *
      */
     public void unSubscribeTopic() {
-        mMqttConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_TOPIC);
-        mMqttConnection.unSubscribeTemplateTopic(EVENT_DOWN_TOPIC);
-        mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_TOPIC);
+        if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC)){
+            TXLog.e(TAG, "subscribeTopic: unSubscribe property down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC)){
+            TXLog.e(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)){
+            TXLog.e(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+        }
     }
 
-    public Status propertyReport(JSONObject property, JSONObject metadata, TXDataTemplateDownCallBack reportReplyCallBack) {
-        return mMqttConnection.propertyReport(property, metadata, reportReplyCallBack);
+    public Status propertyReport(JSONObject property, JSONObject metadata) {
+        return mMqttConnection.propertyReport(property, metadata);
     }
 
-    public Status propertyGetStatus(String type, boolean showmeta, TXDataTemplateDownCallBack replyCallBack) {
-        return mMqttConnection.propertyGetStatus(type, showmeta, replyCallBack);
+    public Status propertyGetStatus(String type, boolean showmeta) {
+        return mMqttConnection.propertyGetStatus(type, showmeta);
     }
 
-    public Status propertyReportInfo(JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
-        return mMqttConnection.propertyReportInfo(params, replyCallBack);
+    public Status propertyReportInfo(JSONObject params) {
+        return mMqttConnection.propertyReportInfo(params);
     }
 
-    public Status propertyClearControl(TXDataTemplateDownCallBack clearControlReplyCallBack) {
-        return mMqttConnection.propertyClearControl(clearControlReplyCallBack);
+    public Status propertyClearControl() {
+        return mMqttConnection.propertyClearControl();
     }
 
-    public Status eventsPost(JSONArray events, TXDataTemplateDownCallBack eventReplyCallBack) {
-       return mMqttConnection.eventsPost(events, eventReplyCallBack);
+    public Status eventsPost(JSONArray events) {
+       return mMqttConnection.eventsPost(events);
     }
 
-    public Status eventSinglePost(String eventId, String type, JSONObject params, TXDataTemplateDownCallBack eventReplyCallBack){
-        return  mMqttConnection.eventSinglePost(eventId, type, params, eventReplyCallBack);
+    public Status eventSinglePost(String eventId, String type, JSONObject params){
+        return  mMqttConnection.eventSinglePost(eventId, type, params);
     }
 
     public void checkFirmware() {
@@ -184,4 +204,5 @@ public class DataTemplateSample {
         });
         mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
     }
+
 }

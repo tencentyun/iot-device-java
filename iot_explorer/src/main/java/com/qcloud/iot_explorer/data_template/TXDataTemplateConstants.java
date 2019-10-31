@@ -14,15 +14,15 @@ public interface TXDataTemplateConstants {
     String TOPIC_ACTION_UP_PREFIX = "$thing/up/action/";
 
     enum TemplateSubTopic{
-        PROPERTY_DOWN_TOPIC,
-        EVENT_DOWN_TOPIC,
-        ACTION_DOWN_TOPIC
+        PROPERTY_DOWN_STREAM_TOPIC,
+        EVENT_DOWN_STREAM_TOPIC,
+        ACTION_DOWN_STREAM_TOPIC
     }
 
     enum TemplatePubTopic{
-        PROPERTY_UP_TOPIC,
-        EVENT_UP_TOPIC,
-        ACTION_UP_TOPIC
+        PROPERTY_UP_STREAM_TOPIC,
+        EVENT_UP_STREAM_TOPIC,
+        ACTION_UP_STREAM_TOPIC
     }
 
     /**

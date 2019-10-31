@@ -11,6 +11,7 @@ import com.qcloud.iot_explorer.mqtt.TXMqttConnection;
 import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.utils.TXLog;
 
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_ACTION;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_ACTION_REPLY;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_EVENTS_POST;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.METHOD_EVENTS_REPLY;
@@ -33,9 +34,10 @@ import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPI
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
+import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -45,10 +47,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,15 +60,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
     private static AtomicInteger requestID = new AtomicInteger(0);
 
     //等待下行回复
-    private class replyWaitNode{
-        private long mTimestamp;
-        private TXDataTemplateDownCallBack mCallBack;
-        private replyWaitNode(long timestamp, TXDataTemplateDownCallBack callBack) {
-            mTimestamp = timestamp;
-            mCallBack = callBack;
-        }
-    }
-    private ConcurrentHashMap<String, replyWaitNode> mReplyWaitList = null;
+    private ConcurrentHashMap<String, Long> mReplyWaitList = null;
     private long mReplyWaitTimeout = 60*1000; //60s
 
     //上下行消息主题
@@ -81,10 +71,10 @@ public class TXDataTemplateClient extends TXMqttConnection {
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
 
+    //下行消息回调函数
+    TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
+
     private TXDataTemplateJson mDataTemplateJson;
-    private JSONArray mPropertyJson = null;
-    private JSONArray mEventJson = null;
-    private JSONArray mActionJson = null;
 
     /**
      * @param context           用户上下文（这个参数在回调函数时透传给用户）
@@ -95,7 +85,8 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param clientPersistence 消息永久存储
      * @param callBack          连接、消息发布、消息订阅回调接口
      */
-    public TXDataTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack, final String jsonFileName) {
+    public TXDataTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
+                                final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         mPropertyDownStreamTopic = TOPIC_PROPERTY_DOWN_PREFIX + mProductId + "/"  + mDeviceName;
         mPropertyUptreamTopic = TOPIC_PROPERTY_UP_PREFIX + mProductId + "/"  + mDeviceName;
@@ -105,7 +96,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + mProductId + "/"  + mDeviceName;
 
         mDataTemplateJson = new TXDataTemplateJson (context,jsonFileName);
-
+        mDownStreamCallBack = downStreamCallBack;
         mReplyWaitList = new ConcurrentHashMap<>();
         new checkReplyTimeoutThread().start();
     }
@@ -123,13 +114,13 @@ public class TXDataTemplateClient extends TXMqttConnection {
         TXMqttRequest mqttRequest = new TXMqttRequest("subscribeTopic", requestID.getAndIncrement());
 
         switch (topicId) {
-            case PROPERTY_DOWN_TOPIC:
+            case PROPERTY_DOWN_STREAM_TOPIC:
                 topic = mPropertyDownStreamTopic;
                 break;
-            case EVENT_DOWN_TOPIC:
+            case EVENT_DOWN_STREAM_TOPIC:
                 topic = mEventDownStreamTopic;
                 break;
-            case ACTION_DOWN_TOPIC:
+            case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
             default:
@@ -156,13 +147,13 @@ public class TXDataTemplateClient extends TXMqttConnection {
         TXMqttRequest mqttRequest = new TXMqttRequest("subscribeTopic", requestID.getAndIncrement());
 
         switch (topicId) {
-            case PROPERTY_DOWN_TOPIC:
+            case PROPERTY_DOWN_STREAM_TOPIC:
                 topic = mPropertyDownStreamTopic;
                 break;
-            case EVENT_DOWN_TOPIC:
+            case EVENT_DOWN_STREAM_TOPIC:
                 topic = mEventDownStreamTopic;
                 break;
-            case ACTION_DOWN_TOPIC:
+            case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
             default:
@@ -184,33 +175,40 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param message 消息内容
      * @return 发送请求成功时返回Status.OK;
      */
-    private Status publishTemplateMessage(TemplatePubTopic topicId, MqttMessage message) {
+    private Status publishTemplateMessage( String clientToken,TemplatePubTopic topicId, MqttMessage message) {
         String topic;
         switch (topicId) {
-            case PROPERTY_UP_TOPIC:
+            case PROPERTY_UP_STREAM_TOPIC:
                 topic = mPropertyUptreamTopic;
                 break;
-            case EVENT_UP_TOPIC:
+            case EVENT_UP_STREAM_TOPIC:
                 topic = mEventUptreamTopic;
                 break;
-            case ACTION_UP_TOPIC:
+            case ACTION_UP_STREAM_TOPIC:
                 topic = mActionUptreamTopic;
                 break;
             default:
                 TXLog.e(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
                 return Status.PARAMETER_INVALID;
         }
-        return super.publish(topic, message, null);
+        Status ret = super.publish(topic, message, null);
+        if(Status.OK == ret) {
+            //加入到等待回复列表中
+            if(null != clientToken) {
+                mReplyWaitList.put(clientToken, System.currentTimeMillis());
+            }
+            return Status.OK;
+        }
+        return ret;
     }
 
     /**
      * 属性上报
      * @param property 属性的json
      * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyReport(JSONObject property, JSONObject metadata,TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyReport(JSONObject property, JSONObject metadata) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkPropertyJson(property)){
             TXLog.e(TAG, "propertyReport: invalid property json!");
@@ -236,24 +234,16 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret =  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            //加入到等待回复列表中
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+       return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     /**
      * 获取状态
      * @param type 类型
      * @param showmeta 是否携带showmeta
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyGetStatus(String type, boolean showmeta, TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyGetStatus(String type, boolean showmeta) {
         if (!type.equals("report") && !type.equals("control")) {
             TXLog.e(TAG, "propertyGetStatus: invalid type[%s]!", type);
             return Status.PARAMETER_INVALID;
@@ -277,23 +267,15 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            //加入到等待回复列表中
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+        return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     /**
      * 设备基本信息上报
      * @param params 参数
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyReportInfo(JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyReportInfo(JSONObject params) {
         JSONObject object = new JSONObject();
         String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
@@ -309,22 +291,14 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            //加入到等待回复列表中
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+        return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     /**
      * 清理控制信息
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status propertyClearControl(TXDataTemplateDownCallBack replyCallBack) {
+    public Status propertyClearControl() {
         JSONObject object = new JSONObject();
         String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
         try {
@@ -339,14 +313,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret = publishTemplateMessage(PROPERTY_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            //加入到等待回复列表中
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack));
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+        return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     /**
@@ -354,10 +321,9 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param eventId 事件ID
      * @param type 事件类型
      * @param params 参数
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status eventSinglePost(String eventId, String type, JSONObject params, TXDataTemplateDownCallBack replyCallBack) {
+    public Status eventSinglePost(String eventId, String type, JSONObject params) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkEventJson(eventId, type, params)){
             TXLog.e(TAG, "eventSinglePost: invalid parameters!");
@@ -383,22 +349,15 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret = publishTemplateMessage(EVENT_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack)); //加入到等待列表中
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+        return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
     }
 
     /**
      * 多个事件上报
      * @param events 事件集合
-     * @param replyCallBack 回复的回调函数
      * @return 结果
      */
-    public Status eventsPost(JSONArray events, TXDataTemplateDownCallBack replyCallBack) {
+    public Status eventsPost(JSONArray events) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkEventsJson(events)){
             TXLog.e(TAG, "eventsPost: invalid parameters!");
@@ -420,13 +379,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(0);
         message.setPayload(object.toString().getBytes());
 
-        Status ret = publishTemplateMessage(EVENT_UP_TOPIC, message);
-        if(Status.OK == ret) {
-            mReplyWaitList.put(clientToken,new replyWaitNode(System.currentTimeMillis(), replyCallBack)); //加入到等待列表中
-            return Status.OK;
-        } else{
-            return Status.ERROR;
-        }
+        return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
     }
 
     /**
@@ -436,7 +389,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param status 状态信息
      * @return 结果
      */
-    public Status controlReply(String clientToken, int code, String status) {
+    private Status controlReply(String clientToken, int code, String status) {
         JSONObject object = new JSONObject();
         try {
             object.put("method", METHOD_PROPERTY_CONTROL_REPLY);
@@ -452,7 +405,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(1); //qos 1
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(PROPERTY_UP_TOPIC, message);
+        return publishTemplateMessage(null, PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     /**
@@ -462,7 +415,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param status 状态信息
      * @return 结果
      */
-    public Status actionReply(String clientToken,int code, String status, String response) {
+    private Status actionReply(String clientToken,int code, String status, JSONObject response) {
         JSONObject object = new JSONObject();
         try {
             object.put("method", METHOD_ACTION_REPLY);
@@ -479,7 +432,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
         message.setQos(1); //qos 1
         message.setPayload(object.toString().getBytes());
 
-        return  publishTemplateMessage(ACTION_UP_TOPIC, message);
+        return  publishTemplateMessage(null, ACTION_UP_STREAM_TOPIC, message);
     }
 
     /**
@@ -488,10 +441,10 @@ public class TXDataTemplateClient extends TXMqttConnection {
     private class checkReplyTimeoutThread extends Thread {
         public void run() {
             while(true) {
-                Iterator<Map.Entry<String, replyWaitNode>> entries = mReplyWaitList.entrySet().iterator();
+                Iterator<Map.Entry<String, Long>> entries = mReplyWaitList.entrySet().iterator();
                 while (entries.hasNext()) {
-                    Map.Entry<String, replyWaitNode> entry = entries.next();
-                    if (System.currentTimeMillis() - entry.getValue().mTimestamp > mReplyWaitTimeout) {
+                    Map.Entry<String, Long> entry = entries.next();
+                    if (System.currentTimeMillis() - entry.getValue() > mReplyWaitTimeout) {
                         TXLog.e(TAG, "Event reply timeout. Client token:" + entry.getKey());
                         mReplyWaitList.remove(entry.getKey());
                     }
@@ -513,12 +466,12 @@ public class TXDataTemplateClient extends TXMqttConnection {
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String clientToken = jsonObj.getString("clientToken");
-            replyWaitNode node = mReplyWaitList.get(clientToken);
-            if (null == node) {
+            Long timestamp = mReplyWaitList.get(clientToken);
+            if (null == timestamp) {
                 TXLog.e(TAG, "handleReply: client token [%s] not found!", clientToken);
                 return;
             }
-            if (System.currentTimeMillis() - node.mTimestamp > mReplyWaitTimeout) {
+            if (System.currentTimeMillis() - timestamp > mReplyWaitTimeout) {
                 TXLog.e(TAG, "handle_reply: reply timeout! ClientToken:" + clientToken);
             } else {
                 int code = jsonObj.getInt("code");
@@ -528,8 +481,8 @@ public class TXDataTemplateClient extends TXMqttConnection {
                     TXLog.e(TAG, "handle_reply: reply failed! ClientToken:" + clientToken + ",code:" + code);
                 }
             }
-            if (null != node.mCallBack) {
-                node.mCallBack.onDownStreamCallBack(new String(message.getPayload()));
+            if (null != mDownStreamCallBack) {
+                mDownStreamCallBack.onReplyCallBack(new String(message.getPayload()));
             }
             mReplyWaitList.remove(clientToken);
         } catch (JSONException e) {
@@ -557,7 +510,12 @@ public class TXDataTemplateClient extends TXMqttConnection {
             }
             //控制下发消息处理
             if (method.equals(METHOD_PROPERTY_CONTROL)) {
-                TXLog.d(TAG, "onPropertyMessageArrivedCallBack: control message arrived!");
+                if(null != mDownStreamCallBack) {
+                    JSONObject result = mDownStreamCallBack.onControlCallBack(jsonObj.getJSONObject("params"));
+                    if (Status.OK != controlReply(jsonObj.getString("clientToken"), result.getInt("code"), result.getString("status"))) {
+                        TXLog.e(TAG, "control reply failed!");
+                    }
+                }
             } else {
                 handleReply(message);
             }
@@ -593,6 +551,36 @@ public class TXDataTemplateClient extends TXMqttConnection {
     private void onActionMessageArrivedCallBack(MqttMessage message){
         TXLog.d(TAG, "action down stream message received : " + message);
         // 查询列表中的action，然后调用相应的回调函数
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if(!method.equals(METHOD_ACTION)) {
+                TXLog.e(TAG, "onActionMessageArrivedCallBack: invalid method:" + method);
+                return;
+            }
+            if(null != mDownStreamCallBack) {
+                String actionId = jsonObj.getString("actionId");
+                JSONObject params = jsonObj.getJSONObject("params");
+                //check action
+                if (Status.OK !=mDataTemplateJson.checkActionJson(actionId, params)) {
+                    TXLog.e(TAG, "onActionMessageArrivedCallBack: invalid action message:" + message);
+                    return;
+                }
+                //callback
+                JSONObject result = mDownStreamCallBack.onActionCallBack(jsonObj.getString("actionId"), jsonObj.getJSONObject("params"));
+                //check reply
+                JSONObject response = result.getJSONObject("response");
+                if (Status.OK !=mDataTemplateJson.checkActionReplyJson(actionId, response)) {
+                    TXLog.e(TAG, "onActionMessageArrivedCallBack: invalid action reply message:" +  response);
+                    return;
+                }
+                if (Status.OK != actionReply(jsonObj.getString("clientToken"), result.getInt("code"), result.getString("status"), response)) {
+                    TXLog.e(TAG, "action reply failed!");
+                }
+            }
+        } catch (Exception e) {
+            TXLog.e(TAG, "onActionMessageArrivedCallBack: invalid message:" + message);
+        }
     }
 
     /**
@@ -603,6 +591,7 @@ public class TXDataTemplateClient extends TXMqttConnection {
      */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+        super.messageArrived(topic, message);
         if(topic.equals(mPropertyDownStreamTopic)) {
             onPropertyMessageArrivedCallBack(message);
         } else if (topic.equals(mEventDownStreamTopic)) {
@@ -610,6 +599,5 @@ public class TXDataTemplateClient extends TXMqttConnection {
         } else if (topic.equals(mActionDownStreamTopic)) {
             onActionMessageArrivedCallBack(message);
         }
-        super.messageArrived(topic, message);
     }
 }

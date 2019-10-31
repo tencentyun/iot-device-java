@@ -33,7 +33,7 @@ class TXDataTemplateJson {
     final static private String TYPE_ENUM = "enum";
     final static private String TYPE_TIMESTAMP = "timestamp";
 
-    public TXDataTemplateJson(Context context, final String jsonFileName) {
+    TXDataTemplateJson(Context context, final String jsonFileName) {
         if (Status.OK != registerDataTemplateJson(context, jsonFileName)) {
             Log.e(TAG, "TXDataTemplateJson: construct json failed!");
         }
@@ -42,7 +42,7 @@ class TXDataTemplateJson {
     /**
      * 读取文件内容到字符串
      * @param inputStream 文件输入流
-     * @return
+     * @return 检查结果
      */
     private String readInputStream(InputStream inputStream) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -68,7 +68,7 @@ class TXDataTemplateJson {
      * 注册从官网下载的json文件
      * @param context Android上下文，可使用进程上下文/Activity
      * @param jsonFileName assets中json文件名
-     * @return
+     * @return 检查结果
      */
     private Status registerDataTemplateJson(Context context, final String jsonFileName){
         AssetManager assetManager = context.getAssets();
@@ -108,7 +108,7 @@ class TXDataTemplateJson {
      * 检查value是否符合定义
      * @param valueDescribeJson 注册的模板中关于参数的描述
      * @param value 实际的值
-     * @return
+     * @return 检查结果
      */
     private Status checkParamsValue(JSONObject valueDescribeJson, Object value){
         try {
@@ -199,11 +199,52 @@ class TXDataTemplateJson {
     }
 
     /**
+     * 检查Action的参数是否符合定义
+     * @param paramsDescribeJson 参数模板
+     * @param paramsJson 参数描述json
+     * @return 检查结果
+     */
+    private Status checkActionParamsJson(JSONArray paramsDescribeJson, JSONObject paramsJson){
+        if(null == paramsJson || null == paramsDescribeJson) {
+            TXLog.e(TAG, "checkParamsJson: json is null!");
+            return Status.PARAMETER_INVALID;
+        }
+        int i;
+        boolean isActionExit = false;
+        // found all params in params json and check value
+        try {
+            for (i = 0; i < paramsDescribeJson.length(); i++) {
+                JSONObject jsonNode = paramsDescribeJson.getJSONObject(i);
+                Iterator<String> it = paramsJson.keys();
+                while (it.hasNext()) {
+                    String key = it.next();
+                    if (jsonNode.get("id").equals(key)) {
+                        if (Status.OK != checkParamsValue(jsonNode.getJSONObject("define"), paramsJson.get(key))) {
+                            TXLog.e(TAG, "checkParamsJson: parameter [%s] with invalid value (may be string): " + paramsJson.get(key), key);
+                            return Status.PARAMETER_INVALID;
+                        }
+                        isActionExit = true;
+                        break;
+                    }
+                }
+                if(!isActionExit) {
+                   TXLog.e(TAG, "checkActionParamsJson: params [%s] not found, check the data template json on cloud console!", jsonNode.get("id"));
+                   return Status.ERROR;
+                }
+                isActionExit = false;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  Status.OK;
+    }
+
+    /**
      * 检查property是否符合定义
      * @param property 用户构造的property json
      * @return 检查结果
      */
-    public Status checkPropertyJson(JSONObject property){
+     Status checkPropertyJson(JSONObject property){
         return  checkParamsJson(mPropertyJson, property);
     }
 
@@ -212,9 +253,9 @@ class TXDataTemplateJson {
      * @param eventId 事件ID
      * @param type 事件类型
      * @param params 事件参数
-     * @return
+     * @return 结果
      */
-    public Status checkEventJson(String eventId, String type, JSONObject params){
+     Status checkEventJson(String eventId, String type, JSONObject params){
         if(null == eventId || null == type || null == params) {
             TXLog.e(TAG, "checkEventJson: parameter is null!");
             return Status.PARAMETER_INVALID;
@@ -246,9 +287,9 @@ class TXDataTemplateJson {
     /**
      * 检查多个event是否符合定义
      * @param events 事件集合
-     * @return
+     * @return 结果
      */
-    public Status checkEventsJson(JSONArray events){
+     Status checkEventsJson(JSONArray events){
         if(null == events) {
             TXLog.e(TAG, "checkEventsJson: parameter is null!");
             return Status.PARAMETER_INVALID;
@@ -274,4 +315,75 @@ class TXDataTemplateJson {
         return  Status.OK;
     }
 
+    /**
+     * 检查action是否符合定义
+     * @param actionId 动作ID
+     * @param params 输入参数
+     * @return 结果
+     */
+     Status checkActionJson(String actionId, JSONObject params){
+        if(null == params || null == actionId) {
+            TXLog.e(TAG, "checkActionJson: parameter is null!");
+            return Status.PARAMETER_INVALID;
+        }
+
+        //check aciton in actions json array
+        int i;
+        try {
+            for( i=0;i < mActionJson.length();i++) {
+                JSONObject jsonNode = mActionJson.getJSONObject(i);
+                if (jsonNode.get("id").equals(actionId)) {
+                    if(Status.OK != checkActionParamsJson(jsonNode.getJSONArray("input"),params)) {
+                        TXLog.e(TAG, "checkActionJson: action [%s] with invalid parameter, check the data template json on cloud console!", actionId);
+                        return Status.PARAMETER_INVALID;
+                    }
+                    break;
+                }
+            }
+            if(i == mActionJson.length()) { //action not found
+                TXLog.e(TAG, "checkActionJson: no such action id [%s], check the data template json on cloud console!",actionId );
+                return Status.PARAMETER_INVALID;
+            }
+        } catch (JSONException e) {
+            TXLog.e(TAG, "checkActionJson: action message invalid!");
+            e.printStackTrace();
+        }
+        return  Status.OK;
+    }
+
+    /**
+     * 检查action reply
+     * @param actionId 动作ID
+     * @param response 回复参数
+     * @return 结果
+     */
+    Status checkActionReplyJson(String actionId, JSONObject response){
+        if(null == response || null == actionId) {
+            TXLog.e(TAG, "checkActionJson: parameter is null!");
+            return Status.PARAMETER_INVALID;
+        }
+
+        //check aciton in actions json array
+        int i;
+        try {
+            for( i=0;i < mActionJson.length();i++) {
+                JSONObject jsonNode = mActionJson.getJSONObject(i);
+                if (jsonNode.get("id").equals(actionId)) {
+                    if(Status.OK != checkActionParamsJson(jsonNode.getJSONArray("output"),response)) {
+                        TXLog.e(TAG, "checkActionReplyJson: action [%s] with invalid parameter:" + response, actionId);
+                        return Status.PARAMETER_INVALID;
+                    }
+                    break;
+                }
+            }
+            if(i == mActionJson.length()) { //action not found
+                TXLog.e(TAG, "checkActionReplyJson: no such action id :" +  actionId);
+                return Status.PARAMETER_INVALID;
+            }
+        } catch (JSONException e) {
+            TXLog.e(TAG, "checkActionReplyJson: events invalid!");
+            e.printStackTrace();
+        }
+        return  Status.OK;
+    }
 }
