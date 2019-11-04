@@ -23,13 +23,13 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private FragmentManager fragmentManager;
 
-    private IoTMqttFragment mMqttFragment;
+    private IoTDataTemplateFragment mDataTemplateFragment;
+    private IoTLightFragment mLightFragment;
 
-    private Button btnMqtt;
+    private Button btnDataTemplate;
+    private Button btnDemo;
 
-    private Button btnEntry;
-
-    private int mCurrentFragment = R.id.btn_basic_function;
+    private int mCurrentFragment = R.id.btn_data_template;
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -67,7 +67,7 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      * 设置默认的Fragment
      */
     private void setDefaultFragment() {
-        handlerButtonClick(R.id.btn_basic_function);
+        handlerButtonClick(R.id.btn_data_template);
     }
 
     /**
@@ -75,12 +75,11 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void initComponent() {
         // 初始化控件
+        btnDemo = (Button) findViewById(R.id.btn_demo);
+        btnDataTemplate = (Button) findViewById(R.id.btn_data_template);
 
-        btnEntry = (Button) findViewById(R.id.btn_entry_demo);
-        btnMqtt = (Button) findViewById(R.id.btn_basic_function);
-
-        btnEntry.setOnClickListener(this);
-        btnMqtt.setOnClickListener(this);
+        btnDemo.setOnClickListener(this);
+        btnDataTemplate.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
     }
@@ -111,12 +110,21 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
 
         switch (id) {
 
-            case R.id.btn_basic_function:
-                if (mMqttFragment == null) {
-                    mMqttFragment = new IoTMqttFragment();
-                    transaction.add(R.id.fragment_content, mMqttFragment);
+            case R.id.btn_data_template:
+                if (mDataTemplateFragment == null) {
+                    mDataTemplateFragment = new IoTDataTemplateFragment();
+                    transaction.add(R.id.fragment_content, mDataTemplateFragment);
                 } else {
-                    transaction.show(mMqttFragment);
+                    transaction.show(mDataTemplateFragment);
+                }
+                break;
+                
+            case R.id.btn_demo:
+                if (mLightFragment == null) {
+                    mLightFragment = new IoTLightFragment();
+                    transaction.add(R.id.fragment_content, mLightFragment);
+                } else {
+                    transaction.show(mLightFragment);
                 }
                 break;
 
@@ -133,12 +141,16 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void closeMqttConnection(int id) {
         switch (id) {
-            case R.id.btn_basic_function:
-                if (null != mMqttFragment) {
-                    mMqttFragment.closeConnection();
+            case R.id.btn_data_template:
+                if (null != mDataTemplateFragment) {
+                    mDataTemplateFragment.closeConnection();
                 }
                 break;
-
+            case R.id.btn_demo:
+                if (null != mLightFragment) {
+                    mLightFragment.closeConnection();
+                }
+                break;
             default:
                 break;
         }
@@ -150,9 +162,13 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void resetButton(int id) {
         switch (id) {
-            case R.id.btn_basic_function:
-                btnMqtt.setBackgroundColor(Color.LTGRAY);
-                btnEntry.setBackgroundColor(Color.WHITE);
+            case R.id.btn_data_template:
+                btnDataTemplate.setBackgroundColor(Color.LTGRAY);
+                btnDemo.setBackgroundColor(Color.WHITE);
+                break;
+            case R.id.btn_demo:
+                btnDemo.setBackgroundColor(Color.LTGRAY);
+                btnDataTemplate.setBackgroundColor(Color.WHITE);
                 break;
 
         }
@@ -163,8 +179,11 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
      */
     private void hideFragments(FragmentTransaction transaction) {
 
-        if (null != mMqttFragment) {
-            transaction.hide(mMqttFragment);
+        if (null != mDataTemplateFragment) {
+            transaction.hide(mDataTemplateFragment);
+        }
+        if (null != mLightFragment) {
+            transaction.hide(mLightFragment);
         }
     }
 

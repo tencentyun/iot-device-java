@@ -24,9 +24,8 @@ import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.Temp
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
 import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
 
-
 public class DataTemplateSample {
-    private static final String TAG = "TXMQTT";
+    private static final String TAG = "TXDataTemplate";
     // Default Value, should be changed in testing
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
     private String mProductID = "PRODUCT-ID";

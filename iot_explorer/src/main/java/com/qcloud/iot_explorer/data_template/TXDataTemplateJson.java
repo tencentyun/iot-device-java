@@ -65,7 +65,7 @@ class TXDataTemplateJson {
     }
 
     /**
-     * 注册从官网下载的json文件
+     * 注册从控制台界面下载的json文件
      * @param context Android上下文，可使用进程上下文/Activity
      * @param jsonFileName assets中json文件名
      * @return 检查结果
@@ -80,9 +80,9 @@ class TXDataTemplateJson {
             jsonInputStream = assetManager.open(jsonFileName);
             String jsonStr = readInputStream(jsonInputStream);
             JSONObject json = new JSONObject(jsonStr);
-            mPropertyJson = json.getJSONArray("properties");
-            mEventJson = json.getJSONArray("events");
-            mActionJson = json.getJSONArray("actions");
+            this.mPropertyJson = json.getJSONArray("properties");
+            this.mEventJson = json.getJSONArray("events");
+            this.mActionJson = json.getJSONArray("actions");
             TXLog.d(TAG, "registerDataTemplateJson: propertyJson" + mPropertyJson);
             TXLog.d(TAG, "registerDataTemplateJson: eventJson" + mEventJson);
             TXLog.d(TAG, "registerDataTemplateJson: actionJson" + mActionJson);

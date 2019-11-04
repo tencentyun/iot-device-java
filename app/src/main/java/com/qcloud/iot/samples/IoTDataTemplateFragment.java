@@ -32,9 +32,9 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class IoTMqttFragment extends Fragment {
+public class IoTDataTemplateFragment extends Fragment {
 
-    private static final String TAG = "TXMQTT";
+    private static final String TAG = "TXDataTemplateFragment";
 
     private IoTMainActivity mParent;
 
@@ -59,10 +59,10 @@ public class IoTMqttFragment extends Fragment {
     private TextView mLogInfoText;
 
     // Default testing parameters
-    private String mBrokerURL = "ssl://111.230.126.244:8883";
-    private String mProductID = "3INKNQFTGV";
-    private String mDevName = "test";
-    private String mDevPSK  = "GgsH+Dxb2hwQ5wS9EOZWbw=="; //若使用证书验证，设为null
+    private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    private String mProductID = "Q82Y1XV1O7";
+    private String mDevName = "tes";
+    private String mDevPSK  = "xztPM4VYbhmd09HwoUvJdg=="; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
@@ -81,7 +81,7 @@ public class IoTMqttFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_iot_mqtt, container, false);
+        View view = inflater.inflate(R.layout.fragment_iot_data_template, container, false);
 
         mParent = (IoTMainActivity) this.getActivity();
 
@@ -227,11 +227,11 @@ public class IoTMqttFragment extends Fragment {
                     return;
                 //get status
                 if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
-                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    mParent.printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
 
                 if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false)) {
-                    mParent.printLogInfo(TAG, "property report failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                    mParent.printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                 }
             }
         });
@@ -384,7 +384,13 @@ public class IoTMqttFragment extends Fragment {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
-            Log.d(TAG, "event down stream message received : " + replyMsg);
+            Log.d(TAG, "reply received : " + replyMsg);
+        }
+
+        @Override
+        public void onGetStatusReplyCallBack(JSONObject data) {
+            //可根据自己需求进行处理状态和控制信息的获取结果
+            Log.d(TAG, "event down stream message received : " + data);
         }
 
         @Override

@@ -257,7 +257,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     TXLog.i(TAG, "onSuccess!");
-
                     //mActionCallBack.onConnectCompleted(Status.OK, true, asyncActionToken.getUserContext(), "reconnected to " + mServerURI);
                 }
 

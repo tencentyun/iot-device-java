@@ -85,7 +85,7 @@
 使用 Android Studio 导入 qcloud-iot-sdk-android/build.gradle 从而打开工程
 
 #### 3. 填入设备信息
-- 编辑 app/com.qcloud.iot.samples.IoTMqttFragment.java 文件中如下代码块, 填入之前创建产品和设备步骤中得到的 **PRODUCT_ID**, **DEVICE_NAME**，**DEVICE_SECRET**, **SUB_PRODUCTID**, **SUB_DEVNAME**和**TEST_TOPIC**。
+- 编辑 app/com.qcloud.iot.samples.IoTDataTemplateFragment.java 文件中如下代码块, 填入之前创建产品和设备步骤中得到的 **PRODUCT_ID**, **DEVICE_NAME**，**DEVICE_SECRET**, **SUB_PRODUCTID**, **SUB_DEVNAME**和**TEST_TOPIC**。
 - SDK 提供两种认证方式，一种是PSK，一种是证书的方式。读取设备证书、私钥的接口：一是通过 AssetManager 进行读取，此时需在工程 **app/src/main** 路径下创建 **assets** 目录并将设备证书、私钥放置在该目录中；二是通过 InputStream 进行读取，此时需传入设备证书、私钥的全路径信息。
 
 ![](https://main.qcloudimg.com/raw/5de584669495a3b9d5641e10b4041581.png)
