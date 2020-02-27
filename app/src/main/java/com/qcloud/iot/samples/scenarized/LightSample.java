@@ -371,7 +371,7 @@ public class LightSample {
                     //construct result
                     JSONObject result = new JSONObject();
                     result.put("code",0);
-                    result.put("status", "some message wher errorsome message when error");
+                    result.put("status", "some message when error");
                     // response based on output
                     JSONObject response = new JSONObject();
                     response.put("result", 0);

@@ -27,14 +27,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="连接MQTT" />
+            android:text="设备上线" />
 
         <Button
             android:id="@+id/close_connect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="断开MQTT连接" />
+            android:text="设备下线" />
 
     </LinearLayout>
 

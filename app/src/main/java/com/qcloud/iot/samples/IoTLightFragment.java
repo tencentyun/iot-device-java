@@ -1,37 +1,16 @@
 package com.qcloud.iot.samples;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.qcloud.iot.R;
-import com.qcloud.iot.samples.data_template.DataTemplateSample;
 import com.qcloud.iot.samples.scenarized.LightSample;
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
 import com.qcloud.iot_explorer.utils.TXLog;
-
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.Map;
 
 public class IoTLightFragment extends Fragment {
@@ -48,9 +27,9 @@ public class IoTLightFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
-    private String mProductID = "Q82Y1XV1O7";
-    private String mDevName = "tes";
-    private String mDevPSK  = "xztPM4VYbhmd09HwoUvJdg=="; //若使用证书验证，设为null
+    private String mProductID = "YOUR_PRODUCT_ID";
+    private String mDevName = "YOUR_DEVICE_NAME";
+    private String mDevPSK  = "YOUR_DEVICE_PSK"; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String

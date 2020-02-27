@@ -25,4 +25,14 @@
         android:textColor="#000000"
         android:textSize="18sp" />
 
+    <Button
+        android:id="@+id/btn_gateway"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:background="#FFFFFF"
+        android:text="网关示例"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
 </LinearLayout>

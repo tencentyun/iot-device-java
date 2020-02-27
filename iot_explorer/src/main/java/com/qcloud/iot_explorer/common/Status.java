@@ -50,5 +50,25 @@ public enum Status {
     /**
      * 表示JSON构造错误
      */
-    ERR_JSON_CONSTRUCT
+    ERR_JSON_CONSTRUCT,
+
+    /**
+     *  子设备初始状态
+     */
+    SUBDEV_STAT_INIT,
+
+    /**
+     *  子设备在线状态
+     */
+    SUBDEV_STAT_ONLINE,
+
+    /**
+     *  子设备掉线状态
+     */
+    SUBDEV_STAT_OFFLINE,
+
+    /**
+     *  子设备不存在
+     */
+    SUBDEV_STAT_NOT_EXIST
 }

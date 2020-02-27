@@ -1,7 +1,5 @@
 package com.qcloud.iot_explorer.data_template;
 
-import com.qcloud.iot_explorer.mqtt.TXAlarmPingSender;
-
 public interface TXDataTemplateConstants {
     /**
      * topic
