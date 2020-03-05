@@ -98,12 +98,6 @@ IoTGatewayFragment.java对应代码段
 
 #### 6.灯示例
 
-![](https://main.qcloudimg.com/raw/f39f0086c460e6a69e31dff799699e8a.jpg)
-
-![](https://main.qcloudimg.com/raw/a2563026883b1af1555668c3e196d1af.jpg)
-
-#### 6.灯示例
-
 点击`设备上线`，然后通过相应设备的控制台进行在线调试，可以看到属性变化。测试完，需要`下线设备`。
 
 ![](https://main.qcloudimg.com/raw/bfb53d1431e30ad4eac419b1348fb119.jpg)
