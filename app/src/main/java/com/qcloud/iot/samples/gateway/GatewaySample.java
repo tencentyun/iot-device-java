@@ -35,17 +35,19 @@ public class GatewaySample {
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
 
     //sub dev info
-    private String mSubDev1ProductId = "Q82Y1XV1O7";
-    private String mSubDev2ProductId = "AI81EB84AY";
+    private String mSubDev1ProductId = "YOUR_SUB_DEV_PRODUCTID";
+    private String mSubDev2ProductId = "YOUR_SUB_DEV_PRODUCTID";
 
     private TXGatewayClient mConnection;
     private static AtomicInteger requestID = new AtomicInteger(0);
 
-    public GatewaySample(Context context, String brokerURL, String productId, String devName, String devPSK, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
+    public GatewaySample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
         this.mContext = context;
         this.mDevPSK = devPSK;
         this.mSubDev1ProductId = subDev1ProductId;
         this.mSubDev2ProductId = subDev2ProductId;
+        this.mDevCertName = devCertName;
+        this.mDevKeyName = devKeyName;
         mConnection = new TXGatewayClient( context, brokerURL, productId, devName, devPSK,null,null,
                                 new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
     }

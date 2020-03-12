@@ -87,7 +87,7 @@ public class IoTGatewayFragment extends Fragment {
 
         mProperty =  view.findViewById(R.id.subDevProperty);
 
-        mGatewaySample = new GatewaySample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, mJsonFileName, mSubDev1ProductId, mSubDev2ProductId);
+        mGatewaySample = new GatewaySample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mSubDev1ProductId, mSubDev2ProductId);
 
         new IoTGatewayFragment.setPropertyText().start();
 
