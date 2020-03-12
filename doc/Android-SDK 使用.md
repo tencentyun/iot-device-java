@@ -1,5 +1,3 @@
-## 
-
 ### SDK设计说明
 
 | 类名                 | 功能                                         |
@@ -10,7 +8,7 @@
 | TXGatewayClient      | 实现网关设备根据数据模板连接物联网开发平台   |
 | TXGatewaySubdev      | 实现网关子设备根据数据模板连接物联网开发平台 |
 
-![](https://main.qcloudimg.com/raw/87002806865515f8b5f08ba3865d8cfe.jpg)
+![](https://main.qcloudimg.com/raw/ea345acb67bd0f9ef20a7336704bd070.jpg)
 
 ### SDK API 说明
 
