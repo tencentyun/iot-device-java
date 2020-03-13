@@ -6,6 +6,5 @@
         <item>设置设备Product ID</item>
         <item>设置设备Device Name</item>
         <item>设置设备PSK</item>
-        <item>设置测试Topic</item>
     </string-array>
 </resources>
