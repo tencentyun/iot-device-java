@@ -244,9 +244,16 @@ public class IoTDataTemplateFragment extends Fragment {
                 //report info
                 JSONObject params = new JSONObject();
                 try {
-                    params.put("system", "android");
-                    params.put("company", "tencent");
-                    params.put("module_softinfo", "V1.0");
+                    JSONObject label = new JSONObject();  //device label
+                    label.put("version", "v1.0.0");
+                    label.put("company", "tencent");
+
+                    params.put("module_hardinfo", "v1.0.0");
+                    params.put("module_softinfo", "v1.0.0");
+                    params.put("fw_ver", "v1.0.0");
+                    params.put("imei", "0");
+                    params.put("mac", "00:00:00:00");
+                    params.put("device_label", label);
                 }catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;

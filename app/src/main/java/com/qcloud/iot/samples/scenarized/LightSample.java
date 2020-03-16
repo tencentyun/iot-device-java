@@ -218,9 +218,16 @@ public class LightSample {
     private void LightInfoReport() {
         JSONObject params = new JSONObject();
         try {
-            params.put("system", "android");
-            params.put("company", "tencent");
-            params.put("module_softinfo", "V1.0");
+            JSONObject label = new JSONObject();  //device label
+            label.put("version", "v1.0.0");
+            label.put("company", "tencent");
+
+            params.put("module_hardinfo", "v1.0.0");
+            params.put("module_softinfo", "v1.0.0");
+            params.put("fw_ver", "v1.0.0");
+            params.put("imei", "0");
+            params.put("mac", "00:00:00:00");
+            params.put("device_label", label);
         } catch (JSONException e) {
             TXLog.e(TAG, "Construct light info failed!");
             return;
