@@ -1,3 +1,21 @@
+### 设备端SDK的使用
+
+设备端sdk使用步骤如下：
+
+* 将iot_explorer模块加入工程构建
+* 基于API进行开发
+
+>!
+
+- SDK 依赖开源社区实现的 mqtt 协议**eclipse.paho**，因此需在 App 的 build.gradle 中增加 eclipse.paho 的编译依赖：
+
+```
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3"
+}
+```
+
 ### SDK设计说明
 
 | 类名                 | 功能                                         |
