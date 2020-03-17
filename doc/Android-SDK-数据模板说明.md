@@ -2,7 +2,7 @@
 
 若要替换数据模板请放到assets目录下，并且修改数据模板名称为相应的名字。
 
-![](C:\Users\fancyxu.TENCENT\AppData\Roaming\Typora\typora-user-images\image-20200313111732391.png)
+![](https://main.qcloudimg.com/raw/84b65f3517c87401c60eddc366c72284.png)
 
 SDK会根据数据模板对用户构造上报的数据进行校验在调试终端中输出，包括以下几种情况：
 
