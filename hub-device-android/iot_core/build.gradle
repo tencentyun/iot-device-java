@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    compileSdkVersion 29
+    buildToolsVersion "26.0.3"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 29
         versionCode 2
         versionName "1.1"
 
@@ -33,15 +33,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
-    testCompile 'junit:junit:4.12'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.13'
 
-    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
-    compile "com.squareup.okhttp3:okhttp:3.10.0"
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
+    implementation "com.squareup.okhttp3:okhttp:3.12.2"
 }
 
 apply from: 'bintray.gradle'
