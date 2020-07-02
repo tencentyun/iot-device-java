@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.service;
+package com.tencent.iot.hub.device.java.main.service;
 
 
 public class RemoteRequest {

@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.scenarized;
+package com.tencent.iot.hub.device.java.main.scenarized;
 
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -6,10 +6,10 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import com.qcloud.iot.core.mqtt.TXMqttConstants;
-import com.qcloud.iot.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 public class Airconditioner {
 

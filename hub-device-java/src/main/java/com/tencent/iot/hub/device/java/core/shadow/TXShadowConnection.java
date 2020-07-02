@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.shadow;
+package com.tencent.iot.hub.device.java.core.shadow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,10 +18,10 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import com.qcloud.iot.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 public class TXShadowConnection {
 

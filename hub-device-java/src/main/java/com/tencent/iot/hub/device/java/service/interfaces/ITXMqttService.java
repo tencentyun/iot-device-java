@@ -1,17 +1,17 @@
 // ITXMqttService.aidl
-package com.qcloud.iot.service.interfaces;
+package com.tencent.iot.hub.device.java.service.interfaces;
 
-import com.qcloud.iot.service.TXDisconnectedBufferOptions;
-import com.qcloud.iot.service.interfaces.ITXMqttActionListener;
-import com.qcloud.iot.service.interfaces.ITXOTAListener;
-import com.qcloud.iot.service.interfaces.ITXShadowActionListener;
-import com.qcloud.iot.service.TXMqttConnectOptions;
-import com.qcloud.iot.service.TXMqttClientOptions;
-import com.qcloud.iot.service.TXMqttMessage;
+import com.tencent.iot.hub.device.java.service.TXDisconnectedBufferOptions;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXMqttActionListener;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXOTAListener;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
+import com.tencent.iot.hub.device.java.service.TXMqttConnectOptions;
+import com.tencent.iot.hub.device.java.service.TXMqttClientOptions;
+import com.tencent.iot.hub.device.java.service.TXMqttMessage;
 
 import java.util.List;
 
-import com.qcloud.iot.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
 
 public interface ITXMqttService {
     /**

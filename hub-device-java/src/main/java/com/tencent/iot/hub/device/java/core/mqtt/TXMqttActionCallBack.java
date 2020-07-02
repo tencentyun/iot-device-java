@@ -1,6 +1,6 @@
-package com.qcloud.iot.core.mqtt;
+package com.tencent.iot.hub.device.java.core.mqtt;
 
-import  com.qcloud.iot.core.common.Status;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

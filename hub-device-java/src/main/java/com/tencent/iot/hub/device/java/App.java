@@ -1,4 +1,4 @@
-package com.qcloud.iot;
+package com.tencent.iot.hub.device.java;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,12 +17,12 @@ import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import com.qcloud.iot.core.util.AsymcSslUtils;
-import com.qcloud.iot.main.mqtt.MQTTSample;
-import com.qcloud.iot.main.shadow.SelfMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.main.mqtt.MQTTSample;
+import com.tencent.iot.hub.device.java.main.shadow.SelfMqttActionCallBack;
 
 /**
  * Hello world!

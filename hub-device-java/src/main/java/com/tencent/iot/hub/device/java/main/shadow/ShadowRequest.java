@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.shadow;
+package com.tencent.iot.hub.device.java.main.shadow;
 
 
 

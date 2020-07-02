@@ -1,4 +1,4 @@
-package com.qcloud.iot.utils;
+package com.tencent.iot.hub.device.java.utils;
  
 import java.util.Calendar;
 import java.util.Date;

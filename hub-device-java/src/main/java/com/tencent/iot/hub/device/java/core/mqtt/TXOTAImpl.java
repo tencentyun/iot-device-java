@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.mqtt;
+package com.tencent.iot.hub.device.java.core.mqtt;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,8 +27,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.device.CA;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.device.CA;
 
 public class TXOTAImpl {
 	private static final String TAG = TXOTAImpl.class.getName();

@@ -1,8 +1,11 @@
 apply plugin: 'java-library'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'org.slf4j:slf4j-log4j12:1.8.0-alpha2'
+    implementation 'org.slf4j:slf4j-api:1.8.0-alpha2'
+    testImplementation 'junit:junit:3.8.1'
 }
 
 sourceCompatibility = "7"

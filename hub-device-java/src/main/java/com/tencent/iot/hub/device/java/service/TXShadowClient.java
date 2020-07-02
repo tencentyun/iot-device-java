@@ -1,12 +1,12 @@
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.java.service;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXMqttConstants;
-import com.qcloud.iot.core.mqtt.TXOTACallBack;
-import com.qcloud.iot.core.mqtt.TXOTAConstansts;
-import com.qcloud.iot.core.shadow.DeviceProperty;
-import com.qcloud.iot.core.shadow.TXShadowActionCallBack;
-import com.qcloud.iot.service.interfaces.ITXShadowActionListener;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
 
 import java.util.List;
 

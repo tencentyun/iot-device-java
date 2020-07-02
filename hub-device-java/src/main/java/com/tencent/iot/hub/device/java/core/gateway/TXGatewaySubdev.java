@@ -1,7 +1,7 @@
-package com.qcloud.iot.core.gateway;
+package com.tencent.iot.hub.device.java.core.gateway;
 
 
-import com.qcloud.iot.core.common.Status;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 /**
  * Created by willssong on 2018/12/25.

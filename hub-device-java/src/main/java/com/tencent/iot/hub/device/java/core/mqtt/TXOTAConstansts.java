@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.mqtt;
+package com.tencent.iot.hub.device.java.core.mqtt;
 
 
 public interface TXOTAConstansts {

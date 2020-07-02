@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.common;
+package com.tencent.iot.hub.device.java.core.common;
 
 
 
