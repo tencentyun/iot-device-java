@@ -1,3 +1,5 @@
 include ':app'
 include ':iot_explorer'
 include ':explorer-device-java'
+include ':hub-device-java'
+
