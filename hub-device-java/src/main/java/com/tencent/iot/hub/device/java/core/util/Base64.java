@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.util;
+package com.tencent.iot.hub.device.java.core.util;
 
 /*
  * Copyright (C) 2010 The Android Open Source Project

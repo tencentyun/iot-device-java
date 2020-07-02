@@ -1,4 +1,4 @@
-package com.qcloud.iot;
+package com.tencent.iot.hub.device.java;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,11 +18,11 @@ import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.shadow.DeviceProperty;
-import com.qcloud.iot.core.shadow.TXShadowActionCallBack;
-import com.qcloud.iot.core.shadow.TXShadowConnection;
-import com.qcloud.iot.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 
 public class ShadowApp {

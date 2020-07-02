@@ -1,4 +1,4 @@
-package com.qcloud.iot.core.util;
+package com.tencent.iot.hub.device.java.core.util;
 
 
 import java.io.BufferedReader;
@@ -35,7 +35,7 @@ import org.bouncycastle.openssl.PEMParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import  com.qcloud.iot.core.device.CA;
+import com.tencent.iot.hub.device.java.core.device.CA;
 
 
 

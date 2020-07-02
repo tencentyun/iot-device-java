@@ -1,14 +1,14 @@
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.java.service;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXOTACallBack;
-import com.qcloud.iot.core.mqtt.TXOTAConstansts;
-import com.qcloud.iot.main.scenarized.Door;
-import com.qcloud.iot.service.interfaces.ITXMqttActionListener;
-import com.qcloud.iot.service.interfaces.ITXMqttService;
-import com.qcloud.iot.service.interfaces.ITXOTAListener;
-import com.qcloud.iot.service.interfaces.ITXShadowActionListener;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.java.main.scenarized.Door;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXMqttActionListener;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXMqttService;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXOTAListener;
+import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
 
 import java.util.HashMap;
 import java.util.Map;

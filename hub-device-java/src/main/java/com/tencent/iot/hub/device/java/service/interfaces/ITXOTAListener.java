@@ -1,5 +1,5 @@
 // ITXMqttListener.aidl
-package com.qcloud.iot.service.interfaces;
+package com.tencent.iot.hub.device.java.service.interfaces;
 
 public interface ITXOTAListener {
 

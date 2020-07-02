@@ -1,4 +1,4 @@
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.java.service;
 
 /**
  * mqtt远程客户端选项

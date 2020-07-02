@@ -1,7 +1,7 @@
-package com.qcloud.iot.core.util;
+package com.tencent.iot.hub.device.java.core.util;
 
-import  com.qcloud.iot.core.device.CA;
-import com.qcloud.iot.core.mqtt.TXOTAImpl;
+import com.tencent.iot.hub.device.java.core.device.CA;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAImpl;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.shadow;
+package com.tencent.iot.hub.device.java.main.shadow;
 
 
 import java.util.ArrayList;
@@ -9,12 +9,12 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import  com.qcloud.iot.core.shadow.DeviceProperty;
-import  com.qcloud.iot.core.shadow.TXShadowActionCallBack;
-import  com.qcloud.iot.core.shadow.TXShadowConnection;
-import  com.qcloud.iot.core.shadow.TXShadowConstants;
-import  com.qcloud.iot.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 
 public class ShadowSample {

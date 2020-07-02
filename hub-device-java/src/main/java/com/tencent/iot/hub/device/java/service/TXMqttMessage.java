@@ -1,4 +1,4 @@
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.java.service;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 

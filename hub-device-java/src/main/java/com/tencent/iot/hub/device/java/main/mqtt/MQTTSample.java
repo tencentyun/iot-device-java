@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.mqtt;
+package com.tencent.iot.hub.device.java.main.mqtt;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,11 +11,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import  com.qcloud.iot.core.gateway.TXGatewayConnection;
-import  com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import  com.qcloud.iot.core.mqtt.TXMqttConstants;
-import  com.qcloud.iot.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.gateway.TXGatewayConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 public class MQTTSample {
 

@@ -1,4 +1,4 @@
-package com.qcloud.iot.main.shadow;
+package com.tencent.iot.hub.device.java.main.shadow;
 
 import java.util.Arrays;
 
@@ -7,10 +7,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import com.qcloud.iot.main.mqtt.MQTTRequest;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.main.mqtt.MQTTRequest;
 
 public class SelfMqttActionCallBack extends TXMqttActionCallBack {
 	private static final String TAG = "TXMQTT";

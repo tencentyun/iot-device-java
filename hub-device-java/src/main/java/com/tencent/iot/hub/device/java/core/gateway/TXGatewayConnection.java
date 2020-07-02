@@ -1,12 +1,12 @@
-package com.qcloud.iot.core.gateway;
+package com.tencent.iot.hub.device.java.core.gateway;
 
-import com.qcloud.iot.core.common.Status;
-import com.qcloud.iot.core.mqtt.TXAlarmPingSender;
-import com.qcloud.iot.core.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.core.mqtt.TXMqttConnection;
-import com.qcloud.iot.core.mqtt.TXMqttConstants;
-import com.qcloud.iot.core.util.Base64;
-import com.qcloud.iot.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXAlarmPingSender;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.util.Base64;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -25,8 +25,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.qcloud.iot.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static com.qcloud.iot.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 /**
  * Created by willssong on 2018/12/25.

@@ -1,8 +1,8 @@
 // ITXMqttListener.aidl
-package com.qcloud.iot.service.interfaces;
+package com.tencent.iot.hub.device.java.service.interfaces;
 
-import com.qcloud.iot.service.TXMqttMessage;
-import com.qcloud.iot.service.TXMqttToken;
+import com.tencent.iot.hub.device.java.service.TXMqttMessage;
+import com.tencent.iot.hub.device.java.service.TXMqttToken;
 
 public interface ITXMqttActionListener {
 
