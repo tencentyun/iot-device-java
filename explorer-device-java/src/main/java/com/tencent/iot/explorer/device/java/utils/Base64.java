@@ -1,4 +1,4 @@
-package utils;
+package com.tencent.iot.explorer.device.java.utils;
 
 /*
  * Copyright (C) 2010 The Android Open Source Project

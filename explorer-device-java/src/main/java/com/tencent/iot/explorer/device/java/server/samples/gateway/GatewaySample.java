@@ -1,14 +1,14 @@
-package server.samples.gateway;
+package com.tencent.iot.explorer.device.java.server.samples.gateway;
 
 
 
-import common.Status;
-import data_template.TXDataTemplateConstants;
-import data_template.TXDataTemplateDownStreamCallBack;
-import gateway.TXGatewayClient;
-import gateway.TXGatewaySubdev;
-import mqtt.TXMqttActionCallBack;
-import mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdev;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -16,12 +16,12 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.AsymcSslUtils;
+import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 
 public class GatewaySample {

@@ -1,4 +1,4 @@
-package device;
+package com.tencent.iot.explorer.device.java.device;
 
 public class CA {
 

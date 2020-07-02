@@ -1,4 +1,4 @@
-package mqtt;
+package com.tencent.iot.explorer.device.java.mqtt;
 
 public class TXMqttRequest {
     private static final String TAG = TXMqttRequest.class.getSimpleName();

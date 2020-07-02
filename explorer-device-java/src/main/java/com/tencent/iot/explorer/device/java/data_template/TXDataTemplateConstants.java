@@ -1,4 +1,4 @@
-package data_template;
+package com.tencent.iot.explorer.device.java.data_template;
 
 public interface TXDataTemplateConstants {
     /**

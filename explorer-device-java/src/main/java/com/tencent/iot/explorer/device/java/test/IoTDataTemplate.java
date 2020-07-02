@@ -1,9 +1,9 @@
 package com.tencent.iot.explorer.device.java.test;
 
-import common.Status;
-import data_template.TXDataTemplateDownStreamCallBack;
-import gateway.TXGatewayClient;
-import mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -12,9 +12,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.samples.data_template.DataTemplateSample;
-import server.samples.gateway.ProductAirconditioner;
-import server.samples.gateway.ProductLight;
+import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
+import com.tencent.iot.explorer.device.java.server.samples.gateway.ProductAirconditioner;
+import com.tencent.iot.explorer.device.java.server.samples.gateway.ProductLight;
 
 import java.util.Arrays;
 import java.util.Iterator;

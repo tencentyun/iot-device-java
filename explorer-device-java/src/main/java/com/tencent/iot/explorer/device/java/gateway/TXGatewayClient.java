@@ -1,15 +1,15 @@
-package gateway;
+package com.tencent.iot.explorer.device.java.gateway;
 
 
 
-import common.Status;
+import com.tencent.iot.explorer.device.java.common.Status;
 
-import data_template.TXDataTemplateClient;
-import data_template.TXDataTemplateConstants;
-import data_template.TXDataTemplateDownStreamCallBack;
-import mqtt.TXAlarmPingSender;
-import mqtt.TXMqttActionCallBack;
-import mqtt.TXMqttConstants;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXAlarmPingSender;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttConstants;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -23,8 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.Base64;
-import utils.HmacSha256;
+import com.tencent.iot.explorer.device.java.utils.Base64;
+import com.tencent.iot.explorer.device.java.utils.HmacSha256;
 
 import java.util.HashMap;
 import java.util.Iterator;

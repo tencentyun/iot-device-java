@@ -1,15 +1,15 @@
-package test;
+package com.tencent.iot.explorer.device.java.test;
 
 
-import gateway.TXGatewayClient;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.samples.gateway.GatewaySample;
+import com.tencent.iot.explorer.device.java.server.samples.gateway.GatewaySample;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 public class IoTGateway {
     private static final Logger LOG = LoggerFactory.getLogger(IoTGateway.class);

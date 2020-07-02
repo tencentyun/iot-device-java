@@ -1,24 +1,24 @@
-package server.samples.data_template;
+package com.tencent.iot.explorer.device.java.server.samples.data_template;
 
 
 
-import common.Status;
-import data_template.TXDataTemplate;
-import data_template.TXDataTemplateClient;
-import data_template.TXDataTemplateDownStreamCallBack;
-import mqtt.TXMqttActionCallBack;
-import mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplate;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.AsymcSslUtils;
+import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 
 public class DataTemplateSample {

@@ -1,9 +1,9 @@
-package utils;
+package com.tencent.iot.explorer.device.java.utils;
 
 
 
-import data_template.TXDataTemplate;
-import device.CA;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplate;
+import com.tencent.iot.explorer.device.java.device.CA;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;

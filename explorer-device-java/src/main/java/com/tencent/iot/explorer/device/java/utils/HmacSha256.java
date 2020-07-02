@@ -1,4 +1,4 @@
-package utils;
+package com.tencent.iot.explorer.device.java.utils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

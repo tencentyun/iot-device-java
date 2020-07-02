@@ -1,4 +1,4 @@
-package common;
+package com.tencent.iot.explorer.device.java.common;
 
 public enum Status {
     /**

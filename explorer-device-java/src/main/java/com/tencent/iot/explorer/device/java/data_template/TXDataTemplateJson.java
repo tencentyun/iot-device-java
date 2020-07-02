@@ -1,20 +1,20 @@
-package data_template;
+package com.tencent.iot.explorer.device.java.data_template;
 
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import common.Status;
+import com.tencent.iot.explorer.device.java.common.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.ReadFile;
+import com.tencent.iot.explorer.device.java.utils.ReadFile;
 
 import java.io.*;
 import java.util.Iterator;
 
-import static mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.explorer.device.java.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 class TXDataTemplateJson {
     public static final String TAG = "TX_TEMPLATE_JSON_" + MQTT_SDK_VER;

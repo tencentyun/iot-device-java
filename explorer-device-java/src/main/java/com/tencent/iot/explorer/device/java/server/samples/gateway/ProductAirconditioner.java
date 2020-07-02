@@ -1,11 +1,11 @@
-package server.samples.gateway;
+package com.tencent.iot.explorer.device.java.server.samples.gateway;
 
-import common.Status;
-import data_template.TXDataTemplateDownStreamCallBack;
-import gateway.TXGatewayClient;
-import gateway.TXGatewaySubdev;
-import gateway.TXGatewaySubdevActionCallBack;
-import mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdev;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdevActionCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 public class ProductAirconditioner {
     private static final String TAG = "TXProductLight";

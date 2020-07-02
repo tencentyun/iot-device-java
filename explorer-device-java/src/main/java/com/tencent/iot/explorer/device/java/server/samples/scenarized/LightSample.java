@@ -1,13 +1,13 @@
-package server.samples.scenarized;
+package com.tencent.iot.explorer.device.java.server.samples.scenarized;
 
 
-import common.Status;
-import data_template.TXDataTemplateClient;
-import data_template.TXDataTemplateDownStreamCallBack;
-import mqtt.TXMqttActionCallBack;
-import mqtt.TXMqttRequest;
-import mqtt.TXOTACallBack;
-import mqtt.TXOTAConstansts;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.java.mqtt.TXOTACallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXOTAConstansts;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -17,8 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.samples.data_template.DataTemplateSample;
-import utils.AsymcSslUtils;
+import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
+import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,9 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
 
 public class LightSample {
     private static final String TAG = "TXLightSample";

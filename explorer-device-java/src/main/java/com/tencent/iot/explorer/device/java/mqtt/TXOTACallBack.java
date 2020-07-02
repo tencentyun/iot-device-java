@@ -1,4 +1,4 @@
-package mqtt;
+package com.tencent.iot.explorer.device.java.mqtt;
 
 public interface TXOTACallBack {
     /**

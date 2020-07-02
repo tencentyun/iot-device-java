@@ -1,11 +1,11 @@
-package data_template;
+package com.tencent.iot.explorer.device.java.data_template;
 
 
 
-import common.Status;
-import mqtt.TXMqttConnection;
-import mqtt.TXMqttConstants;
-import mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttConnection;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttConstants;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static data_template.TXDataTemplateConstants.*;
-import static data_template.TXDataTemplateConstants.TemplatePubTopic.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.*;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.*;
 
 public class TXDataTemplate {
     public static final String TAG = "TXDATATEMPLATE";

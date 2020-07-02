@@ -1,4 +1,4 @@
-package mqtt;
+package com.tencent.iot.explorer.device.java.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttPingSender;
 import org.eclipse.paho.client.mqttv3.internal.ClientComms;

@@ -1,19 +1,19 @@
-package mqtt;
+package com.tencent.iot.explorer.device.java.mqtt;
 
 
-import common.Status;
-import gateway.TXGatewaySubdev;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdev;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.Base64;
-import utils.HmacSha256;
+import com.tencent.iot.explorer.device.java.utils.Base64;
+import com.tencent.iot.explorer.device.java.utils.HmacSha256;
 
 import java.util.HashMap;
 
-import static mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.explorer.device.java.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
 
 public class TXMqttConnection implements MqttCallbackExtended {
 

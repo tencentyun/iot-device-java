@@ -1,9 +1,9 @@
-package gateway;
+package com.tencent.iot.explorer.device.java.gateway;
 
-import common.Status;
-import data_template.TXDataTemplate;
-import data_template.TXDataTemplateDownStreamCallBack;
-import server.samples.gateway.ProductLight;
+import com.tencent.iot.explorer.device.java.common.Status;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplate;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.server.samples.gateway.ProductLight;
 
 public class TXGatewaySubdev extends TXDataTemplate {
     public static final String TAG = "TXGatewaySubdev";
