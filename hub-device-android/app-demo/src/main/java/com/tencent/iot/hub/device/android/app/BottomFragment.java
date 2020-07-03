@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

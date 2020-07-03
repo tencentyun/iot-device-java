@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import com.qcloud.iot.common.Status;
 import com.qcloud.iot.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot.util.TXLog;
 import com.qcloud.iot.R;
-import com.qcloud.iot.samples.scenarized.Airconditioner;
-import com.qcloud.iot.samples.scenarized.Door;
+import com.tencent.iot.explorer.device.android.app.scenarized.Airconditioner;
+import com.tencent.iot.explorer.device.android.app.scenarized.Door;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

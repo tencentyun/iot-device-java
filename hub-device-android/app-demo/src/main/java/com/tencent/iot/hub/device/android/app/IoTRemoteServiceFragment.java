@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.content.ComponentName;
 import android.content.ServiceConnection;
@@ -18,8 +18,8 @@ import com.qcloud.iot.common.Status;
 import com.qcloud.iot.mqtt.TXMqttActionCallBack;
 import com.qcloud.iot.mqtt.TXOTACallBack;
 import com.qcloud.iot.mqtt.TXOTAConstansts;
-import com.qcloud.iot.samples.service.RemoteRequest;
-import com.qcloud.iot.samples.shadow.ShadowRequest;
+import com.tencent.iot.explorer.device.android.app.service.RemoteRequest;
+import com.tencent.iot.explorer.device.android.app.shadow.ShadowRequest;
 import com.qcloud.iot.service.TXMqttClient;
 import com.qcloud.iot.service.TXMqttClientOptions;
 import com.qcloud.iot.service.TXMqttConnectOptions;

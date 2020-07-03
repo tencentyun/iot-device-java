@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,14 +19,13 @@ import android.widget.Toast;
 
 import com.qcloud.iot.R;
 import com.qcloud.iot.common.Status;
-import com.qcloud.iot.device.CA;
 import com.qcloud.iot.log.TXMqttLogCallBack;
 import com.qcloud.iot.log.TXMqttLogConstants;
 import com.qcloud.iot.dynreg.TXMqttDynreg;
 import com.qcloud.iot.dynreg.TXMqttDynregCallback;
 import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.samples.mqtt.MQTTRequest;
-import com.qcloud.iot.samples.mqtt.MQTTSample;
+import com.tencent.iot.explorer.device.android.app.mqtt.MQTTRequest;
+import com.tencent.iot.explorer.device.android.app.mqtt.MQTTSample;
 import com.qcloud.iot.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -36,12 +35,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Arrays;

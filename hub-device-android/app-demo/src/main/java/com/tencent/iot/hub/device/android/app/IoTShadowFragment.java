@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.qcloud.iot.R;
 import com.qcloud.iot.common.Status;
-import com.qcloud.iot.samples.mqtt.MQTTRequest;
-import com.qcloud.iot.samples.shadow.ShadowSample;
+import com.tencent.iot.explorer.device.android.app.mqtt.MQTTRequest;
+import com.tencent.iot.explorer.device.android.app.shadow.ShadowSample;
 import com.qcloud.iot.shadow.DeviceProperty;
 import com.qcloud.iot.shadow.TXShadowActionCallBack;
 import com.qcloud.iot.util.TXLog;

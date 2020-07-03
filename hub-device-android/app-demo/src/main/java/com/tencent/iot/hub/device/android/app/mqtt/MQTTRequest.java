@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.mqtt;
+package com.tencent.iot.explorer.device.android.app.mqtt;
 
 
 public class MQTTRequest {

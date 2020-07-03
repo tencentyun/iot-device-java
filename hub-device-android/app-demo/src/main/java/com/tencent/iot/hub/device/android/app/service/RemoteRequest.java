@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.service;
+package com.tencent.iot.explorer.device.android.app.service;
 
 
 public class RemoteRequest {

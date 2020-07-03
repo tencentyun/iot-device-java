@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.shadow;
+package com.tencent.iot.explorer.device.android.app.shadow;
 
 
 

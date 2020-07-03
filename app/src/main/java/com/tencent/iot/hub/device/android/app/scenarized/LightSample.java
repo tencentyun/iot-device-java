@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.scenarized;
+package com.tencent.iot.explorer.device.android.app.scenarized;
 
 import android.content.Context;
 import android.os.Environment;

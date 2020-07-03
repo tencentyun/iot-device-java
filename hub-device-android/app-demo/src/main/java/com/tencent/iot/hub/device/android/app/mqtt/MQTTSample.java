@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.mqtt;
+package com.tencent.iot.explorer.device.android.app.mqtt;
 
 import android.content.Context;
 import android.os.Environment;
@@ -8,13 +8,11 @@ import com.qcloud.iot.gateway.TXGatewayConnection;
 
 import com.qcloud.iot.log.TXMqttLogCallBack;
 import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXMqttConnection;
 import com.qcloud.iot.mqtt.TXMqttConstants;
 import com.qcloud.iot.mqtt.TXOTACallBack;
 import com.qcloud.iot.mqtt.TXOTAConstansts;
 
 import com.qcloud.iot.util.AsymcSslUtils;
-import com.qcloud.iot.util.SymcSslUtils;
 
 import com.qcloud.iot.util.TXLog;
 
@@ -27,8 +25,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.net.ssl.SSLContext;
 
 public class MQTTSample {
 
