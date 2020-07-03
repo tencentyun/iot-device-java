@@ -1,4 +1,4 @@
-package com.qcloud.iot_explorer.data_template;
+package com.tencent.iot.explorer.device.android.data_template;
 
 import org.json.JSONObject;
 

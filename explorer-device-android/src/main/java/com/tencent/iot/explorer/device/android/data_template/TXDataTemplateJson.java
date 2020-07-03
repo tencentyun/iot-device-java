@@ -1,11 +1,11 @@
-package com.qcloud.iot_explorer.data_template;
+package com.tencent.iot.explorer.device.android.data_template;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-import static com.qcloud.iot_explorer.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 class TXDataTemplateJson {
     public static final String TAG = "TX_TEMPLATE_JSON_" + MQTT_SDK_VER;

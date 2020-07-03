@@ -1,4 +1,4 @@
-package com.qcloud.iot_explorer.common;
+package com.tencent.iot.explorer.device.android.common;
 
 public enum Status {
     /**

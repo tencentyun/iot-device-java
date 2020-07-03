@@ -3,15 +3,15 @@ package com.qcloud.iot.samples.data_template;
 import android.content.Context;
 import android.os.Environment;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateClient;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
-import com.qcloud.iot_explorer.mqtt.TXOTACallBack;
-import com.qcloud.iot_explorer.mqtt.TXOTAConstansts;
-import com.qcloud.iot_explorer.utils.AsymcSslUtils;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateClient;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.android.mqtt.TXOTACallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXOTAConstansts;
+import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -20,9 +20,9 @@ import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
 
 public class DataTemplateSample {
     private static final String TAG = "TXDataTemplate";

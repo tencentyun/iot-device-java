@@ -1,10 +1,10 @@
-package com.qcloud.iot_explorer.utils;
+package com.tencent.iot.explorer.device.android.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Base64;
 
-import com.qcloud.iot_explorer.device.CA;
+import com.tencent.iot.explorer.device.android.device.CA;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

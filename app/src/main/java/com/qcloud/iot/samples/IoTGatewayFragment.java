@@ -2,7 +2,6 @@ package com.qcloud.iot.samples;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +12,12 @@ import com.qcloud.iot.R;
 import com.qcloud.iot.samples.gateway.GatewaySample;
 import com.qcloud.iot.samples.gateway.ProductAirconditioner;
 import com.qcloud.iot.samples.gateway.ProductLight;
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.gateway.TXGatewaySubdev;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 public class IoTGatewayFragment extends Fragment {
     private static final String TAG = "IoTGatewayFragment";

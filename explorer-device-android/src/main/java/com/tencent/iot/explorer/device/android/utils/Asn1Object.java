@@ -1,4 +1,4 @@
-package com.qcloud.iot_explorer.utils;
+package com.tencent.iot.explorer.device.android.utils;
 
 import java.io.IOException;
 import java.math.BigInteger;

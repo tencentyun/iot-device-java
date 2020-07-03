@@ -1,10 +1,10 @@
-package com.qcloud.iot_explorer.gateway;
+package com.tencent.iot.explorer.device.android.gateway;
 
 import android.content.Context;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplate;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
 
 public class TXGatewaySubdev extends TXDataTemplate {
     public static final String TAG = "TXGatewaySubdev";
