@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app.shadow;
+package com.tencent.iot.hub.device.android.app.shadow;
 
 
 

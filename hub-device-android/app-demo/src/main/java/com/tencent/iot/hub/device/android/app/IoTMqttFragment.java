@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app;
+package com.tencent.iot.hub.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,8 +24,8 @@ import com.qcloud.iot.log.TXMqttLogConstants;
 import com.qcloud.iot.dynreg.TXMqttDynreg;
 import com.qcloud.iot.dynreg.TXMqttDynregCallback;
 import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.android.app.mqtt.MQTTRequest;
-import com.tencent.iot.explorer.device.android.app.mqtt.MQTTSample;
+import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
+import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.qcloud.iot.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;

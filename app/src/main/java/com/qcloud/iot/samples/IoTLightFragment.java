@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.qcloud.iot.R;
-import com.qcloud.iot.samples.scenarized.LightSample;
+import com.tencent.iot.hub.device.android.app.scenarized.LightSample;
 import com.qcloud.iot_explorer.utils.TXLog;
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app.service;
+package com.tencent.iot.hub.device.android.app.service;
 
 
 public class RemoteRequest {

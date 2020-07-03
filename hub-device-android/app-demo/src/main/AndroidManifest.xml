@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".samples.IoTMainActivity">
+        <activity android:name="com.tencent.iot.hub.device.android.app.IoTMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

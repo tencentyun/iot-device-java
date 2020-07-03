@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app.mqtt;
+package com.tencent.iot.hub.device.android.app.mqtt;
 
 import android.content.Context;
 import android.os.Environment;

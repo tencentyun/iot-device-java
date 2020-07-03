@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app.shadow;
+package com.tencent.iot.hub.device.android.app.shadow;
 
 import android.content.Context;
 import android.os.Handler;
@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.qcloud.iot.common.Status;
 import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.tencent.iot.explorer.device.android.app.IoTShadowFragment;
-import com.tencent.iot.explorer.device.android.app.mqtt.MQTTRequest;
+import com.tencent.iot.hub.device.android.app.IoTShadowFragment;
+import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.qcloud.iot.shadow.DeviceProperty;
 import com.qcloud.iot.shadow.TXShadowActionCallBack;
 import com.qcloud.iot.shadow.TXShadowConnection;

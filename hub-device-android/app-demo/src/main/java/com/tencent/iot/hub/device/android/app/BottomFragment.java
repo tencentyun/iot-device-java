@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.android.app;
+package com.tencent.iot.hub.device.android.app;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
