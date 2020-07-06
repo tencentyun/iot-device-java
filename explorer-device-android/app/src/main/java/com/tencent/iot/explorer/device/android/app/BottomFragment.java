@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qcloud.iot.R;
+import com.tencent.iot.explorer.device.android.app.R;
 
 @SuppressLint("NewApi")
 public class BottomFragment extends Fragment {
