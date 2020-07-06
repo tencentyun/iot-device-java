@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.qcloud.iot">
+    package="com.tencent.iot.hub.device.android.app">
 
     <application
         android:allowBackup="true"
