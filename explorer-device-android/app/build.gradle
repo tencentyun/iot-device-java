@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.3"
     defaultConfig {
-        applicationId "com.qcloud.iot"
+        applicationId "com.tencent.iot.explorer.device.android.app"
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

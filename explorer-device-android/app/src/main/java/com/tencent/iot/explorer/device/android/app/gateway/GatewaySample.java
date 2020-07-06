@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.gateway;
+package com.tencent.iot.explorer.device.android.app.gateway;
 
 import android.content.Context;
 import android.util.Log;
