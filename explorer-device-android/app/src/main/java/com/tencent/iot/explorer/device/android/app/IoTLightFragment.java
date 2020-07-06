@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.R;
-import com.qcloud.iot.samples.scenarized.LightSample;
+import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.app.scenarized.LightSample;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import java.util.Map;
 

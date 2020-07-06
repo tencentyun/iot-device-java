@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,8 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.qcloud.iot.R;
-import com.qcloud.iot.samples.data_template.DataTemplateSample;
+import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.app.data_template.DataTemplateSample;
 import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;

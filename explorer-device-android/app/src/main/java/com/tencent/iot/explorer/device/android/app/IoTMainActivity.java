@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.R;
+import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 

@@ -1,4 +1,4 @@
-package com.qcloud.iot.samples.data_template;
+package com.tencent.iot.explorer.device.android.app.data_template;
 
 import android.content.Context;
 import android.os.Environment;

@@ -1,17 +1,17 @@
-package com.qcloud.iot.samples;
+package com.tencent.iot.explorer.device.android.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.view.LayoutInflater;go
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.R;
-import com.qcloud.iot.samples.gateway.GatewaySample;
-import com.qcloud.iot.samples.gateway.ProductAirconditioner;
-import com.qcloud.iot.samples.gateway.ProductLight;
+import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.app.gateway.GatewaySample;
+import com.tencent.iot.explorer.device.android.app.gateway.ProductAirconditioner;
+import com.tencent.iot.explorer.device.android.app.gateway.ProductLight;
 import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
