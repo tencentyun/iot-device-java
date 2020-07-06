@@ -1,4 +1,4 @@
-package com.qcloud.iot.util;
+package com.tencent.iot.hub.device.android.core.util;
 
 import java.util.concurrent.LinkedBlockingDeque;
 

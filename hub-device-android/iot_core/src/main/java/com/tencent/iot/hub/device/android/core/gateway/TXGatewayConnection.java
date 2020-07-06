@@ -1,24 +1,23 @@
-package com.qcloud.iot.gateway;
+package com.tencent.iot.hub.device.android.core.gateway;
 
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.log.TXMqttLog;
-import com.qcloud.iot.log.TXMqttLogCallBack;
-import com.qcloud.iot.mqtt.TXAlarmPingSender;
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXMqttConnection;
-import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.qcloud.iot.util.HmacSha256;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLog;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXAlarmPingSender;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.util.HmacSha256;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -27,10 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import static com.qcloud.iot.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static com.qcloud.iot.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 /**
  * Created by willssong on 2018/12/25.

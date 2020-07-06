@@ -1,10 +1,10 @@
-package com.qcloud.iot.util;
+package com.tencent.iot.hub.device.android.core.util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Base64;
 
-import com.qcloud.iot.device.CA;
+import com.tencent.iot.hub.device.android.core.device.CA;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -30,7 +30,6 @@ import java.security.cert.X509Certificate;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateCrtKeySpec;
-import java.util.Arrays;
 import java.util.Random;
 
 import javax.net.ssl.KeyManagerFactory;

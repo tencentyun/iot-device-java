@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.qcloud.iot.R;
 import com.tencent.iot.hub.device.android.app.scenarized.Airconditioner;
 import com.tencent.iot.hub.device.android.app.scenarized.Door;

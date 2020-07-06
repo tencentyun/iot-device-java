@@ -4,17 +4,17 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.qcloud.iot.gateway.TXGatewayConnection;
+import com.tencent.iot.hub.device.android.core.gateway.TXGatewayConnection;
 
-import com.qcloud.iot.log.TXMqttLogCallBack;
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.qcloud.iot.mqtt.TXOTACallBack;
-import com.qcloud.iot.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
 
-import com.qcloud.iot.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

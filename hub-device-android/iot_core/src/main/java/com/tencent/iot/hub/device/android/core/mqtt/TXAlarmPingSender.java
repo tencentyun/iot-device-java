@@ -1,4 +1,4 @@
-package com.qcloud.iot.mqtt;
+package com.tencent.iot.hub.device.android.core.mqtt;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -10,7 +10,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.PowerManager;
 
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;

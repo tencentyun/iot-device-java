@@ -1,4 +1,4 @@
-package com.qcloud.iot.shadow;
+package com.tencent.iot.hub.device.android.core.shadow;
 
 public interface TXShadowConstants {
     String TYPE = "type";

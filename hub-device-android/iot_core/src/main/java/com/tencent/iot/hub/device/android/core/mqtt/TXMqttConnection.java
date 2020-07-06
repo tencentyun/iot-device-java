@@ -1,15 +1,15 @@
-package com.qcloud.iot.mqtt;
+package com.tencent.iot.hub.device.android.core.mqtt;
 
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.log.TXMqttLog;
-import com.qcloud.iot.log.TXMqttLogCallBack;
-import com.qcloud.iot.log.TXMqttLogConstants;
-import com.qcloud.iot.util.HmacSha256;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLog;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
+import com.tencent.iot.hub.device.android.core.util.HmacSha256;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -28,8 +28,8 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import static com.qcloud.iot.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static com.qcloud.iot.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 
 public class TXMqttConnection implements MqttCallbackExtended {
