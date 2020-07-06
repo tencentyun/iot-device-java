@@ -3,13 +3,13 @@ package com.qcloud.iot.samples.gateway;
 import android.content.Context;
 import android.util.Log;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.gateway.TXGatewayClient;
-import com.qcloud.iot_explorer.gateway.TXGatewaySubdev;
-import com.qcloud.iot_explorer.gateway.TXGatewaySubdevActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.gateway.TXGatewayClient;
+import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
+import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdevActionCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.qcloud.iot_explorer.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
 
 public class ProductLight {
     private static final String TAG = "TXProductLight";

@@ -1,4 +1,4 @@
-package com.qcloud.iot_explorer.utils;
+package com.tencent.iot.explorer.device.android.utils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

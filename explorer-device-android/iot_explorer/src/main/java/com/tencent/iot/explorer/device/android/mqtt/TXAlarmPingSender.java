@@ -1,6 +1,6 @@
-package com.qcloud.iot_explorer.mqtt;
+package com.tencent.iot.explorer.device.android.mqtt;
 
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;

@@ -1,18 +1,18 @@
-package com.qcloud.iot_explorer.gateway;
+package com.tencent.iot.explorer.device.android.gateway;
 
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateClient;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateConstants;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.mqtt.TXAlarmPingSender;
-import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttConstants;
-import com.qcloud.iot_explorer.utils.HmacSha256;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateClient;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXAlarmPingSender;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants;
+import com.tencent.iot.explorer.device.android.utils.HmacSha256;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -27,7 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class TXGatewayClient extends TXDataTemplateClient {
     public static final String TAG = "TXGATEWAYCLIENT";

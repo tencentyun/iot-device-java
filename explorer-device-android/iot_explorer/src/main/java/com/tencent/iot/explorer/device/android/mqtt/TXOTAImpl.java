@@ -1,10 +1,10 @@
-package com.qcloud.iot_explorer.mqtt;
+package com.tencent.iot.explorer.device.android.mqtt;
 
 import android.os.SystemClock;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.device.CA;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.device.CA;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

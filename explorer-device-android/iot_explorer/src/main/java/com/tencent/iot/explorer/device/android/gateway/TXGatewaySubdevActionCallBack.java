@@ -1,6 +1,6 @@
-package com.qcloud.iot_explorer.gateway;
+package com.tencent.iot.explorer.device.android.gateway;
 
-import com.qcloud.iot_explorer.common.Status;
+import com.tencent.iot.explorer.device.android.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 

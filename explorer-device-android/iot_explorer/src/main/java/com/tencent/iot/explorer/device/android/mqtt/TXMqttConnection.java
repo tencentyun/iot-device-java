@@ -1,12 +1,12 @@
-package com.qcloud.iot_explorer.mqtt;
+package com.tencent.iot.explorer.device.android.mqtt;
 
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.utils.HmacSha256;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.utils.HmacSha256;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -24,8 +24,8 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import static com.qcloud.iot_explorer.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static com.qcloud.iot_explorer.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 
 public class TXMqttConnection implements MqttCallbackExtended {

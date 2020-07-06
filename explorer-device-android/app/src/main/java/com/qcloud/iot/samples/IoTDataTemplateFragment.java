@@ -17,11 +17,11 @@ import android.widget.Toast;
 
 import com.qcloud.iot.R;
 import com.qcloud.iot.samples.data_template.DataTemplateSample;
-import com.qcloud.iot_explorer.common.Status;
-import com.qcloud.iot_explorer.data_template.TXDataTemplateDownStreamCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot_explorer.mqtt.TXMqttRequest;
-import com.qcloud.iot_explorer.utils.TXLog;
+import com.tencent.iot.explorer.device.android.common.Status;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

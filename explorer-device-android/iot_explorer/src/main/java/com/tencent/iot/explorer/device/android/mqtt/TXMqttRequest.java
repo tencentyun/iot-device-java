@@ -1,4 +1,4 @@
-package com.qcloud.iot_explorer.mqtt;
+package com.tencent.iot.explorer.device.android.mqtt;
 
 public class TXMqttRequest {
     private static final String TAG = TXMqttRequest.class.getSimpleName();
