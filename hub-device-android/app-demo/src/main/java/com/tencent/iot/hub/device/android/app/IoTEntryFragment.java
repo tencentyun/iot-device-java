@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
-import com.qcloud.iot.R;
+import com.tencent.iot.hub.device.android.app.R;
 import com.tencent.iot.hub.device.android.app.scenarized.Airconditioner;
 import com.tencent.iot.hub.device.android.app.scenarized.Door;
 

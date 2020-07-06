@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.R;
+import com.tencent.iot.hub.device.android.app.R;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 
