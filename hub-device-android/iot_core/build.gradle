@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
     compileSdkVersion 29
@@ -30,6 +31,32 @@ android {
             }
         }
     }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+def libVersion = '1.0.0-SNAPSHOT'
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId 'com.tencent.iot.hub.device.android.core'
+            artifactId 'hub-device-android-core'
+            version libVersion
+            artifact file('build/outputs/aar/iot_core-debug.aar')
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = libVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = System.getenv("SONATYPE_USERNAME")
+                password = System.getenv("SONATYPE_PASSWORD")
+            }
+        }
+    }
 }
 
 dependencies {
@@ -47,4 +74,4 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
 }
 
-apply from: 'bintray.gradle'
+//apply from: 'bintray.gradle'

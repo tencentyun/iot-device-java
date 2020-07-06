@@ -1,2 +1,2 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.qcloud.iot_explorer" />
+    package="com.tencent.iot.explorer.device.android" />

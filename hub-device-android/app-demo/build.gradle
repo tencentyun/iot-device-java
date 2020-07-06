@@ -32,6 +32,21 @@ android {
         exclude 'org/bouncycastle/x509/CertPathReviewerMessages_de.properties'
         exclude 'org/bouncycastle/x509/CertPathReviewerMessages.properties'
     }
+    lintOptions {
+        abortOnError false
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def date = new Date().format("yyyyMMddHHmmss" , TimeZone.getTimeZone("GMT+08"))
+            if(variant.buildType.name == 'debug') {
+                outputFileName = "hub-device-android-debug-${date}.apk"
+            }
+            if(variant.buildType.name == 'release') {
+                outputFileName = "hub-device-android-release-${date}.apk"
+            }
+        }
+    }
 }
 
 dependencies {
