@@ -1,5 +1,4 @@
-include ':app'
-include ':iot_explorer'
 include ':explorer-device-java'
 include ':hub-device-java'
 include 'hub-device-android:iot_core', 'hub-device-android:iot_service', 'hub-device-android:app-demo'
+include 'explorer-device-android:app', 'explorer-device-android:iot_explorer'
