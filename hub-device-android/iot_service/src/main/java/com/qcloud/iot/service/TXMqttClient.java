@@ -7,11 +7,11 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXOTACallBack;
-import com.qcloud.iot.mqtt.TXOTAConstansts;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import java.util.HashMap;
 import java.util.Map;

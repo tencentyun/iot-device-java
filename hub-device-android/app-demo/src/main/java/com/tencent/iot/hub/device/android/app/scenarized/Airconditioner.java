@@ -2,11 +2,11 @@ package com.tencent.iot.hub.device.android.app.scenarized;
 
 import android.content.Context;
 
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXMqttConnection;
-import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.qcloud.iot.util.AsymcSslUtils;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

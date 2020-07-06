@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.qcloud.iot.R;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 
 public class IoTMainActivity extends AppCompatActivity implements View.OnClickListener {

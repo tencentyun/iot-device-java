@@ -1,4 +1,4 @@
-package com.qcloud.iot.device;
+package com.tencent.iot.hub.device.android.core.device;
 
 
 public class CA {

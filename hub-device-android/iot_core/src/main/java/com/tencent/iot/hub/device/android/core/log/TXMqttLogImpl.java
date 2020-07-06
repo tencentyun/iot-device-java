@@ -1,21 +1,13 @@
-package com.qcloud.iot.log;
+package com.tencent.iot.hub.device.android.core.log;
 
-import com.qcloud.iot.mqtt.TXMqttConnection;
-import com.qcloud.iot.util.HmacSha1;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.util.HmacSha1;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

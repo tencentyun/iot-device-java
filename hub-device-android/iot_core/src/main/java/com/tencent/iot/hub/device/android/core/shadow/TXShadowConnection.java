@@ -1,17 +1,15 @@
-package com.qcloud.iot.shadow;
+package com.tencent.iot.hub.device.android.core.shadow;
 
 import android.content.Context;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.mqtt.TXMqttActionCallBack;
-import com.qcloud.iot.mqtt.TXMqttConnection;
-import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
@@ -25,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 

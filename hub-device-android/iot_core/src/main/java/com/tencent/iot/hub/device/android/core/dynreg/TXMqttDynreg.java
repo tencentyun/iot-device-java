@@ -1,10 +1,10 @@
-package com.qcloud.iot.dynreg;
+package com.tencent.iot.hub.device.android.core.dynreg;
 
 import android.os.NetworkOnMainThreadException;
 import android.util.Base64;
 import android.util.Log;
 
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,14 +13,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;

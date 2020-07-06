@@ -4,16 +4,16 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.app.IoTShadowFragment;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
-import com.qcloud.iot.shadow.DeviceProperty;
-import com.qcloud.iot.shadow.TXShadowActionCallBack;
-import com.qcloud.iot.shadow.TXShadowConnection;
-import com.qcloud.iot.shadow.TXShadowConstants;
-import com.qcloud.iot.util.AsymcSslUtils;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
+import com.tencent.iot.hub.device.android.core.shadow.TXShadowConstants;
+import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

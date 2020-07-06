@@ -1,11 +1,11 @@
-package com.qcloud.iot.log;
+package com.tencent.iot.hub.device.android.core.log;
 
 import android.text.TextUtils;
 
-import com.qcloud.iot.common.Status;
-import com.qcloud.iot.mqtt.TXMqttConnection;
-import com.qcloud.iot.mqtt.TXMqttConstants;
-import com.qcloud.iot.util.TXLog;
+import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
