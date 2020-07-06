@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qcloud.iot.R;
+import com.tencent.iot.hub.device.android.app.R;
 
 @SuppressLint("NewApi")
 public class BottomFragment extends Fragment {

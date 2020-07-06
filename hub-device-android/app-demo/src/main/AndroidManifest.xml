@@ -18,7 +18,7 @@
         </activity>
 
         <service
-            android:name="com.qcloud.iot.service.TXMqttService"
+            android:name="com.tencent.iot.hub.device.android.service.TXMqttService"
             android:enabled="true"
             android:exported="true"
             android:process=":remote" />

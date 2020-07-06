@@ -1,9 +1,9 @@
 // ITXShadowListener.aidl
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.android.service;
 
-import com.qcloud.iot.service.TXMqttMessage;
-import com.qcloud.iot.service.TXMqttToken;
-import com.qcloud.iot.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.android.service.TXMqttMessage;
+import com.tencent.iot.hub.device.android.service.TXMqttToken;
+import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
 
 interface ITXShadowActionListener {
 

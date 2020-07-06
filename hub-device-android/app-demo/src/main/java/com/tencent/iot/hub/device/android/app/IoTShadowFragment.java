@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.qcloud.iot.R;
+import com.tencent.iot.hub.device.android.app.R;
 import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.shadow.ShadowSample;

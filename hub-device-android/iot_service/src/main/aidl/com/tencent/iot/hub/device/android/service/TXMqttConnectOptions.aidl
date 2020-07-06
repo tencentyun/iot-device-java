@@ -1,4 +1,4 @@
 // TXMqttConnectOptions.aidl
-package com.qcloud.iot.service;
+package com.tencent.iot.hub.device.android.service;
 
 parcelable TXMqttConnectOptions;
