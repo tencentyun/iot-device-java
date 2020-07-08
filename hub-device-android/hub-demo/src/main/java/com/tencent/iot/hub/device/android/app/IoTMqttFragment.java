@@ -63,6 +63,8 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mPublishBtn;
 
+    private Button mSubScribeBroadcastBtn;
+
     private Button mCheckFirmwareBtn;
 
     private Button mDynRegBtn;
@@ -85,7 +87,6 @@ public class IoTMqttFragment extends Fragment {
     private String mSubProductID = "SUBDEV_PRODUCT-ID"; // If you wont test gateway, let this to be null
     private String mSubDevName = "SUBDEV_DEV-NAME";
     private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";    // productID/DeviceName/TopicName
-
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
     private String mProductKey = "PRODUCT_SECRET";        // Used for dynamic register
@@ -113,200 +114,174 @@ public class IoTMqttFragment extends Fragment {
     private AtomicInteger temperature = new AtomicInteger(0);
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_iot_mqtt, container, false);
-
         mParent = (IoTMainActivity) this.getActivity();
-
-        mConnectBtn = view.findViewById(R.id.connect);
-        mCloseConnectBtn = view.findViewById(R.id.close_connect);
-        mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
-        mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
-        mPublishBtn = view.findViewById(R.id.publish_topic);
-        mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
-        mDynRegBtn = view.findViewById(R.id.dynreg);
-
-        mLogInfoText = view.findViewById(R.id.log_info);
-
-        mSpinner = view.findViewById(R.id.spinner4);
-        mItemText = view.findViewById(R.id.editText2);
-
-        mSubdevOnlineBtn = view.findViewById(R.id.subdev_online);
-        mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
-
-        mDeviceLogBtn = view.findViewById(R.id.mlog);
-        mUploadLogBtn = view.findViewById(R.id.uploadlog);
-
+        initView(view);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                               @Override
-                                               public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                                   String[] items = getResources().getStringArray(R.array.setup_items);
-                                                   String paraStr = mItemText.getText().toString();
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               String[] items = getResources().getStringArray(R.array.setup_items);
+               String paraStr = mItemText.getText().toString();
+               if (position == 0) {
+                   return;
+               }
+               if (paraStr.equals("")) {
+                   return;
+               }
 
-                                                   if (position == 0) {
-                                                       return;
-                                                   }
-
-                                                   if (paraStr.equals("")) {
-                                                       return;
-                                                   }
-
-                                                   Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
-                                                   Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
-                                                   toast.show();
-                                                   SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
-                                                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                   switch(position) {
-                                                       case 1:
-                                                           mBrokerURL = paraStr;
-                                                           editor.putString(BROKER_URL, mBrokerURL);
-                                                           break;
-                                                       case 2:
-                                                           mProductID = paraStr;
-                                                           editor.putString(PRODUCT_ID, mProductID);
-                                                       case 3:
-                                                           mDevName = paraStr;
-                                                           editor.putString(DEVICE_NAME, mDevName);
-                                                           break;
-                                                       case 4:
-                                                           mDevPSK = paraStr;
-                                                           editor.putString(DEVICE_PSK, mDevPSK);
-                                                           break;
-                                                       case 5:
-                                                           mSubProductID = paraStr;
-                                                           editor.putString(SUB_PRODUCID, mSubProductID);
-                                                           break;
-                                                       case 6:
-                                                           mSubDevName = paraStr;
-                                                           editor.putString(SUB_DEVNAME, mSubDevName);
-                                                           break;
-                                                       case 7:
-                                                           mTestTopic = paraStr;
-                                                           editor.putString(TEST_TOPIC, mTestTopic);
-                                                           break;
-                                                       case 8:
-                                                           mProductKey = paraStr;
-                                                           editor.putString(PRODUCT_KEY, mProductKey);
-                                                           break;
-                                                       default:
-                                                           break;
-                                                   }
-                                                   editor.commit();
-                                               }
-
-                                               @Override
-                                               public void onNothingSelected(AdapterView<?> parent) {
-
-                                               }
-                                           }
-
-        );
-
-         mConnectBtn.setOnClickListener(new View.OnClickListener() {
+               Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
+               Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
+               toast.show();
+               SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
+               SharedPreferences.Editor editor = sharedPreferences.edit();
+               switch(position) {
+                   case 1:
+                       mBrokerURL = paraStr;
+                       editor.putString(BROKER_URL, mBrokerURL);
+                       break;
+                   case 2:
+                       mProductID = paraStr;
+                       editor.putString(PRODUCT_ID, mProductID);
+                   case 3:
+                       mDevName = paraStr;
+                       editor.putString(DEVICE_NAME, mDevName);
+                       break;
+                   case 4:
+                       mDevPSK = paraStr;
+                       editor.putString(DEVICE_PSK, mDevPSK);
+                       break;
+                   case 5:
+                       mSubProductID = paraStr;
+                       editor.putString(SUB_PRODUCID, mSubProductID);
+                       break;
+                   case 6:
+                       mSubDevName = paraStr;
+                       editor.putString(SUB_DEVNAME, mSubDevName);
+                       break;
+                   case 7:
+                       mTestTopic = paraStr;
+                       editor.putString(TEST_TOPIC, mTestTopic);
+                       break;
+                   case 8:
+                       mProductKey = paraStr;
+                       editor.putString(PRODUCT_KEY, mProductKey);
+                       break;
+                   default:
+                       break;
+               }
+               editor.commit();
+           }
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+           }
+        });
+        mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
-                mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
-                mProductID = settings.getString(PRODUCT_ID, mProductID);
-                mDevName = settings.getString(DEVICE_NAME, mDevName);
-                mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
-                mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
-                mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
-                mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
+            SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
+            mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
+            mProductID = settings.getString(PRODUCT_ID, mProductID);
+            mDevName = settings.getString(DEVICE_NAME, mDevName);
+            mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+            mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
+            mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
+            mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
 
-                mDevCert = settings.getString(DEVICE_CERT, mDevCert);
-                mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
+            mDevCert = settings.getString(DEVICE_CERT, mDevCert);
+            mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
 
-                //mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID,
-                  //                  mDevName, mDevPSK, mSubProductID, mSubDevName, mTestTopic);
-                mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
-                        mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
-                mMQTTSample.connect();
+            //mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID,
+              //                  mDevName, mDevPSK, mSubProductID, mSubDevName, mTestTopic);
+            mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
+                    mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
+            mMQTTSample.connect();
             }
         });
 
         mCloseConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.disconnect();
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.disconnect();
             }
         });
 
         mDynRegBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "Test Dynamic");
-                TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductKey, mDevName, new SelfMqttDynregCallback());
-                if (dynreg.doDynamicRegister()) {
-                    Log.d(TAG, "Dynamic Register OK!");
-                } else {
-                    Log.e(TAG, "Dynamic Register failed!");
-                }
+            Log.d(TAG, "Test Dynamic");
+            TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductKey, mDevName, new SelfMqttDynregCallback());
+            if (dynreg.doDynamicRegister()) {
+                Log.d(TAG, "Dynamic Register OK!");
+            } else {
+                Log.e(TAG, "Dynamic Register failed!");
+            }
             }
         });
-
         mSubScribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 在腾讯云控制台增加自定义主题（权限为订阅和发布）：custom_data，用于接收IoT服务端转发的自定义数据。
-                // 本例中，发布的自定义数据，IoT服务端会在发给当前设备。
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.subscribeTopic();
+            // 在腾讯云控制台增加自定义主题（权限为订阅和发布）：custom_data，用于接收IoT服务端转发的自定义数据。
+            // 本例中，发布的自定义数据，IoT服务端会在发给当前设备。
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.subscribeBroadCastTopic();
             }
         });
-
         mSubdevOnlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.setSubdevOnline();
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.setSubdevOnline();
             }
         });
-
         mSubdevOfflineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.setSubDevOffline();
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.setSubDevOffline();
             }
         });
-
         mUnSubscribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.unSubscribeTopic();
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.unSubscribeTopic();
             }
         });
-
         mPublishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                // 要发布的数据
-                Map<String, String> data = new HashMap<String, String>();
-                // 车辆类型
-                data.put("car_type", "suv");
-                // 车辆油耗
-                data.put("oil_consumption", "6.6");
-                // 车辆最高速度
-                data.put("maximum_speed", "205");
-                // 温度信息
-                data.put("temperature", String.valueOf(temperature.getAndIncrement()));
+            if (mMQTTSample == null)
+                return;
+            // 要发布的数据
+            Map<String, String> data = new HashMap<String, String>();
+            // 车辆类型
+            data.put("car_type", "suv");
+            // 车辆油耗
+            data.put("oil_consumption", "6.6");
+            // 车辆最高速度
+            data.put("maximum_speed", "205");
+            // 温度信息
+            data.put("temperature", String.valueOf(temperature.getAndIncrement()));
 
-                // 需先在腾讯云控制台，增加自定义主题: data，用于更新自定义数据
-                mMQTTSample.publishTopic("data", data);
+            // 需先在腾讯云控制台，增加自定义主题: data，用于更新自定义数据
+            mMQTTSample.publishTopic("data", data);
             }
         });
-
+        mSubScribeBroadcastBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.subscribeBroadCastTopic();
+            }
+        });
         mCheckFirmwareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,29 +290,44 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.checkFirmware();
             }
         });
-
         mDeviceLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
-                mMQTTSample.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
-                mMQTTSample.mLog(TXMqttLogConstants.LEVEL_INFO,TAG,"Info level log for test!!!");
-                mMQTTSample.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
+            mMQTTSample.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
+            mMQTTSample.mLog(TXMqttLogConstants.LEVEL_INFO,TAG,"Info level log for test!!!");
+            mMQTTSample.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
             }
         });
-
         mUploadLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mMQTTSample == null)
-                    return;
-                mMQTTSample.uploadLog();
+            if (mMQTTSample == null)
+                return;
+            mMQTTSample.uploadLog();
             }
         });
-
         return view;
+    }
+
+    public void initView(View view) {
+        mConnectBtn = view.findViewById(R.id.connect);
+        mCloseConnectBtn = view.findViewById(R.id.close_connect);
+        mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
+        mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
+        mPublishBtn = view.findViewById(R.id.publish_topic);
+        mSubScribeBroadcastBtn = view.findViewById(R.id.subscribe_broadcast_topic);
+        mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
+        mDynRegBtn = view.findViewById(R.id.dynreg);
+        mLogInfoText = view.findViewById(R.id.log_info);
+        mSpinner = view.findViewById(R.id.spinner4);
+        mItemText = view.findViewById(R.id.editText2);
+        mSubdevOnlineBtn = view.findViewById(R.id.subdev_online);
+        mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
+        mDeviceLogBtn = view.findViewById(R.id.mlog);
+        mUploadLogBtn = view.findViewById(R.id.uploadlog);
     }
 
     public void closeConnection() {
