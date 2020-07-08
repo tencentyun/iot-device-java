@@ -63,6 +63,8 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mPublishBtn;
 
+    private Button mSubScribeBroadcastBtn;
+
     private Button mCheckFirmwareBtn;
 
     private Button mDynRegBtn;
@@ -85,7 +87,6 @@ public class IoTMqttFragment extends Fragment {
     private String mSubProductID = "SUBDEV_PRODUCT-ID"; // If you wont test gateway, let this to be null
     private String mSubDevName = "SUBDEV_DEV-NAME";
     private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";    // productID/DeviceName/TopicName
-
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
     private String mProductKey = "PRODUCT_SECRET";        // Used for dynamic register
@@ -113,97 +114,69 @@ public class IoTMqttFragment extends Fragment {
     private AtomicInteger temperature = new AtomicInteger(0);
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_iot_mqtt, container, false);
-
         mParent = (IoTMainActivity) this.getActivity();
-
-        mConnectBtn = view.findViewById(R.id.connect);
-        mCloseConnectBtn = view.findViewById(R.id.close_connect);
-        mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
-        mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
-        mPublishBtn = view.findViewById(R.id.publish_topic);
-        mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
-        mDynRegBtn = view.findViewById(R.id.dynreg);
-
-        mLogInfoText = view.findViewById(R.id.log_info);
-
-        mSpinner = view.findViewById(R.id.spinner4);
-        mItemText = view.findViewById(R.id.editText2);
-
-        mSubdevOnlineBtn = view.findViewById(R.id.subdev_online);
-        mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
-
-        mDeviceLogBtn = view.findViewById(R.id.mlog);
-        mUploadLogBtn = view.findViewById(R.id.uploadlog);
-
+        initView(view);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                               @Override
-                                               public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                                   String[] items = getResources().getStringArray(R.array.setup_items);
-                                                   String paraStr = mItemText.getText().toString();
+           @Override
+           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+               String[] items = getResources().getStringArray(R.array.setup_items);
+               String paraStr = mItemText.getText().toString();
+               if (position == 0) {
+                   return;
+               }
+               if (paraStr.equals("")) {
+                   return;
+               }
 
-                                                   if (position == 0) {
-                                                       return;
-                                                   }
-
-                                                   if (paraStr.equals("")) {
-                                                       return;
-                                                   }
-
-                                                   Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
-                                                   Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
-                                                   toast.show();
-                                                   SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
-                                                   SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                   switch(position) {
-                                                       case 1:
-                                                           mBrokerURL = paraStr;
-                                                           editor.putString(BROKER_URL, mBrokerURL);
-                                                           break;
-                                                       case 2:
-                                                           mProductID = paraStr;
-                                                           editor.putString(PRODUCT_ID, mProductID);
-                                                       case 3:
-                                                           mDevName = paraStr;
-                                                           editor.putString(DEVICE_NAME, mDevName);
-                                                           break;
-                                                       case 4:
-                                                           mDevPSK = paraStr;
-                                                           editor.putString(DEVICE_PSK, mDevPSK);
-                                                           break;
-                                                       case 5:
-                                                           mSubProductID = paraStr;
-                                                           editor.putString(SUB_PRODUCID, mSubProductID);
-                                                           break;
-                                                       case 6:
-                                                           mSubDevName = paraStr;
-                                                           editor.putString(SUB_DEVNAME, mSubDevName);
-                                                           break;
-                                                       case 7:
-                                                           mTestTopic = paraStr;
-                                                           editor.putString(TEST_TOPIC, mTestTopic);
-                                                           break;
-                                                       case 8:
-                                                           mProductKey = paraStr;
-                                                           editor.putString(PRODUCT_KEY, mProductKey);
-                                                           break;
-                                                       default:
-                                                           break;
-                                                   }
-                                                   editor.commit();
-                                               }
-
-                                               @Override
-                                               public void onNothingSelected(AdapterView<?> parent) {
-
-                                               }
-                                           }
-
-        );
-
-         mConnectBtn.setOnClickListener(new View.OnClickListener() {
+               Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
+               Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
+               toast.show();
+               SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
+               SharedPreferences.Editor editor = sharedPreferences.edit();
+               switch(position) {
+                   case 1:
+                       mBrokerURL = paraStr;
+                       editor.putString(BROKER_URL, mBrokerURL);
+                       break;
+                   case 2:
+                       mProductID = paraStr;
+                       editor.putString(PRODUCT_ID, mProductID);
+                   case 3:
+                       mDevName = paraStr;
+                       editor.putString(DEVICE_NAME, mDevName);
+                       break;
+                   case 4:
+                       mDevPSK = paraStr;
+                       editor.putString(DEVICE_PSK, mDevPSK);
+                       break;
+                   case 5:
+                       mSubProductID = paraStr;
+                       editor.putString(SUB_PRODUCID, mSubProductID);
+                       break;
+                   case 6:
+                       mSubDevName = paraStr;
+                       editor.putString(SUB_DEVNAME, mSubDevName);
+                       break;
+                   case 7:
+                       mTestTopic = paraStr;
+                       editor.putString(TEST_TOPIC, mTestTopic);
+                       break;
+                   case 8:
+                       mProductKey = paraStr;
+                       editor.putString(PRODUCT_KEY, mProductKey);
+                       break;
+                   default:
+                       break;
+               }
+               editor.commit();
+           }
+           @Override
+           public void onNothingSelected(AdapterView<?> parent) {
+           }
+        });
+        mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
@@ -247,7 +220,6 @@ public class IoTMqttFragment extends Fragment {
                 }
             }
         });
-
         mSubScribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,10 +227,9 @@ public class IoTMqttFragment extends Fragment {
                 // 本例中，发布的自定义数据，IoT服务端会在发给当前设备。
                 if (mMQTTSample == null)
                     return;
-                mMQTTSample.subscribeTopic();
+                mMQTTSample.subscribeBroadCastTopic();
             }
         });
-
         mSubdevOnlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -267,7 +238,6 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.setSubdevOnline();
             }
         });
-
         mSubdevOfflineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -276,7 +246,6 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.setSubDevOffline();
             }
         });
-
         mUnSubscribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -285,7 +254,6 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.unSubscribeTopic();
             }
         });
-
         mPublishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -306,7 +274,14 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.publishTopic("data", data);
             }
         });
-
+        mSubScribeBroadcastBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.subscribeBroadCastTopic();
+            }
+        });
         mCheckFirmwareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,7 +290,6 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.checkFirmware();
             }
         });
-
         mDeviceLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -327,7 +301,6 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
             }
         });
-
         mUploadLogBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,8 +309,25 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.uploadLog();
             }
         });
-
         return view;
+    }
+
+    public void initView(View view) {
+        mConnectBtn = view.findViewById(R.id.connect);
+        mCloseConnectBtn = view.findViewById(R.id.close_connect);
+        mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
+        mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
+        mPublishBtn = view.findViewById(R.id.publish_topic);
+        mSubScribeBroadcastBtn = view.findViewById(R.id.subscribe_broadcast_topic);
+        mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
+        mDynRegBtn = view.findViewById(R.id.dynreg);
+        mLogInfoText = view.findViewById(R.id.log_info);
+        mSpinner = view.findViewById(R.id.spinner4);
+        mItemText = view.findViewById(R.id.editText2);
+        mSubdevOnlineBtn = view.findViewById(R.id.subdev_online);
+        mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
+        mDeviceLogBtn = view.findViewById(R.id.mlog);
+        mUploadLogBtn = view.findViewById(R.id.uploadlog);
     }
 
     public void closeConnection() {
