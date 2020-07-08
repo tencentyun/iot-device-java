@@ -172,6 +172,16 @@ public class MQTTSample {
     }
 
     /**
+     * 订阅广播主题
+     */
+    public void subscribeBroadCastTopic() {
+        // 用户上下文（请求实例）
+        MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
+        // 订阅广播主题
+        mMqttConnection.subscribeBroadcastTopic(TXMqttConstants.QOS1, mqttRequest);
+    }
+
+    /**
      * 订阅主题
      *
      */

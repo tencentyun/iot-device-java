@@ -109,7 +109,11 @@
 
         </LinearLayout>
     </LinearLayout>
-
+    <Button
+        android:id="@+id/btn_subscribe_broadcast_topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="订阅广播主题" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
