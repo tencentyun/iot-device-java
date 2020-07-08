@@ -625,6 +625,25 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return this.mConnectStatus;
     }
 
+    public Status subscribeBroadcastTopic(final int qos, Object userContext) {
+        String broadCastTopic = "";
+        if ((mMqttClient != null) && (mMqttClient.isConnected())) {
+            broadCastTopic = String.format("%s/%s/BroadCast/rxd", mProductId, mDeviceName);
+            try {
+                mMqttClient.subscribe(broadCastTopic, qos/*TXMqttConstants.QOS1*/,userContext, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
+            } catch (Exception e) {
+                TXLog.e(TAG, e, "subscribe topic: %s failed.", broadCastTopic);
+                mLog(TXMqttLogConstants.LEVEL_FATAL, TAG, "subscribe topic: %s failed.", broadCastTopic);
+                return Status.ERROR;
+            }
+        } else {
+            TXLog.e(TAG, "subscribe topic: %s failed, because mMqttClient not connected.", broadCastTopic);
+            mLog(TXMqttLogConstants.LEVEL_FATAL, TAG, "subscribe topic: %s failed, because mMqttClient not connected.", broadCastTopic);
+            return Status.MQTT_NO_CONN;
+        }
+        return Status.OK;
+    }
+
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         TXLog.i(TAG, "connectComplete. reconnect flag is " + reconnect);
