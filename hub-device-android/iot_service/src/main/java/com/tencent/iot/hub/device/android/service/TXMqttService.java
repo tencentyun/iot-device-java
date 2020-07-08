@@ -410,6 +410,20 @@ public class TXMqttService extends Service {
         return status;
     }
 
+    private String subscribeBroadcastTopic(int qos, long userContextId) {
+        Status status = Status.ERROR;
+        if (!isInit) {
+            TXLog.d(TAG, "device is not initialized!");
+            return status.name();
+        }
+        if (mUseShadow && null != mShadowConnection) {
+            status = mShadowConnection.getMqttConnection().subscribeBroadcastTopic(qos, Long.valueOf(userContextId));
+        } else if (null != mMqttConnection) {
+            status = mMqttConnection.subscribeBroadcastTopic(qos, Long.valueOf(userContextId));
+        }
+        return status.name();
+    }
+
     private String subscribe(String topic, int qos, long userContextId) {
         Status status = Status.ERROR;
         if (!isInit) {
@@ -760,6 +774,11 @@ public class TXMqttService extends Service {
             @Override
             public String disConnect(long timeout, long userContextId) throws RemoteException {
                 return TXMqttService.this.disConnect(timeout, userContextId);
+            }
+
+            @Override
+            public String subscribeBroadcastTopic(int qos, long userContextId) throws RemoteException {
+                return TXMqttService.this.subscribeBroadcastTopic(qos, userContextId);
             }
 
             @Override

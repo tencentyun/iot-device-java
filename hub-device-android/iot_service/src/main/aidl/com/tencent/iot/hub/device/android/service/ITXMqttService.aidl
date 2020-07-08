@@ -53,6 +53,13 @@ interface ITXMqttService {
     String disConnect(in long timeout, in long userContextId);
 
     /**
+     * 订阅广播主题
+     * @param qos
+     * @param userContextId
+     */
+    String subscribeBroadcastTopic(in int qos, in long userContextId);
+
+    /**
      * 订阅主题
      * @param topic
      * @param qos

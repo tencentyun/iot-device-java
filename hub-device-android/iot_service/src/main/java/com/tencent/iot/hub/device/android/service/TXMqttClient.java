@@ -364,6 +364,31 @@ public class TXMqttClient {
     }
 
     /**
+     * 订阅广播Topic, 结果通过回调函数通知。
+     *
+     * @param qos         QOS等级
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status subscribeBroadcastTopic(final int qos, Object userContext) {
+        Status status = Status.ERROR;
+        if (null == mRemoteServer) {
+            TXLog.e(TAG, "remote service is not start!");
+            return status;
+        }
+        long requestId = mRequestId.getAndIncrement();
+        String broadCastTopic = String.format("%s/%s/BroadCast/rxd", mMqttClientOptions.getProductId(),
+                mMqttClientOptions.getDeviceName());
+        try {
+            String statusStr = mRemoteServer.subscribe(broadCastTopic, qos, requestId);
+            status = Status.valueOf(Status.class, statusStr);
+        } catch (RemoteException e) {
+            TXLog.e(TAG, e, "invoke remote service[subscribe] failed!");
+        }
+        return status;
+    }
+
+    /**
      * 订阅Topic, 结果通过回调函数通知。
      *
      * @param topic       topic名称

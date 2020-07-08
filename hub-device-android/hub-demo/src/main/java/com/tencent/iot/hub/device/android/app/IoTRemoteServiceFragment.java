@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tencent.iot.hub.device.android.app.R;
 import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.android.app.service.RemoteRequest;
@@ -143,6 +144,7 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
         btnList.add((Button) mView.findViewById(R.id.btn_connect));
         btnList.add((Button) mView.findViewById(R.id.btn_disconnect));
         btnList.add((Button) mView.findViewById(R.id.btn_subscribe));
+        btnList.add((Button) mView.findViewById(R.id.btn_subscribe_broadcast_topic));
         btnList.add((Button) mView.findViewById(R.id.btn_publish));
         btnList.add((Button) mView.findViewById(R.id.btn_register_property));
         btnList.add((Button) mView.findViewById(R.id.btn_get_shadow));
@@ -184,6 +186,9 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
 
             case R.id.btn_subscribe:
                 onSubscribe();
+                break;
+            case R.id.btn_subscribe_broadcast_topic:
+                onSubscribeBroadCastTopic();
                 break;
 
             case R.id.btn_publish:
@@ -305,6 +310,22 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
             mShadowClient.getMqttClient().subscribe(topic, qos, shadowRequest);
         } else {
             mMqttClient.subscribe(topic, qos, shadowRequest);
+        }
+    }
+
+    /**
+     * 订阅广播主题
+     */
+    public void onSubscribeBroadCastTopic() {
+        if (!isServiceConnect) {
+            TXLog.e(TAG, "remote service is not start!");
+            return;
+        }
+        ShadowRequest shadowRequest = new ShadowRequest(mRequestId.getAndIncrement());
+        if (useShadow) {
+            mShadowClient.getMqttClient().subscribeBroadcastTopic(TXMqttConstants.QOS1, shadowRequest);
+        } else {
+            mMqttClient.subscribeBroadcastTopic(TXMqttConstants.QOS1, shadowRequest);
         }
     }
 
