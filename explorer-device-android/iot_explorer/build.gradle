@@ -58,4 +58,5 @@ dependencies {
     })
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation project(path: ':explorer-device-java')
 }
