@@ -68,6 +68,12 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_subscribe_rrpc_topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="订阅RRPC主题" />
+
     <LinearLayout
         android:id="@+id/shadow_operate"
         android:layout_width="match_parent"

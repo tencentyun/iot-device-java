@@ -442,6 +442,22 @@ public class TXMqttService extends Service {
         return status.name();
     }
 
+    private String subscribeRRPCTopic(int qos, long userContextId) {
+        Status status = Status.ERROR;
+        if (!isInit) {
+            TXLog.d(TAG, "device is not initialized!");
+            return status.name();
+        }
+
+        if (mUseShadow && null != mShadowConnection) {
+            status = mShadowConnection.getMqttConnection().subscribeRRPCTopic(qos, Long.valueOf(userContextId));
+        } else if (null != mMqttConnection) {
+            status = mMqttConnection.subscribeRRPCTopic(qos, Long.valueOf(userContextId));
+        }
+
+        return status.name();
+    }
+
     private void handlePublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
         if (null == userContext) {
             return;
@@ -775,6 +791,11 @@ public class TXMqttService extends Service {
             @Override
             public String publish(String topic, TXMqttMessage message, long userContextId) throws RemoteException {
                 return TXMqttService.this.publish(topic, message, userContextId);
+            }
+
+            @Override
+            public String subscribeRRPCTopic(int qos, long userContextId) throws RemoteException {
+                return TXMqttService.this.subscribeRRPCTopic(qos, userContextId);
             }
 
             @Override
