@@ -1,10 +1,14 @@
-name: IOT DEVICE ANDROID CI
+name: IOT DEVICE ANDROID DEBUG CI
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+
+env:
+  IOT_SONATYPE_USERNAME: ${{ secrets.IOT_SONATYPE_USERNAME }}
+  IOT_SONATYPE_PASSWORD: ${{ secrets.IOT_SONATYPE_PASSWORD }}
 
 jobs:
   build:
@@ -17,3 +21,17 @@ jobs:
           java-version: 1.8
       - name: Build with Gradle
         run: ./gradlew build
+      - name: Publish aar and jar to Maven
+        run: ./gradlew publish
+      - name: Archive the apks
+        uses: actions/upload-artifact@v2
+        with:
+          path: '*-device-android/*-demo/build/outputs/apk/debug/*.apk'
+      - name: Upload apks to PGY
+        env:
+          IOT_PGYER_API_KEY: ${{ secrets.IOT_PGYER_API_KEY }}
+        run: |
+          apk=$(ls explorer-device-android/explorer-demo/build/outputs/apk/debug/*.apk)
+          curl -F "file=@${apk}" -F "_api_key=$IOT_PGYER_API_KEY" https://www.pgyer.com/apiv2/app/upload
+          apk=$(ls hub-device-android/hub-demo/build/outputs/apk/debug/*.apk)
+          curl -F "file=@${apk}" -F "_api_key=$IOT_PGYER_API_KEY" https://www.pgyer.com/apiv2/app/upload
