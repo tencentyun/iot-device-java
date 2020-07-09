@@ -81,6 +81,13 @@ interface ITXMqttService {
     String publish(in String topic, in TXMqttMessage message, in long userContextId);
 
     /**
+     * 订阅RRPC主题
+     * @param qos
+     * @param userContextId
+     */
+    String subscribeRRPCTopic(in int qos, in long userContextId);
+
+    /**
      * 获取连接状态
      *
      * @return 连接状态

@@ -65,6 +65,8 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mSubScribeBroadcastBtn;
 
+    private Button mSubScribeRRPCBtn;
+
     private Button mCheckFirmwareBtn;
 
     private Button mDynRegBtn;
@@ -117,7 +119,9 @@ public class IoTMqttFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_iot_mqtt, container, false);
         mParent = (IoTMainActivity) this.getActivity();
+
         initView(view);
+
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
            @Override
            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -309,6 +313,15 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.uploadLog();
             }
         });
+
+        mSubScribeRRPCBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.subscribeRRPCTopic();
+            }
+        });
         return view;
     }
 
@@ -328,6 +341,7 @@ public class IoTMqttFragment extends Fragment {
         mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
         mDeviceLogBtn = view.findViewById(R.id.mlog);
         mUploadLogBtn = view.findViewById(R.id.uploadlog);
+        mSubScribeRRPCBtn = view.findViewById(R.id.subscribe_rrpc_topic);
     }
 
     public void closeConnection() {

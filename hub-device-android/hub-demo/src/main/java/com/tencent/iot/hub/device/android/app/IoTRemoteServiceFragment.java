@@ -149,6 +149,7 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
         btnList.add((Button) mView.findViewById(R.id.btn_register_property));
         btnList.add((Button) mView.findViewById(R.id.btn_get_shadow));
         btnList.add((Button) mView.findViewById(R.id.btn_update_shadow));
+        btnList.add((Button) mView.findViewById(R.id.btn_subscribe_rrpc_topic));
 
         mLogInfoText = mView.findViewById(R.id.log_info);
 
@@ -205,6 +206,9 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
 
             case R.id.btn_update_shadow:
                 onUpdateShadow();
+                break;
+            case R.id.btn_subscribe_rrpc_topic:
+                onSubscribeRRPCTopic();
                 break;
 
             default:
@@ -349,6 +353,22 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
             mShadowClient.getMqttClient().publish(topic, mqttMessage, remoteRequest);
         } else {
             mMqttClient.publish(topic, mqttMessage, remoteRequest);
+        }
+    }
+
+    /**
+     * 订阅RRPC主题
+     */
+    public void onSubscribeRRPCTopic() {
+        if (!isServiceConnect) {
+            TXLog.e(TAG, "remote service is not start!");
+            return;
+        }
+        ShadowRequest shadowRequest = new ShadowRequest(mRequestId.getAndIncrement());
+        if (useShadow) {
+            mShadowClient.getMqttClient().subscribeRRPCTopic(TXMqttConstants.QOS0, shadowRequest);
+        } else {
+            mMqttClient.subscribeRRPCTopic(TXMqttConstants.QOS0, shadowRequest);
         }
     }
 

@@ -23,10 +23,12 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
 import static com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
@@ -610,6 +612,36 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
+     * 订阅RRPC Topic, 结果通过回调函数通知。
+     *
+     * @param qos         QOS等级(仅支持QOS=0的消息)
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status subscribeRRPCTopic(final int qos, Object userContext) {
+        String topic = String.format("%s/%s/rrpc/txd/+", mProductId, mDeviceName);
+        return subscribe(topic, qos, userContext);
+    }
+
+    private Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
+        String topic  = String.format("%s/%s/rrpc/rxd/%s", mProductId, mDeviceName, processId);
+        //TODO 通过replyMsg构建mqtt messge
+        MqttMessage message = new MqttMessage();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("test-key", "test-value"); // for test
+            for (Map.Entry<String, String> entrys : replyMsg.entrySet()) {
+                jsonObject.put(entrys.getKey(), entrys.getValue());
+            }
+        } catch (JSONException e) {
+            TXLog.e(TAG, e, "pack json data failed!");
+        }
+        message.setQos(TXMqttConstants.QOS0);
+        message.setPayload(jsonObject.toString().getBytes());
+        return publish(topic, message ,userContext);
+    }
+
+    /**
      * 设置当前连接状态
      *
      * @param connectStatus 当前连接状态
@@ -717,6 +749,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
         }
 
         TXLog.i(TAG, "Received topic: %s, id: %d, message: %s", topic, message.getId(), message);
+
+        if (topic != null && topic.contains("/rrpc/txd/")) {
+            String[] items = topic.split("/");
+            String processId = items[items.length-1];
+            //TODO：数据格式暂不确定
+            Map<String, String> replyMessage = new HashMap<>();
+            publishRRPCToCloud(null, processId, replyMessage);
+        }
 
         mLastReceivedMessageId = message.getId();
 
