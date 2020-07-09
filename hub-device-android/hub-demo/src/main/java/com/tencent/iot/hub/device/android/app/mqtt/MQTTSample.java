@@ -234,6 +234,18 @@ public class MQTTSample {
     }
 
     /**
+     * 订阅RRPC主题
+     *
+     */
+    public void subscribeRRPCTopic() {
+        // 用户上下文（请求实例）
+        MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
+        // 订阅主题
+        mMqttConnection.subscribeRRPCTopic(TXMqttConstants.QOS0, mqttRequest);
+
+    }
+
+    /**
      * 生成一条日志
      * @param logLevel 日志级别：
      *                 错误：TXMqttLogConstants.LEVEL_ERROR

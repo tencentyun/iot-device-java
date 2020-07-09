@@ -63,6 +63,8 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mPublishBtn;
 
+    private Button mSubScribeRRPCBtn;
+
     private Button mCheckFirmwareBtn;
 
     private Button mDynRegBtn;
@@ -137,6 +139,8 @@ public class IoTMqttFragment extends Fragment {
 
         mDeviceLogBtn = view.findViewById(R.id.mlog);
         mUploadLogBtn = view.findViewById(R.id.uploadlog);
+
+        mSubScribeRRPCBtn = view.findViewById(R.id.subscribe_rrpc_topic);
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                                @Override
@@ -334,6 +338,15 @@ public class IoTMqttFragment extends Fragment {
                 if (mMQTTSample == null)
                     return;
                 mMQTTSample.uploadLog();
+            }
+        });
+
+        mSubScribeRRPCBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.subscribeRRPCTopic();
             }
         });
 
