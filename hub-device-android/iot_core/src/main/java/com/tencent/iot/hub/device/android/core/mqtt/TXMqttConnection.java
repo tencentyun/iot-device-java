@@ -610,6 +610,23 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
+     * 订阅RRPC Topic, 结果通过回调函数通知。
+     *
+     * @param qos         QOS等级(仅支持QOS=0的消息)
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status subscribeRRPCTopic(final int qos, Object userContext) {
+        String topic = String.format("%s/%s/rrpc/txd/+", mProductId, mDeviceName);
+        return subscribe(topic, qos, userContext);
+    }
+
+    public Status publishRRPCToCloud(MqttMessage message, Object userContext, String processId, String jsonDoc) {
+        String topic  = String.format("%s/%s/rrpc/rxd/%s", mProductId, mDeviceName, processId);
+        return publish(topic, message ,userContext);
+    }
+
+    /**
      * 设置当前连接状态
      *
      * @param connectStatus 当前连接状态
