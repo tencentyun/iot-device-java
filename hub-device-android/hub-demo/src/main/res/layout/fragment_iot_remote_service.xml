@@ -68,12 +68,23 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_subscribe_rrpc_topic"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="订阅RRPC主题" />
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_subscribe_broadcast_topic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="订阅广播主题" />
+        <Button
+            android:id="@+id/btn_subscribe_rrpc_topic"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="订阅RRPC主题" />
 
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/shadow_operate"
         android:layout_width="match_parent"
@@ -115,11 +126,6 @@
 
         </LinearLayout>
     </LinearLayout>
-    <Button
-        android:id="@+id/btn_subscribe_broadcast_topic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="订阅广播主题" />
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
