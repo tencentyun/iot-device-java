@@ -89,11 +89,14 @@ public class IoTMqttFragment extends Fragment {
     private String mSubProductID = "SUBDEV_PRODUCT-ID"; // If you wont test gateway, let this to be null
     private String mSubDevName = "SUBDEV_DEV-NAME";
     private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";    // productID/DeviceName/TopicName
+
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
     private String mProductKey = "PRODUCT_SECRET";        // Used for dynamic register
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
+
+    private boolean mIsConnected;
 
     /**日志保存的路径*/
     private final static String mLogPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/";
@@ -183,23 +186,27 @@ public class IoTMqttFragment extends Fragment {
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
-                mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
-                mProductID = settings.getString(PRODUCT_ID, mProductID);
-                mDevName = settings.getString(DEVICE_NAME, mDevName);
-                mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
-                mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
-                mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
-                mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
+                if (!mIsConnected) {
+                    SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
+                    mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
+                    mProductID = settings.getString(PRODUCT_ID, mProductID);
+                    mDevName = settings.getString(DEVICE_NAME, mDevName);
+                    mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+                    mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
+                    mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
+                    mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
 
-                mDevCert = settings.getString(DEVICE_CERT, mDevCert);
-                mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
+                    mDevCert = settings.getString(DEVICE_CERT, mDevCert);
+                    mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
 
-                //mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID,
-                  //                  mDevName, mDevPSK, mSubProductID, mSubDevName, mTestTopic);
-                mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
-                        mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
-                mMQTTSample.connect();
+                    //mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID,
+                    //                  mDevName, mDevPSK, mSubProductID, mSubDevName, mTestTopic);
+                    mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
+                            mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
+                    mMQTTSample.connect();
+                } else {
+                    mParent.printLogInfo(TAG, "Mqtt has been connected, do not connect it again.", mLogInfoText, TXLog.LEVEL_INFO);
+                }
             }
         });
 
@@ -364,6 +371,7 @@ public class IoTMqttFragment extends Fragment {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+            mIsConnected = true;
         }
 
         @Override
@@ -380,6 +388,7 @@ public class IoTMqttFragment extends Fragment {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+            mIsConnected = false;
         }
 
         @Override
