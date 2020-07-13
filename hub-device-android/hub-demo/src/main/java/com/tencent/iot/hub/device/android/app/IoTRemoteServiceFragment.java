@@ -51,17 +51,17 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
     /**
      * 产品ID
      */
-    private static final String PRODUCT_ID = "YOUR_PRODUCT_ID";
+    private static final String PRODUCT_ID = BuildConfig.PRODUCT_ID;
 
     /**
      * 设备名称
      */
-    private static final String DEVICE_NAME = "YOUR_DEVICE_NAME";
+    private static final String DEVICE_NAME = BuildConfig.DEVICE_NAME;
 
     /**
      * 密钥
      */
-    private static final String SECRET_KEY = "YOUR_SECRET_KEY";
+    private static final String SECRET_KEY = BuildConfig.DEVICE_PSK;
 	
     /**
      * 设备证书名

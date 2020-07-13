@@ -3,6 +3,7 @@ package com.tencent.iot.hub.device.android.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -83,15 +84,15 @@ public class IoTMqttFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
-    private String mProductID = "PRODUCT_ID";
-    private String mDevName = "DEVICE_NAME";
-    private String mDevPSK  = null; //若使用证书验证，设为null
-    private String mSubProductID = "SUBDEV_PRODUCT-ID"; // If you wont test gateway, let this to be null
-    private String mSubDevName = "SUBDEV_DEV-NAME";
-    private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";    // productID/DeviceName/TopicName
+    private String mProductID = BuildConfig.PRODUCT_ID;
+    private String mDevName = BuildConfig.DEVICE_NAME;
+    private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
+    private String mSubProductID = BuildConfig.SUB_PRODUCT_ID; // If you wont test gateway, let this to be null
+    private String mSubDevName = BuildConfig.SUB_DEV_NAME;
+    private String mTestTopic = BuildConfig.TEST_TOPIC;    // productID/DeviceName/TopicName
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
-    private String mProductKey = "PRODUCT_SECRET";        // Used for dynamic register
+    private String mProductKey = BuildConfig.PRODUCT_KEY;        // Used for dynamic register
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
 

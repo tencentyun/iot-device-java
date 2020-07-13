@@ -332,11 +332,8 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 		if (mSecretKey != null) {
 			try {
-				LOG.debug(TAG, "secret is " + mSecretKey);
-				System.out.println("**** secret is " + mSecretKey);
 				String passWordStr = HmacSha256.getSignature(userNameStr.getBytes(),
 						Base64.decode(mSecretKey, Base64.DEFAULT)) + ";hmacsha256";
-				System.out.println("**** password is " + passWordStr);
 				mConnOptions.setPassword(passWordStr.toCharArray());
 			} catch (IllegalArgumentException e) {
 				LOG.debug(TAG, "Failed to set password");

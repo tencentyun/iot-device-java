@@ -173,7 +173,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
         if (mSecretKey != null && mSecretKey.length() != 0) {
             try {
-                Log.d(TAG, "secret is " + mSecretKey);
                 String passWordStr = HmacSha256.getSignature(userNameStr.getBytes(), Base64.decode(mSecretKey, Base64.DEFAULT)) + ";hmacsha256";
                 mConnOptions.setPassword(passWordStr.toCharArray());
             }

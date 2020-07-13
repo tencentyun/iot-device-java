@@ -123,14 +123,14 @@ public class IoTShadowFragment extends Fragment {
             public void onClick(View view) {
                 // 在腾讯云控制台增加自定义主题（权限为订阅和发布）：custom_data，用于接收IoT服务端转发的自定义数据。
                 // 本例中，发布的自定义数据，IoT服务端会在发给当前设备。
-                mShadowSample.subscribeTopic("2SC57NCTVJ/shadow_test/data");
+                mShadowSample.subscribeTopic(BuildConfig.SHADOW_TEST_TOPIC);
             }
         });
 
         mUnSubscribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mShadowSample.unSubscribeTopic("2SC57NCTVJ/shadow_test/data");
+                mShadowSample.unSubscribeTopic(BuildConfig.SHADOW_TEST_TOPIC);
             }
         });
 
@@ -148,7 +148,7 @@ public class IoTShadowFragment extends Fragment {
                 data.put("maximum_speed", "205");
 
                 // 需先在腾讯云控制台，增加自定义主题: data，用于更新自定义数据
-                mShadowSample.publishTopic("2SC57NCTVJ/shadow_test/data", data);
+                mShadowSample.publishTopic(BuildConfig.SHADOW_TEST_TOPIC, data);
             }
         });
     }

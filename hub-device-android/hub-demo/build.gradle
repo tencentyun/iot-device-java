@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply from: "../../parse_json.gradle"
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
@@ -15,6 +17,14 @@ android {
                 cppFlags "-std=c++11 -frtti"
             }
         }
+        buildConfigField 'String', 'PRODUCT_ID', "\"${getValueById('PRODUCT_ID')}\""
+        buildConfigField 'String', 'DEVICE_NAME', "\"${getValueById('DEVICE_NAME')}\""
+        buildConfigField 'String', 'DEVICE_PSK', "\"${getValueById('DEVICE_PSK')}\""
+        buildConfigField 'String', 'SUB_PRODUCT_ID', "\"${getValueById('SUB_PRODUCT_ID')}\""
+        buildConfigField 'String', 'SUB_DEV_NAME', "\"${getValueById('SUB_DEV_NAME')}\""
+        buildConfigField 'String', 'TEST_TOPIC', "\"${getValueById('TEST_TOPIC')}\""
+        buildConfigField 'String', 'SHADOW_TEST_TOPIC', "\"${getValueById('SHADOW_TEST_TOPIC')}\""
+        buildConfigField 'String', 'PRODUCT_KEY', "\"${getValueById('PRODUCT_KEY')}\""
     }
     buildTypes {
         release {

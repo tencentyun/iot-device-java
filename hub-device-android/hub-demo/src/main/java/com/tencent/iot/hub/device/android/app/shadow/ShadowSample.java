@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.tencent.iot.hub.device.android.app.BuildConfig;
 import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.app.IoTShadowFragment;
@@ -33,17 +34,17 @@ public class ShadowSample {
     /**
      * 产品名称
      */
-    private static final String PRODUCT_ID = "YOUR_PRODUCT_ID";
+    private static final String PRODUCT_ID = BuildConfig.PRODUCT_ID;
 
     /**
      * 设备名称
      */
-    private static final String DEVICE_NAME = "YOUR_DEVICE_NAME";
+    private static final String DEVICE_NAME = BuildConfig.DEVICE_NAME;
 
     /**
      * 密钥
      */
-    private static final String SECRET_KEY = null;
+    private static final String SECRET_KEY = BuildConfig.DEVICE_PSK;
 	
     /**
      * 设备证书名
