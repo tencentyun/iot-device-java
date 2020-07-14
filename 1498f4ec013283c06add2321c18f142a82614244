@@ -22,6 +22,30 @@
       "revId": "1498f4ec013283c06add2321c18f142a82614244",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0c0d604c_09fe8f4a",
+        "filename": "hub-device-android/hub-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTMqttFragment.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-07-14T03:35:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f75c52a_cfef3b52",
+      "range": {
+        "startLine": 99,
+        "startChar": 4,
+        "endLine": 99,
+        "endChar": 33
+      },
+      "revId": "1498f4ec013283c06add2321c18f142a82614244",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
