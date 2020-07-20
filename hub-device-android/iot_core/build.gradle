@@ -40,7 +40,7 @@ def libVersion = '1.0.0-SNAPSHOT'
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tencent.iot.hub.device.android.core'
+            groupId 'com.tencent.iot.hub'
             artifactId 'hub-device-android-core'
             version libVersion
             artifact file('build/outputs/aar/iot_core-debug.aar')
