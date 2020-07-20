@@ -6,7 +6,7 @@ def libVersion = '1.0.0-SNAPSHOT'
 publishing {
     publications {
         jar(MavenPublication) {
-            groupId 'com.tencent.iot.hub.device.java'
+            groupId 'com.tencent.iot.hub'
             artifactId 'hub-device-java'
             version libVersion
             artifact file('build/libs/hub-device-java.jar')
