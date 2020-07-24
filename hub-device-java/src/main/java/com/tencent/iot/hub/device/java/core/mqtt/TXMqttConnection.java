@@ -586,21 +586,21 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		LOG.info("connectComplete. reconnect flag is " + reconnect);
 		setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
 
-//		if (!reconnect) {
-//			return;
-//		}
-//
-//		Iterator<String> it = mSubscribedTopicMap.keySet().iterator();
-//		while (it.hasNext()) {
-//			String topic = it.next();
-//			Integer qos = mSubscribedTopicMap.get(topic);
-//			try {
-//				LOG.info("subscribe to %s..." + topic);
-//				mMqttClient.subscribe(topic, qos, null, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
-//			} catch (Exception e) {
-//				LOG.error( "subscribe to %s failed." + topic);
-//			}
-//		}
+		if (!reconnect) {
+			return;
+		}
+
+		Iterator<String> it = mSubscribedTopicMap.keySet().iterator();
+		while (it.hasNext()) {
+			String topic = it.next();
+			Integer qos = mSubscribedTopicMap.get(topic);
+			try {
+				LOG.info("subscribe to %s..." + topic);
+				mMqttClient.subscribe(topic, qos, null, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
+			} catch (Exception e) {
+				LOG.error( "subscribe to %s failed." + topic);
+			}
+		}
 
 		mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI);
 	}
