@@ -612,18 +612,23 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     /**
      * 订阅RRPC Topic, 结果通过回调函数通知。
+     * topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
      *
      * @param qos         QOS等级(仅支持QOS=0的消息)
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
      * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
      */
     public Status subscribeRRPCTopic(final int qos, Object userContext) {
-        String topic = String.format("%s/%s/rrpc/txd/+", mProductId, mDeviceName);
+        String topic = String.format("rrpc/rxd/%s/%s/+", mProductId, mDeviceName);
         return subscribe(topic, qos, userContext);
     }
 
+
+    /**
+     * 应答topic格式: $rrpc/txd/${ProductId}/${DeviceName}/${messageid}
+     */
     private Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
-        String topic  = String.format("%s/%s/rrpc/rxd/%s", mProductId, mDeviceName, processId);
+        String topic  = String.format("rrpc/txd/%s/%s/%s", mProductId, mDeviceName, processId);
         //TODO 通过replyMsg构建mqtt messge
         MqttMessage message = new MqttMessage();
         JSONObject jsonObject = new JSONObject();
@@ -749,7 +754,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
         TXLog.i(TAG, "Received topic: %s, id: %d, message: %s", topic, message.getId(), message);
 
-        if (topic != null && topic.contains("/rrpc/txd/")) {
+        if (topic != null && topic.contains("rrpc/rxd")) {
             String[] items = topic.split("/");
             String processId = items[items.length-1];
             //TODO：数据格式暂不确定
