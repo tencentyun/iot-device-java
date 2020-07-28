@@ -466,13 +466,14 @@ public class TXMqttClient {
 
     /**
      * 订阅RRPC主题, 结果通过回调函数通知。
+     * topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
      *
      * @param qos         QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
      * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
      */
     public Status subscribeRRPCTopic(int qos, Object userContext) {
-        String rrpcTopic = String.format("%s/%s/rrpc/txd/+", mMqttClientOptions.getProductId(),
+        String rrpcTopic = String.format("rrpc/rxd/%s/%s/+", mMqttClientOptions.getProductId(),
                 mMqttClientOptions.getDeviceName());
         return subscribe(rrpcTopic, qos, userContext);
     }
