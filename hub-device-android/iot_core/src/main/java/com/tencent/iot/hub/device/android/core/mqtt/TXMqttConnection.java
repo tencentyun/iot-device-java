@@ -658,6 +658,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     /**
      * 订阅广播Topic, 结果通过回调函数通知。
+     * 广播Topic格式: $broadcast/rxd/${ProductId}/${DeviceName}
      *
      * @param qos         QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
@@ -666,7 +667,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
     public Status subscribeBroadcastTopic(final int qos, Object userContext) {
         String broadCastTopic = "";
         if ((mMqttClient != null) && (mMqttClient.isConnected())) {
-            broadCastTopic = String.format("%s/%s/BroadCast/rxd", mProductId, mDeviceName);
+            broadCastTopic = String.format("$broadcast/rxd/%s/%s", mProductId, mDeviceName);
             try {
                 mMqttClient.subscribe(broadCastTopic, qos ,userContext, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
             } catch (Exception e) {

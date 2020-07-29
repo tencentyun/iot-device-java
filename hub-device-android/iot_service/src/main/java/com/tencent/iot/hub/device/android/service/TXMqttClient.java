@@ -365,6 +365,7 @@ public class TXMqttClient {
 
     /**
      * 订阅广播Topic, 结果通过回调函数通知。
+     * 广播Topic格式: $broadcast/rxd/${ProductId}/${DeviceName}
      *
      * @param qos         QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
@@ -377,7 +378,7 @@ public class TXMqttClient {
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
-        String broadCastTopic = String.format("%s/%s/BroadCast/rxd", mMqttClientOptions.getProductId(),
+        String broadCastTopic = String.format("$broadcast/rxd/%s/%s", mMqttClientOptions.getProductId(),
                 mMqttClientOptions.getDeviceName());
         try {
             String statusStr = mRemoteServer.subscribe(broadCastTopic, qos, requestId);
