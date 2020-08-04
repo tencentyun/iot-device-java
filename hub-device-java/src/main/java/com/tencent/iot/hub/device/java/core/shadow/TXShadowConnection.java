@@ -710,7 +710,7 @@ public class TXShadowConnection {
 							if (jsonObj.has(TXShadowConstants.RESULT)) {
 								int result = jsonObj.getInt(TXShadowConstants.RESULT);
 								if (jsonObj.has(TXShadowConstants.PAYLOAD)) {
-									String payloadStr = jsonObj.getString(TXShadowConstants.PAYLOAD);
+									String payloadStr = jsonObj.getJSONObject(TXShadowConstants.PAYLOAD).toString();
 
 									mShadowActionCallback.onRequestCallback(type, result, payloadStr);
 

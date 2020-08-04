@@ -197,7 +197,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
             Log.d(TAG, "Cant find the subdev");
-            return Status.SUBDEV_STAT_OFFLINE;
+            subdev = new TXGatewaySubdev(subProductID, subDeviceName);
         }
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
 
