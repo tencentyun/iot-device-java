@@ -2,6 +2,7 @@ package com.tencent.iot.hub.device.android.app.mqtt;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.gateway.TXGatewayConnection;
@@ -23,12 +24,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 public class MQTTSample {
 
     private static final String TAG = "TXMQTT";
+    private static final String HMAC_SHA_256 = "HmacSHA256";
     // Default Value, should be changed in testing
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
     private String mProductID = "PRODUCT-ID";
@@ -40,6 +47,7 @@ public class MQTTSample {
 
     private String mSubProductID = "SUBDEV_PRODUCT-ID";
     private String mSubDevName = "SUBDEV_DEV-NAME";
+    private String mSubProductKey = "SUBDEV_DEVICE-SECRET";
     private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";
     private String mDevCert;
     private String mDevPriv;
@@ -108,6 +116,17 @@ public class MQTTSample {
         mMqttActionCallBack = callBack;
     }
 
+    public MQTTSample(Context context, TXMqttActionCallBack callBack, String brokerURL, String productId,
+                      String devName, String devPsk, String devCert, String devPriv, String subProductID, String subDevName, String subProductKey, String testTopic, String devCertName, String devKeyName,
+                      Boolean mqttLogFlag, TXMqttLogCallBack logCallBack) {
+        this(context, callBack, brokerURL, productId, devName, devPsk, devCert, devPriv, subProductID, subDevName, testTopic, devCertName, devKeyName, mqttLogFlag, logCallBack);
+        mSubProductKey = subProductKey;
+    }
+
+    public void setSubProductKey(String subProductKey) {
+        mSubProductKey = subProductKey;
+    }
+
 
     public MQTTSample(Context context, TXMqttActionCallBack callBack, String brokerURL, String productId,
                       String devName, String devPSK, String subProductID, String subDevName, String testTopic) {
@@ -169,6 +188,47 @@ public class MQTTSample {
 
     public void setSubDevOffline() {
         mMqttConnection.gatewaySubdevOffline(mSubProductID, mSubDevName);
+    }
+
+    public void setSubDevBinded() {
+        int randNum = (int) (Math.random() * 999999);
+        long timestamp = System.currentTimeMillis() / 1000;
+        String text2Sgin = mSubProductID + mSubDevName + ";" + randNum + ";" + timestamp;
+        String sginStr = sign(text2Sgin, mSubProductKey);
+
+        mMqttConnection.gatewayBindSubdev(mSubProductID, mSubDevName, sginStr);
+    }
+
+    private String sign(String src, String psk) {
+        Mac mac;
+
+        try {
+            mac = Mac.getInstance(HMAC_SHA_256);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String hmacSign;
+        SecretKeySpec signKey = new SecretKeySpec(psk.getBytes(), HMAC_SHA_256);
+
+        try {
+            mac.init(signKey);
+            byte[] rawHmac = mac.doFinal(src.getBytes());
+            hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
+            return hmacSign;
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void setSubDevUnbinded() {
+        mMqttConnection.gatewayUnbindSubdev(mSubProductID, mSubDevName);
+    }
+
+    public void checkSubdevRelation() {
+        mMqttConnection.getGatewaySubdevRealtion();
     }
 
     /**

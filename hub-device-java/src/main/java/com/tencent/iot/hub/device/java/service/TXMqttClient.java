@@ -440,6 +440,7 @@ public class TXMqttClient {
 
             public void onPublishCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
                 LOG.debug(TAG, "onPublishCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
+                System.out.println("<----------------------->");
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
@@ -449,6 +450,7 @@ public class TXMqttClient {
 
             public void onSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
                 LOG.debug(TAG, "onSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
+                System.out.println("-----------------------");
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
@@ -467,6 +469,7 @@ public class TXMqttClient {
 
             public void onMessageReceived(String topic, TXMqttMessage message) {
                 LOG.debug(TAG, "onMessageReceived, topic[%s], message[%s]", topic, message);
+                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                 if (null != mMqttActionCallBack) {
                     mMqttActionCallBack.onMessageReceived(topic, message.transToMqttMessage());
                 }
