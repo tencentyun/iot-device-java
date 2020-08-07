@@ -79,6 +79,10 @@ public class IoTMqttFragment extends Fragment {
     private Button mSubdevOnlineBtn;
     private Button mSubdevOfflineBtn;
 
+    private Button mSubdevBindedBtn;
+    private Button mSubdevUnbindedBtn;
+    private Button mSubdevRelationCheckBtn;
+
     private Button mDeviceLogBtn;
     private Button mUploadLogBtn;
 
@@ -89,6 +93,7 @@ public class IoTMqttFragment extends Fragment {
     private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
     private String mSubProductID = BuildConfig.SUB_PRODUCT_ID; // If you wont test gateway, let this to be null
     private String mSubDevName = BuildConfig.SUB_DEV_NAME;
+    private String mSubProductKey = BuildConfig.SUB_PRODUCT_KEY;
     private String mTestTopic = BuildConfig.TEST_TOPIC;    // productID/DeviceName/TopicName
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
@@ -114,6 +119,7 @@ public class IoTMqttFragment extends Fragment {
     private final static String DEVICE_CERT = "dev_cert";
     private final static String DEVICE_PRIV  = "dev_priv";
     private final static String PRODUCT_KEY  = "product_key";
+    private final static String SUB_PRODUCT_KEY = "sub_product_key";
 
 
     private AtomicInteger temperature = new AtomicInteger(0);
@@ -174,6 +180,10 @@ public class IoTMqttFragment extends Fragment {
                        mProductKey = paraStr;
                        editor.putString(PRODUCT_KEY, mProductKey);
                        break;
+                   case 9:
+                       mSubProductKey = paraStr;
+                       editor.putString(SUB_PRODUCT_KEY, mSubProductKey);
+                       break;
                    default:
                        break;
                }
@@ -194,6 +204,8 @@ public class IoTMqttFragment extends Fragment {
                     mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
                     mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
                     mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
+                    mSubProductKey = settings.getString(SUB_PRODUCT_KEY, mSubProductKey);
+
                     mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
 
                     mDevCert = settings.getString(DEVICE_CERT, mDevCert);
@@ -201,6 +213,7 @@ public class IoTMqttFragment extends Fragment {
 
                     mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
                             mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
+                    mMQTTSample.setSubProductKey(mSubProductKey);
                     mMQTTSample.connect();
                 } else {
                     mParent.printLogInfo(TAG, "Mqtt has been connected, do not connect it again.", mLogInfoText, TXLog.LEVEL_INFO);
@@ -253,6 +266,30 @@ public class IoTMqttFragment extends Fragment {
                 if (mMQTTSample == null)
                     return;
                 mMQTTSample.setSubDevOffline();
+            }
+        });
+        mSubdevBindedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.setSubDevBinded();
+            }
+        });
+        mSubdevUnbindedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.setSubDevUnbinded();
+            }
+        });
+        mSubdevRelationCheckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.checkSubdevRelation();
             }
         });
         mUnSubscribeBtn.setOnClickListener(new View.OnClickListener() {
@@ -347,6 +384,9 @@ public class IoTMqttFragment extends Fragment {
         mDeviceLogBtn = view.findViewById(R.id.mlog);
         mUploadLogBtn = view.findViewById(R.id.uploadlog);
         mSubScribeRRPCBtn = view.findViewById(R.id.subscribe_rrpc_topic);
+        mSubdevBindedBtn = view.findViewById(R.id.subdev_binded);
+        mSubdevUnbindedBtn = view.findViewById(R.id.subdev_unbinded);
+        mSubdevRelationCheckBtn = view.findViewById(R.id.check_subdev_relation);
     }
 
     public void closeConnection() {

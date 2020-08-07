@@ -4,6 +4,7 @@
   "DEVICE_PSK":        "",
   "SUB_PRODUCT_ID":    "",
   "SUB_DEV_NAME":      "",
+  "SUB_PRODUCT_KEY":   "",
   "TEST_TOPIC":        "",
   "SHADOW_TEST_TOPIC": "",
   "PRODUCT_KEY":       ""

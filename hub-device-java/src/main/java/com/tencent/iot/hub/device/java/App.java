@@ -1,19 +1,14 @@
 package com.tencent.iot.hub.device.java;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.bouncycastle.pqc.math.linearalgebra.GoppaCode.MaMaPe;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.logging.JSR47Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +16,6 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
-import com.tencent.iot.hub.device.java.main.mqtt.MQTTSample;
-import com.tencent.iot.hub.device.java.main.shadow.SelfMqttActionCallBack;
 
 /**
  * Hello world!
@@ -39,6 +32,7 @@ public class App {
 	private static String mDevPSK = "YOUR_DEV_PSK";
 	private static String mSubProductID = "YOUR_SUB_PRODUCT_ID";
 	private static String mSubDevName = "YOUR_SUB_DEV_NAME";
+	private static String mSubDevProductKey = "YOUR_SUB_DEV_PSK";
 	private static String mTestTopic = "YOUR_TEST_TOPIC";
 	private static String mCertFilePath = null;
 	private static String mPrivKeyFilePath = null;
@@ -98,7 +92,6 @@ public class App {
 		
 
 //		mMQTTSample.publishTopic("", jsonObject);
-		System.out.println("qqqqqqqqqqqqqqqqqqq");
 //		mMQTTSample.publishTopic("", jsonObject);
 		System.out.println("qqqqqqeeeeeeqqqqqq");
 		options = new MqttConnectOptions();
@@ -106,7 +99,7 @@ public class App {
 		options.setKeepAliveInterval(60);
 		options.setAutomaticReconnect(true);
 		//客户端证书文件名  mDevPSK是设备秘钥
-		
+
 		if (mDevPSK != null) {
 		//	options.setSocketFactory(AsymcSslUtils.getSocketFactory());
 		} else {
@@ -169,10 +162,11 @@ public class App {
 			message.setQos(1);
 			String topic = String.format("%s/%s/%s", mProductID, mDevName,"data");
 
-			System.out.println("topic = " + topic);
 			if(mqttconnection != null) {
 				mqttconnection.publish(topic, message, null);
-			}            
+				mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
+//				mqttconnection.gatewayUnbindSubdev(mSubProductID, mSubDevName);
+			}
         }
         
         @Override
@@ -196,7 +190,6 @@ public class App {
 			msg.setPayload(jsonObject.toString().getBytes());
 			msg.setQos(1);
 
-			System.out.println("topic = " + topic);
 			if(mqttconnection != null) {
 				mqttconnection.publish(topic, message, null);
 			}

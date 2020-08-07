@@ -16,12 +16,20 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
 import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
@@ -29,6 +37,7 @@ import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SD
 public class TXMqttConnection implements MqttCallbackExtended {
 
     private static final Logger LOG = LoggerFactory.getLogger(TXMqttConnection.class);
+	private static final String HMAC_SHA_256 = "HmacSHA256";
 	/**
 	 * tcp://localhost:port ssl://localhost:port
 	 */
@@ -435,6 +444,94 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		}
 
 		return Status.OK;
+	}
+
+	public Status gatewayBindSubdev(String subProductID, String subDeviceName, String psk) {
+
+		// format the payload
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("type", "bind");
+			JSONObject plObj = new JSONObject();
+			JSONObject dev = new JSONObject();
+			dev.put("product_id", subProductID);
+			dev.put("device_name", subDeviceName);
+			int randNum = (int) (Math.random() * 999999);
+			dev.put("random", randNum);
+			long timestamp = System.currentTimeMillis() / 1000;
+			dev.put("timestamp", timestamp);
+			dev.put("signmethod", "hmacsha256");
+			dev.put("authtype", "psk");
+			String text2Sgin = subProductID + subDeviceName + ";" + randNum + ";" + timestamp;
+			String signStr = sign(text2Sgin, psk);
+			dev.put("signature", signStr);
+			JSONArray devs = new JSONArray();
+			devs.put(dev);
+			plObj.put("devices", devs);
+			obj.put("payload", plObj);
+		} catch (JSONException e) {
+			return Status.ERROR;
+		}
+
+		MqttMessage message = new MqttMessage();
+		// 这里添加获取到的数据
+		message.setPayload(obj.toString().getBytes());
+		message.setQos(1);
+		String topic = String.format("$gateway/operation/%s/%s", mProductId, mDeviceName);
+		System.out.println("topic=" + topic);
+		return publish(topic, message, null);
+	}
+
+	private String sign(String src, String psk) {
+		Mac mac;
+
+		try {
+			mac = Mac.getInstance(HMAC_SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		String hmacSign;
+		SecretKeySpec signKey = new SecretKeySpec(psk.getBytes(), HMAC_SHA_256);
+
+		try {
+			mac.init(signKey);
+			byte[] rawHmac = mac.doFinal(src.getBytes());
+			hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
+			return hmacSign;
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public Status gatewayUnbindSubdev(String subProductID, String subDeviceName) {
+
+		// format the payload
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("type", "unbind");
+			JSONObject plObj = new JSONObject();
+			JSONObject dev = new JSONObject();
+			dev.put("product_id", subProductID);
+			dev.put("device_name", subDeviceName);
+			JSONArray devs = new JSONArray();
+			devs.put(dev);
+			plObj.put("devices", devs);
+			obj.put("payload", plObj);
+		} catch (JSONException e) {
+			return Status.ERROR;
+		}
+
+		MqttMessage message = new MqttMessage();
+		// 这里添加获取到的数据
+		message.setPayload(obj.toString().getBytes());
+		message.setQos(1);
+		String topic = String.format("$gateway/operation/%s/%s", mProductId, mDeviceName);
+		System.out.println("topic=" + topic);
+		return publish(topic, message, null);
 	}
 
 	/**

@@ -22,6 +22,7 @@ android {
         buildConfigField 'String', 'DEVICE_PSK', "\"${getValueById('DEVICE_PSK')}\""
         buildConfigField 'String', 'SUB_PRODUCT_ID', "\"${getValueById('SUB_PRODUCT_ID')}\""
         buildConfigField 'String', 'SUB_DEV_NAME', "\"${getValueById('SUB_DEV_NAME')}\""
+        buildConfigField 'String', 'SUB_PRODUCT_KEY', "\"${getValueById('SUB_PRODUCT_KEY')}\""
         buildConfigField 'String', 'TEST_TOPIC', "\"${getValueById('TEST_TOPIC')}\""
         buildConfigField 'String', 'SHADOW_TEST_TOPIC', "\"${getValueById('SHADOW_TEST_TOPIC')}\""
         buildConfigField 'String', 'PRODUCT_KEY', "\"${getValueById('PRODUCT_KEY')}\""
