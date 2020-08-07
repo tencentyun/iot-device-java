@@ -171,6 +171,18 @@ public class MQTTSample {
         mMqttConnection.gatewaySubdevOffline(mSubProductID, mSubDevName);
     }
 
+    public void setSubDevBinded() {
+        mMqttConnection.gatewaySubdevBinded(mSubProductID, mSubDevName);
+    }
+
+    public void setSubDevUnbinded() {
+        mMqttConnection.gatewaySubdevUnbinded(mSubProductID, mSubDevName);
+    }
+
+    public void checkSubdevRelation() {
+        mMqttConnection.gatewayCheckSubdevRealtion(mSubProductID, mSubDevName);
+    }
+
     /**
      * 订阅广播主题
      */

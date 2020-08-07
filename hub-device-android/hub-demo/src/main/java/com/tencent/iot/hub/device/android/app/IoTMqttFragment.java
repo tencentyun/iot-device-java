@@ -79,6 +79,10 @@ public class IoTMqttFragment extends Fragment {
     private Button mSubdevOnlineBtn;
     private Button mSubdevOfflineBtn;
 
+    private Button mSubdevBindedBtn;
+    private Button mSubdevUnbindedBtn;
+    private Button mSubdevRelationCheckBtn;
+
     private Button mDeviceLogBtn;
     private Button mUploadLogBtn;
 
@@ -255,6 +259,30 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.setSubDevOffline();
             }
         });
+        mSubdevBindedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.setSubDevBinded();
+            }
+        });
+        mSubdevUnbindedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.setSubDevUnbinded();
+            }
+        });
+        mSubdevRelationCheckBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mMQTTSample == null)
+                    return;
+                mMQTTSample.checkSubdevRelation();
+            }
+        });
         mUnSubscribeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -347,6 +375,9 @@ public class IoTMqttFragment extends Fragment {
         mDeviceLogBtn = view.findViewById(R.id.mlog);
         mUploadLogBtn = view.findViewById(R.id.uploadlog);
         mSubScribeRRPCBtn = view.findViewById(R.id.subscribe_rrpc_topic);
+        mSubdevBindedBtn = view.findViewById(R.id.subdev_binded);
+        mSubdevUnbindedBtn = view.findViewById(R.id.subdev_unbinded);
+        mSubdevRelationCheckBtn = view.findViewById(R.id.check_subdev_relation);
     }
 
     public void closeConnection() {

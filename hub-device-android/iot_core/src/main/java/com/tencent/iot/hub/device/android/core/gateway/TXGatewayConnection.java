@@ -217,6 +217,92 @@ public class TXGatewayConnection  extends TXMqttConnection {
         return super.publish(topic, message, null);
     }
 
+    public Status gatewaySubdevBinded(String subProductID, String subDeviceName) {
+        String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
+
+        // format the payload
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", "bind");
+            JSONObject plObj = new JSONObject();
+            JSONObject dev = new JSONObject();
+            dev.put("product_id", subProductID);
+            dev.put("device_name", subDeviceName);
+            int randNum = (int) (Math.random() * 999999);
+            dev.put("random", randNum);
+            dev.put("timestamp", System.currentTimeMillis());
+            dev.put("signmethod", "hmacsha256");
+            dev.put("authtype", "psk");
+            JSONArray devs = new JSONArray();
+            devs.put(dev);
+            plObj.put("devices", devs);
+            obj.put("payload", plObj);
+        } catch (JSONException e) {
+            return Status.ERROR;
+        }
+
+        Log.e("XXX", "gatewaySubdevBinded json = " + obj.toString());
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(obj.toString().getBytes());
+        Log.d(TAG, "publish message " + message);
+
+        return super.publish(topic, message, null);
+    }
+
+    public Status gatewaySubdevUnbinded(String subProductID, String subDeviceName) {
+
+        String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
+
+        // format the payload
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", "unbind");
+            JSONObject plObj = new JSONObject();
+            JSONObject dev = new JSONObject();
+            dev.put("product_id", subProductID);
+            dev.put("device_name", subDeviceName);
+            JSONArray devs = new JSONArray();
+            devs.put(dev);
+            plObj.put("devices", devs);
+            obj.put("payload", plObj);
+        } catch (JSONException e) {
+            return Status.ERROR;
+        }
+
+        Log.e("XXX", "gatewaySubdevUnbinded json = " + obj.toString());
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(obj.toString().getBytes());
+        Log.d(TAG, "publish message " + message);
+
+        return super.publish(topic, message, null);
+    }
+
+    public Status gatewayCheckSubdevRealtion(String subProductID, String subDeviceName) {
+
+        String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
+
+        // format the payload
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", "describe_sub_device");
+        } catch (JSONException e) {
+            return Status.ERROR;
+        }
+
+        Log.e("XXX", "gatewayCheckSubdevRealtion json = " + obj.toString());
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(obj.toString().getBytes());
+        Log.d(TAG, "publish message " + message);
+
+        return super.publish(topic, message, null);
+    }
+
     public Status gatewaySubdevOnline(String subProductID, String subDeviceName) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {

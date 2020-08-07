@@ -106,7 +106,7 @@ public class App {
 		options.setKeepAliveInterval(60);
 		options.setAutomaticReconnect(true);
 		//客户端证书文件名  mDevPSK是设备秘钥
-		
+
 		if (mDevPSK != null) {
 		//	options.setSocketFactory(AsymcSslUtils.getSocketFactory());
 		} else {
