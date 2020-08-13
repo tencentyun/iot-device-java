@@ -40,6 +40,28 @@ ext {
     useLocalIoTCore = true // Changed to true is better for sample development.
 }
 
+task androidJavadocs(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompile.classpath
+        }
+    }
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
 def libVersion = '1.0.0-SNAPSHOT'
 publishing {
     publications {
@@ -47,6 +69,8 @@ publishing {
             groupId 'com.tencent.iot.hub'
             artifactId 'hub-device-android-service'
             version libVersion
+            artifact(androidSourcesJar)
+            artifact(androidJavadocsJar)
             artifact file('build/outputs/aar/iot_service-debug.aar')
         }
     }
