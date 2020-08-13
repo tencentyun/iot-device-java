@@ -1,6 +1,16 @@
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 def libVersion = '1.0.0-SNAPSHOT'
 publishing {
     publications {
@@ -8,6 +18,8 @@ publishing {
             groupId 'com.tencent.iot.explorer'
             artifactId 'explorer-device-java'
             version libVersion
+            artifact(sourceJar)
+            artifact(javadocJar)
             artifact file('build/libs/explorer-device-java.jar')
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -44,6 +56,14 @@ publishing {
         }
     }
 }
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+    failOnError false
+}
+
 dependencies {
     implementation 'org.slf4j:slf4j-log4j12:1.8.0-alpha2'
     implementation 'log4j:log4j:1.2.17'
