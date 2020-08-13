@@ -2,6 +2,17 @@ apply plugin: 'java-library'
 
 apply plugin: 'maven-publish'
 
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
 def libVersion = '1.0.0-SNAPSHOT'
 publishing {
     publications {
@@ -9,6 +20,9 @@ publishing {
             groupId 'com.tencent.iot.hub'
             artifactId 'hub-device-java'
             version libVersion
+
+            artifact(sourceJar)
+            artifact(javadocJar)
             artifact file('build/libs/hub-device-java.jar')
         }
     }
@@ -23,6 +37,13 @@ publishing {
             }
         }
     }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+    failOnError false
 }
 
 dependencies {
