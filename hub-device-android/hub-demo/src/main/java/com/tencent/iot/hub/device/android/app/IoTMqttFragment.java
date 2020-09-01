@@ -27,10 +27,14 @@ import com.tencent.iot.hub.device.android.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
+import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -46,6 +50,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
+
 public class IoTMqttFragment extends Fragment {
 
     private static final String TAG = "TXMQTT";
@@ -53,6 +60,12 @@ public class IoTMqttFragment extends Fragment {
     private IoTMainActivity mParent;
 
     private MQTTSample mMQTTSample;
+
+    private Button mConnectWebSocketBtn;
+
+    private Button mCloseConnectWebSocketBtn;
+
+    private Button mConnectStatusWebSocketBtn;
 
     private Button mConnectBtn;
 
@@ -364,6 +377,45 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.subscribeRRPCTopic();
             }
         });
+
+        mConnectWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
+                mDevCert = settings.getString(DEVICE_CERT, mDevCert);
+                mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
+
+                SocketFactory socketFactory = null;
+                if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0) {
+                    TXLog.i(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
+                    socketFactory = AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes()));
+                } else if (mDevPSK != null && mDevPSK.length() != 0){
+                    TXLog.i(TAG, "Using PSK");
+                    socketFactory = AsymcSslUtils.getSocketFactory();
+                } else {
+                    TXLog.i(TAG, "Using cert assets file");
+                    socketFactory = AsymcSslUtils.getSocketFactoryByAssetsFile(getContext(), mDevCertName, mDevKeyName);
+                }
+
+                TXWebSocketManager.getInstance().path = getContext().getCacheDir().getAbsolutePath();
+                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK);
+                boolean ret = TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connectWithResult();
+                System.out.println("ret=" + ret);
+
+            }
+        });
+        mCloseConnectWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).destroy();
+            }
+        });
+        mConnectStatusWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).isConnected();
+            }
+        });
         return view;
     }
 
@@ -387,6 +439,9 @@ public class IoTMqttFragment extends Fragment {
         mSubdevBindedBtn = view.findViewById(R.id.subdev_binded);
         mSubdevUnbindedBtn = view.findViewById(R.id.subdev_unbinded);
         mSubdevRelationCheckBtn = view.findViewById(R.id.check_subdev_relation);
+        mConnectWebSocketBtn = view.findViewById(R.id.websocket_connect);
+        mCloseConnectWebSocketBtn = view.findViewById(R.id.websocket_disconnect);
+        mConnectStatusWebSocketBtn = view.findViewById(R.id.websocket_status);
     }
 
     public void closeConnection() {
