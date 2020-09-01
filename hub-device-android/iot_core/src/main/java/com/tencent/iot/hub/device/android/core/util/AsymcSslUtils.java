@@ -141,6 +141,21 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput) {
+        SSLContext context = getSSLContextByStream(clientInput, keyInput);
+        if (context != null) {
+            return context.getSocketFactory();
+        }
+        return null;
+    }
+
+    /**
+     * 获取双向认证SSLContext
+     *
+     * @param clientInput 设备证书文件输入流
+     * @param keyInput    设备私钥文件输入流
+     * @return
+     */
+    public static SSLContext getSSLContextByStream(final InputStream clientInput, final InputStream keyInput) {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory certFactory = null;
         try {
@@ -241,7 +256,7 @@ public class AsymcSslUtils {
             // finally, create SSL socket factory
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-            return context.getSocketFactory();
+            return context;
         } catch (Exception e) {
             TXLog.e(TAG, "construct SSLSocketFactory failed.", e);
             return null;
@@ -255,6 +270,19 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactory() {
+        SSLContext context = getSocketSSLContext();
+        if (context != null) {
+            return context.getSocketFactory();
+        }
+        return null;
+    }
+
+    /**
+     * 获取SSLContext
+     *
+     * @return
+     */
+    public static SSLContext getSocketSSLContext() {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory certFactory = null;
         try {
@@ -309,7 +337,7 @@ public class AsymcSslUtils {
             // finally, create SSL socket factory
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
-            return context.getSocketFactory();
+            return context;
         } catch (Exception e) {
             TXLog.e(TAG, "construct SSLSocketFactory failed.", e);
             return null;
