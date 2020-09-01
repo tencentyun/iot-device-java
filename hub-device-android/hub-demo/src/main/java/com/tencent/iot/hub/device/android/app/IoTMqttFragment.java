@@ -28,6 +28,7 @@ import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -53,6 +54,12 @@ public class IoTMqttFragment extends Fragment {
     private IoTMainActivity mParent;
 
     private MQTTSample mMQTTSample;
+
+    private Button mConnectWebSocketBtn;
+
+    private Button mCloseConnectWebSocketBtn;
+
+    private Button mConnectStatusWebSocketBtn;
 
     private Button mConnectBtn;
 
@@ -364,6 +371,25 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.subscribeRRPCTopic();
             }
         });
+
+        mConnectWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TXWebSocketManager.getInstance().getClientByProduct(mProductID).connect();
+            }
+        });
+        mCloseConnectWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        mConnectStatusWebSocketBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return view;
     }
 
@@ -387,6 +413,9 @@ public class IoTMqttFragment extends Fragment {
         mSubdevBindedBtn = view.findViewById(R.id.subdev_binded);
         mSubdevUnbindedBtn = view.findViewById(R.id.subdev_unbinded);
         mSubdevRelationCheckBtn = view.findViewById(R.id.check_subdev_relation);
+        mConnectWebSocketBtn = view.findViewById(R.id.websocket_connect);
+        mCloseConnectWebSocketBtn = view.findViewById(R.id.websocket_disconnect);
+        mConnectStatusWebSocketBtn = view.findViewById(R.id.websocket_status);
     }
 
     public void closeConnection() {

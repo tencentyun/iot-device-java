@@ -78,6 +78,7 @@ dependencies {
     implementation 'org.json:json:20190722'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation "org.java-websocket:Java-WebSocket:1.4.0"
     testImplementation 'junit:junit:4.13'
 }
 
