@@ -1,6 +1,6 @@
 apply plugin: 'java-library'
-
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 
 task sourceJar(type: Jar, dependsOn: classes) {
@@ -13,7 +13,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-def libVersion = '1.0.0-SNAPSHOT'
+def libVersion = '1.0.1-SNAPSHOT'
+ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
 publishing {
     publications {
         jar(MavenPublication) {
@@ -24,6 +25,29 @@ publishing {
             artifact(sourceJar)
             artifact(javadocJar)
             artifact file('build/libs/hub-device-java.jar')
+            pom {
+                name = 'hub device java'
+                description = 'Hub Device Java library'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java'
+                licenses {
+                    license {
+                        name = 'Tencent Binary License'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tencent_archurtan'
+                        name = 'Tencent archurtan'
+                        email = 'archurtan@tencent.com'
+                    }
+                }
+                scm {
+                    url = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    connection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    developerConnection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                }
+            }
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
@@ -81,6 +105,12 @@ dependencies {
 
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     testImplementation 'junit:junit:4.13'
+}
+
+signing {
+    if (isReleaseVersion) {
+        sign publishing.publications.jar
+    }
 }
 
 sourceCompatibility = "7"

@@ -1,5 +1,7 @@
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 
 task sourceJar(type: Jar, dependsOn: classes) {
     classifier 'sources'
@@ -11,16 +13,41 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-def libVersion = '1.0.0-SNAPSHOT'
+def libVersion = '1.0.1-SNAPSHOT'
+ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
 publishing {
     publications {
         jar(MavenPublication) {
             groupId 'com.tencent.iot.explorer'
             artifactId 'explorer-device-java'
             version libVersion
+
             artifact(sourceJar)
             artifact(javadocJar)
             artifact file('build/libs/explorer-device-java.jar')
+            pom {
+                name = 'explorer device java'
+                description = 'Explorer Device Java library'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java'
+                licenses {
+                    license {
+                        name = 'Tencent Binary License'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-java/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tencent_archurtan'
+                        name = 'Tencent archurtan'
+                        email = 'archurtan@tencent.com'
+                    }
+                }
+                scm {
+                    url = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    connection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    developerConnection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                }
+            }
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
@@ -58,10 +85,13 @@ publishing {
 }
 
 javadoc {
-    if(JavaVersion.current().isJava9Compatible()) {
-        options.addBooleanOption('html5', true)
+    if(JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
     }
-    failOnError false
 }
 
 dependencies {
@@ -73,6 +103,12 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation 'net.iharder:base64:2.3.9'
     implementation 'com.google.code.gson:gson:2.8.6'
+}
+
+signing {
+    if (isReleaseVersion) {
+        sign publishing.publications.jar
+    }
 }
 
 sourceCompatibility = "7"
