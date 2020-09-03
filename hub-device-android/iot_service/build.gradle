@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 
 android {
     compileSdkVersion 29
@@ -62,7 +64,8 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
-def libVersion = '1.0.0-SNAPSHOT'
+def libVersion = '3.2.0'
+ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
 publishing {
     publications {
         aar(MavenPublication) {
@@ -71,7 +74,32 @@ publishing {
             version libVersion
             artifact(androidSourcesJar)
             artifact(androidJavadocsJar)
-            artifact file('build/outputs/aar/iot_service-debug.aar')
+            artifact file('build/outputs/aar/iot_service-release.aar')
+
+            pom {
+                name = 'hub device android service'
+                description = 'Hub Device Android Service library'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android'
+                licenses {
+                    license {
+                        name = 'Tencent Binary License'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tencent_archurtan'
+                        name = 'Tencent archurtan'
+                        email = 'archurtan@tencent.com'
+                    }
+                }
+                scm {
+                    url = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    connection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    developerConnection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                }
+            }
+
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
@@ -118,12 +146,19 @@ dependencies {
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3"
     testImplementation 'junit:junit:4.13'
 
-    if (useLocalIoTCore) {
-        compile project(':hub-device-android:iot_core')
-    }
-    else {
-        compile 'com.qcloud.iot:iot-core:2.1.0'
-    }
+//    if (useLocalIoTCore) {
+//        compile project(':hub-device-android:iot_core')
+//    }
+//    else {
+//        compile 'com.qcloud.iot:iot-core:2.1.0'
+//    }
+
+    implementation 'com.tencent.iot.hub:hub-device-android-core:3.2.0'
+    implementation 'com.tencent.iot.hub:hub-device-android-service:3.2.0'//
 }
 
-//apply from: 'bintray.gradle'
+signing {
+    if (isReleaseVersion) {
+        sign publishing.publications.aar
+    }
+}
