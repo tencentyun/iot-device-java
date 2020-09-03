@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
 
 android {
     compileSdkVersion 29
@@ -58,7 +60,8 @@ task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
-def libVersion = '1.0.0-SNAPSHOT'
+def libVersion = '3.2.1-SNAPSHOT'
+ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
 publishing {
     publications {
         aar(MavenPublication) {
@@ -67,7 +70,32 @@ publishing {
             version libVersion
             artifact(androidSourcesJar)
             artifact(androidJavadocsJar)
-            artifact file('build/outputs/aar/iot_core-debug.aar')
+            artifact file('build/outputs/aar/iot_core-release.aar')
+
+            pom {
+                name = 'hub device android core'
+                description = 'Hub Device Android Core library'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android'
+                licenses {
+                    license {
+                        name = 'Tencent Binary License'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tencent_archurtan'
+                        name = 'Tencent archurtan'
+                        email = 'archurtan@tencent.com'
+                    }
+                }
+                scm {
+                    url = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    connection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    developerConnection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                }
+            }
+
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
@@ -117,7 +145,15 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:3.12.2"
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
-    implementation project(path: ':hub-device-java')
+    if (findProject(':hub-device-java') != null) {
+        implementation project(path: ':hub-device-java')
+    } else {
+        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
+    }
 }
 
-//apply from: 'bintray.gradle'
+signing {
+    if (isReleaseVersion) {
+        sign publishing.publications.aar
+    }
+}
