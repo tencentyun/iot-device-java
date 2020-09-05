@@ -1,11 +1,13 @@
 package com.tencent.iot.hub.device.java;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +17,11 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
+import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+
+import javax.net.SocketFactory;
 
 /**
  * Hello world!
@@ -50,6 +56,8 @@ public class App {
 	
 	
 	public static void main(String[] args) {
+//		websocketConnect();
+//		websocketdisconnect();
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
 		PropertyConfigurator.configure(App.class.getResource("/log4j.properties"));
@@ -60,20 +68,20 @@ public class App {
 
 		String workDir = System.getProperty("user.dir") + "/";
 
-		
+
 		//mMQTTSample.connect();
-		
+
 //		dbgPrint("mqttSample connected!");
-//		
+//
 //		try {
 //			Thread.sleep(5000);
 //		} catch (InterruptedException e1) {
 //			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 //		}
-//		
+//
 //		mMQTTSample.subscribeTopic(mTestTopic);
-//		
+//
 //		mMQTTSample.setSubdevOnline();
 		try {
 			jsonObject.put("tenant_id", "test");
@@ -89,7 +97,7 @@ public class App {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 
 //		mMQTTSample.publishTopic("", jsonObject);
 //		mMQTTSample.publishTopic("", jsonObject);
@@ -116,6 +124,55 @@ public class App {
 			e.printStackTrace();
 		}
 		mqttconnection.disConnect(null);
+	}
+
+	private static void websocketdisconnect() {
+		try {
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).disconnect();
+		} catch (MqttException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void websocketConnect() {
+
+		SocketFactory socketFactory = null;
+		if (mDevPSK != null) {
+			socketFactory = AsymcSslUtils.getSocketFactory();
+		} else {
+			String workDir = System.getProperty("user.dir") + "/";
+			socketFactory = AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath);
+		}
+
+		TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK, socketFactory);
+		try {
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
+
+				@Override
+				public void onConnected() {
+					System.out.println("onConnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+				}
+
+				@Override
+				public void onMessageArrived(String topic, MqttMessage message) {
+					System.out.println("onMessageArrived topic=" + topic);
+				}
+
+				@Override
+				public void onConnectionLost(Throwable cause) {
+					System.out.println("onConnectionLost" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+				}
+
+				@Override
+				public void onDisconnected() {
+					System.out.println("onDisconnected" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+				}
+			});
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connect();
+		} catch (MqttException e) {
+			e.printStackTrace();
+			System.out.println("MqttException " + e.toString());
+		}
 	}
 
 	public static class callBack extends TXMqttActionCallBack {

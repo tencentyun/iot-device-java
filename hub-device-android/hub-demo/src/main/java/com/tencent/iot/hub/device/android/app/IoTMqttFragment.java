@@ -29,6 +29,8 @@ import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.ConnectionState;
+import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -397,23 +399,53 @@ public class IoTMqttFragment extends Fragment {
                     socketFactory = AsymcSslUtils.getSocketFactoryByAssetsFile(getContext(), mDevCertName, mDevKeyName);
                 }
 
-                TXWebSocketManager.getInstance().path = getContext().getCacheDir().getAbsolutePath();
-                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK);
-                boolean ret = TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connectWithResult();
-                System.out.println("ret=" + ret);
+                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK, socketFactory);
+                try {
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
 
+                        @Override
+                        public void onConnected() {
+                            Log.e("XXX", "onConnected");
+                        }
+
+                        @Override
+                        public void onMessageArrived(String topic, MqttMessage message) {
+                            Log.e("XXX", "onMessageArrived topic=" + topic);
+                        }
+
+                        @Override
+                        public void onConnectionLost(Throwable cause) {
+                            Log.e("XXX", "onConnectionLost");
+                        }
+
+                        @Override
+                        public void onDisconnected() {
+                            Log.e("XXX", "onDisconnected");
+                        }
+                    });
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connect();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "MqttException " + e.toString());
+                }
             }
         });
         mCloseConnectWebSocketBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).destroy();
+                try {
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).disconnect();
+                    TXWebSocketManager.getInstance().releaseClient(mProductID, mDevName);
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
             }
         });
         mConnectStatusWebSocketBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).isConnected();
+                ConnectionState show = TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState();
+                Log.e(TAG, "current state " + show);
             }
         });
         return view;
