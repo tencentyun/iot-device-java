@@ -316,7 +316,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
 
         JSONObject obj = new JSONObject();
         try {
-            obj.put("type", "describe_sub_device");
+            obj.put("type", "describe_sub_devices");
         } catch (JSONException e) {
             return Status.ERROR;
         }
