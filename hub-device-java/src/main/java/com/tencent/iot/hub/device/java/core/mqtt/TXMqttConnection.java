@@ -446,6 +446,25 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		return Status.OK;
 	}
 
+	public Status gatewayGetSubdevRelation() {
+
+		// format the payload
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("type", "describe_sub_devices");
+		} catch (JSONException e) {
+			return Status.ERROR;
+		}
+
+		MqttMessage message = new MqttMessage();
+		// 这里添加获取到的数据
+		message.setPayload(obj.toString().getBytes());
+		message.setQos(1);
+		String topic = String.format("$gateway/operation/%s/%s", mProductId, mDeviceName);
+		System.out.println("topic=" + topic);
+		return publish(topic, message, null);
+	}
+
 	public Status gatewayBindSubdev(String subProductID, String subDeviceName, String psk) {
 
 		// format the payload

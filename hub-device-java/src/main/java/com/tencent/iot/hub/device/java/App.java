@@ -33,6 +33,8 @@ public class App {
 
 	private static String mBrokerURL = "tcp://iotcloud-mqtt.gz.tencentdevices.com:1883";
 
+	private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
+
 	private static String mProductID = "YOUR_PRODUCT_ID";
 	private static String mDevName = "YOUR_DEVICE_NAME";
 	private static String mDevPSK = "YOUR_DEV_PSK";
@@ -183,6 +185,13 @@ public class App {
 			String topic = String.format("%s/%s/%s", mProductID, mDevName,"data");
 			System.out.println("ffffffffffff" + status.toString());
 			mqttconnection.subscribe(topic, 1, null);
+
+			// 订阅网关操作的结果
+			String gwTopic = GW_OPERATION_RES_PREFIX + mProductID + "/" + mDevName;
+			mqttconnection.subscribe(gwTopic, 1, "Subscribe GATEWAY result topic");
+
+			// 查询网关的拓扑关系
+			mqttconnection.gatewayGetSubdevRelation();
 		}
 
 		@Override
