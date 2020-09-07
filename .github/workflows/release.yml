@@ -1,14 +1,15 @@
 name: IOT DEVICE ANDROID RELEASE CI
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [published]
 
 env:
   IOT_SONATYPE_USERNAME: ${{ secrets.IOT_SONATYPE_USERNAME }}
   IOT_SONATYPE_PASSWORD: ${{ secrets.IOT_SONATYPE_PASSWORD }}
   GPG_DECRYPT_PASSPHRASE: ${{ secrets.GPG_DECRYPT_PASSPHRASE }}
+  IOT_GPG_KEYNAME: ${{ secrets.IOT_GPG_KEYNAME }}
+  IOT_GPG_PASSPHRASE: ${{ secrets.IOT_GPG_PASSPHRASE }}
 
 jobs:
   build:
@@ -18,12 +19,18 @@ jobs:
       - run: |
           rm -rf hub-device-android/app-config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/hub-device-android/app-config.json.asc > hub-device-android/app-config.json
+          gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/sdk/secring.gpg.asc > secring.gpg
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
       - name: install fir
         run: sudo gem install fir-cli
+      - name: Update Values of Signing
+        run: |
+          export KEY_ID_OF_SIGN=$IOT_GPG_KEYNAME
+          export PASSWORD_OF_SIGN=$IOT_GPG_PASSPHRASE
+          sh .github/scripts/updateValuesForSign.sh
       - name: Adapt build.gradle from debug to release
         run: |
           sed -i 's#iot_explorer-debug#iot_explorer-release#g' explorer-device-android/iot_explorer/build.gradle
@@ -32,6 +39,8 @@ jobs:
           sed -i 's#-SNAPSHOT##g' hub-device-android/iot_core/build.gradle
           sed -i 's#iot_service-debug#iot_service-release#g' hub-device-android/iot_service/build.gradle
           sed -i 's#-SNAPSHOT##g' hub-device-android/iot_service/build.gradle
+          sed -i 's#-SNAPSHOT##g' hub-device-java/build.gradle
+          sed -i 's#-SNAPSHOT##g' explorer-device-java/build.gradle
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish aar and jar to Maven
