@@ -101,6 +101,9 @@ public class IoTMqttFragment extends Fragment {
     private Button mDeviceLogBtn;
     private Button mUploadLogBtn;
 
+    private Button mGetRemoteConfigBtn;
+    private Button mConcernRemoteConfigBtn;
+
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
     private String mProductID = BuildConfig.PRODUCT_ID;
@@ -448,6 +451,20 @@ public class IoTMqttFragment extends Fragment {
                 Log.e(TAG, "current state " + show);
             }
         });
+
+        mGetRemoteConfigBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.getRemoteConfig();
+            }
+        });
+
+        mConcernRemoteConfigBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.concernRemoteConfig();
+            }
+        });
         return view;
     }
 
@@ -474,6 +491,9 @@ public class IoTMqttFragment extends Fragment {
         mConnectWebSocketBtn = view.findViewById(R.id.websocket_connect);
         mCloseConnectWebSocketBtn = view.findViewById(R.id.websocket_disconnect);
         mConnectStatusWebSocketBtn = view.findViewById(R.id.websocket_status);
+        mGetRemoteConfigBtn = view.findViewById(R.id.get_remote_config);
+        mConcernRemoteConfigBtn = view.findViewById(R.id.concern_remote_config);
+
     }
 
     public void closeConnection() {

@@ -23,6 +23,7 @@ import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -35,8 +36,9 @@ import java.util.Random;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
-
+import javax.net.ssl.X509TrustManager;
 
 
 public class AsymcSslUtils {
@@ -248,6 +250,38 @@ public class AsymcSslUtils {
         }
 
     }
+
+    public static SSLContext getDefaultSLLContext() {
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, new TrustManager[] {trustManagers}, new SecureRandom());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sslContext;
+    }
+
+    /**
+     * 信任管理器
+     */
+    private static TrustManager trustManagers = new X509TrustManager() {
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {}
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    };
 
     /**
      * 获取SSLSocketFactory
