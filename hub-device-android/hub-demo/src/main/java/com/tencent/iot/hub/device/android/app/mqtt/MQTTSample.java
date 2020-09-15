@@ -156,7 +156,7 @@ public class MQTTSample {
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
         } else if (mDevPSK != null && mDevPSK.length() != 0){
             TXLog.i(TAG, "Using PSK");
-            options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+            options.setSocketFactory(AsymcSslUtils.getDefaultSLLContext().getSocketFactory());
         } else {
             TXLog.i(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, mDevCertName, mDevKeyName));
@@ -199,6 +199,14 @@ public class MQTTSample {
 
     public void checkSubdevRelation() {
         mMqttConnection.getGatewaySubdevRealtion();
+    }
+
+    public void getRemoteConfig() {
+        mMqttConnection.getRemoteConfig();
+    }
+
+    public void concernRemoteConfig() {
+        mMqttConnection.concernConfig();
     }
 
     /**

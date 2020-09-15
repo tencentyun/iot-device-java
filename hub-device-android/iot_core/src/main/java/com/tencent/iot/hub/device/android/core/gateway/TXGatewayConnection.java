@@ -46,7 +46,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
     private HashMap<String, TXGatewaySubdev> mSubdevs = new HashMap<String, TXGatewaySubdev>();
     private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
     private static final String GW_OPERATION_PREFIX = "$gateway/operation/";
-
+    private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
 
     public TXGatewayConnection(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
@@ -327,6 +327,28 @@ public class TXGatewayConnection  extends TXMqttConnection {
         Log.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
+    }
+
+    public Status getRemoteConfig() {
+        // format the payload
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", "get");
+        } catch (JSONException e) {
+            return Status.ERROR;
+        }
+
+        MqttMessage message = new MqttMessage();
+        // 这里添加获取到的数据
+        message.setPayload(obj.toString().getBytes());
+        message.setQos(1);
+        String topic = String.format("$config/report/%s/%s", mProductId, mDeviceName);
+        return super.publish(topic, message, null);
+    }
+
+    public Status concernConfig() {
+        String subscribeConfigTopic = PRODUCT_CONFIG_PREFIX + mProductId + "/" + mDeviceName;
+        return this.subscribe(subscribeConfigTopic, 1, "subscribe config topic");
     }
 
     public Status gatewaySubdevOnline(String subProductID, String subDeviceName) {
