@@ -38,6 +38,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     private static final Logger LOG = LoggerFactory.getLogger(TXMqttConnection.class);
 	private static final String HMAC_SHA_256 = "HmacSHA256";
+	private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
 	/**
 	 * tcp://localhost:port ssl://localhost:port
 	 */
@@ -444,6 +445,28 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		}
 
 		return Status.OK;
+	}
+
+	public Status getRemoteConfig() {
+		// format the payload
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("type", "get");
+		} catch (JSONException e) {
+			return Status.ERROR;
+		}
+
+		MqttMessage message = new MqttMessage();
+		// 这里添加获取到的数据
+		message.setPayload(obj.toString().getBytes());
+		message.setQos(1);
+		String topic = String.format("$config/report/%s/%s", mProductId, mDeviceName);
+		return publish(topic, message, null);
+	}
+
+	public Status concernConfig() {
+		String subscribeConfigTopic = PRODUCT_CONFIG_PREFIX + mProductId + "/" + mDeviceName;
+		return this.subscribe(subscribeConfigTopic, 1, "subscribe config topic");
 	}
 
 	public Status gatewayGetSubdevRelation() {

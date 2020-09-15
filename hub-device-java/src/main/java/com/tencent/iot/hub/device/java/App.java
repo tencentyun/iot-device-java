@@ -183,15 +183,20 @@ public class App {
 		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
 			// TODO Auto-generated method stub
 			String topic = String.format("%s/%s/%s", mProductID, mDevName,"data");
-			System.out.println("ffffffffffff" + status.toString());
+			System.out.println("ffffffffffff status " + status.toString());
+			System.out.println("ffffffffffff msg " + msg);
 			mqttconnection.subscribe(topic, 1, null);
 
 			// 订阅网关操作的结果
 			String gwTopic = GW_OPERATION_RES_PREFIX + mProductID + "/" + mDevName;
 			mqttconnection.subscribe(gwTopic, 1, "Subscribe GATEWAY result topic");
 
+			// 关注远程配置的回调
+			mqttconnection.concernConfig();
+
 			// 查询网关的拓扑关系
 			mqttconnection.gatewayGetSubdevRelation();
+			mqttconnection.getRemoteConfig();
 		}
 
 		@Override
