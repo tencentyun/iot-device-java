@@ -201,6 +201,14 @@ public class MQTTSample {
         mMqttConnection.getGatewaySubdevRealtion();
     }
 
+    public void getRemoteConfig() {
+        mMqttConnection.getRemoteConfig();
+    }
+
+    public void concernRemoteConfig() {
+        mMqttConnection.concernConfig();
+    }
+
     /**
      * 订阅广播主题
      */
