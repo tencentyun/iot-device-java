@@ -2,7 +2,15 @@ name: IOT DEVICE ANDROID DEBUG CI
 
 on:
   push:
-    branches: [ master ]
+    paths-ignore:
+      - '**/doc*/**'
+      - '**/**/doc*/**'
+      - '**/README.md'
+      - '**/LICENSE'
+    tags-ignore:
+      - '*'
+    branches:
+      - '*'
   pull_request:
     branches: [ master ]
 
