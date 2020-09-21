@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f98ef7a4_5fdc4568",
+        "filename": "explorer-device-android/docs/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-21T06:33:17Z",
+      "side": 1,
+      "message": "少个网字",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 8
+      },
+      "revId": "db4527a7ef416565f74ae4213538e38ce18ba7c3",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "43a0d857_fadea1d2",
+        "filename": "explorer-device-android/docs/explorer-device-android示例Demo目录索引.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-21T06:33:17Z",
+      "side": 1,
+      "message": "这种在github上预览好像不对，需确认",
+      "range": {
+        "startLine": 3,
+        "startChar": 33,
+        "endLine": 3,
+        "endChar": 40
+      },
+      "revId": "db4527a7ef416565f74ae4213538e38ce18ba7c3",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "745acb0c_312761bf",
+        "filename": "explorer-device-android/docs/explorer-device-android示例Demo目录索引.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-21T06:33:17Z",
+      "side": 1,
+      "message": "上个网",
+      "range": {
+        "startLine": 15,
+        "startChar": 2,
+        "endLine": 15,
+        "endChar": 8
+      },
+      "revId": "db4527a7ef416565f74ae4213538e38ce18ba7c3",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
