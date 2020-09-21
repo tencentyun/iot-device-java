@@ -7,6 +7,7 @@ on:
       - '**/**/doc*/**'
       - '**/README.md'
       - '**/LICENSE'
+      - '*.md'
     tags-ignore:
       - '*'
     branches:

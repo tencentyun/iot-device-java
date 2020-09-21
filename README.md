@@ -3,4 +3,6 @@
 
 [腾讯物联云SDK](hub-device-android/README.md)
 
-[下载安装](https://github.com/tencentyun/iot-device-android/wiki/下载安装)
+[Demo下载安装](https://github.com/tencentyun/iot-device-android/wiki/下载安装)
+
+[SDK依赖方式](configDependency.md)
