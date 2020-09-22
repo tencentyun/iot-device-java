@@ -1,8 +1,8 @@
 * [RRPC同步通信](#RRPC同步通信)
-  * 1 [RRPC同步通信简介](#RRPC同步通信简介)
-  * 2 [通信原理](#通信原理)
-  * 3 [通信流程](#通信流程)
-  * 4 [运行示例程序进行 RRPC 同步通信](#运行示例程序进行-RRPC-同步通信)
+  * [RRPC同步通信简介](#RRPC同步通信简介)
+  * [通信原理](#通信原理)
+  * [通信流程](#通信流程)
+  * [运行示例程序进行 RRPC 同步通信](#运行示例程序进行-RRPC-同步通信)
 
 # RRPC同步通信
 ## RRPC同步通信简介
@@ -24,7 +24,7 @@
 
 步骤一：在设备中订阅 RRPC 消息 Topic
 
-请先按照 [基于TCP的MQTT设备接入]() 的步骤，将设备 连接MQTT 进行认证接入。
+请先按照 [基于TCP的MQTT设备接入](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤，将设备 连接MQTT 进行认证接入。
 运行示例程序，在基础功能模块上，点击 订阅RRPC主题 按钮，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
 ```
 mMQTTSample.subscribeRRPCTopic(); //订阅RRPC消息Topic

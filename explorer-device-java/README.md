@@ -1,11 +1,19 @@
-# 腾讯物联网开发平台Java SDK
-腾讯物联网开发平台 Java SDK 配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT_Explorer Java SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。
+* [腾讯物联网开发平台 JAVA-SDK](#腾讯物联网开发平台-JAVA-SDK)
+  * [控制台创建设备](#控制台创建设备)
+  * [工程配置](#工程配置)
+  * [设备认证说明](#设备认证说明)
+  * [子设备管理](#子设备管理)
+  * [SDK设计说明](#SDK设计说明)
+  * [SDK API 说明](#SDK-API-说明)
+
+# 腾讯物联网开发平台 JAVA-SDK
+腾讯物联网开发平台 JAVA-SDK  配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT_Explorer Java SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。
 
 ## 控制台创建设备
 
 设备接入SDK前需要在控制台中创建项目产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
 
-## 工程配置 ##
+## 工程配置
 
 **引用方式**
 如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
@@ -42,7 +50,7 @@ private static String mDevPSK  = ""; //若使用证书验证，设为null
 如果控制台创建设备使用的是证书认证方式，除了需要在 IoTDataTemplate.java 填写 mProductID（产品ID）、mDevName（设备名称），mDevPSK（设备密钥）设置为null，还需修改 DataTemplateSample 初始化方法为 `public DataTemplateSample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
 final String jsonFileName,TXDataTemplateDownStreamCallBack downStreamCallBack)` ， 将证书放到resources文件夹中，在 DataTemplateSample 初始化时传入 devCertName（设备证书文件名称）devKeyName（设备私钥文件名称）。
 
-## 子设备管理 ##
+## 子设备管理
 如果当前设备是一个网关，且该网关下的子设备需接入平台从而可以通过平台对子设备进行控制与管理，此时需要使用子设备管理功能。
 网关子设备管理提供了添加子设备，删除子设备，子设备上线、子设备下线的能力。
 
@@ -54,7 +62,7 @@ final String jsonFileName,TXDataTemplateDownStreamCallBack downStreamCallBack)` 
   //mGatewaySample.offlineSubDev(mSubDev1ProductId,mSubDev1DeviceName);
 ```
 
-### SDK设计说明
+## SDK设计说明
 
 | 类名                 | 功能                                         |
 | -------------------- | -------------------------------------------- |

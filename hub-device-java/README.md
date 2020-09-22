@@ -1,6 +1,14 @@
-# 腾讯云物联网设备端 JAVA-SDK #
+* [腾讯物联网通信设备端 JAVA-SDK](#腾讯物联网通信设备端-JAVA-SDK)
+  * [控制台创建设备](#控制台创建设备)
+  * [工程配置](#工程配置)
+  * [认证连接](#认证连接)
+  * [子设备管理](#子设备管理)
+  * [设备影子](#设备影子)
+  * [API接口说明](#API接口说明)
 
-腾讯云物联网设备端 JAVA-SDK 依靠安全且性能强大的数据通道，为物联网领域开发人员提供设备端快速接入云端，并和云端进行双向通信的能力。
+# 腾讯物联网通信设备端 JAVA-SDK
+
+腾讯物联网通信设备端 JAVA-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供设备端快速接入云端，并和云端进行双向通信的能力。
 
 ## 控制台创建设备
 
@@ -8,7 +16,7 @@
 
 当在控制台中成功创建产品后，该产品默认有三条权限。订阅：${productId}/${deviceName}/control，订阅和发布：${productId}/${deviceName}/data，发布：${productId}/${deviceName}/event。请参考官网 [控制台使用手册-权限列表](https://cloud.tencent.com/document/product/634/14444) 操作Topic权限。
 
-## 工程配置 ##
+## 工程配置
 
 **引用方式**
 如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
@@ -23,7 +31,7 @@ dependencies {
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java)下载Java Sdk源码。
 
 
-## 认证连接 ##
+## 认证连接
 设备的身份认证支持两种方法，密钥认证和证书认证：
 - 若使用密钥认证方式，需ProductID，DevName和DevPSK；
 - 若使用证书认证方式，需ProductID，DevName，CertFile和PrivateKeyFile通过输入流解析构造双向认证SSLSocketFactory；
@@ -49,7 +57,7 @@ dependencies {
     mqttconnection.disConnect(null);
 ```
 
-## 子设备管理 ##
+## 子设备管理
 如果当前设备是一个网关，且该网关下的子设备需接入平台从而可以通过平台对子设备进行控制与管理，此时需要使用子设备管理功能。
 网关子设备管理提供了绑定子设备、解绑子设备、子设备上线、子设备下线、代理子设备数据上下行的能力。
 
@@ -61,7 +69,7 @@ dependencies {
   //mqttconnection.gatewaySubdevOffline(mSubProductID, mSubDevName);
 ```
 
-## 设备影子 ##
+## 设备影子
 为降低设备功耗和通信流量，设备通过设备影子功能，在平台缓存设备状态信息，方便其他业务使用；同时平台可通过设备影子离线配置设备，当设备上线后会更新设备影子中数据给设备，实现对设备进行配置。
 ```
   //mShadowConnection.get(null);
@@ -73,7 +81,7 @@ dependencies {
   mShadowConnection.update(devicePropertyList, null);
 ```
 
-## API接口说明 ##
+## API接口说明
 
 ### MQTT接口 ###
 MQTT的相关接口定义在TXMqttConnection类中，支持发布和订阅功能；如果需支持设备影子功能，则需使用TXShadowConnection类及其方法，TXMqttConnection类的接口介绍如下：

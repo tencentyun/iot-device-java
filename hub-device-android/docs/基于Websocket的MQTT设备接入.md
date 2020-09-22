@@ -1,8 +1,8 @@
 * [基于Websocket的MQTT设备接入](#基于Websocket的MQTT设备接入)
-  * 1 [基于Websocket的MQTT设备接入简介](#基于Websocket的MQTT设备接入简介)
-  * 2 [运行示例程序体验通过Websocket连接MQTT功能](#运行示例程序体验通过Websocket连接MQTT功能)
-  * 3 [运行示例程序体验通过Websocket断开MQTT连接功能](#运行示例程序体验通过Websocket断开MQTT连接功能)
-  * 4 [运行示例程序体验查看通过Websocket的MQTT连接状态](#运行示例程序体验查看通过Websocket的MQTT连接状态)
+  * [基于Websocket的MQTT设备接入简介](#基于Websocket的MQTT设备接入简介)
+  * [运行示例程序体验通过Websocket连接MQTT功能](#运行示例程序体验通过Websocket连接MQTT功能)
+  * [运行示例程序体验通过Websocket断开MQTT连接功能](#运行示例程序体验通过Websocket断开MQTT连接功能)
+  * [运行示例程序体验查看通过Websocket的MQTT连接状态](#运行示例程序体验查看通过Websocket的MQTT连接状态)
 
 # 基于Websocket的MQTT设备接入
 ## 基于Websocket的MQTT设备接入简介
@@ -10,7 +10,7 @@
 
 ## 运行示例程序体验通过Websocket连接MQTT功能
 
-请先按照 [基于TCP的MQTT设备接入]() 的步骤 需要填写好 app-config.json 中对应参数，PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称）、DEVICE_PSK（设备密钥）。
+请先按照 [基于TCP的MQTT设备接入](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤 需要填写好 app-config.json 中对应参数，PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称）、DEVICE_PSK（设备密钥）。
 
 运行示例程序，在基础功能模块上，点击 连接MQTT(WEBSOCKET) 按钮，进行MQTT认证连接。示例代码如下：
 ```
