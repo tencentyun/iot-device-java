@@ -18,7 +18,6 @@ import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
-import com.tencent.iot.hub.device.android.core.util.SymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
