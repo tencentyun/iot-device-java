@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.util.Base64;
 
 import com.tencent.iot.hub.device.android.core.device.CA;
+import com.tencent.iot.hub.device.java.core.util.Asn1Object;
+import com.tencent.iot.hub.device.java.core.util.DerParser;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

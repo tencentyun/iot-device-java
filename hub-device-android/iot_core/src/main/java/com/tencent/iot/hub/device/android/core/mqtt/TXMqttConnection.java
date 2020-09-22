@@ -8,8 +8,8 @@ import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLog;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.android.core.util.HmacSha256;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
