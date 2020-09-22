@@ -221,7 +221,13 @@ public class IoTGatewayFragment extends Fragment {
                     }
                 }
 
-                mProperty.setText(textInfo.toString());
+                final String text = textInfo.toString();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProperty.setText(text);
+                    }
+                });
 
                 try {
                     Thread.sleep(200);
