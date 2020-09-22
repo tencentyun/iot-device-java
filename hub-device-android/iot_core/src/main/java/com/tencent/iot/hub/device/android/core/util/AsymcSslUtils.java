@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.util.Base64;
 
 import com.tencent.iot.hub.device.android.core.device.CA;
+import com.tencent.iot.hub.device.java.core.util.Asn1Object;
+import com.tencent.iot.hub.device.java.core.util.DerParser;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -103,36 +105,7 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactoryByFile(final String clientCrtFileName, final String clientPriKeyFileName) {
-        InputStream clientInputStream = null;
-        InputStream keyInputStream = null;
-        SSLSocketFactory factory = null;
-
-        try {
-            clientInputStream = new FileInputStream(new File(clientCrtFileName));
-            keyInputStream = new FileInputStream(new File(clientPriKeyFileName));
-
-            factory = getSocketFactoryByStream(clientInputStream, keyInputStream);;
-        } catch (IOException e) {
-            TXLog.e(TAG, "getSocketFactory failed, cannot open CRT Files.", e);
-        }finally {
-            if (clientInputStream != null) {
-                try {
-                    clientInputStream.close();
-                }catch (Exception e) {
-
-                }
-            }
-
-            if (keyInputStream != null) {
-                try {
-                    keyInputStream.close();
-                }catch (Exception e) {
-
-                }
-            }
-        }
-
-        return factory;
+        return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByFile(clientCrtFileName, clientPriKeyFileName);
     }
 
     /**
@@ -143,112 +116,7 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput) {
-        Security.addProvider(new BouncyCastleProvider());
-        CertificateFactory certFactory = null;
-        try {
-            certFactory = CertificateFactory.getInstance("X.509");
-        } catch (CertificateException e) {
-            TXLog.e(TAG, "getSocketFactory failed, create CertificateFactory error.", e);
-        }
-
-        PEMParser parser = null;
-        X509Certificate caCert = null;
-        X509Certificate clientCert = null;
-        PrivateKey privateKey = null;
-
-        // load CA certificate
-        {
-            ByteArrayInputStream caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
-            parser = new PEMParser(new InputStreamReader(caInput));
-            Object object = null;
-            try {
-                object = parser.readObject();
-            } catch (IOException e) {
-                TXLog.e(TAG, "parse CA failed.", e);
-                return null;
-            }
-
-            if (!(object instanceof X509CertificateHolder)) {
-                TXLog.e(TAG, "CA file not X509CertificateHolder.");
-                return null;
-            }
-
-            X509CertificateHolder certificateHolder = (X509CertificateHolder) object;
-            try {
-                InputStream caIn = new ByteArrayInputStream(certificateHolder.getEncoded());
-                caCert = (X509Certificate) certFactory.generateCertificate(caIn);
-                caIn.close();
-                parser.close();
-            } catch (Exception e) {
-                TXLog.e(TAG, "generate CA certtificate failed.", e);
-                return null;
-            }
-
-        }
-
-        // load client certificate
-        {
-            parser = new PEMParser(new InputStreamReader(clientInput));
-            Object object = null;
-            try {
-                object = parser.readObject();
-            } catch (IOException e) {
-                TXLog.e(TAG, "parse Client CRT failed.", e);
-                return null;
-            }
-
-            if (!(object instanceof X509CertificateHolder)) {
-                TXLog.e(TAG, "Client CRT file not X509CertificateHolder.");
-                return null;
-            }
-
-            X509CertificateHolder certificateHolder = (X509CertificateHolder) object;
-            try {
-                InputStream clientIn = new ByteArrayInputStream(certificateHolder.getEncoded());
-                clientCert = (X509Certificate) certFactory.generateCertificate(clientIn);
-                clientIn.close();
-                parser.close();
-            } catch (Exception e) {
-                TXLog.e(TAG, "generate Client certtificate failed.", e);
-                return null;
-            }
-        }
-
-        // load client private key
-        {
-            try {
-                privateKey = getPrivateKey(keyInput, null);
-            } catch (Exception e) {
-                TXLog.e(TAG, "generate PrivateKey failed.", e);
-                return null;
-            }
-        }
-
-        try {
-            // CA certificate is used to authenticate server
-            KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
-            caKs.load(null, null);
-            caKs.setCertificateEntry("ca-certificate", caCert);
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(caKs);
-
-            // client key and certificates are sent to server so it can authenticate us
-            KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-            ks.load(null, null);
-            ks.setCertificateEntry("certificate", clientCert);
-            ks.setKeyEntry("private-key", privateKey, PASSWORD.toCharArray(), new java.security.cert.Certificate[]{clientCert});
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmf.init(ks, PASSWORD.toCharArray());
-
-            // finally, create SSL socket factory
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-            return context.getSocketFactory();
-        } catch (Exception e) {
-            TXLog.e(TAG, "construct SSLSocketFactory failed.", e);
-            return null;
-        }
-
+        return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByStream(clientInput, keyInput);
     }
 
     public static SSLContext getDefaultSLLContext() {
@@ -289,66 +157,7 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactory() {
-        Security.addProvider(new BouncyCastleProvider());
-        CertificateFactory certFactory = null;
-        try {
-            certFactory = CertificateFactory.getInstance("X.509");
-        } catch (CertificateException e) {
-            TXLog.e(TAG, "getSocketFactory failed, create CertificateFactory error.", e);
-        }
-
-        PEMParser parser = null;
-        X509Certificate caCert = null;
-
-        // load CA certificate
-        {
-            ByteArrayInputStream caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
-            parser = new PEMParser(new InputStreamReader(caInput));
-            Object object = null;
-            try {
-                object = parser.readObject();
-            } catch (IOException e) {
-                TXLog.e(TAG, "parse CA failed.", e);
-                return null;
-            }
-
-            if (!(object instanceof X509CertificateHolder)) {
-                TXLog.e(TAG, "CA file not X509CertificateHolder.");
-                return null;
-            }
-
-            X509CertificateHolder certificateHolder = (X509CertificateHolder) object;
-            try {
-                InputStream caIn = new ByteArrayInputStream(certificateHolder.getEncoded());
-                caCert = (X509Certificate) certFactory.generateCertificate(caIn);
-                caIn.close();
-                parser.close();
-            } catch (Exception e) {
-                TXLog.e(TAG, "generate CA certtificate failed.", e);
-                return null;
-            }
-
-        }
-
-
-        try {
-            // CA certificate is used to authenticate server
-            KeyStore caKs = KeyStore.getInstance(KeyStore.getDefaultType());
-            caKs.load(null, null);
-            caKs.setCertificateEntry("ca-certificate", caCert);
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init(caKs);
-
-
-            // finally, create SSL socket factory
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, tmf.getTrustManagers(), null);
-            return context.getSocketFactory();
-        } catch (Exception e) {
-            TXLog.e(TAG, "construct SSLSocketFactory failed.", e);
-            return null;
-        }
-
+        return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactory();
     }
 
     private static PrivateKey getPrivateKey(InputStream stream, String algorithm) throws IOException,

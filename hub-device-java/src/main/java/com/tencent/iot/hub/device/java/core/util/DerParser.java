@@ -23,7 +23,7 @@ import java.math.BigInteger;
  * @author shockcao
  *
  */
-class DerParser {
+public class DerParser {
 
     // Classes
     public final static int UNIVERSAL = 0x00;
