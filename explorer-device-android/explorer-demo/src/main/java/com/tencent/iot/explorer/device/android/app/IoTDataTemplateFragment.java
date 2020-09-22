@@ -60,9 +60,9 @@ public class IoTDataTemplateFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
-    private String mProductID = "YOUR_PRODUCT_ID";
-    private String mDevName = "YOUR_DEVICE_NAME";
-    private String mDevPSK  = "YOUR_DEVICE_PSK"; //若使用证书验证，设为null
+    private String mProductID = "TSV6COGWKO";
+    private String mDevName = "dev001";
+    private String mDevPSK  = "yyA1VRauqxvXxZBm51VMmg=="; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String

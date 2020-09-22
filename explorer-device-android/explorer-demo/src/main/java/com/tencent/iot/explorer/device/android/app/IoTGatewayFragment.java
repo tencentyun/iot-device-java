@@ -43,14 +43,14 @@ public class IoTGatewayFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
-    private String mProductID = "YOUR_PRODUCT_ID";
-    private String mDevName = "YOUR_DEVICE_NAME";
-    private String mDevPSK  = "YOUR_DEVICE_PSK"; //若使用证书验证，设为null
-    private String mSubDev1ProductId = "YOUR_LIGHT_PRODUCT_ID";
-    private String mSubDev1DeviceName = "YOUR_LIGHT_DEVICE_NAME";
+    private String mProductID = "FCUGSP3YL8";
+    private String mDevName = "dev01";
+    private String mDevPSK  = "ZIQWRtYq3UahYeTQlHITAA=="; //若使用证书验证，设为null
+    private String mSubDev1ProductId = "TSV6COGWKO";
+    private String mSubDev1DeviceName = "dev001";
 
-    private String mSubDev2ProductId = "YOUR_AIRCONDITIONER_PRODUCT_ID";
-    private String mSubDev2DeviceName = "YOUR_AIRCONDITIONER_DEVICE_NAME";
+    private String mSubDev2ProductId = "5E2VQA1DLI";
+    private String mSubDev2DeviceName = "dev001";
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
