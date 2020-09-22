@@ -4,7 +4,7 @@ package com.tencent.iot.hub.device.java.core.util;
 import java.io.IOException;
 import java.math.BigInteger;
 
-class Asn1Object {
+public class Asn1Object {
 
     protected final int type;
     protected final int length;
