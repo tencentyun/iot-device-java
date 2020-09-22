@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -60,9 +61,9 @@ public class IoTDataTemplateFragment extends Fragment {
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
-    private String mProductID = "YOUR_PRODUCT_ID";
-    private String mDevName = "YOUR_DEVICE_NAME";
-    private String mDevPSK  = "YOUR_DEVICE_PSK"; //若使用证书验证，设为null
+    private String mProductID = BuildConfig.SUB_PRODUCT_ID;
+    private String mDevName = BuildConfig.SUB_DEV_NAME;
+    private String mDevPSK  = BuildConfig.SUB_DEV_PSK; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
