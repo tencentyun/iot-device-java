@@ -566,7 +566,9 @@ public class TXShadowConnection {
 
         try {
             jsonObj = new JSONObject(new String(message.getPayload()));
-            jsonObj = new JSONObject(jsonObj.getString(TXShadowConstants.PAYLOAD));
+            //edited by v_vweisun 2020/09/22 start
+            jsonObj = jsonObj.getJSONObject(TXShadowConstants.PAYLOAD);//new JSONObject(jsonObj.getString(TXShadowConstants.PAYLOAD));
+            //edited by v_vweisun 2020/09/22 end
 
             if (jsonObj.has(TXShadowConstants.VERSION)) {
                 int versionNum = jsonObj.getInt(TXShadowConstants.VERSION);
@@ -591,16 +593,32 @@ public class TXShadowConnection {
         String stateJsonStr = "";
 
         try {
-            stateJsonStr = jsonObj.getString(TXShadowConstants.STATE);
+            //edited by v_vweisun 2020/09/22 start
+//			stateJsonStr = jsonObj.getString(TXShadowConstants.STATE);
 
-            JSONObject stateObj = new JSONObject(stateJsonStr);
+            JSONObject stateObj = jsonObj.getJSONObject(TXShadowConstants.STATE);//new JSONObject(stateJsonStr);
+            //edited by v_vweisun 2020/09/22 end
 
             Iterator it = mRegisterPropertyMap.keySet().iterator();
             while (it.hasNext()) {
                 DeviceProperty property = mRegisterPropertyMap.get(it.next());
 
                 if (stateObj.has(property.mKey)) {
-                    property.data(stateObj.getString(property.mKey));
+                    // edited by v_vweisun 2020/09/22 start
+                    if (TXShadowConstants.JSONDataType.INT == property.mDataType) {
+                        property.data(stateObj.getInt(property.mKey));
+                    } else if (TXShadowConstants.JSONDataType.LONG == property.mDataType) {
+                        property.data(stateObj.getLong(property.mKey));
+                    } else if (TXShadowConstants.JSONDataType.FLOAT == property.mDataType) {
+                        property.data(stateObj.getDouble(property.mKey));
+                    } else if (TXShadowConstants.JSONDataType.DOUBLE == property.mDataType) {
+                        property.data(stateObj.getDouble(property.mKey));
+                    } else if (TXShadowConstants.JSONDataType.BOOLEAN == property.mDataType) {
+                        property.data(stateObj.getBoolean(property.mKey));
+                    } else {
+                        property.data(stateObj.getString(property.mKey));
+                    }
+                    // edited by v_vweisun 2020/09/22 end
                     propertyList.add(property);
                     TXLog.d(TAG, "******%s, %s", property.mKey, stateObj.getString(property.mKey));
                 }
