@@ -1,5 +1,6 @@
 package com.tencent.iot.hub.device.java;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 
@@ -33,6 +35,8 @@ public class ShadowApp {
 	private static String testPSKString = "YOUR_PSK";
 	private static String testTopicString = testProductIDString + "/" + testDeviceNameString + "/data"; 
 	private static boolean testFinished = false;
+	private static int pubCount = 0;
+	private static final int testCnt = 1000;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -46,7 +50,36 @@ public class ShadowApp {
 		mShadowConnection = new TXShadowConnection(testProductIDString, testDeviceNameString, testPSKString, new callback());
 		mShadowConnection.connect(options, null);
 		try {
-			Thread.sleep(1000);
+			while(pubCount < testCnt) {
+				pubCount += 1;
+				Thread.sleep(20000);
+
+				if (pubCount < 3) {  // 更新设备影子
+
+					List<DeviceProperty>  mDevicePropertyList = new ArrayList<>();
+
+					DeviceProperty deviceProperty1 = new DeviceProperty();
+					deviceProperty1.key("updateCount").data(String.valueOf(pubCount)).dataType(TXShadowConstants.JSONDataType.INT);
+					mShadowConnection.registerProperty(deviceProperty1);
+
+					DeviceProperty deviceProperty2 = new DeviceProperty();
+					deviceProperty2.key("energyConsumption").data(String.valueOf(10+pubCount)).dataType(TXShadowConstants.JSONDataType.INT);
+					mShadowConnection.registerProperty(deviceProperty2);
+
+					DeviceProperty deviceProperty3 = new DeviceProperty();
+					deviceProperty3.key("temperatureDesire").data(String.valueOf(25)).dataType(TXShadowConstants.JSONDataType.INT);
+					mShadowConnection.registerProperty(deviceProperty3);
+
+					mDevicePropertyList.add(deviceProperty1);
+					mDevicePropertyList.add(deviceProperty2);
+					mDevicePropertyList.add(deviceProperty3);
+
+					mShadowConnection.update(mDevicePropertyList, null);
+				}
+				if (pubCount == 4) {
+					mShadowConnection.get(null);
+				}
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -72,6 +105,7 @@ public class ShadowApp {
 	     * @param propertyList   更新后的设备属性集
 	     */
 	    public void onDevicePropertyCallback(String propertyJSONDocument, List<DeviceProperty> propertyList) {
+			System.out.println("onDevicePropertyCallback " +propertyJSONDocument);
 	    }
 
 
