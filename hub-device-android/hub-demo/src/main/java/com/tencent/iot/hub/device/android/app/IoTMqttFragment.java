@@ -105,7 +105,7 @@ public class IoTMqttFragment extends Fragment {
     private Button mConcernRemoteConfigBtn;
 
     // Default testing parameters
-    private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    private String mBrokerURL = "ssl://fawtsp-mqtt-public-uat.faw.cn:8883";
     private String mProductID = BuildConfig.PRODUCT_ID;
     private String mDevName = BuildConfig.DEVICE_NAME;
     private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
@@ -116,8 +116,54 @@ public class IoTMqttFragment extends Fragment {
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
     private String mProductKey = BuildConfig.PRODUCT_KEY;        // Used for dynamic register
-    private String mDevCert = "";           // Cert String
-    private String mDevPriv = "";           // Priv String
+    private String mDevCert = "-----BEGIN CERTIFICATE-----\n" +
+            "MIIDXDCCAkSgAwIBAgIBADANBgkqhkiG9w0BAQsFADB5MQswCQYDVQQGEwJDTjES\n" +
+            "MBAGA1UECAwJR3VhbmdEb25nMREwDwYDVQQHDAhTaGVuWmhlbjEQMA4GA1UECgwH\n" +
+            "VGVuY2VudDEXMBUGA1UECwwOVGVuY2VudCBJb3RodWIxGDAWBgNVBAMMD3d3dy50\n" +
+            "ZW5jZW50LmNvbTAeFw0yMDA3MDEwMjAwMjZaFw0zMDA2MjkwMjAwMjZaMCkxJzAl\n" +
+            "BgNVBAMMHlhVRUVBMVE1MDJURVNUVEVTVDAwMDAwMDAxMV8xMTCCASIwDQYJKoZI\n" +
+            "hvcNAQEBBQADggEPADCCAQoCggEBAMA8m4oMbpHqzgD3oaC9w/pmIDHjbGeLvzLu\n" +
+            "z4nAN8Yqd9xRp0IYIwJnWUg5LZ+jh2L/oEwmq8+HiDSwjAgOjD+yudg1hobiW6lN\n" +
+            "qo/3Bu9tTwY6wIGCZpwrWWvHaOoVUK40Lin+KjngW8GgvcQFTzxwqulEPa+3T5h2\n" +
+            "DFKO4zQQXhLHKy+Tc5D2q3Blx41Bosa5Ba3kL3fHkfwBgigMCjYrUjIlZtmxRqG7\n" +
+            "5PVUQhFEjjlUdgRp6XNdbhuD2D1e/BY7VUw49Ai/UYR3Bkvgq0aT1NQUAorz5XDK\n" +
+            "a6ZdSKPmEshOgl1vUxV3rwb4ls0eYwKraBSXDn5x+A0sUOuZtsECAwEAAaM/MD0w\n" +
+            "DAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFCaRCvP2CWZ3\n" +
+            "1wwL8gOOdapqEWcTMA0GCSqGSIb3DQEBCwUAA4IBAQBuBxagiUBl6iqF0ah36WrD\n" +
+            "hZtfWzkgea0PZzdUWKf+pt5IhECO2e9aJ5hZycq6pk3nFGHIs6/Igw1BXXLBd2wx\n" +
+            "dwYRJV9Z33cEqxW0ZASmPbRT/GnXoTvN/1Jtz3NLe8zaaH8ITwmeY2L+/vkYIOYv\n" +
+            "S2W3AK2aJscyEq4g6mmGI6dFD7P3iSFDxnGuWrJKSsk6ZxroE7rIBiXsnSnmlwL2\n" +
+            "HBfIaYEny5CgncStQhqN+jf5LX4J+mHxVhymQuvADTgHlxqkDKH+FXomn/CelcCA\n" +
+            "Mh3xcvP8SOL2sPqW83aDe0RwUIHod+LrJLPptKcOenZpcApbuT3m52E5agrw942G\n" +
+            "-----END CERTIFICATE-----";           // Cert String
+    private String mDevPriv = "-----BEGIN PRIVATE KEY-----\n" +
+            "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDAPJuKDG6R6s4A\n" +
+            "96GgvcP6ZiAx42xni78y7s+JwDfGKnfcUadCGCMCZ1lIOS2fo4di/6BMJqvPh4g0\n" +
+            "sIwIDow/srnYNYaG4lupTaqP9wbvbU8GOsCBgmacK1lrx2jqFVCuNC4p/io54FvB\n" +
+            "oL3EBU88cKrpRD2vt0+YdgxSjuM0EF4Sxysvk3OQ9qtwZceNQaLGuQWt5C93x5H8\n" +
+            "AYIoDAo2K1IyJWbZsUahu+T1VEIRRI45VHYEaelzXW4bg9g9XvwWO1VMOPQIv1GE\n" +
+            "dwZL4KtGk9TUFAKK8+VwymumXUij5hLIToJdb1MVd68G+JbNHmMCq2gUlw5+cfgN\n" +
+            "LFDrmbbBAgMBAAECggEABmN9P8899Xd6NSoFoxPraWzvcPj/50kLp6OsHgXXVKyg\n" +
+            "ox/LkTTAJRpOK0pLK90BaNbZ+u3mE9WLP0UGwlXJb2x/JKJSwDTRmwTLwFETV+2o\n" +
+            "DKrzLtqoklQWerB72huvPLrbNeYOfTHpmru+0r7ibT3JUEtGSYqsCIMT0cKR5m7+\n" +
+            "CcgFnvgCSitWcWaoEh44mluO60aX1DMZytvqOhpPTtN3k4FOSptAY5qM5GPZe1D1\n" +
+            "0KAJLWkC9PmAVbsSMmxZrco+74bcW1up53V33PgDgPB5w9Hy7PQKxeGFg6F9x94p\n" +
+            "YwA9Ml8Ce0b4SYcwXQ2++DrbkMpwA6cARUCq5kNFqQKBgQDtj8/TR3W4sV3Zpmop\n" +
+            "KZR9/YNDiE+fX2oXfhnZxFCy5pdbnVPdGdLiRlltMBTQALmmG0Cq5/xGLynuwsK4\n" +
+            "3d10zIASv+aBgZvCeusdiN4gRL1vfRMi7Y1hRUOsL6fx5LDwtUab8d1BUcZsyykE\n" +
+            "QNv/HXu4qvmMimTzm9Y9PY5bgwKBgQDPKDgPYt7Q8yb4QUX3KGcBdMxLGWniR4Gu\n" +
+            "cuQBAw03rUh0tDcdn7d8tF5pylUWe3OAQwCKS2vy9aGYWvCd541FNu8gfRDf0D7q\n" +
+            "HZoX9glOAouO6fX45bDVR++p76fGA589rUk6gaTGgXcCtDt8bApwW3NpZo8SwDbe\n" +
+            "zOgK32P9awKBgQCEW5XtH2llh9zEQUXwvSvwrmiOHcpO/3g6spVwkUJtCrDV6Ggr\n" +
+            "ThIC5DM69IkEAwNsms6C6lHSQMDaOEUJfwO96ZqJ18Vz7mR8DMQmZnVsASCSl1ss\n" +
+            "ILKeuVqk+sBVs5cp5bX7eNxPYmJthxvJNOHd1+1wzEHRneH1IKRS5pMERQKBgQDN\n" +
+            "VIEUhxxxocFLqm8uBybqI5nnCj6QYe4hOpHSivLL7/70ZjiHLWtSuPkoBLwH979J\n" +
+            "L6BWc2GBRYSxndoHuZ6mL0ggPLbAEQp7RXIaM+2PHCi2NCJxXUHEdXQRTZFPTQHG\n" +
+            "wX7m9d+cPnD3Biw8LF7AdXTU0SoZHNqGRjXtqPTUFwKBgBWiSckoCmI1oWDKrZFk\n" +
+            "BEvShRPumMZhO9xUvpVs2DShgUqfkxSm7agzshPNK3MCQ45PZooUQvnvkM8YNj8d\n" +
+            "aUuPZqlM8Yuqrw3pjTxm5WMUElWtUv4qDGRoj8Ojfgmiv45YM06rUfrU1zRpK5kh\n" +
+            "RtD9mxzpTlblr7cLkwlRdLX2\n" +
+            "-----END PRIVATE KEY-----";           // Priv String
 
     private volatile boolean mIsConnected;
 
@@ -150,66 +196,66 @@ public class IoTMqttFragment extends Fragment {
         initView(view);
 
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-           @Override
-           public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               String[] items = getResources().getStringArray(R.array.setup_items);
-               String paraStr = mItemText.getText().toString();
-               if (position == 0) {
-                   return;
-               }
-               if (paraStr.equals("")) {
-                   return;
-               }
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String[] items = getResources().getStringArray(R.array.setup_items);
+                String paraStr = mItemText.getText().toString();
+                if (position == 0) {
+                    return;
+                }
+                if (paraStr.equals("")) {
+                    return;
+                }
 
-               Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
-               Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
-               toast.show();
-               SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
-               SharedPreferences.Editor editor = sharedPreferences.edit();
-               switch(position) {
-                   case 1:
-                       mBrokerURL = paraStr;
-                       editor.putString(BROKER_URL, mBrokerURL);
-                       break;
-                   case 2:
-                       mProductID = paraStr;
-                       editor.putString(PRODUCT_ID, mProductID);
-                   case 3:
-                       mDevName = paraStr;
-                       editor.putString(DEVICE_NAME, mDevName);
-                       break;
-                   case 4:
-                       mDevPSK = paraStr;
-                       editor.putString(DEVICE_PSK, mDevPSK);
-                       break;
-                   case 5:
-                       mSubProductID = paraStr;
-                       editor.putString(SUB_PRODUCID, mSubProductID);
-                       break;
-                   case 6:
-                       mSubDevName = paraStr;
-                       editor.putString(SUB_DEVNAME, mSubDevName);
-                       break;
-                   case 7:
-                       mTestTopic = paraStr;
-                       editor.putString(TEST_TOPIC, mTestTopic);
-                       break;
-                   case 8:
-                       mProductKey = paraStr;
-                       editor.putString(PRODUCT_KEY, mProductKey);
-                       break;
-                   case 9:
-                       mSubProductKey = paraStr;
-                       editor.putString(SUB_PRODUCT_KEY, mSubProductKey);
-                       break;
-                   default:
-                       break;
-               }
-               editor.commit();
-           }
-           @Override
-           public void onNothingSelected(AdapterView<?> parent) {
-           }
+                Log.d("TXMQTT", "Set " + items[position] + " to " + paraStr);
+                Toast toast = Toast.makeText(mParent, "Set " + items[position] + " to " + paraStr, Toast.LENGTH_LONG);
+                toast.show();
+                SharedPreferences sharedPreferences =  mParent.getSharedPreferences("config",Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                switch(position) {
+                    case 1:
+                        mBrokerURL = paraStr;
+                        editor.putString(BROKER_URL, mBrokerURL);
+                        break;
+                    case 2:
+                        mProductID = paraStr;
+                        editor.putString(PRODUCT_ID, mProductID);
+                    case 3:
+                        mDevName = paraStr;
+                        editor.putString(DEVICE_NAME, mDevName);
+                        break;
+                    case 4:
+                        mDevPSK = paraStr;
+                        editor.putString(DEVICE_PSK, mDevPSK);
+                        break;
+                    case 5:
+                        mSubProductID = paraStr;
+                        editor.putString(SUB_PRODUCID, mSubProductID);
+                        break;
+                    case 6:
+                        mSubDevName = paraStr;
+                        editor.putString(SUB_DEVNAME, mSubDevName);
+                        break;
+                    case 7:
+                        mTestTopic = paraStr;
+                        editor.putString(TEST_TOPIC, mTestTopic);
+                        break;
+                    case 8:
+                        mProductKey = paraStr;
+                        editor.putString(PRODUCT_KEY, mProductKey);
+                        break;
+                    case 9:
+                        mSubProductKey = paraStr;
+                        editor.putString(SUB_PRODUCT_KEY, mSubProductKey);
+                        break;
+                    default:
+                        break;
+                }
+                editor.commit();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -596,7 +642,7 @@ public class IoTMqttFragment extends Fragment {
                 BufferedReader cert;
 
                 if (mDevCert != null && mDevCert.length() != 0) { //动态注册,从DevCert中读取
-                     cert = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mDevCert.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
+                    cert = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mDevCert.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
 
                 } else { //证书认证，从证书文件中读取
                     AssetManager assetManager = mParent.getAssets();
@@ -679,7 +725,7 @@ public class IoTMqttFragment extends Fragment {
                 StringBuilder offlineLog = new StringBuilder();
                 int data;
                 while (( data = logReader.read()) != -1 ) {
-                   offlineLog.append((char)data);
+                    offlineLog.append((char)data);
                 }
                 logReader.close();
                 return offlineLog.toString();
