@@ -119,7 +119,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.getConnectStatus();
             status = Status.valueOf(TXMqttConstants.ConnectStatus.class, statusStr);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[getConnectStatus] failed!");
+            LOG.error("{}", e, "invoke remote service[getConnectStatus] failed!");
         }
         return status;
     }
@@ -134,7 +134,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.getShadow(requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[getShadow] failed!");
+            LOG.error("{}", e, "invoke remote service[getShadow] failed!");
         }
         return status;
     }
@@ -153,7 +153,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.updateShadow(devicePropertyList, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[updateShadow] failed!");
+            LOG.error("{}", e, "invoke remote service[updateShadow] failed!");
         }
         return status;
     }
@@ -167,7 +167,7 @@ public class TXShadowClient {
         try {
             mMqttClient.mRemoteServer.registerDeviceProperty(deviceProperty);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[registerDeviceProperty] failed!");
+            LOG.error("{}", e, "invoke remote service[registerDeviceProperty] failed!");
         }
     }
 
@@ -180,7 +180,7 @@ public class TXShadowClient {
         try {
             mMqttClient.mRemoteServer.unRegisterDeviceProperty(deviceProperty);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[unRegisterDeviceProperty] failed!");
+            LOG.error("{}", e, "invoke remote service[unRegisterDeviceProperty] failed!");
         }
     }
 
@@ -205,7 +205,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.reportNullDesiredInfo(reportJsonDoc);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error(TAG, e, "invoke remote service[reportNullDesiredInfo] failed!");
+            LOG.error("{}", e, "invoke remote service[reportNullDesiredInfo] failed!");
         }
         return status;
     }

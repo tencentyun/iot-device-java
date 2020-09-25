@@ -68,7 +68,7 @@ public class TXOTAImpl {
 						serverCertList.add(certificate);
 					}
 				} catch (Exception e) {
-					LOG.error(TAG, "prepareOTAServerCA error:" + e);
+					LOG.error("{}", "prepareOTAServerCA error:", e);
 				} finally {
 					if (caInput != null) {
 						try {
@@ -347,7 +347,7 @@ public class TXOTAImpl {
 						throws CertificateException {
 					// Do nothing. We only want to check server side
 					// certificate.
-					LOG.warn(TAG, "checkClientTrusted");
+					LOG.warn("checkClientTrusted");
 				}
 
 				@Override
@@ -378,7 +378,7 @@ public class TXOTAImpl {
 					}
 
 					if (match > 0 && match == CA.cosServerCaCrtList.length) {
-						LOG.info(TAG, "checkServerTrusted OK!!!");
+						LOG.info("checkServerTrusted OK!!!");
 						return;
 					}
 
@@ -437,7 +437,7 @@ public class TXOTAImpl {
 						tryTimes++;
 
 						fos = new RandomAccessFile(outputFile, "rw");
-						LOG.debug(TAG, "fileLength " + fos.length() + " bytes");
+						LOG.debug("fileLength " + fos.length() + " bytes");
 
 						long downloadBytes = 0;
 						int lastPercent = 0;
@@ -446,7 +446,7 @@ public class TXOTAImpl {
 							fos.seek(downloadBytes);
 						}
 
-						LOG.debug(TAG, "connect: " + firmwareURL);
+						LOG.debug("connect: " + firmwareURL);
 						HttpURLConnection conn = createURLConnection(firmwareURL);
 
 						conn.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
@@ -456,7 +456,7 @@ public class TXOTAImpl {
 						conn.connect();
 
 						int totalLength = conn.getContentLength();
-						LOG.debug(TAG, "totalLength " + totalLength + " bytes");
+						LOG.debug("totalLength " + totalLength + " bytes");
 
 						stream = conn.getInputStream();
 						byte buffer[] = new byte[1024 * 1024];
@@ -479,7 +479,7 @@ public class TXOTAImpl {
 									mCallback.onDownloadProgress(percent, version);
 								}
 
-								LOG.debug(TAG, "download " + downloadBytes + " bytes. percent:" + percent);
+								LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
 								reportProgressMessage(percent, version);
 							}
 						}
@@ -494,7 +494,7 @@ public class TXOTAImpl {
 						String calcMD5 = fileToMD5(outputFile);
 
 						if (!calcMD5.equalsIgnoreCase(md5Sum)) {
-							LOG.error(TAG, "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
+							LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
 
 							if (mCallback != null) {
 								mCallback.onDownloadFailure(-4, version); // 校验失败

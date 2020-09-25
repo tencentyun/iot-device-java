@@ -71,6 +71,9 @@ public class App {
 		String workDir = System.getProperty("user.dir") + "/";
 
 
+		AsymcSslUtils.getSocketFactory();
+
+
 		//mMQTTSample.connect();
 
 //		dbgPrint("mqttSample connected!");
