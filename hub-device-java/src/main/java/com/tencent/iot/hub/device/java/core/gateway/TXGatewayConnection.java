@@ -320,7 +320,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 		this.mConnOptions = options;
 		if (mConnOptions == null) {
-			LOG.error(TAG, "Connect options == null, will not connect.");
+			LOG.error("{}", "Connect options == null, will not connect.");
 			return Status.PARAMETER_INVALID;
 		}
 
@@ -358,7 +358,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 			}
 
 			public void onFailure(IMqttToken token, Throwable exception) {
-				LOG.error(TAG, exception, "onFailure!");
+				LOG.error("{}", exception, "onFailure!");
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 				mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
 			}
@@ -372,7 +372,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 				mMqttClient.setBufferOpts(super.bufferOpts);
 				mMqttClient.setManualAcks(false);
 			} catch (Exception e) {
-				LOG.error(TAG, "new MqttClient failed", e);
+				LOG.error("{}", "new MqttClient failed", e);
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 				return Status.ERROR;
 			}
@@ -383,7 +383,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 			setConnectingState(TXMqttConstants.ConnectStatus.kConnecting);
 			mMqttClient.connect(mConnOptions, userContext, mActionListener);
 		} catch (Exception e) {
-			LOG.error(TAG, "MqttClient connect failed", e);
+			LOG.error("{}", "MqttClient connect failed", e);
 			setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 			return Status.ERROR;
 		}

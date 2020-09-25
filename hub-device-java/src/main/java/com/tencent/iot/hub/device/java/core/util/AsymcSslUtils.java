@@ -87,7 +87,7 @@ public class AsymcSslUtils {
 
             factory = getSocketFactoryByStream(clientInputStream, keyInputStream);;
         } catch (FileNotFoundException e) {
-            LOG.error(TAG, "getSocketFactory failed, cannot open CRT Files.", e);
+            LOG.error("{}", "getSocketFactory failed, cannot open CRT Files.", e);
         }finally {
             if (clientInputStream != null) {
                 try {
@@ -122,7 +122,7 @@ public class AsymcSslUtils {
         try {
             certFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {
-            LOG.error(TAG, "getSocketFactory failed, create CertificateFactory error.", e);
+            LOG.error("{}", "getSocketFactory failed, create CertificateFactory error.", e);
         }
 
         PEMParser parser = null;
@@ -138,12 +138,12 @@ public class AsymcSslUtils {
             try {
                 object = parser.readObject();
             } catch (IOException e) {
-                LOG.error(TAG, "parse CA failed.", e);
+                LOG.error("{}", "parse CA failed.", e);
                 return null;
             }
 
             if (!(object instanceof X509CertificateHolder)) {
-                LOG.error(TAG, "CA file not X509CertificateHolder.");
+                LOG.error("{}", "CA file not X509CertificateHolder.");
                 return null;
             }
 
@@ -154,7 +154,7 @@ public class AsymcSslUtils {
                 caIn.close();
                 parser.close();
             } catch (Exception e) {
-                LOG.error(TAG, "generate CA certtificate failed.", e);
+                LOG.error("{}", "generate CA certtificate failed.", e);
                 return null;
             }
 
@@ -167,12 +167,12 @@ public class AsymcSslUtils {
             try {
                 object = parser.readObject();
             } catch (IOException e) {
-                LOG.error(TAG, "parse Client CRT failed.", e);
+                LOG.error("{}", "parse Client CRT failed.", e);
                 return null;
             }
 
             if (!(object instanceof X509CertificateHolder)) {
-                LOG.error(TAG, "Client CRT file not X509CertificateHolder.");
+                LOG.error("{}", "Client CRT file not X509CertificateHolder.");
                 return null;
             }
 
@@ -183,7 +183,7 @@ public class AsymcSslUtils {
                 clientIn.close();
                 parser.close();
             } catch (Exception e) {
-                LOG.error(TAG, "generate Client certtificate failed.", e);
+                LOG.error("{}", "generate Client certtificate failed.", e);
                 return null;
             }
         }
@@ -193,7 +193,7 @@ public class AsymcSslUtils {
             try {
                 privateKey = getPrivateKey(keyInput, null);
             } catch (Exception e) {
-                LOG.error(TAG, "generate PrivateKey failed.", e);
+                LOG.error("{}", "generate PrivateKey failed.", e);
                 return null;
             }
         }
@@ -219,7 +219,7 @@ public class AsymcSslUtils {
             context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             return context.getSocketFactory();
         } catch (Exception e) {
-            LOG.error(TAG, "construct SSLSocketFactory failed.", e);
+            LOG.error("{}", "construct SSLSocketFactory failed.", e);
             return null;
         }
 
@@ -236,7 +236,7 @@ public class AsymcSslUtils {
         try {
             certFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {
-            LOG.error(TAG, "getSocketFactory failed, create CertificateFactory error.", e);
+            LOG.error("{}", "getSocketFactory failed, create CertificateFactory error.", e);
         }
 
         PEMParser parser = null;
@@ -250,12 +250,12 @@ public class AsymcSslUtils {
             try {
                 object = parser.readObject();
             } catch (IOException e) {
-                LOG.error(TAG, "parse CA failed.", e);
+                LOG.error("{}", "parse CA failed.", e);
                 return null;
             }
 
             if (!(object instanceof X509CertificateHolder)) {
-                LOG.error(TAG, "CA file not X509CertificateHolder.");
+                LOG.error("{}", "CA file not X509CertificateHolder.");
                 return null;
             }
 
@@ -266,7 +266,7 @@ public class AsymcSslUtils {
                 caIn.close();
                 parser.close();
             } catch (Exception e) {
-                LOG.error(TAG, "generate CA certtificate failed.", e);
+                LOG.error("{}", "generate CA certtificate failed.", e);
                 return null;
             }
 
@@ -287,7 +287,7 @@ public class AsymcSslUtils {
             context.init(null, tmf.getTrustManagers(), null);
             return context.getSocketFactory();
         } catch (Exception e) {
-            LOG.error(TAG, "construct SSLSocketFactory failed.", e);
+            LOG.error("{}", "construct SSLSocketFactory failed.", e);
             return null;
         }
 

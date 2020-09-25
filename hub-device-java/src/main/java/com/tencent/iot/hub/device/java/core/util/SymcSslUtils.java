@@ -40,7 +40,7 @@ public class SymcSslUtils {
         try {
             certFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {
-            LOG.error(TAG, "getSocketFactory failed, create CertificateFactory error.", e);
+            LOG.error("{}", "getSocketFactory failed, create CertificateFactory error.", e);
         }
 
         PEMParser parser = null;
@@ -54,12 +54,12 @@ public class SymcSslUtils {
             try {
                 object = parser.readObject();
             } catch (IOException e) {
-                LOG.error(TAG, "parse CA failed.", e);
+                LOG.error("{}", "parse CA failed.", e);
                 return null;
             }
 
             if (!(object instanceof X509CertificateHolder)) {
-                LOG.error(TAG, "CA file not X509CertificateHolder.");
+                LOG.error("{}", "CA file not X509CertificateHolder.");
                 return null;
             }
 
@@ -70,7 +70,7 @@ public class SymcSslUtils {
                 caIn.close();
                 parser.close();
             } catch (Exception e) {
-                LOG.error(TAG, "generate CA certtificate failed.", e);
+                LOG.error("{}", "generate CA certtificate failed.", e);
                 return null;
             }
         }
@@ -94,7 +94,7 @@ public class SymcSslUtils {
             return context.getSocketFactory();
 
         } catch (Exception e) {
-            LOG.error(TAG, "construct SSLSocketFactory failed.", e);
+            LOG.error("{}", "construct SSLSocketFactory failed.", e);
             return null;
         }
     }

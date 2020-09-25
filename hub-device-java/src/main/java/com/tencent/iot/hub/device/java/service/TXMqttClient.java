@@ -101,7 +101,6 @@ public class TXMqttClient {
     /**
      * 初始化远程服务客户端
      *
-     * @param context
      * @param clientOptions 客户端选项
      */
     public void init( TXMqttClientOptions clientOptions) {
@@ -112,7 +111,7 @@ public class TXMqttClient {
              mRemoteServer.registerMqttActionListener(mMqttActionListener);
              mRemoteServer.initDeviceInfo(mMqttClientOptions);
           } catch (Exception e) {
-             LOG.error(TAG, e, "invoke remote service failed!");
+             LOG.error("{}", "invoke remote service failed!", e);
           }
             
         
@@ -121,7 +120,6 @@ public class TXMqttClient {
     /**
      * 初始化远程服务客户端（内部接口不对外，仅供TXShadowClient调用）
      *
-     * @param context
      * @param clientOptions        客户端选项
      * @param shadowActionListener shadowAction监听器
      */
@@ -134,7 +132,7 @@ public class TXMqttClient {
              mRemoteServer.initDeviceInfo(mMqttClientOptions);
 
         } catch (Exception e) {
-             LOG.error(TAG, e, "invoke remote service failed!");
+             LOG.error("{}", "invoke remote service failed!", e);
         }
 
     }
@@ -152,7 +150,7 @@ public class TXMqttClient {
         try {
             mRemoteServer.setBufferOpts(bufferOpts);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[setBufferOpts] failed!");
+            LOG.error("{}", "invoke remote service[setBufferOpts] failed!", e);
         }
     }
 
@@ -166,7 +164,7 @@ public class TXMqttClient {
     public Status connect(TXMqttConnectOptions connectOptions, Object userContext) {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
@@ -176,7 +174,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.connect(connectOptions, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[connect] failed!");
+            LOG.error("{}", "invoke remote service[connect] failed!", e);
         }
 
         return status;
@@ -190,7 +188,7 @@ public class TXMqttClient {
     public Status reconnect() {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
 
@@ -198,7 +196,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.reconnect();
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[reconnect] failed!");
+            LOG.error("{}", "invoke remote service[reconnect] failed!", e);
         }
 
         return status;
@@ -224,7 +222,7 @@ public class TXMqttClient {
     public Status disConnect(long timeout, Object userContext) {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
@@ -233,7 +231,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.disConnect(timeout, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[disConnect] failed!");
+            LOG.error("{}", "invoke remote service[disConnect] failed!", e);
         }
         return status;
     }
@@ -249,7 +247,7 @@ public class TXMqttClient {
     public Status subscribe(String topic, int qos, Object userContext) {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
@@ -258,7 +256,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.subscribe(topic, qos, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[subscribe] failed!");
+            LOG.error("{}", "invoke remote service[subscribe] failed!", e);
         }
         return status;
     }
@@ -273,7 +271,7 @@ public class TXMqttClient {
     public Status unSubscribe(String topic, Object userContext) {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
@@ -282,7 +280,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.unSubscribe(topic, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[unSubscribe] failed!");
+            LOG.error("{}", "invoke remote service[unSubscribe] failed!", e);
         }
 
         return status;
@@ -299,7 +297,7 @@ public class TXMqttClient {
     public Status publish(String topic, TXMqttMessage message, Object userContext) {
         Status status = Status.ERROR;
         if (null == mRemoteServer) {
-           LOG.error(TAG, "remote service is not start!");
+            LOG.error("{}", "remote service is not start!");
             return status;
         }
         long requestId = mRequestId.getAndIncrement();
@@ -308,7 +306,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.publish(topic, message, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[publish] failed!");
+            LOG.error("{}", "invoke remote service[publish] failed!", e);
         }
 
         return status;
@@ -334,7 +332,7 @@ public class TXMqttClient {
         try {
             mRemoteServer.initOTA(storagePath, mOTAListener);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[initOTA] failed!");
+            LOG.error("{}", "invoke remote service[initOTA] failed!", e);
         }
     }
 
@@ -351,7 +349,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.reportCurrentFirmwareVersion(currentFirmwareVersion);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[reportCurrentFirmwareVersion] failed!");
+            LOG.error("{}", "invoke remote service[reportCurrentFirmwareVersion] failed!", e);
         }
 
         return status;
@@ -373,7 +371,7 @@ public class TXMqttClient {
             String statusStr = mRemoteServer.reportOTAState(state.name(), resultCode, resultMsg, version);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-           LOG.error(TAG, e, "invoke remote service[reportOTAState] failed!");
+            LOG.error("{}", "invoke remote service[reportOTAState] failed!", e);
         }
 
         return status;
@@ -413,7 +411,7 @@ public class TXMqttClient {
         mMqttActionListener = new ITXMqttActionListener() {
 
             public void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg) {
-                LOG.debug(TAG, "onConnectCompleted, status[%s], reconnect[%b], msg[%s]", status, reconnect, msg);
+                LOG.debug("onConnectCompleted, status[{}], reconnect[{}], msg[{}]", status, reconnect, msg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onConnectCompleted(Status.valueOf(Status.class, status),
@@ -423,14 +421,14 @@ public class TXMqttClient {
             }
 
             public void onConnectionLost(String cause)  {
-                LOG.debug(TAG, "onConnectionLost, cause[%s]", cause);
+                LOG.debug("onConnectionLost, cause[{}]", cause);
                 if (null != mMqttActionCallBack) {
                     mMqttActionCallBack.onConnectionLost(new Throwable(cause));
                 }
             }
 
             public void onDisconnectCompleted(String status, long userContextId, String msg) {
-                LOG.debug(TAG, "onDisconnectCompleted, status[%s], msg[%s]", status, msg);
+                LOG.debug("onDisconnectCompleted, status[{}], msg[{}]", status, msg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onDisconnectCompleted(Status.valueOf(Status.class, status), userContext, msg);
@@ -439,7 +437,7 @@ public class TXMqttClient {
             }
 
             public void onPublishCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
-                LOG.debug(TAG, "onPublishCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
+                LOG.debug("onPublishCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
@@ -448,7 +446,7 @@ public class TXMqttClient {
             }
 
             public void onSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
-                LOG.debug(TAG, "onSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
+                LOG.debug("onSubscribeCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
@@ -457,7 +455,7 @@ public class TXMqttClient {
             }
 
             public void onUnSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
-                LOG.debug(TAG, "onUnSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
+                LOG.debug("onUnSubscribeCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
@@ -466,7 +464,7 @@ public class TXMqttClient {
             }
 
             public void onMessageReceived(String topic, TXMqttMessage message) {
-                LOG.debug(TAG, "onMessageReceived, topic[%s], message[%s]", topic, message);
+                LOG.debug("onMessageReceived, topic[{}], message[{}]", topic, message);
                 if (null != mMqttActionCallBack) {
                     mMqttActionCallBack.onMessageReceived(topic, message.transToMqttMessage());
                 }
@@ -477,8 +475,7 @@ public class TXMqttClient {
             }
 
             public void onServiceDestroyCallback(){
-                LOG.debug(TAG, "onServiceDestroyCallback");
-           
+                LOG.debug("onServiceDestroyCallback");
             }
         };
     }

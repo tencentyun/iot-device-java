@@ -91,7 +91,7 @@ public class Door {
      */
     public void leaveRoom() {
         if (null == mqttConnection) {
-            LOG.error(TAG, "please enter room first!");
+            LOG.error("{}", "please enter room first!");
             return;
         }
         MqttMessage message = new MqttMessage();
@@ -141,7 +141,7 @@ public class Door {
         public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
             String logInfo = String.format("onSubscribeCompleted, status[%s], message[%s]", status.name(), msg);
             if (Status.ERROR == status) {
-                LOG.error(TAG, logInfo);
+                LOG.error("{}", logInfo);
             } else {
                 LOG.info(TAG, logInfo);
             }

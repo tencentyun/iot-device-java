@@ -205,7 +205,7 @@ public class TXShadowConnection {
 
 			if (System.currentTimeMillis() - startTimeMills > 20000) { // 20
 																		// seconds
-				LOG.error(TAG, "Subscribe topic [%s] timeout!!!", OPERATION_RESULT_TOPIC);
+				LOG.error("{}", "Subscribe topic [%s] timeout!!!", OPERATION_RESULT_TOPIC);
 				return Status.ERROR;
 			}
 		}
@@ -401,7 +401,7 @@ public class TXShadowConnection {
 	 */
 	private Status checkMqttStatus() {
 		if (null == mMqttConnection || mMqttConnection.getConnectStatus() != TXMqttConstants.ConnectStatus.kConnected) {
-			LOG.error(TAG, "mqtt is disconnected!");
+			LOG.error("{}", "mqtt is disconnected!");
 			return Status.MQTT_NO_CONN;
 		}
 
@@ -450,7 +450,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.VERSION, mDocumentVersion);
 
 		} catch (JSONException e) {
-			LOG.error(TAG, e, "build report info failed");
+			LOG.error("{}", e, "build report info failed");
 			return "";
 		}
 
@@ -475,7 +475,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.VERSION, mDocumentVersion);
 
 		} catch (JSONException e) {
-			LOG.error(TAG, e, "build report info failed");
+			LOG.error("{}", e, "build report info failed");
 			return "";
 		}
 
@@ -489,7 +489,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.GET);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
 		} catch (JSONException e) {
-			LOG.error(TAG, e, "build report info failed");
+			LOG.error("{}", e, "build report info failed");
 			return "";
 		}
 
@@ -503,7 +503,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.DELETE);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
 		} catch (JSONException e) {
-			LOG.error(TAG, e, "build report info failed");
+			LOG.error("{}", e, "build report info failed");
 			return "";
 		}
 
@@ -529,7 +529,7 @@ public class TXShadowConnection {
 	 */
 	private void processShadowMessageReceived(String topic, MqttMessage message) {
 		if (null == message || null == message.getPayload()) {
-			LOG.error(TAG, "handle mqtt message failed, reason[%s]!", "message or payload is empty");
+			LOG.error("{}", "handle mqtt message failed, reason[%s]!", "message or payload is empty");
 			return;
 		}
 
@@ -574,7 +574,7 @@ public class TXShadowConnection {
 				}
 			}
 		} catch (JSONException e) {
-			LOG.error(TAG, e, "Received JSON is not valid!");
+			LOG.error("{}", e, "Received JSON is not valid!");
 			return;
 		}
 
@@ -638,7 +638,7 @@ public class TXShadowConnection {
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
-			LOG.error(TAG, cause, "mqtt connection lost!");
+			LOG.error("{}", cause, "mqtt connection lost!");
 			mIsOperationResultSubscribeSuccess = false;
 			mShadowActionCallback.onConnectionLost(cause);
 		}
@@ -710,7 +710,7 @@ public class TXShadowConnection {
 
 			if (topic.startsWith("$" + TXShadowConstants.SHADOW)) {
 				if (null == message || null == message.getPayload()) {
-					LOG.error(TAG, "handle mqtt message failed, reason[%s]!", "message or payload is empty");
+					LOG.error("{}", "handle mqtt message failed, reason[%s]!", "message or payload is empty");
 					return;
 				}
 
