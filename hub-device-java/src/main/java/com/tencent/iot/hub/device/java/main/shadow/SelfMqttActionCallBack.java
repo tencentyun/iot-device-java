@@ -24,13 +24,13 @@ public class SelfMqttActionCallBack extends TXMqttActionCallBack {
         String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                 status.name(), reconnect, userContextInfo, msg);
         System.out.println("***************** OnConnectCompleted " + logInfo);
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
     @Override
     public void onConnectionLost(Throwable cause) {
         String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SelfMqttActionCallBack extends TXMqttActionCallBack {
             userContextInfo = userContext.toString();
         }
         String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class SelfMqttActionCallBack extends TXMqttActionCallBack {
         }
         String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
                 status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
     @Override
@@ -64,9 +64,9 @@ public class SelfMqttActionCallBack extends TXMqttActionCallBack {
         String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                 status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
         if (Status.ERROR == status) {
-        	LOG.info(TAG, logInfo);
+            LOG.info("{}", logInfo);
         } else {
-        	LOG.info(TAG, logInfo);
+            LOG.info("{}", logInfo);
         }
     }
 
@@ -78,14 +78,14 @@ public class SelfMqttActionCallBack extends TXMqttActionCallBack {
         }
         String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                 status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
     @Override
     public void onMessageReceived(final String topic, final MqttMessage message) {
         String logInfo = String.format("receive command, topic[%s], message[%s]", topic, message.toString());
         System.out.println("***************** OnMsgReceived " + logInfo);
-        LOG.info(TAG, logInfo);
+        LOG.info("{}", logInfo);
     }
 
 }

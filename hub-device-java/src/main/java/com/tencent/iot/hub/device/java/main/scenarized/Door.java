@@ -91,7 +91,7 @@ public class Door {
      */
     public void leaveRoom() {
         if (null == mqttConnection) {
-            LOG.error(TAG, "please enter room first!");
+            LOG.error("please enter room first!");
             return;
         }
         MqttMessage message = new MqttMessage();
@@ -113,7 +113,7 @@ public class Door {
 
         @Override
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
-            LOG.info(TAG, "onConnectCompleted：" + msg);
+            LOG.info("onConnectCompleted：" + msg);
 
             if (status.equals(Status.OK)) {
                 if (!reconnect) {
@@ -128,22 +128,22 @@ public class Door {
         @Override
         public void onConnectionLost(Throwable cause) {
             String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-            LOG.info(TAG, logInfo);
+            LOG.info(logInfo);
         }
 
         @Override
         public void onDisconnectCompleted(Status status, Object userContext, String msg) {
             String logInfo = String.format("onDisconnectCompleted, status[%s], msg[%s]", status.name(), msg);
-            LOG.info(TAG, logInfo);
+            LOG.info(logInfo);
         }
 
         @Override
         public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
             String logInfo = String.format("onSubscribeCompleted, status[%s], message[%s]", status.name(), msg);
             if (Status.ERROR == status) {
-                LOG.error(TAG, logInfo);
+                LOG.error(logInfo);
             } else {
-                LOG.info(TAG, logInfo);
+                LOG.info(logInfo);
             }
         }
 

@@ -125,7 +125,7 @@ public class MQTTSample {
         // 用户上下文（请求实例）
         MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
 
-        LOG.debug(TAG, "sub topic is " + topic);
+        LOG.debug("{}", "sub topic is " + topic);
 
         // 订阅主题
         mMqttConnection.subscribe(topic, qos, mqttRequest);
@@ -142,7 +142,7 @@ public class MQTTSample {
         String topic = getTopic(topicName);
         // 用户上下文（请求实例）
         MQTTRequest mqttRequest = new MQTTRequest("unSubscribeTopic", requestID.getAndIncrement());
-        LOG.debug(TAG, "Start to unSubscribe" + topic);
+        LOG.debug("{}", "Start to unSubscribe" + topic);
         // 取消订阅主题
         mMqttConnection.unSubscribe(topic, mqttRequest);
     }
@@ -164,7 +164,7 @@ public class MQTTSample {
         // 用户上下文（请求实例）
         MQTTRequest mqttRequest = new MQTTRequest("publishTopic", requestID.getAndIncrement());
 
-        LOG.debug(TAG, "pub topic " + topic + message);
+        LOG.debug("{}", "pub topic " + topic + message);
         // 发布主题
         mMqttConnection.publish(topic, message, mqttRequest);
 

@@ -64,7 +64,7 @@ public class Airconditioner {
 	}
 
 	public void subScribeTopic() {
-		LOG.debug(TAG, "subScribeTopic");
+		LOG.debug("{}", "subScribeTopic");
 		String topic = String.format("%s/%s/%s", PRODUCT_ID, DEVICE_NAME, "control");
 		mqttConnection.subscribe(topic, TXMqttConstants.QOS1, null);
 	}

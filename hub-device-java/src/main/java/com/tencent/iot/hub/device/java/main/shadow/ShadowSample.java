@@ -83,7 +83,7 @@ public class ShadowSample {
     }
 
     public void connect() {
-        LOG.info(TAG, "connect");
+        LOG.info("{}", "connect");
 
         mShadowConnection = new TXShadowConnection(PRODUCT_ID, DEVICE_NAME, SECRET_KEY, mShadowActionCallBack);
 
@@ -93,7 +93,7 @@ public class ShadowSample {
         options.setAutomaticReconnect(true);
         options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(DEVICE_CERT_NAME, DEVICE_KEY_NAME));
         Status status = mShadowConnection.connect(options, null);
-        LOG.info(TAG, String.format("connect IoT completed, status[%s]", status));
+        LOG.info("connect IoT completed, status[{}]", status);
         isConnected = true;
     }
 
@@ -126,7 +126,7 @@ public class ShadowSample {
         if (!isConnected) {
             return;
         }
-        LOG.info(TAG, "update device property success and report null desired info");
+        LOG.info("{}", "update device property success and report null desired info");
         // 在确认delta更新后，调用reportNullDesiredInfo()接口进行上报
         mShadowConnection.reportNullDesiredInfo();
     }

@@ -120,7 +120,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 	 */
 	private TXGatewaySubdev findSubdev(String productId, String devName) {
 
-		LOG.debug(TAG, "The hashed information is " + mSubdevs);
+		LOG.debug("{}", "The hashed information is " + mSubdevs);
 		return mSubdevs.get(productId + devName);
 	}
 
@@ -194,15 +194,15 @@ public class TXGatewayConnection extends TXMqttConnection {
 	 * @return the result of operation
 	 */
 	public Status gatewaySubdevOffline(String subProductID, String subDeviceName) {
-		LOG.debug(TAG, "Try to find " + subProductID + " & " + subDeviceName);
+		LOG.debug("{}", "Try to find " + subProductID + " & " + subDeviceName);
 		TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
 		if (subdev == null) {
-			LOG.debug(TAG, "Cant find the subdev");
+			LOG.debug("{}", "Cant find the subdev");
 			subdev = new TXGatewaySubdev(subProductID, subDeviceName);
 		}
 		String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
 
-		LOG.debug(TAG, "set " + subProductID + " & " + subDeviceName + " to offline");
+		LOG.debug("{}", "set " + subProductID + " & " + subDeviceName + " to offline");
 
 		// format the payload
 		JSONObject obj = new JSONObject();
@@ -219,7 +219,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 		MqttMessage message = new MqttMessage();
 		message.setQos(0);
 		message.setPayload(obj.toString().getBytes());
-		LOG.debug(TAG, "publish message " + message);
+		LOG.debug("{}", "publish message " + message);
 
 		return super.publish(topic, message, null);
 	}
@@ -227,11 +227,11 @@ public class TXGatewayConnection extends TXMqttConnection {
 	public Status gatewaySubdevOnline(String subProductID, String subDeviceName) {
 		TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
 		if (subdev == null) {
-			LOG.debug(TAG, "Cant find the subdev");
+			LOG.debug("{}", "Cant find the subdev");
 			subdev = new TXGatewaySubdev(subProductID, subDeviceName);
 		}
 		String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-		LOG.debug(TAG, "set " + subProductID + " & " + subDeviceName + " to Online");
+		LOG.debug("{}", "set " + subProductID + " & " + subDeviceName + " to Online");
 		// format the payload
 		JSONObject obj = new JSONObject();
 		try {
@@ -258,7 +258,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 		if (!topic.startsWith(GW_OPERATION_RES_PREFIX)) {
 			return false;
 		}
-		LOG.debug(TAG, "got gate operation messga " + topic + message);
+		LOG.debug("{}", "got gate operation messga " + topic + message);
 		String productInfo = topic.substring(GW_OPERATION_RES_PREFIX.length());
 		int splitIdx = productInfo.indexOf('/');
 		String productId = productInfo.substring(0, splitIdx);
@@ -300,7 +300,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		LOG.debug(TAG, "message received " + topic);
+		LOG.debug("{}", "message received " + topic);
 		if (!consumeGwOperationMsg(topic, message)) {
 			super.messageArrived(topic, message);
 		}
@@ -309,18 +309,18 @@ public class TXGatewayConnection extends TXMqttConnection {
 	@Override
 	public synchronized Status connect(MqttConnectOptions options, Object userContext) {
 		if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
-			LOG.info(TAG, "The client is connecting. Connect return directly.");
+			LOG.info("{}", "The client is connecting. Connect return directly.");
 			return Status.MQTT_CONNECT_IN_PROGRESS;
 		}
 
 		if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnected)) {
-			LOG.info(TAG, "The client is already connected. Connect return directly.");
+			LOG.info("{}", "The client is already connected. Connect return directly.");
 			return Status.OK;
 		}
 
 		this.mConnOptions = options;
 		if (mConnOptions == null) {
-			LOG.error(TAG, "Connect options == null, will not connect.");
+			LOG.error("{}", "Connect options == null, will not connect.");
 			return Status.PARAMETER_INVALID;
 		}
 
@@ -336,7 +336,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 						Base64.decode(mSecretKey, Base64.DEFAULT)) + ";hmacsha256";
 				mConnOptions.setPassword(passWordStr.toCharArray());
 			} catch (IllegalArgumentException e) {
-				LOG.debug(TAG, "Failed to set password");
+				LOG.debug("{}", "Failed to set password");
 			}
 		}
 
@@ -344,7 +344,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 		IMqttActionListener mActionListener = new IMqttActionListener() {
 			public void onSuccess(IMqttToken token) {
-				LOG.info(TAG, "onSuccess!");
+				LOG.info("{}", "onSuccess!");
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
 				mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
 						"connected to " + mServerURI);
@@ -354,11 +354,11 @@ public class TXGatewayConnection extends TXMqttConnection {
 				int qos = TXMqttConstants.QOS1;
 
 				subscribe(gwTopic, qos, "Subscribe GATEWAY result topic");
-				LOG.debug(TAG, "Connected, then subscribe the gateway result topic");
+				LOG.debug("{}", "Connected, then subscribe the gateway result topic");
 			}
 
 			public void onFailure(IMqttToken token, Throwable exception) {
-				LOG.error(TAG, exception, "onFailure!");
+				LOG.error("{}", exception, "onFailure!");
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 				mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
 			}
@@ -372,18 +372,18 @@ public class TXGatewayConnection extends TXMqttConnection {
 				mMqttClient.setBufferOpts(super.bufferOpts);
 				mMqttClient.setManualAcks(false);
 			} catch (Exception e) {
-				LOG.error(TAG, "new MqttClient failed", e);
+				LOG.error("{}", "new MqttClient failed", e);
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 				return Status.ERROR;
 			}
 		}
 
 		try {
-			LOG.info(TAG, "Start connecting to %s", mServerURI);
+			LOG.info("Start connecting to {}", mServerURI);
 			setConnectingState(TXMqttConstants.ConnectStatus.kConnecting);
 			mMqttClient.connect(mConnOptions, userContext, mActionListener);
 		} catch (Exception e) {
-			LOG.error(TAG, "MqttClient connect failed", e);
+			LOG.error("{}", "MqttClient connect failed", e);
 			setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
 			return Status.ERROR;
 		}
