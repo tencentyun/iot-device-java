@@ -1,4 +1,4 @@
-* [腾讯物联网开发平台 JAVA-SDK](#腾讯物联网开发平台-JAVA-SDK)
+* [腾讯云物联网开发平台 Java-SDK](#腾讯云物联网开发平台-Java-SDK)
   * [控制台创建设备](#控制台创建设备)
   * [工程配置](#工程配置)
   * [设备认证说明](#设备认证说明)
@@ -6,8 +6,8 @@
   * [SDK设计说明](#SDK设计说明)
   * [SDK API 说明](#SDK-API-说明)
 
-# 腾讯物联网开发平台 JAVA-SDK
-腾讯物联网开发平台 JAVA-SDK  配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT_Explorer Java SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。
+# 腾讯云物联网开发平台 Java-SDK
+腾讯云物联网开发平台 Java-SDK  配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT_Explorer Java SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。
 
 ## 控制台创建设备
 
@@ -16,15 +16,76 @@
 ## 工程配置
 
 **引用方式**
-如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
-```
-dependencies {
-    ...
-    implementation("com.tencent.iot.explorer:explorer-device-java:1.0.0")
-}
-```
+
+-  gradle 工程 正式版SDK 远程构建
+
+    如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
+    ```
+    dependencies {
+        ...
+        implementation 'com.tencent.iot.explorer:explorer-device-java:1.0.0'
+    }
+    ```
+
+-  maven 工程 正式版SDK 远程构建
+
+    在工程根目录的pom.xml中添加：
+    ```
+    <dependencies>
+        <dependency>
+            <groupId>com.tencent.iot.explorer</groupId>
+            <artifactId>explorer-device-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+    ```
+
+-  gradle 工程 snapshot版SDK 远程构建
+
+    > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
+
+    在工程的build.gradle中配置仓库url
+    ``` gr
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven {
+                url "https://oss.sonatype.org/content/repositories/snapshots"
+            }
+        }
+    }
+    ```
+    在应用模块的build.gradle中配置
+    ``` gr
+    dependencies {
+        implementation 'com.tencent.iot.explorer:explorer-device-java:1.0.0-SNAPSHOT'
+    }
+    ```
+
+-  maven 工程 snapshot版SDK 远程构建
+
+    > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
+
+    在工程根目录的pom.xml中添加：
+    ```
+    <dependencies>
+        <dependency>
+            <groupId>com.tencent.iot.explorer</groupId>
+            <artifactId>explorer-device-java</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+    ```
 
 **Java Sdk源码**
+
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java)下载Java Sdk源码。
 
 ## 设备认证说明

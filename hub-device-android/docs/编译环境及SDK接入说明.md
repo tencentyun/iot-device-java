@@ -12,11 +12,36 @@ Android Studio 可在 [Android developers 官网](https://developer.android.com/
 ## 引用方式
 - 集成 SDK 方式
   若不需要将 IoT-SDK 运行在 service 组件中，则只需要依赖 [iot_core](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android/iot_core)
- -  依赖 maven 远程构建
+ -  gradle 工程 正式版SDK 远程构建
+
+    在应用模块的build.gradle中配置
     ``` gr
     dependencies {
         implementation 'com.tencent.iot.hub:hub-device-android-core:3.2.0'
         implementation 'com.tencent.iot.hub:hub-device-android-service:3.2.0'
+    }
+    ```
+ -  gradle 工程 snapshot版SDK 远程构建
+
+    > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
+
+    在工程的build.gradle中配置仓库url
+    ``` gr
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven {
+                url "https://oss.sonatype.org/content/repositories/snapshots"
+            }
+        }
+    }
+    ```
+    在应用模块的build.gradle中配置
+    ``` gr
+    dependencies {
+        implementation 'com.tencent.iot.hub:hub-device-android-core:3.2.0-SNAPSHOT'
+        implementation 'com.tencent.iot.hub:hub-device-android-service:3.2.0-SNAPSHOT'
     }
     ```
  -  依赖本地sdk源码 构建

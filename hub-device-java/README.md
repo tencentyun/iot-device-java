@@ -1,14 +1,16 @@
-* [腾讯物联网通信设备端 JAVA-SDK](#腾讯物联网通信设备端-JAVA-SDK)
+* [腾讯云物联网通信设备端 Java-SDK](#腾讯云物联网通信设备端-Java-SDK)
   * [控制台创建设备](#控制台创建设备)
   * [工程配置](#工程配置)
   * [认证连接](#认证连接)
   * [子设备管理](#子设备管理)
   * [设备影子](#设备影子)
   * [API接口说明](#API接口说明)
+  * [Demo示例体验-设备互通](#Demo示例体验-设备互通)
+  * [Demo示例体验-设备状态上报与状态设置](#Demo示例体验-设备状态上报与状态设置)
 
-# 腾讯物联网通信设备端 JAVA-SDK
+# 腾讯云物联网通信设备端 Java-SDK
 
-腾讯物联网通信设备端 JAVA-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供设备端快速接入云端，并和云端进行双向通信的能力。
+腾讯云物联网通信设备端 Java-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供设备端快速接入云端，并和云端进行双向通信的能力。
 
 ## 控制台创建设备
 
@@ -19,6 +21,9 @@
 ## 工程配置
 
 **引用方式**
+
+-  gradle 工程 正式版SDK 远程构建
+
 如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
 ```
 dependencies {
@@ -27,7 +32,65 @@ dependencies {
 }
 ```
 
+-  maven 工程 正式版SDK 远程构建
+
+    在工程根目录的pom.xml中添加：
+    ```
+    <dependencies>
+        <dependency>
+            <groupId>com.tencent.iot.hub</groupId>
+            <artifactId>hub-device-java</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+    ```
+
+-  gradle 工程 snapshot版SDK 远程构建
+
+    > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
+
+    在工程的build.gradle中配置仓库url
+    ``` gr
+    allprojects {
+        repositories {
+            google()
+            jcenter()
+            maven {
+                url "https://oss.sonatype.org/content/repositories/snapshots"
+            }
+        }
+    }
+    ```
+    在应用模块的build.gradle中配置
+    ``` gr
+    dependencies {
+        implementation 'com.tencent.iot.hub:hub-device-java:1.0.1-SNAPSHOT'
+    }
+    ```
+
+-  maven 工程 snapshot版SDK 远程构建
+
+    > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
+
+    在工程根目录的pom.xml中添加：
+    ```
+    <dependencies>
+        <dependency>
+            <groupId>com.tencent.iot.hub</groupId>
+            <artifactId>hub-device-java</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+    ```
+
 **Java Sdk源码**
+
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java)下载Java Sdk源码。
 
 
@@ -144,3 +207,9 @@ MQTT网关的相关接口定义在TXGatewayConnection类中，介绍如下：
 | registerProperty      | 注册当前设备的设备属性                                 |  
 | unRegisterProperty      | 取消注册当前设备的指定属性                                 |  
 
+
+## Demo示例体验-设备互通
+官网上假设的一个示例场景，请参考 [设备互通.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/设备互通.md)
+
+## Demo示例体验-设备状态上报与状态设置
+官网上假设的一个示例场景，请参考 [设备状态上报与状态设置.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/设备状态上报与状态设置.md)

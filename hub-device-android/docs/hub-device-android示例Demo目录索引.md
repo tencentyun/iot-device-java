@@ -31,7 +31,7 @@
 请参考 [广播通信.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/广播通信.md) 文档，介绍广播通信功能，订阅了相应的广播 Topic 的在线设备便可收到服务器通过广播 Topic 发布的广播消息。
 
 ## 网关功能
-请参考 [网关功能.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/网关功能.md) 文档，介绍如何在腾讯IoT Hub控制台申请网关设备并绑定子设备, 并结合 SDK Demo 快速体验网关设备通过 MQTT 协议连接到腾讯云IoT Hub, 代理子设备上下线，发送和接收消息。
+请参考 [网关功能.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/网关功能.md) 文档，介绍如何在腾讯云IoT Hub控制台申请网关设备并绑定子设备, 并结合 SDK Demo 快速体验网关设备通过 MQTT 协议连接到腾讯云IoT Hub, 代理子设备上下线，发送和接收消息。
 
 ## 固件升级
 请参考 [固件升级.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/固件升级.md) 文档，介绍固件升级功能，并结合 SDK Demo 展示固件升级的流程和功能
