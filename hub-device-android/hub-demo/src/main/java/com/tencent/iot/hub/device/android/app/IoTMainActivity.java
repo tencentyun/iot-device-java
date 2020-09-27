@@ -3,6 +3,7 @@ package com.tencent.iot.hub.device.android.app;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,16 @@ import android.widget.TextView;
 
 import com.tencent.iot.hub.device.android.app.R;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.App;
+
+
+import org.apache.log4j.Level;
+import org.apache.log4j.PropertyConfigurator;
+
+import java.io.File;
+import java.io.IOException;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 
 public class IoTMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -96,6 +107,9 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         btnMqtt.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "hub-demo.log");
+        logConfigurator.configure();
     }
 
     /**
