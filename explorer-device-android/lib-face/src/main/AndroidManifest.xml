@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tencent.cloud.ai.fr.lib">
+    
+    <!-- 缓存案例到 sdcard -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- 绑定设备的授权方式需要读取机器序列号 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 绑定设备的授权方式首次授权需要联网 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
+</manifest>
