@@ -1,0 +1,19 @@
+R_DEF: Internal format may change without notice
+local
+attr? aspectRatio
+attr? autoFocus
+attr? facing
+attr? flash
+id auto
+id back
+id front
+id off
+id on
+id redEye
+id surface_view
+id texture_view
+id torch
+layout surface_view
+layout texture_view
+style Widget.CameraView
+styleable CameraView android:adjustViewBounds facing aspectRatio autoFocus flash

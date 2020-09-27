@@ -1,0 +1,53 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+	package
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:2:5-42
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:1-13:12
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:5:5-80
+	android:name
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:5:22-77
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:6:22-78
+uses-permission#android.permission.READ_PHONE_STATE
+ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:9:5-75
+	android:name
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:9:22-72
+uses-permission#android.permission.INTERNET
+ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:11:5-66
+	android:name
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:11:22-64
+uses-sdk
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		ADDED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+		INJECTED from /Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml

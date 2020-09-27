@@ -1,0 +1,30 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.tencent.cloud.ai.fr.lib"
+4    android:versionCode="123"
+5    android:versionName="5.0.0.123" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="14"
+8-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="28" />
+9-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml
+10
+11    <!-- 缓存案例到 sdcard -->
+12    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+12-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:5:5-80
+12-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:5:22-77
+13    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+13-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:6:5-81
+13-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:6:22-78
+14
+15    <!-- 绑定设备的授权方式需要读取机器序列号 -->
+16    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+16-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:9:5-75
+16-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:9:22-72
+17    <!-- 绑定设备的授权方式首次授权需要联网 -->
+18    <uses-permission android:name="android.permission.INTERNET" />
+18-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:11:5-66
+18-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-face/src/main/AndroidManifest.xml:11:22-64
+19
+20</manifest>

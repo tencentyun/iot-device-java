@@ -1,0 +1,1 @@
+[{"outputType":{"type":"MERGED_MANIFESTS"},"apkData":{"type":"MAIN","splits":[],"versionCode":123,"versionName":"5.0.0.123","enabled":true,"outputFile":"lib-face-debug.aar","fullName":"debug","baseName":"debug","dirName":""},"path":"../../library_manifest/debug/AndroidManifest.xml","properties":{"packageId":"com.tencent.cloud.ai.fr.lib","split":""}}]

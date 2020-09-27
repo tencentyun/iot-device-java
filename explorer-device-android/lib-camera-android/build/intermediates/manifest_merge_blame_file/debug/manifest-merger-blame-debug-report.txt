@@ -1,0 +1,40 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<!--
+3    Copyright (C) 2016 The Android Open Source Project
+4    Licensed under the Apache License, Version 2.0 (the "License");
+5    you may not use this file except in compliance with the License.
+6    You may obtain a copy of the License at
+7         http://www.apache.org/licenses/LICENSE-2.0
+8    Unless required by applicable law or agreed to in writing, software
+9    distributed under the License is distributed on an "AS IS" BASIS,
+10    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+11    See the License for the specific language governing permissions and
+12    limitations under the License.
+13-->
+14<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+15    package="com.google.android.cameraview" >
+16
+17    <uses-sdk
+18        android:minSdkVersion="14"
+18-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml
+19        android:targetSdkVersion="28" />
+19-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml
+20
+21    <uses-permission android:name="android.permission.CAMERA" />
+21-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:17:5-64
+21-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:17:22-62
+22
+23    <uses-feature android:name="android.hardware.camera" />
+23-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:19:5-59
+23-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:19:19-57
+24    <uses-feature
+24-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:20:5-22:35
+25        android:name="android.hardware.camera.autofocus"
+25-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:21:9-57
+26        android:required="false" />
+26-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:22:9-33
+27
+28    <application />
+28-->/Users/sun/Documents/work_code_from_gerrit/iot-device-android/explorer-device-android/lib-camera-android/src/main/AndroidManifest.xml:24:5-19
+29
+30</manifest>
