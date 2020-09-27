@@ -1,0 +1,588 @@
+<!-- 本文档由脚本自动生成，请勿手动修改 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>.hljs{display:block;overflow-x:auto;padding:0.5em;background:#F0F0F0}.hljs,.hljs-subst{color:#444}.hljs-comment{color:#888888}.hljs-keyword,.hljs-attribute,.hljs-selector-tag,.hljs-meta-keyword,.hljs-doctag,.hljs-name{font-weight:bold}.hljs-type,.hljs-string,.hljs-number,.hljs-selector-id,.hljs-selector-class,.hljs-quote,.hljs-template-tag,.hljs-versiondeletion{color:#880000}.hljs-title,.hljs-section{color:#880000;font-weight:bold}.hljs-regexp,.hljs-symbol,.hljs-variable,.hljs-template-variable,.hljs-link,.hljs-selector-attr,.hljs-selector-pseudo{color:#BC6060}.hljs-literal{color:#78A960}.hljs-built_in,.hljs-bullet,.hljs-code,.hljs-addition{color:#397300}.hljs-meta{color:#1f7199}.hljs-meta-string{color:#4d99bf}.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}</style>
+    <style>/*!
+ * Primer-product
+ * http://primer.github.io
+ *
+ * Released under MIT license. Copyright (c) 2018 GitHub Inc.
+ */
+.markdown-body {
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol !important;
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+    width: 1000px;
+    margin: auto;
+}
+
+.markdown-body:after,.markdown-body:before {
+    content: "";
+    display: table
+}
+
+.markdown-body:after {
+    clear: both
+}
+
+.markdown-body>:first-child {
+    margin-top: 0!important
+}
+
+.markdown-body>:last-child {
+    margin-bottom: 0!important
+}
+
+.markdown-body a:not([href]) {
+    color: inherit;
+    text-decoration: none
+}
+
+.markdown-body .absent {
+    color: #cb2431
+}
+
+.markdown-body .anchor {
+    float: left;
+    line-height: 1;
+    margin-left: -20px;
+    padding-right: 4px
+}
+
+.markdown-body .anchor:focus {
+    outline: none
+}
+
+.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul {
+    margin-bottom: 16px;
+    margin-top: 0
+}
+
+.markdown-body hr {
+    background-color: #e1e4e8;
+    border: 0;
+    height: .25em;
+    margin: 24px 0;
+    padding: 0
+}
+
+.markdown-body blockquote {
+    border-left: .25em solid #dfe2e5;
+    color: #6a737d;
+    padding: 0 1em
+}
+
+.markdown-body blockquote>:first-child {
+    margin-top: 0
+}
+
+.markdown-body blockquote>:last-child {
+    margin-bottom: 0
+}
+
+.markdown-body kbd {
+    background-color: #fafbfc;
+    border: 1px solid #c6cbd1;
+    border-bottom-color: #959da5;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #959da5;
+    color: #444d56;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 10px;
+    padding: 3px 5px;
+    vertical-align: middle
+}
+
+.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    margin-top: 24px
+}
+
+.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link {
+    color: #1b1f23;
+    vertical-align: middle;
+    visibility: hidden
+}
+
+.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor {
+    text-decoration: none
+}
+
+.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link {
+    visibility: visible
+}
+
+.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt {
+    font-size: inherit
+}
+
+.markdown-body h1 {
+    font-size: 2em
+}
+
+.markdown-body h1,.markdown-body h2 {
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: .3em
+}
+
+.markdown-body h2 {
+    font-size: 1.5em
+}
+
+.markdown-body h3 {
+    font-size: 1.25em
+}
+
+.markdown-body h4 {
+    font-size: 1em
+}
+
+.markdown-body h5 {
+    font-size: .875em
+}
+
+.markdown-body h6 {
+    color: #6a737d;
+    font-size: .85em
+}
+
+.markdown-body ol,.markdown-body ul {
+    padding-left: 2em
+}
+
+.markdown-body ol.no-list,.markdown-body ul.no-list {
+    list-style-type: none;
+    padding: 0
+}
+
+.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul {
+    margin-bottom: 0;
+    margin-top: 0
+}
+
+.markdown-body li {
+    word-wrap: break-all
+}
+
+.markdown-body li>p {
+    margin-top: 16px
+}
+
+.markdown-body li+li {
+    margin-top: .25em
+}
+
+.markdown-body dl {
+    padding: 0
+}
+
+.markdown-body dl dt {
+    font-size: 1em;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 16px;
+    padding: 0
+}
+
+.markdown-body dl dd {
+    margin-bottom: 16px;
+    padding: 0 16px
+}
+
+.markdown-body table {
+    display: block;
+    overflow: auto;
+    width: 100%
+}
+
+.markdown-body table th {
+    font-weight: 600
+}
+
+.markdown-body table td,.markdown-body table th {
+    border: 1px solid #dfe2e5;
+    padding: 6px 13px
+}
+
+.markdown-body table tr {
+    background-color: #fff;
+    border-top: 1px solid #c6cbd1
+}
+
+.markdown-body table tr:nth-child(2n) {
+    background-color: #f6f8fa
+}
+
+.markdown-body table img {
+    background-color: initial
+}
+
+.markdown-body img {
+    background-color: #fff;
+    box-sizing: initial;
+    max-width: 100%
+}
+
+.markdown-body img[align=right] {
+    padding-left: 20px
+}
+
+.markdown-body img[align=left] {
+    padding-right: 20px
+}
+
+.markdown-body .emoji {
+    background-color: initial;
+    max-width: none;
+    vertical-align: text-top
+}
+
+.markdown-body span.frame {
+    display: block;
+    overflow: hidden
+}
+
+.markdown-body span.frame>span {
+    border: 1px solid #dfe2e5;
+    display: block;
+    float: left;
+    margin: 13px 0 0;
+    overflow: hidden;
+    padding: 7px;
+    width: auto
+}
+
+.markdown-body span.frame span img {
+    display: block;
+    float: left
+}
+
+.markdown-body span.frame span span {
+    clear: both;
+    color: #24292e;
+    display: block;
+    padding: 5px 0 0
+}
+
+.markdown-body span.align-center {
+    clear: both;
+    display: block;
+    overflow: hidden
+}
+
+.markdown-body span.align-center>span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: center
+}
+
+.markdown-body span.align-center span img {
+    margin: 0 auto;
+    text-align: center
+}
+
+.markdown-body span.align-right {
+    clear: both;
+    display: block;
+    overflow: hidden
+}
+
+.markdown-body span.align-right>span {
+    display: block;
+    margin: 13px 0 0;
+    overflow: hidden;
+    text-align: right
+}
+
+.markdown-body span.align-right span img {
+    margin: 0;
+    text-align: right
+}
+
+.markdown-body span.float-left {
+    display: block;
+    float: left;
+    margin-right: 13px;
+    overflow: hidden
+}
+
+.markdown-body span.float-left span {
+    margin: 13px 0 0
+}
+
+.markdown-body span.float-right {
+    display: block;
+    float: right;
+    margin-left: 13px;
+    overflow: hidden
+}
+
+.markdown-body span.float-right>span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: right
+}
+
+.markdown-body code,.markdown-body tt {
+    font-family: consolas;
+    background-color: rgba(27,31,35,.05);
+    border-radius: 3px;
+    font-size: 85%;
+    margin: 0;
+    padding: .2em .4em
+}
+
+.markdown-body code br,.markdown-body tt br {
+    display: none
+}
+
+.markdown-body del code {
+    text-decoration: inherit
+}
+
+.markdown-body pre {
+    word-wrap: normal
+}
+
+.markdown-body pre>code {
+    font-family: consolas;
+    background: transparent;
+    border: 0;
+    font-size: 100%;
+    margin: 0;
+    padding: 0;
+    white-space: pre;
+    word-break: normal
+}
+
+.markdown-body .highlight {
+    margin-bottom: 16px
+}
+
+.markdown-body .highlight pre {
+    margin-bottom: 0;
+    word-break: normal
+}
+
+.markdown-body .highlight pre,.markdown-body pre {
+    background-color: #f6f8fa;
+    border-radius: 3px;
+    font-size: 85%;
+    line-height: 1.45;
+    overflow: auto;
+    padding: 16px
+}
+
+.markdown-body pre code,.markdown-body pre tt {
+    background-color: initial;
+    border: 0;
+    display: inline;
+    line-height: inherit;
+    margin: 0;
+    max-width: auto;
+    overflow: visible;
+    padding: 0;
+    word-wrap: normal
+}
+
+.markdown-body .csv-data td,.markdown-body .csv-data th {
+    font-size: 12px;
+    line-height: 1;
+    overflow: hidden;
+    padding: 5px;
+    text-align: left;
+    white-space: nowrap
+}
+
+.markdown-body .csv-data .blob-num {
+    background: #fff;
+    border: 0;
+    padding: 10px 8px 9px;
+    text-align: right
+}
+
+.markdown-body .csv-data tr {
+    border-top: 0
+}
+
+.markdown-body .csv-data th {
+    background: #f6f8fa;
+    border-top: 0;
+    font-weight: 600
+}
+
+</style>
+    <title>优图人脸检索文档</title>
+</head>
+<body class="markdown-body"><h1 id="优图人脸检索 YT-FACE-RETRIEVAL">优图人脸检索 YT-FACE-RETRIEVAL</h1><p>version: v2.1.0</p>
+<h2 id="CHANGELIST">CHANGELIST</h2><h3 id="v2.1.0">v2.1.0</h3><ul>
+<li>[接口改动] 去除了不必要的 lib id</li>
+<li>[FIX] 检索不到人脸，并且没有异常的情况下，需要返回空数组，而不是 NULL</li>
+</ul>
+<h2 id="名词解释">名词解释</h2><ul>
+<li><code>feat</code> 特征 <code>feature</code> 的简写，特征为一维数组，每一维为一个浮点小数。比如：每张人脸的特征可以表示为特征长度为 512 个 float 组成的一个 float[] 向量，即特征向量。</li>
+<li><code>featureLength</code> 特征向量长度，不同的<strong>人脸特征SDK</strong>对应提取的特征长度可能不一致，目前最稳定的为 512 维，还可能为 1024/128/256 维</li>
+<li><code>featureId</code> 每一个特征向量对应唯一标识符</li>
+<li><code>sim</code> 两个特征向量的<a href="https://zh.wikipedia.org/wiki/%E4%BD%99%E5%BC%A6%E7%9B%B8%E4%BC%BC%E6%80%A7">余弦相似性</a></li>
+<li><code>cvtTable</code> 余弦相似性转换表的一维数组，长度为100，将余弦相似性转化为可读的分数，不同的<strong>人脸提特征SDK</strong>的转换表不同</li>
+<li><code>score</code> 将 <code>sim</code> 通过 <code>convert table</code> 进行分数转换成 [0, 100] 的分数</li>
+</ul>
+<pre><code class="hljs bash"><span class="hljs-comment"># 对于特征向量 x</span>
+x = (x1, x2, x3, ..., xn)
+<span class="hljs-comment"># 求取其平方和，并开根号</span>
+sum = sqrt(x1*x1 + x2*x2 + x3*x3 + ... + xn*xn)
+<span class="hljs-comment"># 每一维除以 sum，即可得到归一化之后的特征向量</span>
+x_norm = (x1/sum, x2/sum, x3/sum, ..., xn/sum)</code></pre><h2 id="调用流程">调用流程</h2><p>注意：特征向量一定要先归一化，然后按照对应 id 的顺序拼接而成</p>
+<p>以 java 为例：</p>
+<pre><code class="hljs java"><span class="hljs-comment">// 0. 确定 **人脸特征SDK** 的两个关键要素：`convert table`的路径和特征长度 `featLength`。</span>
+String CVT_TABLE_PATH = <span class="hljs-string">"cvt_table.txt"</span>;
+<span class="hljs-keyword">int</span> FEATURE_LENGTH = <span class="hljs-number">512</span>;
+
+<span class="hljs-comment">// 1. 通过 `YTFaceRetrieval` 静态方法 `loadConvertTable` 加载**人脸特征SDK**的 `convert table` 文件，获得 100维 的 `cvtTable` float[]数组</span>
+<span class="hljs-keyword">float</span>[] cvtTable = YTFaceRetrieval.loadConvertTable(<span class="hljs-keyword">this</span>.getAssets(), CVT_TABLE_PATH);
+
+<span class="hljs-comment">// 2. 使用 `cvtTable` 和 `FEATURE_LENGTH`，创建对应的 `YTFaceRetrieval` 的实例。</span>
+<span class="hljs-comment">// retriever 内所有的 lib，都会公用此 `cvtTable`, 并且特征长度均为 `FEATURE_LENGTH`</span>
+YTFaceRetrieval retrieval = <span class="hljs-keyword">new</span> YTFaceRetrieval(cvtTable, FEATURE_LENGTH);
+
+<span class="hljs-comment">// or</span>
+<span class="hljs-comment">// 特征向量一定要先归一化，然后按照对应 id 的顺序拼接而成</span>
+<span class="hljs-comment">// 对于移动端 YTFaceFeature 提取的特征已经完成了归一化</span>
+<span class="hljs-comment">// feats = getSomeFeats();</span>
+<span class="hljs-comment">// featIds = getSomeFeatIds();</span>
+<span class="hljs-comment">// int result = faceRetrieve.insertFeatures(feats, featIds);</span>
+
+<span class="hljs-comment">// 4. 检索，对输入的单条特征进行检索，获得 topN 相似度的特征结果</span>
+<span class="hljs-keyword">int</span> topN = <span class="hljs-number">3</span>;
+<span class="hljs-keyword">float</span> threshold = <span class="hljs-number">80.0</span>;
+<span class="hljs-comment">// float[] toRetrieveFeat = getRetrievedFeat();</span>
+YTFaceRetrieval.RetrievedItem[] results = faceRetrieve.retrieve(topN, toRetrieveFeat, threshold);
+<span class="hljs-keyword">if</span> (results == <span class="hljs-keyword">null</span> || results.length == <span class="hljs-number">0</span>) {
+    Log.i(<span class="hljs-string">"youtu"</span>, <span class="hljs-string">"no results"</span>);
+}
+
+<span class="hljs-comment">// 5. CRUD，可以调用其他接口，对实例中的特征进行增删改查，具体请看接口文档</span></code></pre><h2 id="数据结构">数据结构</h2><p>注意：特征向量一定要先归一化，然后按照对应 id 的顺序拼接而成</p>
+<p>每一个 <strong>人脸特征SDK</strong> 对于人脸特征的提取，都有对应的特征向量长度，<code>featLength</code>。以下以 <code>featLength = 512</code> 举例。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">int</span> FEATURE_LENGTH = <span class="hljs-number">512</span>;
+
+<span class="hljs-comment">// 单个特征向量</span>
+feat: [<span class="hljs-keyword">float</span>, <span class="hljs-keyword">float</span>, <span class="hljs-keyword">float</span>, ..., <span class="hljs-keyword">float</span>]
+feat.length = FEATURE_LENGTH
+
+<span class="hljs-comment">// 多个特征向量对应关系</span>
+feats  : [  <span class="hljs-number">512</span>,     <span class="hljs-number">512</span>,     <span class="hljs-number">512</span>,   ...,   <span class="hljs-number">512</span>  ]
+featIds: [FeatId1, FeatId2, FeatId3, ..., FeatIdN]
+
+<span class="hljs-keyword">float</span>[] feats = <span class="hljs-keyword">new</span> <span class="hljs-keyword">float</span>[featIds.length * FEATURE_LENGTH];
+
+System.arraycopy(feat, <span class="hljs-number">0</span>, feats, n * FEATURE_LENGTH, FEATURE_LENGTH);</code></pre><h2 id="接口 - Java">接口 - Java</h2><p>package: com.tencent.youtu.YTFaceRetrieval</p>
+<h3 id="参数类">参数类</h3><ul>
+<li>class RetrievedItem;<ul>
+<li>String featureId: 检索得到的 feature id</li>
+<li>float score: 分数，取值范围 [1-100]</li>
+<li>float sim: 余弦相似性，取值范围 [-1.0 ~ 1.0]</li>
+</ul>
+</li>
+</ul>
+<h3 id="通用接口">通用接口</h3><ul>
+<li><p>YTFaceRetrieval(float[] cvtTable, int featLength);</p>
+<ul>
+<li>@brief 类实例必须加载<strong>人脸特征SDK</strong>对应的 <code>convert table</code>，每一个实例内的所有检索库 <code>lib</code> 公用此 <code>convert table</code></li>
+<li>@param <code>cvtTable</code> <code>convert table</code> 数组，长度为 100 维，若长度不为 100 维，在native层会报错</li>
+<li>@param <code>featLength</code> 特征的长度，取决于<strong>人脸特征SDK</strong>提取的特征维度</li>
+</ul>
+</li>
+<li><p>void destroy();</p>
+<ul>
+<li>@brief 每一个 <code>new</code> 出的实例，都需要明确的 <code>destroy()</code>。防止内存泄漏。</li>
+</ul>
+</li>
+<li><p>static String getVersion();</p>
+<ul>
+<li>@brief 获得 SDK 版本号，如 <code>v3.0.0</code>/<code>v3.0.0-beta.0</code>/<code>v3.1.1-rc.0</code></li>
+<li>@return 版本号</li>
+</ul>
+</li>
+</ul>
+<h3 id="功能接口">功能接口</h3><ul>
+<li><p>static float[] loadConvertTable(String path);</p>
+<ul>
+<li>@brief 读取 <code>convert table</code> 文件的数值，可以将返回值作为 <code>YTFaceRetrieval</code> 的参数</li>
+<li>@param <code>path</code> ConvertTable所在外部存储空间的绝对路径</li>
+<li>@return 100 维的 float 数组，若加载失败，则返回 <code>null</code></li>
+</ul>
+</li>
+<li><p>static float[] loadConvertTable(AssetManager assetManager, String path);</p>
+<ul>
+<li>@brief 读取 <code>convert table</code> 文件的数值，可以将返回值作为 <code>YTFaceRetrieval</code> 的参数</li>
+<li>@param <code>assetManager</code> Android 管理 <code>Assets</code> 类，可通过 <code>this.getAssets()</code> 获得</li>
+<li>@param <code>path</code> ConvertTable所在 <code>assets</code> 下的路径</li>
+<li>@return 100 维的 float 数组，若加载失败，则返回 <code>null</code></li>
+</ul>
+</li>
+<li><p>float compare(float[] feature1, float[] feature2, boolean converted);</p>
+<ul>
+<li>@brief 比对两个人脸特征，根据是否 <code>cvtTable</code> 决定输出的结果</li>
+<li>@param <code>feature1</code> 人脸特征1</li>
+<li>@param <code>feature2</code> 人脸特征2</li>
+<li>@param <code>converted</code> 当 <code>converted == true</code> 时，将会转换 <code>sim</code> 为 <code>score</code></li>
+<li>@return [1.0-100.0]的分数或者特征的余弦相似度，取决于是否 <code>converted</code></li>
+</ul>
+</li>
+<li><p>YTFaceRetrieval.RetrievedItem[] retrieve(float[] feature, int topN, float threshold);</p>
+<ul>
+<li>@brief 在指定库中检索出最相似的 topN 个人，得到符合条件的检索结果</li>
+<li>@param <code>feature</code> 待检索的人的特征</li>
+<li>@param <code>topN</code> 选取相似度最高的前 <code>topN</code> 个人</li>
+<li>@param <code>threshold</code> 阈值，应该与 cvtTable 转化之后的分数一致，建议值：<code>85.0</code></li>
+<li>@return 检索结果数组</li>
+</ul>
+</li>
+<li><p>int insertFeatures(float[] features, String[] featureIds);</p>
+<ul>
+<li>@brief 批量往检索实例中插入指定的特征和其对应关系的特征 id</li>
+<li>@brief 注意，为了性能考虑，不会对插入的 <code>featureIds</code> 进行重复性校验，调用者应自行确保 <code>featId</code> 是唯一的</li>
+<li>@param <code>features</code> 根据 <code>featureIds</code> 的顺序，将所有特征值拼接而成的 float 数组，应该满足关系 <code>features.length == featureIds.length * featLength</code>，<strong>特征必须归一化</strong></li>
+<li>@param <code>featureIds</code> 每个特征对应的特征 id</li>
+<li>@return <code>&lt; 0</code> 失败；<code>= 0</code> 成功</li>
+</ul>
+</li>
+<li><p>int deleteFeatures(String[] featureIds);</p>
+<ul>
+<li>@brief 删除检索实例中对应 <code>featureIds</code> 的特征向量</li>
+<li>@return <code>&lt; 0</code> 失败；<code>= 0</code> 成功；<code>&gt; 0</code> lib 中不存在 <code>featureIds</code> 的数量；</li>
+</ul>
+</li>
+<li><p>int updateFeature(float[] feat, String featureId);</p>
+<ul>
+<li>@brief 更新检索实例中 <code>featureId</code> 对应的特征向量</li>
+<li>@return <code>&lt; 0</code> 失败；<code>= 0</code> 成功</li>
+</ul>
+</li>
+<li><p>int queryFeatureNum();</p>
+<ul>
+<li>@brief 查询检索实例中的特征数量</li>
+<li>@param <code>libId</code> 检索库 id</li>
+<li>@return 检索库中的特征数量</li>
+</ul>
+</li>
+<li><p>float[] queryFeature(String featureId);</p>
+<ul>
+<li>@brief 查询检索实例中指定 <code>featureId</code> 的特征值</li>
+<li>@param <code>featureId</code> 特征 id</li>
+<li>@return 特征值，若 <code>featureId</code> 不存在，则返回 null</li>
+</ul>
+</li>
+</ul>
+</body>
+</html>
