@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 123
+        versionName "5.0.0.123"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions{
+        // libYTCommon.so 不能压缩，否则可能会报错：empty/missing DT_HASH/DT_GNU_HASH in ".../lib/arm64/libYTCommon.so"
+        doNotStrip "**/libYTCommon.so"
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])//人脸识别SDK
+    implementation 'com.instagram.igdiskcache:ig-disk-cache:1.0.0'//案例缓存工具
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
