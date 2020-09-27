@@ -1,11 +1,11 @@
-* [腾讯物联网通信设备端 Android-SDK](#腾讯物联网通信设备端-Android-SDK)
+* [腾讯云物联网通信设备端 Android-SDK](#腾讯云物联网通信设备端-Android-SDK)
   * [SDK接入指南](#SDK接入指南)
   * [Demo示例体验](#Demo示例体验)
   * [SDK API及参数说明](#SDK-API及参数说明)
   * [常见问题](#常见问题)
 
-# 腾讯物联网通信设备端 Android-SDK
-腾讯物联网通信设备端 Android-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供终端(如传感器, 执行器, 嵌入式设备或智能家电等等)和云端的双向通信能力。
+# 腾讯云物联网通信设备端 Android-SDK
+腾讯云物联网通信设备端 Android-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供终端(如传感器, 执行器, 嵌入式设备或智能家电等等)和云端的双向通信能力。
 
 ## SDK接入指南
 SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [编译环境及SDK接入说明](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/编译环境及SDK接入说明.md)
