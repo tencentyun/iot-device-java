@@ -46,7 +46,7 @@ public class MQTTSample {
 
     private String mSubProductID = "SUBDEV_PRODUCT-ID";
     private String mSubDevName = "SUBDEV_DEV-NAME";
-    private String mSubProductKey = "SUBDEV_DEVICE-SECRET";
+    private String mSubDevPsk = "SUBDEV_DEVICE-SECRET";
     private String mTestTopic = "TEST_TOPIC_WITH_SUB_PUB";
     private String mDevCert;
     private String mDevPriv;
@@ -119,11 +119,11 @@ public class MQTTSample {
                       String devName, String devPsk, String devCert, String devPriv, String subProductID, String subDevName, String subProductKey, String testTopic, String devCertName, String devKeyName,
                       Boolean mqttLogFlag, TXMqttLogCallBack logCallBack) {
         this(context, callBack, brokerURL, productId, devName, devPsk, devCert, devPriv, subProductID, subDevName, testTopic, devCertName, devKeyName, mqttLogFlag, logCallBack);
-        mSubProductKey = subProductKey;
+        mSubDevPsk = subProductKey;
     }
 
     public void setSubProductKey(String subProductKey) {
-        mSubProductKey = subProductKey;
+        mSubDevPsk = subProductKey;
     }
 
 
@@ -190,7 +190,7 @@ public class MQTTSample {
     }
 
     public void setSubDevBinded() {
-        mMqttConnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubProductKey);
+        mMqttConnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevPsk);
     }
 
     public void setSubDevUnbinded() {

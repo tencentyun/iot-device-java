@@ -111,7 +111,7 @@ public class IoTMqttFragment extends Fragment {
     private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
     private String mSubProductID = BuildConfig.SUB_PRODUCT_ID; // If you wont test gateway, let this to be null
     private String mSubDevName = BuildConfig.SUB_DEV_NAME;
-    private String mSubProductKey = BuildConfig.SUB_PRODUCT_KEY;
+    private String mSubDevPsk = BuildConfig.SUB_DEVICE_PSK;
     private String mTestTopic = BuildConfig.TEST_TOPIC;    // productID/DeviceName/TopicName
     private String mDevCertName = "YOUR_DEVICE_NAME_cert.crt";
     private String mDevKeyName  = "YOUR_DEVICE_NAME_private.key";
@@ -199,8 +199,8 @@ public class IoTMqttFragment extends Fragment {
                        editor.putString(PRODUCT_KEY, mProductKey);
                        break;
                    case 9:
-                       mSubProductKey = paraStr;
-                       editor.putString(SUB_PRODUCT_KEY, mSubProductKey);
+                       mSubDevPsk = paraStr;
+                       editor.putString(SUB_PRODUCT_KEY, mSubDevPsk);
                        break;
                    default:
                        break;
@@ -222,7 +222,7 @@ public class IoTMqttFragment extends Fragment {
                     mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
                     mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
                     mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
-                    mSubProductKey = settings.getString(SUB_PRODUCT_KEY, mSubProductKey);
+                    mSubDevPsk = settings.getString(SUB_PRODUCT_KEY, mSubDevPsk);
 
                     mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
 
@@ -231,7 +231,7 @@ public class IoTMqttFragment extends Fragment {
 
                     mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
                             mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
-                    mMQTTSample.setSubProductKey(mSubProductKey);
+                    mMQTTSample.setSubProductKey(mSubDevPsk);
                     mMQTTSample.connect();
                 } else {
                     mParent.printLogInfo(TAG, "Mqtt has been connected, do not connect it again.", mLogInfoText, TXLog.LEVEL_INFO);
