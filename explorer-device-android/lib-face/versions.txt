@@ -1,0 +1,56 @@
+
+
+NAME: YTFaceAlignment
+VERSION: v1.0.0
+TIME: 2020-02-24 10:36:27
+
+
+NAME: YTFaceFeature
+VERSION: v3.0.2
+TIME: 2020-03-10 20:16:39
+
+
+NAME: YTFaceLive3D
+VERSION: v3.0.0
+TIME: 2019-12-20 19:04:23
+
+
+NAME: YTFaceLiveColor
+VERSION: v2.2.0
+TIME: 2020-03-06 17:55:22
+
+
+NAME: YTFaceLiveIR
+VERSION: v2.2.1
+TIME: 2020-03-23 15:33:56
+
+
+NAME: YTFaceQuality
+VERSION: v2.4.1
+TIME: 2020-02-22 11:21:58
+
+
+NAME: YTFaceQualityPro
+VERSION: v1.0.0
+TIME: 2019-12-25 22:05:52
+
+
+NAME: YTFaceRetrieval
+VERSION: v2.1.0
+TIME: 2020-02-24 10:11:02
+
+
+NAME: YTFaceTracker
+VERSION: v1.2.0
+TIME: 2020-03-09 15:42:28
+
+
+NAME: YTUtils
+VERSION: v0.2.3
+TIME: 2020-04-20 21:43:12
+539c6155dc41c5b982313b452aef2aca  ./docs/优图移动端通用函数文档.md
+56ce480cfdff4a264c2dc1005ad60715  ./libs/YTUtils.jar
+3b40fb3c1491a9941a7cb0a883a3ba6f  ./libs/arm64-v8a/libYTUtils.so
+77e439151dc8cdad6d75264aa7725ddd  ./libs/armeabi-v7a/libYTUtils.so
+
+
