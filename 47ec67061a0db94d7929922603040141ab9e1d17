@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "3d62e7aa_f4610be1",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-09-28T09:59:45Z",
+      "side": 1,
+      "message": "好的，在Patchset2中修改了。",
+      "parentUuid": "05f47cbf_be6ad47d",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9408a4ee_4faa9360",
         "filename": "README.md",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ee6a3168_e02e3413",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-09-28T09:59:45Z",
+      "side": 1,
+      "message": "好的，在Patchset2中修改了。",
+      "parentUuid": "9408a4ee_4faa9360",
+      "range": {
+        "startLine": 7,
+        "startChar": 166,
+        "endLine": 7,
+        "endChar": 235
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -91,6 +139,54 @@
       "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "784d1c9f_2f556fc8",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-09-28T09:59:45Z",
+      "side": 1,
+      "message": "好的，在Patchset2中修改了。",
+      "parentUuid": "58bb5ac0_be3c4803",
+      "range": {
+        "startLine": 17,
+        "startChar": 143,
+        "endLine": 17,
+        "endChar": 159
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff7630c1_3c822e36",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-09-28T09:59:45Z",
+      "side": 1,
+      "message": "好的，在Patchset2中修改了。",
+      "parentUuid": "d7821e6f_68cba552",
+      "range": {
+        "startLine": 17,
+        "startChar": 186,
+        "endLine": 17,
+        "endChar": 192
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
