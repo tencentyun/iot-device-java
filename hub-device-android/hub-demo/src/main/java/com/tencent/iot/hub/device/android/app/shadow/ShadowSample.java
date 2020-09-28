@@ -5,16 +5,16 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.tencent.iot.hub.device.android.app.BuildConfig;
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.app.IoTShadowFragment;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

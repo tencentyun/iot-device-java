@@ -1,7 +1,5 @@
 package com.tencent.iot.hub.device.android.core.mqtt;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
-
 
 public interface TXOTACallBack {
     /**
