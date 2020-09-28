@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.ServiceConnection;
 import android.os.RemoteException;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 
 import java.util.List;
 

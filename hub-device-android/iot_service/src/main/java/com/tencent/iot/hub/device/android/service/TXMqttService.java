@@ -7,18 +7,18 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -711,14 +711,14 @@ public class TXMqttService extends Service {
             }
 
             @Override
-            public void onDevicePropertyCallback(String propertyJSONDocument, List<DeviceProperty> devicePropertyList) {
+            public void onDevicePropertyCallback(String propertyJSONDocument, List<? extends DeviceProperty> devicePropertyList) {
                 if (null == mShadowActionListener) {
                     TXLog.d(TAG, "ITXShadowActionListener instance is null!");
                     return;
                 }
 
                 try {
-                    mShadowActionListener.onDevicePropertyCallback(propertyJSONDocument, devicePropertyList);
+                    mShadowActionListener.onDevicePropertyCallback(propertyJSONDocument, (List<com.tencent.iot.hub.device.android.core.shadow.DeviceProperty>) devicePropertyList);
                 } catch (RemoteException e) {
                     TXLog.e(TAG, e, "invoke remote method[onRequestCallback] failed!");
                 }
@@ -822,7 +822,7 @@ public class TXMqttService extends Service {
             }
 
             @Override
-            public String updateShadow(List<DeviceProperty> devicePropertyList, long userContextId) throws RemoteException {
+            public String updateShadow(List<com.tencent.iot.hub.device.android.core.shadow.DeviceProperty> devicePropertyList, long userContextId) throws RemoteException {
                 for (DeviceProperty deviceProperty : devicePropertyList) {
                     TXLog.d(TAG, "updateShadow, deviceProperty[%s]", deviceProperty.toString());
 
@@ -858,14 +858,14 @@ public class TXMqttService extends Service {
             }
 
             @Override
-            public void registerDeviceProperty(DeviceProperty deviceProperty) throws RemoteException {
+            public void registerDeviceProperty(com.tencent.iot.hub.device.android.core.shadow.DeviceProperty deviceProperty) throws RemoteException {
                 if (mUseShadow && null != mShadowConnection) {
                     mShadowConnection.registerProperty(deviceProperty);
                 }
             }
 
             @Override
-            public void unRegisterDeviceProperty(DeviceProperty deviceProperty) throws RemoteException {
+            public void unRegisterDeviceProperty(com.tencent.iot.hub.device.android.core.shadow.DeviceProperty deviceProperty) throws RemoteException {
                 if (mUseShadow && null != mShadowConnection) {
                     mShadowConnection.unRegisterProperty(deviceProperty);
                 }

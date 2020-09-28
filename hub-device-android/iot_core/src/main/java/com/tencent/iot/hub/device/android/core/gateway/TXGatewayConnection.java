@@ -4,13 +4,13 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXAlarmPingSender;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;

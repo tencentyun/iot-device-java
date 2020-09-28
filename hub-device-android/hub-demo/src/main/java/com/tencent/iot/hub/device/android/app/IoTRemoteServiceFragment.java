@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.tencent.iot.hub.device.android.app.R;
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
@@ -27,9 +25,9 @@ import com.tencent.iot.hub.device.android.service.TXMqttConnectOptions;
 import com.tencent.iot.hub.device.android.service.TXMqttMessage;
 import com.tencent.iot.hub.device.android.service.TXShadowClient;
 import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

@@ -144,8 +144,10 @@ dependencies {
 
     if (findProject(':hub-device-android') != null) {
         implementation project(path: ':hub-device-android:iot_core')
+        implementation project(path: ':hub-device-java')
     } else {
         implementation 'com.tencent.iot.hub:hub-device-android-core:3.2.0'
+        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
     }
 }
 

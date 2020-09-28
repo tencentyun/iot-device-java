@@ -1,7 +1,7 @@
 package com.tencent.iot.hub.device.android.core.gateway;
 
 
-import com.tencent.iot.hub.device.android.core.common.Status;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 /**
  * Created by willssong on 2018/12/25.

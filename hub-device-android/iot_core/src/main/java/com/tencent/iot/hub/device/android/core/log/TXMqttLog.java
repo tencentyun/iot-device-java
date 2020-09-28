@@ -2,10 +2,10 @@ package com.tencent.iot.hub.device.android.core.log;
 
 import android.text.TextUtils;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
