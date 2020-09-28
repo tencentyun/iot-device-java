@@ -169,6 +169,9 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		this.mActionCallBack = callBack;
 	}
 
+	public TXMqttConnection() {
+	}
+
 	/**
 	 * 设置断连状态buffer缓冲区
 	 *
