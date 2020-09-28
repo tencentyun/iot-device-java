@@ -67,6 +67,8 @@ public class TXShadowConnection {
 	private static final int MAX_MESSAGE_ID = 65535;
 	private int mPublishMessageId = 0;
 
+	public ShadowUponMqttCallBack mShadowUponMqttCallBack = null;
+
 	/**
 	 * @param productID
 	 *            产品名
@@ -143,13 +145,18 @@ public class TXShadowConnection {
 			TXShadowActionCallBack callBack) {
 		this.mShadowActionCallback = callBack;
 
+		mShadowUponMqttCallBack = new ShadowUponMqttCallBack();
 		mMqttConnection = new TXMqttConnection(serverURI, productID, deviceName, secretKey, bufferOpts,
-				clientPersistence, new ShadowUponMqttCallBack());
+				clientPersistence, mShadowUponMqttCallBack);
 
 		OPERATION_TOPIC = "$shadow/operation/" + productID + "/" + mMqttConnection.mDeviceName;
 		OPERATION_RESULT_TOPIC = "$shadow/operation/result/" + productID + "/" + mMqttConnection.mDeviceName;
 
 		mPublishMessageId = new Random().nextInt(MAX_MESSAGE_ID);
+	}
+
+	public void setMqttConnection(TXMqttConnection connection) {
+		mMqttConnection = connection;
 	}
 
 	/**
@@ -247,7 +254,7 @@ public class TXShadowConnection {
 	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
-	public Status update(List<DeviceProperty> devicePropertyList, Object userContext) {
+	public Status update(List<? extends DeviceProperty> devicePropertyList, Object userContext) {
 		Status status = checkMqttStatus();
 		if (Status.OK != status) {
 			return status;
@@ -371,7 +378,7 @@ public class TXShadowConnection {
 		}
 
 		MqttMessage mqttMessage = new MqttMessage();
-		if (null!=document) {
+		if ((null != document) && (document.length() != 0)) {
 			mqttMessage.setId(getMessageId());
 			mqttMessage.setPayload(document.getBytes());
 		}
@@ -409,7 +416,7 @@ public class TXShadowConnection {
 	 *            clientToken字段
 	 * @return json字符串
 	 */
-	private String buildUpdateJsonDocument(List<DeviceProperty> devicePropertyList, String clientToken) {
+	private String buildUpdateJsonDocument(List<? extends DeviceProperty> devicePropertyList, String clientToken) {
 		JSONObject documentJSONObj = new JSONObject();
 
 		try {

@@ -62,12 +62,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected TXAlarmPingSender mPingSender = null;
 	protected TXMqttActionCallBack mActionCallBack = null;
 
-	private HashMap<String, Integer> mSubscribedTopicMap = new HashMap<>();
+	protected HashMap<String, Integer> mSubscribedTopicMap = new HashMap<>();
 
 	private static int INVALID_MESSAGE_ID = -1;
 	protected int mLastReceivedMessageId = INVALID_MESSAGE_ID;
 
-	private TXOTAImpl mOTAImpl = null;
+	protected TXOTAImpl mOTAImpl = null;
 
 	public String getSubDevVersion() {
 		return subDevVersion;

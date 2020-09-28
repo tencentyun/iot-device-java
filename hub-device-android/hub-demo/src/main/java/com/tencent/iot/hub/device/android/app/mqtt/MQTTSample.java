@@ -2,20 +2,19 @@ package com.tencent.iot.hub.device.android.app.mqtt;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Base64;
 import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.gateway.TXGatewayConnection;
 
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.android.core.mqtt.TXOTACallBack;
-import com.tencent.iot.hub.device.android.core.mqtt.TXOTAConstansts;
 
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -24,13 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 public class MQTTSample {
 
