@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05f47cbf_be6ad47d",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-28T09:38:18Z",
+      "side": 1,
+      "message": "去掉’的‘",
+      "range": {
+        "startLine": 3,
+        "startChar": 61,
+        "endLine": 3,
+        "endChar": 62
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9408a4ee_4faa9360",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-28T09:38:18Z",
+      "side": 1,
+      "message": "详细介绍请参考官网。。。",
+      "range": {
+        "startLine": 7,
+        "startChar": 166,
+        "endLine": 7,
+        "endChar": 235
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d7821e6f_68cba552",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-28T09:38:18Z",
+      "side": 1,
+      "message": "详细介绍请参考官网。。。",
+      "range": {
+        "startLine": 17,
+        "startChar": 186,
+        "endLine": 17,
+        "endChar": 192
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "58bb5ac0_be3c4803",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-09-28T09:38:18Z",
+      "side": 1,
+      "message": "还可以基于规则引擎打通设备与腾讯云产品间的通路",
+      "range": {
+        "startLine": 17,
+        "startChar": 143,
+        "endLine": 17,
+        "endChar": 159
+      },
+      "revId": "47ec67061a0db94d7929922603040141ab9e1d17",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
