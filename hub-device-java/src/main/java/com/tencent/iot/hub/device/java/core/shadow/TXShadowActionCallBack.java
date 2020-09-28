@@ -29,7 +29,7 @@ public abstract class TXShadowActionCallBack {
      * @param propertyJSONDocument 从云端收到的原始设备属性json文档
      * @param propertyList   更新后的设备属性集
      */
-    public void onDevicePropertyCallback(String propertyJSONDocument, List<DeviceProperty> propertyList) {
+    public void onDevicePropertyCallback(String propertyJSONDocument, List<? extends DeviceProperty> propertyList) {
     }
 
 
