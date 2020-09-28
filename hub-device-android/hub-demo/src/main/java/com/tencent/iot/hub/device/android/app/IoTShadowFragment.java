@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tencent.iot.hub.device.android.app.R;
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.shadow.ShadowSample;
 import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 
@@ -162,12 +161,12 @@ public class IoTShadowFragment extends Fragment {
         }
 
         @Override
-        public void onDevicePropertyCallback(String propertyJSONDocument, List<DeviceProperty> devicePropertyList) {
+        public void onDevicePropertyCallback(String propertyJSONDocument, List<? extends com.tencent.iot.hub.device.java.core.shadow.DeviceProperty> devicePropertyList) {
             super.onDevicePropertyCallback(propertyJSONDocument, devicePropertyList);
             String logInfo = String.format("onDevicePropertyCallback, propertyJSONDocument[%s], deviceProperty[%s]",
                     propertyJSONDocument, devicePropertyList.toString());
             printLogInfo(TAG, logInfo);
-            mShadowSample.updateDeviceProperty(propertyJSONDocument, devicePropertyList);
+            mShadowSample.updateDeviceProperty(propertyJSONDocument, (List<DeviceProperty>)devicePropertyList);
         }
 
         @Override
