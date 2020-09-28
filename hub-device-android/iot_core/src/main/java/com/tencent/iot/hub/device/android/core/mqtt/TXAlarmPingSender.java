@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.PowerManager;
 
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;

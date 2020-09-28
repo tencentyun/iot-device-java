@@ -2,13 +2,14 @@ package com.tencent.iot.hub.device.android.core.shadow;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.text.TextUtils;
 
-import com.tencent.iot.hub.device.android.core.common.Status;
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 
-public class TXShadowConnection {
+public class TXShadowConnection extends com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection{
 
     public static final String TAG = TXShadowConnection.class.getName();
 
@@ -128,6 +129,7 @@ public class TXShadowConnection {
      */
     public TXShadowConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,
                               DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXShadowActionCallBack callBack) {
+        super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         this.mContext = context;
         this.mShadowActionCallback = callBack;
 
@@ -145,16 +147,6 @@ public class TXShadowConnection {
      */
     public TXMqttConnection getMqttConnection() {
         return mMqttConnection;
-    }
-
-
-    /**
-     * 设置断连状态buffer缓冲区
-     *
-     * @param bufferOpts 缓冲参数
-     */
-    public void setBufferOpts(DisconnectedBufferOptions bufferOpts) {
-        mMqttConnection.setBufferOpts(bufferOpts);
     }
 
     /**
@@ -188,30 +180,6 @@ public class TXShadowConnection {
         }
 
         return status;
-    }
-
-    /**
-     * 断开连接请求，结果通过回调函数通知。
-     *
-     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    public Status disConnect(Object userContext) {
-        Status status = mMqttConnection.unSubscribe(OPERATION_RESULT_TOPIC, userContext);
-        if (status != Status.OK) {
-            return status;
-        }
-
-        return mMqttConnection.disConnect("disconnect context");
-    }
-
-    /**
-     * 获取连接状态
-     *
-     * @return 连接状态
-     */
-    public TXMqttConstants.ConnectStatus getConnectStatus() {
-        return mMqttConnection.getConnectStatus();
     }
 
     /**
@@ -272,141 +240,6 @@ public class TXShadowConnection {
     }
 
     /**
-     * 更新设备属性信息，结果通过回调函数通知。
-     *
-     * @param devicePropertyList 需要更新的设备属性集
-     * @param userContext        用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    public Status update(List<DeviceProperty> devicePropertyList, Object userContext) {
-        Status status = checkMqttStatus();
-        if (Status.OK != status) {
-            return status;
-        }
-
-        if (!mIsOperationResultSubscribeSuccess) {
-            TXLog.d(TAG, "******subscribe topic:" + OPERATION_RESULT_TOPIC);
-            mMqttConnection.subscribe(OPERATION_RESULT_TOPIC, mQos, "subscribe context");
-            return Status.ERROR_TOPIC_UNSUBSCRIBED;
-        }
-
-        String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
-        String jsonDocument = buildUpdateJsonDocument(devicePropertyList, clientToken);
-
-        return publish(OPERATION_TOPIC, jsonDocument, userContext);
-    }
-
-    /**
-     * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
-     *
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    public Status reportNullDesiredInfo() {
-        Status status = checkMqttStatus();
-        if (Status.OK != status) {
-            return status;
-        }
-
-        String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
-        String jsonDocument = buildDesiredNullJsonDocument(null, clientToken);
-
-        TXLog.d(TAG, "reportNullDesiredInfo, document: %s", jsonDocument);
-
-        return publish(OPERATION_TOPIC, jsonDocument, null);
-    }
-
-    /**
-     * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
-     *
-     * @param reportJsonDoc 用户上报的JSON内容
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    public Status reportNullDesiredInfo(String reportJsonDoc) {
-        Status status = checkMqttStatus();
-        if (Status.OK != status) {
-            return status;
-        }
-
-        String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
-        String jsonDocument = buildDesiredNullJsonDocument(reportJsonDoc, clientToken);
-
-        TXLog.d(TAG, "reportNullDesiredInfo, document: %s", jsonDocument);
-
-        return publish(OPERATION_TOPIC, jsonDocument, null);
-    }
-
-    /**
-     * 获取设备影子文档，结果通过回调函数通知。
-     *
-     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    public Status get(Object userContext) {
-        Status status = checkMqttStatus();
-        if (Status.OK != status) {
-            return status;
-        }
-
-        if (!mIsOperationResultSubscribeSuccess) {
-            TXLog.d(TAG, "***subscribe topic:" + OPERATION_RESULT_TOPIC);
-            mMqttConnection.subscribe(OPERATION_RESULT_TOPIC, mQos, "subscribe context");
-
-            return Status.ERROR_TOPIC_UNSUBSCRIBED;
-        }
-
-        String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
-        String jsonDocument = buildGetJsonDocument(clientToken);
-
-        TXLog.d(TAG, "get document: %s", jsonDocument);
-
-        return publish(OPERATION_TOPIC, jsonDocument, userContext);
-    }
-
-    /**
-     * 注册当前设备的设备属性
-     *
-     * @param property 设备属性
-     */
-    public void registerProperty(DeviceProperty property) {
-        mRegisterPropertyMap.put(property.mKey, property);
-    }
-
-    /**
-     * 取消注册当前设备的指定属性
-     *
-     * @param property
-     */
-    public void unRegisterProperty(DeviceProperty property) {
-        mRegisterPropertyMap.remove(property.mKey);
-    }
-
-    /**
-     * 向指定TOPIC发布设备影子文档，结果通过回调函数通知。
-     *
-     * @param topic       指定的topicsub
-     * @param document    json文档
-     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
-     */
-    private Status publish(String topic, String document, Object userContext) {
-        Status status;
-        status = checkMqttStatus();
-        if (status != Status.OK) {
-            return status;
-        }
-
-        MqttMessage mqttMessage = new MqttMessage();
-        if (!TextUtils.isEmpty(document)) {
-            mqttMessage.setId(getMessageId());
-            mqttMessage.setPayload(document.getBytes());
-        }
-        mqttMessage.setQos(TXMqttConstants.QOS0);
-        TXLog.d(TAG, "******publish message id:" + mqttMessage.getId());
-
-        return  mMqttConnection.publish(topic, mqttMessage, userContext);
-    }
-
-    /**
      * 检查mqtt状态
      *
      * @return 当前状态
@@ -418,115 +251,6 @@ public class TXShadowConnection {
         }
 
         return Status.OK;
-    }
-
-    /**
-     * 构建json信息
-     *
-     * @param devicePropertyList 需要上报的设备属性集
-     * @param clientToken        clientToken字段
-     * @return json字符串
-     */
-    private String buildUpdateJsonDocument(List<DeviceProperty> devicePropertyList, String clientToken) {
-        JSONObject documentJSONObj = new JSONObject();
-
-        try {
-            documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.UPDATE);
-
-            JSONObject stateJSONObj = new JSONObject();
-            if (devicePropertyList != null && !devicePropertyList.isEmpty()) {
-
-                JSONObject reportedJSONObj = new JSONObject();
-                for (DeviceProperty deviceProperty : devicePropertyList) {
-                    if (TXShadowConstants.JSONDataType.INT == deviceProperty.mDataType) {
-                        reportedJSONObj.put(deviceProperty.mKey, Integer.parseInt((String)deviceProperty.mData));
-                    } else if (TXShadowConstants.JSONDataType.LONG == deviceProperty.mDataType) {
-                        reportedJSONObj.put(deviceProperty.mKey, Long.parseLong((String)deviceProperty.mData));
-                    } else if (TXShadowConstants.JSONDataType.FLOAT == deviceProperty.mDataType) {
-                        reportedJSONObj.put(deviceProperty.mKey, Float.parseFloat((String)deviceProperty.mData));
-                    } else if (TXShadowConstants.JSONDataType.DOUBLE == deviceProperty.mDataType) {
-                        reportedJSONObj.put(deviceProperty.mKey, Double.parseDouble((String)deviceProperty.mData));
-                    } else if (TXShadowConstants.JSONDataType.BOOLEAN == deviceProperty.mDataType) {
-                        reportedJSONObj.put(deviceProperty.mKey, Boolean.parseBoolean((String)deviceProperty.mData));
-                    } else {
-                        reportedJSONObj.put(deviceProperty.mKey, deviceProperty.mData);
-                    }
-                }
-                stateJSONObj.put(TXShadowConstants.REPORTED, reportedJSONObj);
-            }
-
-            documentJSONObj.put(TXShadowConstants.STATE, stateJSONObj);
-            documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
-            documentJSONObj.put(TXShadowConstants.VERSION, mDocumentVersion);
-
-        } catch (JSONException e) {
-            TXLog.e(TAG, e, "build report info failed");
-            return "";
-        }
-
-        return documentJSONObj.toString();
-    }
-
-    private String buildDesiredNullJsonDocument(String reportJsonDoc, String clientToken) {
-        JSONObject documentJSONObj = new JSONObject();
-
-        try {
-            documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.UPDATE);
-
-            JSONObject stateJSONObj = new JSONObject();
-            if (reportJsonDoc != null) {
-                JSONObject reportedJSONObj = new JSONObject(reportJsonDoc);
-                stateJSONObj.put(TXShadowConstants.REPORTED, reportedJSONObj);
-            }
-            stateJSONObj.put(TXShadowConstants.DESIRED, "");
-
-            documentJSONObj.put(TXShadowConstants.STATE, stateJSONObj);
-            documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
-            documentJSONObj.put(TXShadowConstants.VERSION, mDocumentVersion);
-
-        } catch (JSONException e) {
-            TXLog.e(TAG, e, "build report info failed");
-            return "";
-        }
-
-        return documentJSONObj.toString();
-    }
-
-    private String buildGetJsonDocument(String clientToken) {
-        JSONObject documentJSONObj = new JSONObject();
-
-        try {
-            documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.GET);
-            documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
-        } catch (JSONException e) {
-            TXLog.e(TAG, e, "build report info failed");
-            return "";
-        }
-
-        return documentJSONObj.toString();
-    }
-
-    private String buildDeleteJsonDocument(String clientToken) {
-        JSONObject documentJSONObj = new JSONObject();
-
-        try {
-            documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.DELETE);
-            documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
-        } catch (JSONException e) {
-            TXLog.e(TAG, e, "build report info failed");
-            return "";
-        }
-
-        return documentJSONObj.toString();
-    }
-
-    private int getMessageId() {
-        mPublishMessageId++;
-        if (mPublishMessageId > MAX_MESSAGE_ID) {
-            mPublishMessageId = 1;
-        }
-
-        return mPublishMessageId;
     }
 
     /**

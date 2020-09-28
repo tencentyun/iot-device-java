@@ -3,7 +3,6 @@ package com.tencent.iot.hub.device.android.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -18,25 +17,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.iot.hub.device.android.app.R;
-import com.tencent.iot.hub.device.android.core.common.Status;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.android.core.dynreg.TXMqttDynreg;
 import com.tencent.iot.hub.device.android.core.dynreg.TXMqttDynregCallback;
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.ConnectionState;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.java_websocket.client.DefaultSSLWebSocketClientFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -53,7 +50,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLContext;
 
 public class IoTMqttFragment extends Fragment {
 
