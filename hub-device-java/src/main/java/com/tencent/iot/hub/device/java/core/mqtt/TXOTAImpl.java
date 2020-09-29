@@ -39,6 +39,8 @@ public class TXOTAImpl {
 
 	private final String OTA_UPDATE_TOPIC;
 	private final String OTA_REPORT_TOPIC;
+	private final String OTA_SUB_DEV_UPDATE_TOPIC;
+	private final String OTA_SUB_DEV_REPORT_TOPIC;
 	private final String mStoragePath;
 
 	private static boolean mDownloadThreadRunning = false;
@@ -100,7 +102,14 @@ public class TXOTAImpl {
 		OTA_UPDATE_TOPIC = "$ota/update/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
 		OTA_REPORT_TOPIC = "$ota/report/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
 
+		OTA_SUB_DEV_UPDATE_TOPIC = "$ota/update/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
+		OTA_SUB_DEV_REPORT_TOPIC = "$ota/report/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
+
+
 		prepareOTAServerCA();
+
+		subscribeTopic();  // 提前订阅话题
+		subscribeSubDevTopic();  //网管子设备订阅
 	}
 
 	/**
@@ -122,6 +131,8 @@ public class TXOTAImpl {
 	 * @param msg
 	 */
 	public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+		System.out.println("xxxxxxxxxxxxxxxxxxxx onSubscribeCompleted " + Thread.currentThread().getId());
+		System.out.println("onSubscribeCompleted status " + status);
 		if (status == Status.OK) {
 			String[] topics = token.getTopics();
 			if (topics != null) {
@@ -184,6 +195,22 @@ public class TXOTAImpl {
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
 	public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
+		return reportDevVersion(OTA_REPORT_TOPIC, currentFirmwareVersion);
+	}
+
+	public Status gatewaySubdevReportVer(String currentVersion) {
+		return reportDevVersion(OTA_SUB_DEV_REPORT_TOPIC, currentVersion);
+	}
+
+	/**
+	 * 上报设备当前版本信息到后台服务器。
+	 *
+	 * @param currentVersion
+	 *            设备当前版本信息
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status reportDevVersion(String topic, String currentVersion) {
+		System.out.println("xxxxxxxxxxxxxxxxxxxx reportDevVersion " + Thread.currentThread().getId());
 		if (!mSubscribedState) {
 			subscribeTopic(10000);
 		}
@@ -195,7 +222,7 @@ public class TXOTAImpl {
 			jsonObject.put("type", "report_version");
 
 			JSONObject obj = new JSONObject();
-			obj.put("version", currentFirmwareVersion);
+			obj.put("version", currentVersion);
 
 			jsonObject.put("report", obj);
 		} catch (JSONException e) {
@@ -204,8 +231,38 @@ public class TXOTAImpl {
 
 		message.setPayload(jsonObject.toString().getBytes());
 
-		Status status = mConnection.publish(OTA_REPORT_TOPIC, message, null);
+		Status status = mConnection.publish(topic, message, null);
+		System.out.println("reportDevVersion status " + status);
 
+		return status;
+	}
+
+	public Status gatewaySubdevReportStart(String version) {
+		MqttMessage message = new MqttMessage();
+
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("type", "report_progress");
+
+			JSONObject reportJsonObject = new JSONObject();
+			JSONObject progressJsonObject = new JSONObject();
+
+			progressJsonObject.put("state", "burning");
+			progressJsonObject.put("result_code", "0");
+			progressJsonObject.put("result_msg", "");
+
+			reportJsonObject.put("progress", progressJsonObject);
+			reportJsonObject.put("version", version);
+
+			jsonObject.put("report", reportJsonObject);
+		} catch (JSONException e) {
+
+		}
+
+		message.setQos(0);
+		message.setPayload(jsonObject.toString().getBytes());
+
+		Status status = mConnection.publish(OTA_REPORT_TOPIC, message, null);
 		return status;
 	}
 
@@ -306,25 +363,33 @@ public class TXOTAImpl {
 	 * @return Status.OK：表示订阅成功时; 其它返回值表示订阅失败；
 	 */
 	private Status subscribeTopic(int timeout) {
-		mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
-
+		Status tag = mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
+		System.out.println("tag " + tag);
 		long beginTime = System.currentTimeMillis();
-		while (!mSubscribedState) {
-
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-			}
-
-			if (System.currentTimeMillis() - beginTime > timeout)
-				break;
-		}
+//		while (!mSubscribedState) {
+//
+//			try {
+//				Thread.sleep(100);
+//			} catch (Exception e) {
+//			}
+//
+//			if (System.currentTimeMillis() - beginTime > timeout)
+//				break;
+//		}
 
 		if (mSubscribedState) {
 			return Status.OK;
 		}
 
 		return Status.ERROR_TOPIC_UNSUBSCRIBED;
+	}
+
+	public Status subscribeTopic() {
+		return mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
+	}
+
+	public Status subscribeSubDevTopic() {
+		return mConnection.subscribe(OTA_SUB_DEV_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
 	}
 
 	/**

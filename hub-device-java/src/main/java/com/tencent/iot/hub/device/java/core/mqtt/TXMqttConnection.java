@@ -49,6 +49,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public String mUserName;
 	public String mSecretKey;
 
+	private String mSubProductID;
+	private String mSubDevName;
+	private String mSubDevProductKey;
+
 	protected MqttClientPersistence mMqttPersist = null;
 	protected MqttConnectOptions mConnOptions = null;
 
@@ -63,6 +67,30 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected int mLastReceivedMessageId = INVALID_MESSAGE_ID;
 
 	private TXOTAImpl mOTAImpl = null;
+
+	public void setSubProductID(String subProductID) {
+		mSubProductID = subProductID;
+	}
+
+	public String getSubProductID() {
+		return mSubProductID;
+	}
+
+	public void setSubDevName(String subDevName) {
+		this.mSubDevName = subDevName;
+	}
+
+	public String getSubDevName() {
+		return mSubDevName;
+	}
+
+	public void setSubDevProductKey(String subDevProductKey) {
+		this.mSubDevProductKey = subDevProductKey;
+	}
+
+	public String getSubDevProductKey() {
+		return mSubDevProductKey;
+	}
 
 	/**
 	 * 断连状态下buffer缓冲区，当连接重新建立成功后自动将buffer中数据写出
@@ -680,6 +708,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		return Status.ERROR;
 	}
 
+
+	public Status gatewaySubdevReportVer(String currentVersion) {
+		if (mOTAImpl != null && currentVersion != null) {
+			return mOTAImpl.gatewaySubdevReportVer(currentVersion);
+		}
+
+		return Status.ERROR;
+	}
 	/**
 	 * 上报设备升级状态到后台服务器。
 	 *

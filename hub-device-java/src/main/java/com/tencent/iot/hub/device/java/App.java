@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
@@ -31,16 +32,18 @@ public class App {
 
 	private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
+	private static String path2Store = System.getProperty("user.dir");
+
 	private static String mBrokerURL = "tcp://iotcloud-mqtt.gz.tencentdevices.com:1883";
 
 	private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
 
-	private static String mProductID = "YOUR_PRODUCT_ID";
-	private static String mDevName = "YOUR_DEVICE_NAME";
-	private static String mDevPSK = "YOUR_DEV_PSK";
-	private static String mSubProductID = "YOUR_SUB_PRODUCT_ID";
-	private static String mSubDevName = "YOUR_SUB_DEV_NAME";
-	private static String mSubDevProductKey = "YOUR_SUB_DEV_PSK";
+	private static String mProductID = "";
+	private static String mDevName = "";
+	private static String mDevPSK = "";
+	private static String mSubProductID = "";
+	private static String mSubDevName = "";
+	private static String mSubDevProductKey = "";
 	private static String mTestTopic = "YOUR_TEST_TOPIC";
 	private static String mCertFilePath = null;
 	private static String mPrivKeyFilePath = null;
@@ -116,6 +119,9 @@ public class App {
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
 		mqttconnection = new TXMqttConnection(mProductID, mDevName, mDevPSK, new callBack());
+		mqttconnection.setSubDevName(mSubDevName);
+		mqttconnection.setSubDevProductKey(mSubDevProductKey);
+		mqttconnection.setSubProductID(mSubProductID);
 		mqttconnection.connect(options, null);
 		try {
 			while(pubCount < testCnt) {
@@ -197,7 +203,37 @@ public class App {
 			// 查询网关的拓扑关系
 			mqttconnection.gatewayGetSubdevRelation();
 			mqttconnection.getRemoteConfig();
+			System.out.println("path2Store=" + path2Store);
+			mqttconnection.initOTA(path2Store, oTACallBack);
 		}
+
+		private TXOTACallBack oTACallBack = new TXOTACallBack() {
+
+			@Override
+			public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
+				System.out.println("onReportFirmwareVersion resultCode=" + resultCode);
+				System.out.println("onReportFirmwareVersion version=" + version);
+				System.out.println("onReportFirmwareVersion resultMsg=" + resultMsg);
+			}
+
+			@Override
+			public void onDownloadProgress(int percent, String version) {
+				System.out.println("onDownloadProgress percent=" + percent);
+				System.out.println("onDownloadProgress version=" + version);
+			}
+
+			@Override
+			public void onDownloadCompleted(String outputFile, String version) {
+				System.out.println("onDownloadCompleted outputFile=" + outputFile);
+				System.out.println("onDownloadCompleted version=" + version);
+			}
+
+			@Override
+			public void onDownloadFailure(int errCode, String version) {
+				System.out.println("onDownloadFailure errCode=" + errCode);
+				System.out.println("onDownloadFailure version=" + version);
+			}
+		};
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
@@ -235,8 +271,17 @@ public class App {
 
 			if(mqttconnection != null) {
 				mqttconnection.publish(topic, message, null);
-				mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
+				System.out.println("000000000000000000000000000");
+//				mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
 //				mqttconnection.gatewayUnbindSubdev(mSubProductID, mSubDevName);
+
+				if (asyncActionToken.getTopics().length > 0 && asyncActionToken.getTopics()[0].startsWith("$ota/")) {
+					System.out.println("-------- " + asyncActionToken.getTopics()[0]);
+//					mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
+
+					mqttconnection.reportCurrentFirmwareVersion("0.0");
+					mqttconnection.gatewaySubdevReportVer("0.0");
+				}
 			}
         }
         
