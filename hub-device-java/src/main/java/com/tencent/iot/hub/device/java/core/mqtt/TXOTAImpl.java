@@ -39,6 +39,8 @@ public class TXOTAImpl {
 
 	private final String OTA_UPDATE_TOPIC;
 	private final String OTA_REPORT_TOPIC;
+	private final String OTA_SUB_DEV_UPDATE_TOPIC;
+	private final String OTA_SUB_DEV_REPORT_TOPIC;
 	private final String mStoragePath;
 
 	private static boolean mDownloadThreadRunning = false;
@@ -100,7 +102,14 @@ public class TXOTAImpl {
 		OTA_UPDATE_TOPIC = "$ota/update/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
 		OTA_REPORT_TOPIC = "$ota/report/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
 
+		OTA_SUB_DEV_UPDATE_TOPIC = "$ota/update/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
+		OTA_SUB_DEV_REPORT_TOPIC = "$ota/report/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
+
+
 		prepareOTAServerCA();
+
+		subscribeTopic();  // 提前订阅话题
+		subscribeSubDevTopic();  //网管子设备订阅
 	}
 
 	/**
@@ -122,6 +131,8 @@ public class TXOTAImpl {
 	 * @param msg
 	 */
 	public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+		System.out.println("xxxxxxxxxxxxxxxxxxxx onSubscribeCompleted " + Thread.currentThread().getId());
+		System.out.println("onSubscribeCompleted status " + status);
 		if (status == Status.OK) {
 			String[] topics = token.getTopics();
 			if (topics != null) {
@@ -158,7 +169,11 @@ public class TXOTAImpl {
 				String md5Sum = jsonObject.getString("md5sum");
 				String version = jsonObject.getString("version");
 
-				downloadFirmware(firmwareURL, mStoragePath + "/" + md5Sum, md5Sum, version);
+				System.out.println("mStoragePath=" + mStoragePath);
+
+				if (!mCallback.onLastestFirmwareReady(firmwareURL, md5Sum, version)) {
+					downloadFirmware(firmwareURL, mStoragePath + "/" + md5Sum, md5Sum, version);
+				}
 			} else if (type.equalsIgnoreCase("report_version_rsp")) {
 				String resultCode = jsonObject.getString("result_code");
 				String resultMsg = jsonObject.getString("result_msg");
@@ -184,6 +199,21 @@ public class TXOTAImpl {
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
 	public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
+		return reportDevVersion(OTA_REPORT_TOPIC, currentFirmwareVersion);
+	}
+
+	public Status gatewaySubdevReportVer(String currentVersion) {
+		return reportDevVersion(OTA_SUB_DEV_REPORT_TOPIC, currentVersion);
+	}
+
+	/**
+	 * 上报设备当前版本信息到后台服务器。
+	 *
+	 * @param currentVersion
+	 *            设备当前版本信息
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status reportDevVersion(String topic, String currentVersion) {
 		if (!mSubscribedState) {
 			subscribeTopic(10000);
 		}
@@ -195,7 +225,7 @@ public class TXOTAImpl {
 			jsonObject.put("type", "report_version");
 
 			JSONObject obj = new JSONObject();
-			obj.put("version", currentFirmwareVersion);
+			obj.put("version", currentVersion);
 
 			jsonObject.put("report", obj);
 		} catch (JSONException e) {
@@ -204,7 +234,8 @@ public class TXOTAImpl {
 
 		message.setPayload(jsonObject.toString().getBytes());
 
-		Status status = mConnection.publish(OTA_REPORT_TOPIC, message, null);
+		Status status = mConnection.publish(topic, message, null);
+		System.out.println("reportDevVersion status " + status);
 
 		return status;
 	}
@@ -219,7 +250,19 @@ public class TXOTAImpl {
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
 	public Status reportUpdateFirmwareState(String state, int resultCode, String resultMsg, String version) {
-		return reportMessage("report_progress", state, resultCode, resultMsg, version);
+		return reportMessage(OTA_REPORT_TOPIC, "report_progress", state, resultCode, resultMsg, version);
+	}
+
+	public Status reportFailedMessage(int errorCode, String errorMsg, String version) {
+		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "fail", errorCode, errorMsg, version);
+	}
+
+	public Status reportSuccessMessage(String version) {
+		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "done", 0, "", version);
+	}
+
+	public Status reportBurnngMessage(String version) {
+		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "burning", 0, "", version);
 	}
 
 	/**
@@ -232,7 +275,7 @@ public class TXOTAImpl {
 	 * @param version
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
-	private Status reportMessage(String type, String state, int resultCode, String resultMsg, String version) {
+	private Status reportMessage(String topic, String type, String state, int resultCode, String resultMsg, String version) {
 		MqttMessage message = new MqttMessage();
 
 		JSONObject jsonObject = new JSONObject();
@@ -257,7 +300,7 @@ public class TXOTAImpl {
 		message.setQos(0);
 		message.setPayload(jsonObject.toString().getBytes());
 
-		Status status = mConnection.publish(OTA_REPORT_TOPIC, message, null);
+		Status status = mConnection.publish(topic, message, null);
 		return status;
 	}
 
@@ -268,7 +311,7 @@ public class TXOTAImpl {
 	 * @param version
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
 	 */
-	private Status reportProgressMessage(int percent, String version) {
+	private Status reportProgressMessage(String topic, int percent, String version) {
 		MqttMessage message = new MqttMessage();
 
 		JSONObject jsonObject = new JSONObject();
@@ -294,7 +337,7 @@ public class TXOTAImpl {
 		message.setQos(0);
 		message.setPayload(jsonObject.toString().getBytes());
 
-		Status status = mConnection.publish(OTA_REPORT_TOPIC, message, null);
+		Status status = mConnection.publish(topic, message, null);
 		return status;
 	}
 
@@ -306,25 +349,33 @@ public class TXOTAImpl {
 	 * @return Status.OK：表示订阅成功时; 其它返回值表示订阅失败；
 	 */
 	private Status subscribeTopic(int timeout) {
-		mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
-
+		Status tag = mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
+		System.out.println("tag " + tag);
 		long beginTime = System.currentTimeMillis();
-		while (!mSubscribedState) {
-
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-			}
-
-			if (System.currentTimeMillis() - beginTime > timeout)
-				break;
-		}
+//		while (!mSubscribedState) {
+//
+//			try {
+//				Thread.sleep(100);
+//			} catch (Exception e) {
+//			}
+//
+//			if (System.currentTimeMillis() - beginTime > timeout)
+//				break;
+//		}
 
 		if (mSubscribedState) {
 			return Status.OK;
 		}
 
 		return Status.ERROR_TOPIC_UNSUBSCRIBED;
+	}
+
+	public Status subscribeTopic() {
+		return mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
+	}
+
+	public Status subscribeSubDevTopic() {
+		return mConnection.subscribe(OTA_SUB_DEV_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
 	}
 
 	/**
@@ -405,6 +456,14 @@ public class TXOTAImpl {
 		return conn;
 	}
 
+	public void gatewayDownSubdevApp(String firmwareURL, String outputFile, String md5Sum, String version) {
+		downloadFirmware(firmwareURL, outputFile, md5Sum, version);
+	}
+
+	public Status gatewaySubdevReportProgress(int percent, String version) {
+		return reportProgressMessage(OTA_SUB_DEV_REPORT_TOPIC, percent, version);
+	}
+
 	/**
 	 * 开启线程下载固件
 	 *
@@ -480,7 +539,7 @@ public class TXOTAImpl {
 								}
 
 								LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
-								reportProgressMessage(percent, version);
+								reportProgressMessage(OTA_REPORT_TOPIC, percent, version);
 							}
 						}
 
@@ -498,6 +557,7 @@ public class TXOTAImpl {
 
 							if (mCallback != null) {
 								mCallback.onDownloadFailure(-4, version); // 校验失败
+//								reportFailedMessage(-4, "MD5不匹配", version);
 							}
 
 							new File(outputFile).delete(); // delete
@@ -505,6 +565,7 @@ public class TXOTAImpl {
 							continue; // try again
 						} else {
 							if (mCallback != null) {
+//								reportSuccessMessage(version);
 								mCallback.onDownloadCompleted(outputFile, version);
 							}
 
@@ -513,6 +574,7 @@ public class TXOTAImpl {
 					} catch (CertificateException e) {
 						if (mCallback != null) {
 							mCallback.onDownloadFailure(-4, version); // 校验失败
+//							reportFailedMessage(-4, "MD5不匹配", version);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -535,7 +597,6 @@ public class TXOTAImpl {
 						}
 					}
 				} while (tryTimes <= MAX_TRY_TIMES);
-
 				mDownloadThreadRunning = false;
 			}
 		});

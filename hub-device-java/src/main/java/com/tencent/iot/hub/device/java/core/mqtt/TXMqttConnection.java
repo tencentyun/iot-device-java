@@ -39,6 +39,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
     private static final Logger LOG = LoggerFactory.getLogger(TXMqttConnection.class);
 	private static final String HMAC_SHA_256 = "HmacSHA256";
 	private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
+	private String subDevVersion = "0.0";		// 未设置，则默认当前的版本是 0.0  用于上报版本号
 	/**
 	 * tcp://localhost:port ssl://localhost:port
 	 */
@@ -48,6 +49,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public String mDeviceName;
 	public String mUserName;
 	public String mSecretKey;
+
+	private String mSubProductID;
+	private String mSubDevName;
+	private String mSubDevProductKey;
 
 	protected MqttClientPersistence mMqttPersist = null;
 	protected MqttConnectOptions mConnOptions = null;
@@ -63,6 +68,38 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected int mLastReceivedMessageId = INVALID_MESSAGE_ID;
 
 	private TXOTAImpl mOTAImpl = null;
+
+	public String getSubDevVersion() {
+		return subDevVersion;
+	}
+
+	public void setSubDevVersion(String version) {
+		this.subDevVersion = version;
+	}
+
+	public void setSubProductID(String subProductID) {
+		mSubProductID = subProductID;
+	}
+
+	public String getSubProductID() {
+		return mSubProductID;
+	}
+
+	public void setSubDevName(String subDevName) {
+		this.mSubDevName = subDevName;
+	}
+
+	public String getSubDevName() {
+		return mSubDevName;
+	}
+
+	public void setSubDevProductKey(String subDevProductKey) {
+		this.mSubDevProductKey = subDevProductKey;
+	}
+
+	public String getSubDevProductKey() {
+		return mSubDevProductKey;
+	}
 
 	/**
 	 * 断连状态下buffer缓冲区，当连接重新建立成功后自动将buffer中数据写出
@@ -675,6 +712,67 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
 		if (mOTAImpl != null && currentFirmwareVersion != null) {
 			return mOTAImpl.reportCurrentFirmwareVersion(currentFirmwareVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+
+	public Status gatewaySubdevReportVer(String currentVersion) {
+		if (mOTAImpl != null && currentVersion != null) {
+			return mOTAImpl.gatewaySubdevReportVer(currentVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+	//子设备上报默认的固件版本
+	public Status gatewaySubdevReportVer() {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			return mOTAImpl.gatewaySubdevReportVer(getSubDevVersion());
+		}
+
+		return Status.ERROR;
+	}
+
+	//网关上报子设备固件下载进度
+	public void gatewayDownSubdevApp(String firmwareURL, String outputFile, String md5Sum, String version) {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			mOTAImpl.gatewayDownSubdevApp(firmwareURL, outputFile, md5Sum, version);
+		}
+	}
+
+	//网关上报子设备固件下载进度
+	public Status gatewaySubdevReportProgress(int percent, String targetVersion) {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			return mOTAImpl.gatewaySubdevReportProgress(percent, targetVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+	//子设备上报固件开始升级
+	public Status gatewaySubdevReportStart(String targetVersion) {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			return mOTAImpl.reportBurnngMessage(targetVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+	//子设备上报固件升级成功
+	public Status gatewaySubdevReportSuccess(String targetVersion) {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			return mOTAImpl.reportSuccessMessage(targetVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+	// 上报子设备升级过程中的失败原因
+	public Status gatewaySubdevReportFail(int errorCode, String errorMsg,String targetVersion) {
+		if (mOTAImpl != null && getSubDevVersion() != null) {
+			return mOTAImpl.reportFailedMessage(errorCode, errorMsg, targetVersion);
 		}
 
 		return Status.ERROR;
