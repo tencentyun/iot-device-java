@@ -135,8 +135,8 @@ class TXDataTemplateJson {
                         }
                     }
                 }
-            } else if (type.equals(TYPE_TIMESTAMP)){ //时间类型为无符号整数
-                if (value instanceof Integer){
+            } else if (type.equals(TYPE_TIMESTAMP)){ //时间类型为无符号整数 也有可能是长整数
+                if (value instanceof Integer || value instanceof Long){
                     return Status.OK;
                 }
             } else {
