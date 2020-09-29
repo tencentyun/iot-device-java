@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
@@ -30,6 +31,8 @@ import javax.net.SocketFactory;
 public class App {
 
 	private static final Logger LOG = LoggerFactory.getLogger(App.class);
+
+	private static String path2Store = System.getProperty("user.dir");
 
 	private static String mBrokerURL = "tcp://iotcloud-mqtt.gz.tencentdevices.com:1883";
 
@@ -116,6 +119,9 @@ public class App {
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
 		mqttconnection = new TXMqttConnection(mProductID, mDevName, mDevPSK, new callBack());
+		mqttconnection.setSubDevName(mSubDevName);
+		mqttconnection.setSubDevProductKey(mSubDevProductKey);
+		mqttconnection.setSubProductID(mSubProductID);
 		mqttconnection.connect(options, null);
 		try {
 			while(pubCount < testCnt) {
@@ -197,7 +203,40 @@ public class App {
 			// 查询网关的拓扑关系
 			mqttconnection.gatewayGetSubdevRelation();
 			mqttconnection.getRemoteConfig();
+			System.out.println("path2Store=" + path2Store);
+			mqttconnection.initOTA(path2Store, oTACallBack);
 		}
+
+		private TXOTACallBack oTACallBack = new TXOTACallBack() {
+
+			@Override
+			public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
+
+			}
+
+			@Override
+			public boolean onLastestFirmwareReady(String url, String md5, String version) {
+				System.out.println("onLastestFirmwareReady url=" + url + " version " + version);
+				mqttconnection.gatewayDownSubdevApp(url, path2Store + "/" + md5, md5, version);
+				return true; // false 自动触发下载升级文件  true 需要手动触发下载升级文件
+			}
+
+			@Override
+			public void onDownloadProgress(int percent, String version) {
+				mqttconnection.gatewaySubdevReportProgress(percent, version);
+			}
+
+			@Override
+			public void onDownloadCompleted(String outputFile, String version) {
+				mqttconnection.gatewaySubdevReportStart(version);
+				mqttconnection.gatewaySubdevReportSuccess(version);
+			}
+
+			@Override
+			public void onDownloadFailure(int errCode, String version) {
+				mqttconnection.gatewaySubdevReportFail(errCode, "", version);
+			}
+		};
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
@@ -234,9 +273,18 @@ public class App {
 			String topic = String.format("%s/%s/%s", mProductID, mDevName,"data");
 
 			if(mqttconnection != null) {
-				mqttconnection.publish(topic, message, null);
-				mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
+//				mqttconnection.publish(topic, message, null);
+				System.out.println("000000000000000000000000000");
+//				mqttconnection.gatewayBindSubdev(mSubProductID, mSubDevName, mSubDevProductKey);
 //				mqttconnection.gatewayUnbindSubdev(mSubProductID, mSubDevName);
+
+
+				for (String topicEls : asyncActionToken.getTopics()) {
+					if (topicEls.startsWith("$ota/update/")) {
+						mqttconnection.gatewaySubdevReportVer("0.0");
+					}
+				}
+
 			}
         }
         
