@@ -150,6 +150,11 @@ public class TXMqttService extends Service {
 
             }
         }
+
+        @Override
+        public boolean onLastestFirmwareReady(String url, String md5, String version) {
+            return false;
+        }
     };
 
     @Override

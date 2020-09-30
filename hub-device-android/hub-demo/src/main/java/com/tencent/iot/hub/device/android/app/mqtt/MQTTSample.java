@@ -336,6 +336,11 @@ public class MQTTSample {
 
                 mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
             }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                return false;
+            }
         });
         mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
     }

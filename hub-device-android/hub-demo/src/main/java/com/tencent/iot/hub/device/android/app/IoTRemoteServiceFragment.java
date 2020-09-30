@@ -490,6 +490,11 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
 
                 mMqttClient.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
             }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                return false;
+            }
         });
         mMqttClient.reportCurrentFirmwareVersion("0.0.1");
     }
