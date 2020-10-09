@@ -99,6 +99,7 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mGetRemoteConfigBtn;
     private Button mConcernRemoteConfigBtn;
+    private Button mReportSubDevVersionBtn;
 
     // Default testing parameters
     private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
@@ -404,22 +405,18 @@ public class IoTMqttFragment extends Fragment {
 
                         @Override
                         public void onConnected() {
-                            Log.e("XXX", "onConnected");
                         }
 
                         @Override
                         public void onMessageArrived(String topic, MqttMessage message) {
-                            Log.e("XXX", "onMessageArrived topic=" + topic);
                         }
 
                         @Override
                         public void onConnectionLost(Throwable cause) {
-                            Log.e("XXX", "onConnectionLost");
                         }
 
                         @Override
                         public void onDisconnected() {
-                            Log.e("XXX", "onDisconnected");
                         }
                     });
                     TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connect();
@@ -461,6 +458,14 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.concernRemoteConfig();
             }
         });
+
+        mReportSubDevVersionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.initOTA();  // 初始化 ota 服务，开始监听平台的推送
+                mMQTTSample.reportSubDevVersion("0.0");
+            }
+        });
         return view;
     }
 
@@ -489,6 +494,7 @@ public class IoTMqttFragment extends Fragment {
         mConnectStatusWebSocketBtn = view.findViewById(R.id.websocket_status);
         mGetRemoteConfigBtn = view.findViewById(R.id.get_remote_config);
         mConcernRemoteConfigBtn = view.findViewById(R.id.concern_remote_config);
+        mReportSubDevVersionBtn = view.findViewById(R.id.report_sub_dev_version);
 
     }
 
