@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f6fe1b4_b8bdad74",
+        "filename": "hub-device-android/hub-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTRemoteServiceFragment.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 504,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-09T11:07:13Z",
+      "side": 1,
+      "message": "这块可以删掉",
+      "range": {
+        "startLine": 501,
+        "startChar": 0,
+        "endLine": 504,
+        "endChar": 15
+      },
+      "revId": "a507c8ce86eba1a2f642e4202277a3213c028de6",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1b694f87_c90116f5",
+        "filename": "hub-device-android/hub-demo/src/main/java/com/tencent/iot/hub/device/android/app/mqtt/MQTTSample.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-09T11:07:13Z",
+      "side": 1,
+      "message": "可以删掉",
+      "range": {
+        "startLine": 391,
+        "startChar": 0,
+        "endLine": 394,
+        "endChar": 15
+      },
+      "revId": "a507c8ce86eba1a2f642e4202277a3213c028de6",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8619760c_8db1ce44",
+        "filename": "hub-device-android/iot_service/src/main/java/com/tencent/iot/hub/device/android/service/TXMqttService.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-09T11:07:13Z",
+      "side": 1,
+      "message": "可以删掉",
+      "range": {
+        "startLine": 161,
+        "startChar": 0,
+        "endLine": 164,
+        "endChar": 11
+      },
+      "revId": "a507c8ce86eba1a2f642e4202277a3213c028de6",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
