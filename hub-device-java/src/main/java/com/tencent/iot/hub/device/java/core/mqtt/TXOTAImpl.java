@@ -131,12 +131,12 @@ public class TXOTAImpl {
 	 * @param msg
 	 */
 	public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
-		System.out.println("xxxxxxxxxxxxxxxxxxxx onSubscribeCompleted " + Thread.currentThread().getId());
 		System.out.println("onSubscribeCompleted status " + status);
 		if (status == Status.OK) {
 			String[] topics = token.getTopics();
 			if (topics != null) {
 				for (int i = 0; i < topics.length; i++) {
+					System.out.println("onSubscribeCompleted topic " + topics[i]);
 					if (topics[i].startsWith("$ota/")) {
 						mSubscribedState = true;
 					}
