@@ -50,6 +50,11 @@ public enum Status {
     ERR_MAX_APPENDING_REQUEST,
 
     /**
+     * 表示JSON构造错误
+     */
+    ERR_JSON_CONSTRUCT,
+
+    /**
      *  子设备初始状态
      */
     SUBDEV_STAT_INIT,

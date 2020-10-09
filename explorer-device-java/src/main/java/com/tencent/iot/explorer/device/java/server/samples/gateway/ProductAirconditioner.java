@@ -1,11 +1,12 @@
 package com.tencent.iot.explorer.device.java.server.samples.gateway;
 
-import com.tencent.iot.explorer.device.java.common.Status;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdev;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewaySubdevActionCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.hub.device.java.core.common.Status;
+
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.json.JSONException;
 import org.json.JSONObject;
