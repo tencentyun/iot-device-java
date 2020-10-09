@@ -2,8 +2,6 @@ package com.tencent.iot.explorer.device.java.gateway;
 
 
 
-import com.tencent.iot.explorer.device.java.common.Status;
-
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -25,9 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.utils.Base64;
 import com.tencent.iot.explorer.device.java.utils.HmacSha256;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class TXGatewayClient extends TXDataTemplateClient {
     public static final String TAG = "TXGATEWAYCLIENT";

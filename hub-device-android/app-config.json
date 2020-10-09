@@ -1,11 +1,11 @@
 {
-  "PRODUCT_ID":        "",
-  "DEVICE_NAME":       "",
-  "DEVICE_PSK":        "",
-  "SUB_PRODUCT_ID":    "",
-  "SUB_DEVICE_PSK":    "",
-  "SUB_DEV_NAME":      "",
-  "TEST_TOPIC":        "",
-  "SHADOW_TEST_TOPIC": "",
-  "PRODUCT_KEY":       ""
+  "PRODUCT_ID":        "FCUGSP3YL8",
+  "DEVICE_NAME":       "dev01",
+  "DEVICE_PSK":        "ZIQWRtYq3UahYeTQlHITAA==",
+  "SUB_PRODUCT_ID":    "TSV6COGWKO",
+  "SUB_DEVICE_PSK":    "yyA1VRauqxvXxZBm51VMmg==",
+  "SUB_DEV_NAME":      "dev001",
+  "TEST_TOPIC":        "TSV6COGWKO/dev001/data",
+  "SHADOW_TEST_TOPIC": "FCUGSP3YL8/dev01/data",
+  "PRODUCT_KEY":       "uMZBxZSN8koRiNmYQagidohU"
 }
