@@ -2,8 +2,6 @@ package com.tencent.iot.explorer.device.java.server.samples.data_template;
 
 
 
-import com.tencent.iot.explorer.device.java.common.Status;
-import com.tencent.iot.explorer.device.java.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
@@ -15,6 +13,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

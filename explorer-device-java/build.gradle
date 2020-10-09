@@ -2,6 +2,9 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+jar {
+    exclude('log4j.properties')
+}
 
 task sourceJar(type: Jar, dependsOn: classes) {
     classifier 'sources'
@@ -103,6 +106,11 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation 'net.iharder:base64:2.3.9'
     implementation 'com.google.code.gson:gson:2.8.6'
+    if (findProject(':hub-device-java') != null) {
+        implementation project(path: ':hub-device-java')
+    } else {
+        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
+    }
 }
 
 signing {

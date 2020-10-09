@@ -1,6 +1,5 @@
 package com.tencent.iot.explorer.device.java.test;
 
-import com.tencent.iot.explorer.device.java.common.Status;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
 import com.tencent.iot.explorer.device.java.server.samples.gateway.ProductAirconditioner;
 import com.tencent.iot.explorer.device.java.server.samples.gateway.ProductLight;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.Arrays;
 import java.util.Iterator;

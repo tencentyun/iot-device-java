@@ -1,15 +1,13 @@
 package com.tencent.iot.explorer.device.java.data_template;
 
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.tencent.iot.explorer.device.java.common.Status;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.utils.ReadFile;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.io.*;
 import java.util.Iterator;
@@ -68,7 +66,7 @@ class TXDataTemplateJson {
      * @param jsonFileName assets中json文件名
      * @return 检查结果
      */
-    private Status registerDataTemplateJson( final String jsonFileName){
+    private Status registerDataTemplateJson(final String jsonFileName){
 
         File file = new File("data/json/"+jsonFileName);
         if (file.exists()) {

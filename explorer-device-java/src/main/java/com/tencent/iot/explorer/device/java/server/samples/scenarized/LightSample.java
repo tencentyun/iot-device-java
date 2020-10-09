@@ -1,13 +1,11 @@
 package com.tencent.iot.explorer.device.java.server.samples.scenarized;
 
 
-import com.tencent.iot.explorer.device.java.common.Status;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.java.mqtt.TXOTACallBack;
-import com.tencent.iot.explorer.device.java.mqtt.TXOTAConstansts;
+
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -19,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
 import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.Arrays;
 import java.util.Iterator;
