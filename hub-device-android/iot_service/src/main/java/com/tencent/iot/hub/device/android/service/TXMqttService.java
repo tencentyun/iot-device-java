@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
@@ -120,6 +121,12 @@ public class TXMqttService extends Service {
                     e.printStackTrace();
                 }
             }
+        }
+
+        @Override
+        public boolean onLastestFirmwareReady(String url, String md5, String version) {
+            TXLog.e(TAG, "TXMqttService onLastestFirmwareReady");
+            return false;
         }
 
         @Override

@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -470,6 +471,12 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
             @Override
             public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
                 TXLog.e(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+            }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                TXLog.e(TAG, "IoTRemoteServiceFragment onLastestFirmwareReady");
+                return false;
             }
 
             @Override

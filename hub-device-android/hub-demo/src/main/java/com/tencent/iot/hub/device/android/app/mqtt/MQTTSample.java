@@ -49,6 +49,7 @@ public class MQTTSample {
     private TXMqttLogCallBack mMqttLogCallBack;
 	
     private Context mContext;
+    private String path2Store = "";
 
     private TXMqttActionCallBack mMqttActionCallBack;
 
@@ -107,6 +108,7 @@ public class MQTTSample {
 
         mContext = context;
         mMqttActionCallBack = callBack;
+        path2Store = mContext.getCacheDir().getAbsolutePath();
     }
 
     public MQTTSample(Context context, TXMqttActionCallBack callBack, String brokerURL, String productId,
@@ -135,11 +137,45 @@ public class MQTTSample {
         mMqttActionCallBack = callBack;
     }
 
+    private TXOTACallBack oTACallBack = new TXOTACallBack() {
+
+        @Override
+        public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
+
+        }
+
+        @Override
+        public boolean onLastestFirmwareReady(String url, String md5, String version) {
+            System.out.println("onLastestFirmwareReady url=" + url + " version " + version);
+            mMqttConnection.gatewayDownSubdevApp(url, path2Store + "/" + md5, md5, version);
+            return true; // false 自动触发下载升级文件  true 需要手动触发下载升级文件
+        }
+
+        @Override
+        public void onDownloadProgress(int percent, String version) {
+            mMqttConnection.gatewaySubdevReportProgress(percent, version);
+        }
+
+        @Override
+        public void onDownloadCompleted(String outputFile, String version) {
+            mMqttConnection.gatewaySubdevReportStart(version);
+            mMqttConnection.gatewaySubdevReportSuccess(version);
+        }
+
+        @Override
+        public void onDownloadFailure(int errCode, String version) {
+            mMqttConnection.gatewaySubdevReportFail(errCode, "", version);
+        }
+    };
+
      /**
      * 建立MQTT连接
      */
     public void connect() {
         mMqttConnection = new TXGatewayConnection(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,mMqttLogFlag, mMqttLogCallBack, mMqttActionCallBack);
+        mMqttConnection.setSubDevName(mSubDevName);
+        mMqttConnection.setSubDevProductKey(mSubDevPsk);
+        mMqttConnection.setSubProductID(mSubProductID);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
         options.setKeepAliveInterval(240);
@@ -201,6 +237,15 @@ public class MQTTSample {
 
     public void concernRemoteConfig() {
         mMqttConnection.concernConfig();
+    }
+
+    public void reportSubDevVersion(String version) {
+        mMqttConnection.gatewaySubdevReportVer(version);
+    }
+
+    public void initOTA() {
+        TXLog.e(TAG, "path2Store " + path2Store);
+        mMqttConnection.initOTA(path2Store, oTACallBack);
     }
 
     /**
@@ -316,6 +361,12 @@ public class MQTTSample {
             @Override
             public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
                 TXLog.e(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+            }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                TXLog.e(TAG, "MQTTSample onLastestFirmwareReady");
+                return false;
             }
 
             @Override
