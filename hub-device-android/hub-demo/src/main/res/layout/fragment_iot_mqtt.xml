@@ -206,7 +206,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:text="关注远程配置信息" />
-
+        <Button
+            android:id="@+id/report_sub_dev_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="上报子设备版本" />
     </LinearLayout>
 
     <ScrollView
