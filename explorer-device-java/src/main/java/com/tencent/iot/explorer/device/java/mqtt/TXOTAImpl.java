@@ -1,7 +1,7 @@
 package com.tencent.iot.explorer.device.java.mqtt;
 
 
-import com.tencent.iot.explorer.device.java.device.CA;
+import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
