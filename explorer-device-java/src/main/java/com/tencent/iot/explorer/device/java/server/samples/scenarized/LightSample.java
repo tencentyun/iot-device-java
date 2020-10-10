@@ -16,8 +16,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
-import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;

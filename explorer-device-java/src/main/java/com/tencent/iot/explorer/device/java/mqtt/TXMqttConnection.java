@@ -6,9 +6,10 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tencent.iot.explorer.device.java.utils.Base64;
-import com.tencent.iot.explorer.device.java.utils.HmacSha256;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.util.Base64;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import java.util.HashMap;
 import java.util.Iterator;
