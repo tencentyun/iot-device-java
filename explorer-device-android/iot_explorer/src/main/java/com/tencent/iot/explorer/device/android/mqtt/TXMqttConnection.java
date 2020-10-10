@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.android.utils.HmacSha256;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
