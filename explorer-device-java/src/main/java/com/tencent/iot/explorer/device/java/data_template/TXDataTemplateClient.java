@@ -1,10 +1,10 @@
 package com.tencent.iot.explorer.device.java.data_template;
 
 
-import com.tencent.iot.explorer.device.java.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.java.mqtt.TXMqttConnection;
-import com.tencent.iot.explorer.device.java.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
