@@ -2,7 +2,6 @@ package com.tencent.iot.explorer.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,13 +15,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.app.data_template.DataTemplateSample;
-import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

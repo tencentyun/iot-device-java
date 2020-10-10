@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.json.JSONArray;
 import org.json.JSONException;

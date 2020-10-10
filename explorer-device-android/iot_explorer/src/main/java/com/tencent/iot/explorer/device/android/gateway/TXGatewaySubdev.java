@@ -2,9 +2,9 @@ package com.tencent.iot.explorer.device.android.gateway;
 
 import android.content.Context;
 
-import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 public class TXGatewaySubdev extends TXDataTemplate {
     public static final String TAG = "TXGatewaySubdev";

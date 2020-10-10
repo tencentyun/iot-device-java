@@ -8,14 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.app.gateway.GatewaySample;
 import com.tencent.iot.explorer.device.android.app.gateway.ProductAirconditioner;
 import com.tencent.iot.explorer.device.android.app.gateway.ProductLight;
-import com.tencent.iot.explorer.device.android.common.Status;
-import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
-import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.Map;
 

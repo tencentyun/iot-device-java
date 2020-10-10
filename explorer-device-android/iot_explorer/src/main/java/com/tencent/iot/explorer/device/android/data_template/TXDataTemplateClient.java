@@ -2,39 +2,10 @@ package com.tencent.iot.explorer.device.android.data_template;
 
 import android.content.Context;
 
-import com.tencent.iot.explorer.device.android.common.Status;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.android.utils.TXLog;
-
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_ACTION;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_ACTION_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_EVENTS_POST;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_EVENTS_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_EVENT_POST;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_EVENT_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CLEAR_CONTROL;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CLEAR_CONTROL_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_REPLY;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_ACTION_UP_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_EVENT_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+import com.tencent.iot.hub.device.java.core.common.Status;
 
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic;
 
@@ -43,8 +14,6 @@ import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 public class TXDataTemplateClient extends TXMqttConnection {
     //数据模板

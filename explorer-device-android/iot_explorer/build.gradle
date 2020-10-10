@@ -135,6 +135,7 @@ dependencies {
 
     if (findProject(':explorer-device-java') != null) {
         implementation project(path: ':explorer-device-java')
+        implementation project(path: ':hub-device-java')
     } else {
         implementation 'com.tencent.iot.explorer:explorer-device-java:1.0.0'
     }
