@@ -55,6 +55,7 @@ public class IoTDataTemplateFragment extends Fragment {
     private Button mEventsPostBtn;
 
     private Button mCheckFirmwareBtn;
+    private Button mAIInitBtn;
 
     private Spinner mSpinner;
     private TextView mLogInfoText;
@@ -79,6 +80,8 @@ public class IoTDataTemplateFragment extends Fragment {
     private final static String DEVICE_CERT = "dev_cert";
     private final static String DEVICE_PRIV  = "dev_priv";
 
+    private final static String LISENCE_FILE_NAME  = "lisence_file_name";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,6 +100,7 @@ public class IoTDataTemplateFragment extends Fragment {
         mEventPostBtn = view.findViewById(R.id.event_report);
         mEventsPostBtn = view.findViewById(R.id.events_report);
         mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
+        mAIInitBtn = view.findViewById(R.id.ai_init);
         mSpinner = view.findViewById(R.id.spinner4);
         mLogInfoText = view.findViewById(R.id.log_info);
         mItemText = view.findViewById(R.id.editText2);
@@ -373,6 +377,15 @@ public class IoTDataTemplateFragment extends Fragment {
                 if (mDataTemplateSample == null)
                     return;
                 mDataTemplateSample.checkFirmware();
+            }
+        });
+
+        mAIInitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                mDataTemplateSample.ai_init(LISENCE_FILE_NAME);
             }
         });
 

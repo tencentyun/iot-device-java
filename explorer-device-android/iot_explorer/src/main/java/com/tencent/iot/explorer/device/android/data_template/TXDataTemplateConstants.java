@@ -11,6 +11,9 @@ public interface TXDataTemplateConstants {
     String TOPIC_ACTION_DOWN_PREFIX = "$thing/down/action/";
     String TOPIC_ACTION_UP_PREFIX = "$thing/up/action/";
 
+    String TOPIC_SERVICE_DOWN_PREFIX = "$thing/down/service/";
+    String TOPIC_SERVICE_UP_PREFIX = "$thing/up/service/";
+
     enum TemplateSubTopic{
         PROPERTY_DOWN_STREAM_TOPIC,
         EVENT_DOWN_STREAM_TOPIC,

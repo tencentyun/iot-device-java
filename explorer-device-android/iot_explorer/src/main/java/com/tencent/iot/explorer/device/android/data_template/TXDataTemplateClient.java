@@ -152,6 +152,15 @@ public class TXDataTemplateClient extends TXMqttConnection {
     }
 
     /**
+     * 初始化请求AI license 存放在文件路径下
+     * @param licenceFileName AI对应的license文件名
+     * @return 结果
+     */
+    public Status ai_init(String licenceFileName, final int qos) {
+        return mDataTemplate.ai_init(licenceFileName,qos);
+    }
+
+    /**
      * 消息到达回调函数
      * @param topic   消息主题
      * @param message 消息内容

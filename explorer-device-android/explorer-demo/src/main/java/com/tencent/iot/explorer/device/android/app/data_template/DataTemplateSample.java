@@ -174,6 +174,10 @@ public class DataTemplateSample {
         return  mMqttConnection.eventSinglePost(eventId, type, params);
     }
 
+    public Status ai_init(String licenceFileName) {
+        return mMqttConnection.ai_init(licenceFileName,0);
+    }
+
     public void checkFirmware() {
 
         mMqttConnection.initOTA(Environment.getExternalStorageDirectory().getAbsolutePath(), new TXOTACallBack() {
