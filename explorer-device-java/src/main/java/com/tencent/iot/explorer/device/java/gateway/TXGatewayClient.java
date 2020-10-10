@@ -21,8 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tencent.iot.explorer.device.java.utils.Base64;
-import com.tencent.iot.explorer.device.java.utils.HmacSha256;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.HashMap;

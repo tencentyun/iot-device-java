@@ -15,7 +15,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tencent.iot.explorer.device.java.utils.AsymcSslUtils;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.Arrays;
