@@ -40,6 +40,8 @@ import static com.tencent.iot.explorer.device.android.data_template.TXDataTempla
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
@@ -60,6 +62,12 @@ public class TXDataTemplate {
 
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
+
+    private String mServiceDownStreamTopic;
+    private String mServiceUptreamTopic;
+
+    //AI对应的license文件名
+    public String mLicenceFileName;
 
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
@@ -90,6 +98,8 @@ public class TXDataTemplate {
         this.mEventUptreamTopic = TOPIC_EVENT_UP_PREFIX + productId + "/"  + deviceName;
         this.mActionDownStreamTopic = TOPIC_ACTION_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + productId + "/"  + deviceName;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/"  + deviceName;
+        this.mServiceUptreamTopic = TOPIC_SERVICE_UP_PREFIX + productId + "/"  + deviceName;
         this.mDataTemplateJson = new TXDataTemplateJson (context,jsonFileName);
         this.mDownStreamCallBack = downStreamCallBack;
         this.mDeviceName = deviceName;
@@ -387,6 +397,27 @@ public class TXDataTemplate {
         message.setPayload(object.toString().getBytes());
 
         return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
+    }
+
+    /**
+     * 初始化请求AI license 存放在文件路径下
+     * @param licenceFileName AI对应的license文件名
+     * @return 结果
+     */
+    public Status ai_init(String licenceFileName, final int qos) {
+        mLicenceFileName = licenceFileName;
+        Status ret;
+        String topic;
+
+        TXMqttRequest mqttRequest = new TXMqttRequest("subscribeTopic", requestID.getAndIncrement());
+        topic = mServiceDownStreamTopic;
+
+        ret = mConnection.subscribe(topic, qos, mqttRequest);
+        if(Status.OK != ret) {
+            TXLog.e(TAG, "subscribeServiceTopic failed! " + topic);
+            return ret;
+        }
+        return Status.OK;
     }
 
     /**
