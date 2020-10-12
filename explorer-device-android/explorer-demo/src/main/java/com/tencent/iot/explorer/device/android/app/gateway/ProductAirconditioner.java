@@ -6,9 +6,9 @@ import android.util.Log;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewayClient;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdevActionCallBack;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;

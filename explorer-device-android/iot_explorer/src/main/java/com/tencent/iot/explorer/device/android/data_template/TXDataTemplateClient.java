@@ -2,12 +2,11 @@ package com.tencent.iot.explorer.device.android.data_template;
 
 import android.content.Context;
 
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants;
-import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic;
 

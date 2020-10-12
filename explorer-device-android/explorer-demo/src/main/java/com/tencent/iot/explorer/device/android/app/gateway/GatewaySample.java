@@ -5,12 +5,12 @@ import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.gateway.TXGatewayClient;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;

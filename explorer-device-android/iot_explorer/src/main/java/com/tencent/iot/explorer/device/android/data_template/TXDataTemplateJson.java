@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Iterator;
 
-import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 class TXDataTemplateJson {
     public static final String TAG = "TX_TEMPLATE_JSON_" + MQTT_SDK_VER;

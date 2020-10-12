@@ -6,11 +6,11 @@ import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.android.mqtt.TXAlarmPingSender;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
