@@ -7,6 +7,7 @@
   * [API接口说明](#API接口说明)
   * [Demo示例体验-设备互通](#Demo示例体验-设备互通)
   * [Demo示例体验-设备状态上报与状态设置](#Demo示例体验-设备状态上报与状态设置)
+  * [常见问题](#常见问题)
 
 # 腾讯云物联网通信设备端 Java-SDK
 
@@ -213,3 +214,7 @@ MQTT网关的相关接口定义在TXGatewayConnection类中，介绍如下：
 
 ## Demo示例体验-设备状态上报与状态设置
 官网上假设的一个示例场景，请参考 [设备状态上报与状态设置.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/设备状态上报与状态设置.md)
+
+## 常见问题
+
+常见问题请参考docs目录下的[常见问题java](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/常见问题java.md)
