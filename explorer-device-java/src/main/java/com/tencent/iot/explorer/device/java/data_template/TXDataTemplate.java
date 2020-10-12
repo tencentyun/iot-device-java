@@ -23,7 +23,6 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.*;
 
 public class TXDataTemplate {
-    public static final String TAG = "TXDATATEMPLATE";
 
     //设备信息
     public String mDeviceName;
@@ -57,7 +56,6 @@ public class TXDataTemplate {
     private TXMqttConnection mConnection;
 
     /**
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
      * @param productId         产品名
      * @param deviceName        设备名，唯一
      * @param jsonFileName      数据模板描述文件
@@ -107,13 +105,13 @@ public class TXDataTemplate {
                 topic = mActionDownStreamTopic;
                 break;
             default:
-                LOG.error(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
+                LOG.error("subscribeTemplateTopic: topic id [{}] invalid!", topicId );
                 return Status.PARAMETER_INVALID;
         }
 
         ret = mConnection.subscribe(topic, qos, mqttRequest);
         if(Status.OK != ret) {
-            LOG.error(TAG, "subscribeTopic failed! " + topic);
+            LOG.error("subscribeTopic failed! " + topic);
             return ret;
         }
         return Status.OK;
@@ -140,13 +138,13 @@ public class TXDataTemplate {
                 topic = mActionDownStreamTopic;
                 break;
             default:
-                LOG.error(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
+                LOG.error("subscribeTemplateTopic: topic id [{}] invalid!", topicId );
                 return Status.PARAMETER_INVALID;
         }
 
         ret = mConnection.unSubscribe(topic, mqttRequest);
         if(Status.OK != ret) {
-            LOG.error(TAG, "subscribeTopic failed! " + topic);
+            LOG.error("subscribeTopic failed! " + topic);
         }
 
         return Status.OK;
@@ -171,7 +169,7 @@ public class TXDataTemplate {
                 topic = mActionUptreamTopic;
                 break;
             default:
-                LOG.error(TAG, "publishTemplateMessage: topic id invalid!" + topicId );
+                LOG.error("publishTemplateMessage: topic id [{}] invalid!", topicId );
                 return Status.PARAMETER_INVALID;
         }
         if(isConnected()) {
@@ -185,7 +183,7 @@ public class TXDataTemplate {
             }
             return ret;
         } else {
-            LOG.error(TAG, "publishTemplateMessage: failed! Mqtt disconnected!");
+            LOG.error("publishTemplateMessage: failed! Mqtt disconnected!");
             return Status.MQTT_NO_CONN;
         }
     }
@@ -199,7 +197,7 @@ public class TXDataTemplate {
     public Status propertyReport(JSONObject property, JSONObject metadata) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkPropertyJson(property)){
-            LOG.error(TAG, "propertyReport: invalid property json!");
+            LOG.error("propertyReport: invalid property json!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -214,7 +212,7 @@ public class TXDataTemplate {
             if (null != metadata)
                 object.put("metadata", metadata);
         } catch (Exception e) {
-            LOG.error(TAG, "propertyReport: failed!" );
+            LOG.error("propertyReport: failed!" );
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -233,7 +231,7 @@ public class TXDataTemplate {
      */
     public Status propertyGetStatus(String type, boolean showmeta) {
         if (!type.equals("report") && !type.equals("control")) {
-            LOG.error(TAG, "propertyGetStatus: invalid type[%s]!", type);
+            LOG.error("propertyGetStatus: invalid type[{}]!", type);
             return Status.PARAMETER_INVALID;
         }
         JSONObject object = new JSONObject();
@@ -247,7 +245,7 @@ public class TXDataTemplate {
             else
                 object.put("showmeta", 0);
         } catch (Exception e) {
-            LOG.error(TAG, "propertyGetStatus: failed!");
+            LOG.error("propertyGetStatus: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -271,7 +269,7 @@ public class TXDataTemplate {
             object.put("clientToken", clientToken);
             object.put("params", params);
         } catch (Exception e) {
-            LOG.error(TAG, "propertyReportInfo: failed!");
+            LOG.error("propertyReportInfo: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -293,7 +291,7 @@ public class TXDataTemplate {
             object.put("method", METHOD_PROPERTY_CLEAR_CONTROL);
             object.put("clientToken", clientToken);
         } catch (Exception e) {
-            LOG.error(TAG, "propertyClearControl: failed!" );
+            LOG.error("propertyClearControl: failed!" );
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -314,7 +312,7 @@ public class TXDataTemplate {
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkEventJson(eventId, type, params)){
-            LOG.error(TAG, "eventSinglePost: invalid parameters!");
+            LOG.error("eventSinglePost: invalid parameters!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -329,7 +327,7 @@ public class TXDataTemplate {
             object.put("timestamp", timestamp);
             object.put("params", params);
         } catch (Exception e) {
-            LOG.error(TAG, "eventSinglePost: failed!");
+            LOG.error("eventSinglePost: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -348,7 +346,7 @@ public class TXDataTemplate {
     public Status eventsPost(JSONArray events) {
         //检查构造是否符合json文件中的定义
         if(Status.OK != mDataTemplateJson.checkEventsJson(events)){
-            LOG.error(TAG, "eventsPost: invalid parameters!");
+            LOG.error("eventsPost: invalid parameters!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -359,7 +357,7 @@ public class TXDataTemplate {
             object.put("clientToken", clientToken);
             object.put("events", events);
         } catch (Exception e) {
-            LOG.error(TAG, "eventsPost: failed!");
+            LOG.error("eventsPost: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -385,7 +383,7 @@ public class TXDataTemplate {
             object.put("code", code);
             object.put("status", status);
         } catch (Exception e) {
-            LOG.error(TAG, "actionReply: failed!");
+            LOG.error("actionReply: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -412,7 +410,7 @@ public class TXDataTemplate {
             object.put("status", status);
             object.put("response", response);
         } catch (Exception e) {
-            LOG.error(TAG, "actionReply: failed!");
+            LOG.error("actionReply: failed!");
             return Status.ERR_JSON_CONSTRUCT;
         }
 
@@ -433,14 +431,14 @@ public class TXDataTemplate {
                 while (entries.hasNext()) {
                     Map.Entry<String, Long> entry = entries.next();
                     if (System.currentTimeMillis() - entry.getValue() > mReplyWaitTimeout) {
-                        LOG.error(TAG, "Reply timeout. Client token:" + entry.getKey());
+                        LOG.error("Reply timeout. Client token:" + entry.getKey());
                         mReplyWaitList.remove(entry.getKey());
                     }
                 }
                 try {
                     Thread.sleep(mReplyWaitTimeout);
                 } catch (InterruptedException e) {
-                    LOG.error(TAG, "The thread has been interrupted");
+                    LOG.error("The thread has been interrupted");
                 }
             }
         }
@@ -456,17 +454,17 @@ public class TXDataTemplate {
             String clientToken = jsonObj.getString("clientToken");
             Long timestamp = mReplyWaitList.get(clientToken);
             if (null == timestamp) {
-                LOG.error(TAG, "handleReply: client token [%s] not found!", clientToken);
+                LOG.error("handleReply: client token [{}] not found!", clientToken);
                 return;
             }
             if (System.currentTimeMillis() - timestamp > mReplyWaitTimeout) {
-                LOG.error(TAG, "handle_reply: reply timeout! ClientToken:" + clientToken);
+                LOG.error("handle_reply: reply timeout! ClientToken:" + clientToken);
             } else {
                 int code = jsonObj.getInt("code");
                 if (0 == code) {
-                    LOG.debug(TAG, "handle_reply: reply OK! ClientToken:" + clientToken);
+                    LOG.debug("handle_reply: reply OK! ClientToken:" + clientToken);
                 } else {
-                    LOG.error(TAG, "handle_reply: reply failed! ClientToken:" + clientToken + ",code:" + code);
+                    LOG.error("handle_reply: reply failed! ClientToken:" + clientToken + ",code:" + code);
                 }
             }
             if (null != mDownStreamCallBack && !isGetStatus) {
@@ -474,7 +472,7 @@ public class TXDataTemplate {
             }
             mReplyWaitList.remove(clientToken);
         } catch (JSONException e) {
-            LOG.error(TAG, "handle_reply: failed! Message[ %s ] is not vaild!", message);
+            LOG.error("handle_reply: failed! Message[ {} ] is not vaild!", message);
         }
     }
 
@@ -483,7 +481,7 @@ public class TXDataTemplate {
      * @param message 消息内容
      */
     private void onPropertyMessageArrivedCallBack(MqttMessage message){
-        LOG.debug(TAG, "property down stream message received " + message);
+        LOG.debug("property down stream message received " + message);
         //根据method进行相应处理
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
@@ -493,7 +491,7 @@ public class TXDataTemplate {
                     !method.equals(METHOD_PROPERTY_GET_STATUS_REPLY) &&
                     !method.equals(METHOD_PROPERTY_CLEAR_CONTROL_REPLY) &&
                     !method.equals(METHOD_PROPERTY_REPORT_INFO_REPLY)) {
-                LOG.error(TAG, "onPropertyCallBack: invalid method:" + method);
+                LOG.error("onPropertyCallBack: invalid method:" + method);
                 return;
             }
             //控制下发消息处理
@@ -501,7 +499,7 @@ public class TXDataTemplate {
                 if(null != mDownStreamCallBack) {
                     JSONObject result = mDownStreamCallBack.onControlCallBack(jsonObj.getJSONObject("params"));
                     if (Status.OK != controlReply(jsonObj.getString("clientToken"), result.getInt("code"), result.getString("status"))) {
-                        LOG.error(TAG, "control reply failed!");
+                        LOG.error("control reply failed!");
                     }
                 }
             } else if(method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
@@ -514,7 +512,7 @@ public class TXDataTemplate {
                 handleReply(message, false);
             }
         } catch (Exception e) {
-            LOG.error(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
+            LOG.error("onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
     }
 
@@ -523,18 +521,18 @@ public class TXDataTemplate {
      * @param message 消息内容
      */
     private void onEventMessageArrivedCallBack(MqttMessage message){
-        LOG.debug(TAG, "event down stream message received : " + message);
+        LOG.debug("event down stream message received : " + message);
         // 查询列表中的event，并处理
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
             if(!method.equals(METHOD_EVENT_REPLY) && !method.equals(METHOD_EVENTS_REPLY)) {
-                LOG.error(TAG, "onEventMessageArrivedCallBack: invalid method:" + method);
+                LOG.error("onEventMessageArrivedCallBack: invalid method:" + method);
                 return;
             }
             handleReply(message, false);
         } catch (Exception e) {
-            LOG.error(TAG, "onEventMessageArrivedCallBack: invalid message:" + message);
+            LOG.error("onEventMessageArrivedCallBack: invalid message:" + message);
         }
     }
 
@@ -543,13 +541,13 @@ public class TXDataTemplate {
      * @param message 消息内容
      */
     private void onActionMessageArrivedCallBack(MqttMessage message){
-        LOG.debug(TAG, "action down stream message received : " + message);
+        LOG.debug("action down stream message received : " + message);
         // 查询列表中的action，然后调用相应的回调函数
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
             if(!method.equals(METHOD_ACTION)) {
-                LOG.error(TAG, "onActionMessageArrivedCallBack: invalid method:" + method);
+                LOG.error("onActionMessageArrivedCallBack: invalid method:" + method);
                 return;
             }
             if(null != mDownStreamCallBack) {
@@ -557,7 +555,7 @@ public class TXDataTemplate {
                 JSONObject params = jsonObj.getJSONObject("params");
                 //check action
                 if (Status.OK !=mDataTemplateJson.checkActionJson(actionId, params)) {
-                    LOG.error(TAG, "onActionMessageArrivedCallBack: invalid action message:" + message);
+                    LOG.error("onActionMessageArrivedCallBack: invalid action message:" + message);
                     return;
                 }
                 //callback
@@ -565,15 +563,15 @@ public class TXDataTemplate {
                 //check reply
                 JSONObject response = result.getJSONObject("response");
                 if (Status.OK !=mDataTemplateJson.checkActionReplyJson(actionId, response)) {
-                    LOG.error(TAG, "onActionMessageArrivedCallBack: invalid action reply message:" +  response);
+                    LOG.error("onActionMessageArrivedCallBack: invalid action reply message:" +  response);
                     return;
                 }
                 if (Status.OK != actionReply(jsonObj.getString("clientToken"), result.getInt("code"), result.getString("status"), response)) {
-                    LOG.error(TAG, "action reply failed!");
+                    LOG.error("action reply failed!");
                 }
             }
         } catch (Exception e) {
-            LOG.error(TAG, "onActionMessageArrivedCallBack: invalid message:" + message);
+            LOG.error("onActionMessageArrivedCallBack: invalid message:" + message);
         }
     }
 

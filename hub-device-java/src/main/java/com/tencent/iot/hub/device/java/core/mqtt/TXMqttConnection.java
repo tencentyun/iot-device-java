@@ -109,8 +109,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected volatile TXMqttConstants.ConnectStatus mConnectStatus = TXMqttConstants.ConnectStatus.kConnectIdle;
 
 	/**
-	 * @param context
-	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @param productID
 	 *            产品名
 	 * @param deviceName
@@ -131,8 +129,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
-	 * @param context
-	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @param productID
 	 *            产品名
 	 * @param deviceName
@@ -150,8 +146,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
-	 * @param context
-	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @param productID
 	 *            产品名
 	 * @param deviceName
@@ -172,8 +166,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
-	 * @param context
-	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @param serverURI
 	 *            服务器URI，腾讯云默认唯一地址 TXMqttConstants.DEFAULT_SERVER_URI=
 	 *            "ssl://connect.iot.qcloud.com:8883"
@@ -450,7 +442,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			return Status.PARAMETER_INVALID;
 		}
 
-		LOG.info("Starting publish topic: %s Message: %s", topic, message.toString());
+		LOG.info("Starting publish topic: {} Message: {}", topic, message.toString());
 		System.out.println("topic = " + topic);
 		System.out.println("message.toString() = " + message.toString());
 		//System.out.println("mMqttClient.isConnected() = " + mMqttClient.isConnected());
@@ -475,8 +467,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			}
 		} else {
 			System.out.println("1111111111111111111111111111 topic = " + topic);
-			LOG.error( "publish topic: %s failed, mMqttClient not connected and disconnect buffer not enough."+
-					topic);
+			LOG.error( "publish topic: {} failed, mMqttClient not connected and disconnect buffer not enough.", topic);
 			return Status.ERROR;
 		}
 
@@ -633,17 +624,17 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			return Status.PARAMETER_INVALID;
 		}
 
-		LOG.info("Starting subscribe topic: %s" + topic);
+		LOG.info("Starting subscribe topic: " + topic);
 
 		if ((mMqttClient != null) && (mMqttClient.isConnected())) {
 			try {
 				mMqttClient.subscribe(topic, qos, userContext, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
 			} catch (Exception e) {
-				LOG.error(e + "subscribe topic: %s failed.", topic);
+				LOG.error(e + "subscribe topic: {} failed.", topic);
 				return Status.ERROR;
 			}
 		} else {
-			LOG.error("subscribe topic: %s failed, because mMqttClient not connected." + topic);
+			LOG.error("subscribe topic: {} failed, because mMqttClient not connected.", topic);
 			return Status.MQTT_NO_CONN;
 		}
 
@@ -671,17 +662,17 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			return Status.PARAMETER_INVALID;
 		}
 
-		LOG.info("Starting unSubscribe topic: %s" + topic);
+		LOG.info("Starting unSubscribe topic: {}", topic);
 
 		if ((mMqttClient != null) && (mMqttClient.isConnected())) {
 			try {
 				mMqttClient.unsubscribe(topic, userContext, new QcloudMqttActionListener(TXMqttConstants.UNSUBSCRIBE));
 			} catch (Exception e) {
-				LOG.error(e + "unSubscribe topic: %s failed.", topic);
+				LOG.error(e + "unSubscribe topic: {} failed.", topic);
 				return Status.ERROR;
 			}
 		} else {
-			LOG.error("unSubscribe topic: %s failed, because mMqttClient not connected." + topic);
+			LOG.error("unSubscribe topic: {} failed, because mMqttClient not connected.", topic);
 			return Status.MQTT_NO_CONN;
 		}
 
@@ -831,10 +822,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			String topic = it.next();
 			Integer qos = mSubscribedTopicMap.get(topic);
 			try {
-				LOG.info("subscribe to %s..." + topic);
+				LOG.info("subscribe to {}...", topic);
 				mMqttClient.subscribe(topic, qos, null, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
 			} catch (Exception e) {
-				LOG.error( "subscribe to %s failed." + topic);
+				LOG.error( "subscribe to {} failed.", topic);
 			}
 		}
 
@@ -849,7 +840,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	 */
 	@Override
 	public void connectionLost(Throwable cause) {
-		LOG.error("connection lost because of: %s" + cause.toString());
+		LOG.error("connection lost because of: {}", cause.toString());
 
 		setConnectingState(TXMqttConstants.ConnectStatus.kDisconnected);
 
@@ -874,12 +865,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		if (message.getQos() > 0 && message.getId() == mLastReceivedMessageId) {
-			LOG.error("Received topic: %s, id: %d, message: %s, discard repeated message!!!" +  topic + message.getId() + 
-					message);
+			LOG.error("Received topic: {}, id: {}, message: {}, discard repeated message!!!",
+					topic, message.getId(), message);
 			return;
 		}
 
-		LOG.info("Received topic: %s, id: %d, message: %s" + topic +  message.getId() + message);
+		LOG.info("Received topic: {}, id: {}, message: {}", topic, message.getId(), message);
 
 		mLastReceivedMessageId = message.getId();
 

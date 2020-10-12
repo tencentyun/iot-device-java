@@ -15,7 +15,6 @@ public class TXGatewaySubdev extends TXDataTemplate {
 
     /**
      * @param connection         网关设备连接句柄
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
      * @param productId         产品名
      * @param deviceName        设备名，唯一
      * @param jsonFileName      数据模板描述文件
