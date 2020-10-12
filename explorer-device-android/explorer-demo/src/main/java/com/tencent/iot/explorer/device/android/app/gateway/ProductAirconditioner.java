@@ -3,12 +3,12 @@ package com.tencent.iot.explorer.device.android.app.gateway;
 import android.content.Context;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewayClient;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdev;
 import com.tencent.iot.explorer.device.android.gateway.TXGatewaySubdevActionCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
 
 public class ProductAirconditioner {
     private static final String TAG = "TXProductLight";

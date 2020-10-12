@@ -5,9 +5,11 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants;
+import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
-import static com.tencent.iot.explorer.device.android.data_template.TXDataTemplateConstants.TemplateSubTopic;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
@@ -17,7 +19,7 @@ import org.json.JSONObject;
 
 public class TXDataTemplateClient extends TXMqttConnection {
     //数据模板
-    private  TXDataTemplate mDataTemplate;
+    private TXDataTemplate mDataTemplate;
     //属性下行topic
     public String mPropertyDownStreamTopic;
 

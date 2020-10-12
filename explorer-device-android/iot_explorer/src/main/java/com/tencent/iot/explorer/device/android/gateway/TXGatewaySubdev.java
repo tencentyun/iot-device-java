@@ -3,7 +3,7 @@ package com.tencent.iot.explorer.device.android.gateway;
 import android.content.Context;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
-import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 public class TXGatewaySubdev extends TXDataTemplate {
