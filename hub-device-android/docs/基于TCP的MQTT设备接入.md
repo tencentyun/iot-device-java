@@ -1,8 +1,6 @@
 * [快速开始](#快速开始)
   *  [控制台创建设备](#控制台创建设备)
   *  [编译运行示例程序](#编译运行示例程序)
-     *  [下载Hub Android SDK Demo示例代码](#下载Hub-Android-SDK-Demo示例代码)
-     *  [检查SDK的依赖关系](#检查SDK的依赖关系)
      *  [填写认证连接设备的参数](#填写认证连接设备的参数)
      *  [运行示例程序进行 MQTT 认证连接](#运行示例程序进行-MQTT-认证连接)
      *  [运行示例程序进行断开 MQTT 连接](#运行示例程序进行断开-MQTT-连接)
@@ -20,25 +18,6 @@
 当在控制台中成功创建产品后，该产品默认有三条权限。订阅：${productId}/${deviceName}/control，订阅和发布：${productId}/${deviceName}/data，发布：${productId}/${deviceName}/event。请参考官网 [控制台使用手册-权限列表](https://cloud.tencent.com/document/product/634/14444) 操作Topic权限。
 
 ## 编译运行示例程序
-
-#### 下载Hub Android SDK Demo示例代码
-示例代码在 [hub-demo](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android/hub-demo) 的module下。
-
-#### 检查SDK的依赖关系
-Demo中是依赖本地SDK源码进行构建的。查看应用模块的 **[build.gradle](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/hub-demo/build.gradle)**，应用模块已经依赖 [iot_core](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android/iot_core) 和[iot_service](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android/iot_service)源码。
-```
-dependencies {
-    implementation project(':hub-device-android:iot_core')
-    implementation project(':hub-device-android:iot_service')
-}
-```
-您也可以使用依赖 maven 远程构建的方式
-```
-dependencies {
-    compile 'com.tencent.iot.hub:hub-device-android-core:3.2.0'
-    compile 'com.tencent.iot.hub:hub-device-android-service:3.2.0'
-}
-```
 
 #### 填写认证连接设备的参数
 编辑 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/app-config.json) 文件中的配置信息
