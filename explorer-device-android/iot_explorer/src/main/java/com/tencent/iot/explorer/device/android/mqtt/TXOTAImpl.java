@@ -2,9 +2,9 @@ package com.tencent.iot.explorer.device.android.mqtt;
 
 import android.os.SystemClock;
 
-import com.tencent.iot.explorer.device.android.device.CA;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.device.CA;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
