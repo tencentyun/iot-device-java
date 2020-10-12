@@ -31,7 +31,7 @@ class TXDataTemplateJson {
 
     TXDataTemplateJson( final String jsonFileName) {
         if (Status.OK != registerDataTemplateJson( jsonFileName)) {
-            LOG.info(TAG, "TXDataTemplateJson: construct json failed!");
+            LOG.info("TXDataTemplateJson: construct json failed!");
         }
     }
 
@@ -62,7 +62,6 @@ class TXDataTemplateJson {
 
     /**
      * 注册从控制台界面下载的json文件
-     * @param context Android上下文，可使用进程上下文/Activity
      * @param jsonFileName assets中json文件名
      * @return 检查结果
      */
@@ -77,15 +76,15 @@ class TXDataTemplateJson {
                 this.mPropertyJson = json.getJSONArray("properties");
                 this.mEventJson = json.getJSONArray("events");
                 this.mActionJson = json.getJSONArray("actions");
-                LOG.info(TAG, "registerDataTemplateJson: propertyJson" + mPropertyJson);
-                LOG.info(TAG, "registerDataTemplateJson: eventJson" + mEventJson);
-                LOG.info(TAG, "registerDataTemplateJson: actionJson" + mActionJson);
+                LOG.info("registerDataTemplateJson: propertyJson" + mPropertyJson);
+                LOG.info("registerDataTemplateJson: eventJson" + mEventJson);
+                LOG.info("registerDataTemplateJson: actionJson" + mActionJson);
             }catch (JSONException t) {
-                LOG.error(TAG, "Json file format is invalid!.", t);
+                LOG.error("Json file format is invalid!." + t);
                 return Status.ERROR;
             }
         } else{
-            LOG.error(TAG, "Cannot open Json Files.");
+            LOG.error("Cannot open Json Files.");
             return Status.ERROR;
         }
         return Status.OK;
@@ -138,11 +137,11 @@ class TXDataTemplateJson {
                     return Status.OK;
                 }
             } else {
-                LOG.error(TAG, "Invalid Data Template Json, please check and replace it!");
+                LOG.error("Invalid Data Template Json, please check and replace it!");
             }
-            LOG.error(TAG, "Invalid Value, excepted" + valueDescribeJson);
+            LOG.error("Invalid Value, excepted " + valueDescribeJson);
         } catch (JSONException e) {
-            LOG.error(TAG, "Invalid Data Template Json, please check and replace it!");
+            LOG.error("Invalid Data Template Json, please check and replace it!");
         }
         return Status.PARAMETER_INVALID;
     }
@@ -155,7 +154,7 @@ class TXDataTemplateJson {
      */
     private Status checkParamsJson(JSONArray paramsDescribeJson, JSONObject paramsJson){
         if(null == paramsJson || null == paramsDescribeJson) {
-            LOG.error(TAG, "checkParamsJson: json is null!");
+            LOG.error("checkParamsJson: json is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -169,14 +168,14 @@ class TXDataTemplateJson {
                     JSONObject jsonNode = paramsDescribeJson.getJSONObject(i);
                     if (jsonNode.get("id").equals(key)) {
                         if(Status.OK != checkParamsValue(jsonNode.getJSONObject("define"), paramsJson.get(key))) {
-                            LOG.error(TAG, "checkParamsJson: parameter [%s] with invalid value (may be string): " + paramsJson.get(key), key);
+                            LOG.error("checkParamsJson: parameter [{}] with invalid value (may be string): " + paramsJson.get(key), key);
                             return Status.PARAMETER_INVALID;
                         }
                         break;
                     }
                 }
                 if(i == paramsDescribeJson.length()) { //property not found
-                    LOG.error(TAG, "checkParamsJson: no such param:" +  key);
+                    LOG.error("checkParamsJson: no such param:" +  key);
                     return Status.PARAMETER_INVALID;
                 }
             }
@@ -194,7 +193,7 @@ class TXDataTemplateJson {
      */
     private Status checkActionParamsJson(JSONArray paramsDescribeJson, JSONObject paramsJson){
         if(null == paramsJson || null == paramsDescribeJson) {
-            LOG.error(TAG, "checkParamsJson: json is null!");
+            LOG.error("checkParamsJson: json is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -208,7 +207,7 @@ class TXDataTemplateJson {
                     String key = it.next();
                     if (jsonNode.get("id").equals(key)) {
                         if (Status.OK != checkParamsValue(jsonNode.getJSONObject("define"), paramsJson.get(key))) {
-                            LOG.error(TAG, "checkParamsJson: parameter [%s] with invalid value (may be string): " + paramsJson.get(key), key);
+                            LOG.error("checkParamsJson: parameter [{}] with invalid value (may be string): " + paramsJson.get(key), key);
                             return Status.PARAMETER_INVALID;
                         }
                         isActionExit = true;
@@ -216,7 +215,7 @@ class TXDataTemplateJson {
                     }
                 }
                 if(!isActionExit) {
-                   LOG.error(TAG, "checkActionParamsJson: params [%s] not found, check the data template json on cloud console!", jsonNode.get("id"));
+                   LOG.error("checkActionParamsJson: params [{}] not found, check the data template json on cloud console!", jsonNode.get("id"));
                    return Status.ERROR;
                 }
                 isActionExit = false;
@@ -245,7 +244,7 @@ class TXDataTemplateJson {
      */
      Status checkEventJson(String eventId, String type, JSONObject params){
         if(null == eventId || null == type || null == params) {
-            LOG.error(TAG, "checkEventJson: parameter is null!");
+            LOG.error("checkEventJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -257,13 +256,13 @@ class TXDataTemplateJson {
                     if(jsonNode.get("type").equals(type)) {
                         return checkParamsJson(jsonNode.getJSONArray("params"), params);
                     } else {
-                        LOG.error(TAG, "checkEventJson: type [%s] is not matched, excepted[%s]!", type, jsonNode.get("type"));
+                        LOG.error("checkEventJson: type [{}] is not matched, excepted[{}]!", type, jsonNode.get("type"));
                         return Status.PARAMETER_INVALID;
                     }
                 }
             }
             if(i == mEventJson.length()) { //property not found
-                LOG.error(TAG, "checkEventJson: no such event:" +  eventId);
+                LOG.error("checkEventJson: no such event:" +  eventId);
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
@@ -288,16 +287,16 @@ class TXDataTemplateJson {
             for(int i=0;i < events.length();i++) {
                 JSONObject jsonNode = events.getJSONObject(i);
                 if(!(jsonNode.get("timestamp") instanceof Long)) {
-                    LOG.error(TAG, "checkEventsJson: timestamp invalid! EventId:[%s].", jsonNode.getString("eventId"));
+                    LOG.error("checkEventsJson: timestamp invalid! EventId:[{}].", jsonNode.getString("eventId"));
                     return Status.PARAMETER_INVALID;
                 }
                 if(Status.OK != checkEventJson(jsonNode.getString("eventId"), jsonNode.getString("type"), jsonNode.getJSONObject("params"))) {
-                    LOG.error(TAG, "checkEventsJson: events invalid!");
+                    LOG.error("checkEventsJson: events invalid!");
                     return Status.PARAMETER_INVALID;
                 }
             }
         } catch (JSONException e) {
-            LOG.error(TAG, "checkEventsJson: events invalid!");
+            LOG.error("checkEventsJson: events invalid!");
             e.printStackTrace();
         }
         return  Status.OK;
@@ -322,18 +321,18 @@ class TXDataTemplateJson {
                 JSONObject jsonNode = mActionJson.getJSONObject(i);
                 if (jsonNode.get("id").equals(actionId)) {
                     if(Status.OK != checkActionParamsJson(jsonNode.getJSONArray("input"),params)) {
-                        LOG.error(TAG, "checkActionJson: action [%s] with invalid parameter, check the data template json on cloud console!", actionId);
+                        LOG.error("checkActionJson: action [{}] with invalid parameter, check the data template json on cloud console!", actionId);
                         return Status.PARAMETER_INVALID;
                     }
                     break;
                 }
             }
             if(i == mActionJson.length()) { //action not found
-                LOG.error(TAG, "checkActionJson: no such action id [%s], check the data template json on cloud console!",actionId );
+                LOG.error("checkActionJson: no such action id [{}], check the data template json on cloud console!",actionId );
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
-            LOG.error(TAG, "checkActionJson: action message invalid!");
+            LOG.error("checkActionJson: action message invalid!");
             e.printStackTrace();
         }
         return  Status.OK;
@@ -347,7 +346,7 @@ class TXDataTemplateJson {
      */
     Status checkActionReplyJson(String actionId, JSONObject response){
         if(null == response || null == actionId) {
-            LOG.error(TAG, "checkActionJson: parameter is null!");
+            LOG.error("checkActionJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -358,18 +357,18 @@ class TXDataTemplateJson {
                 JSONObject jsonNode = mActionJson.getJSONObject(i);
                 if (jsonNode.get("id").equals(actionId)) {
                     if(Status.OK != checkActionParamsJson(jsonNode.getJSONArray("output"),response)) {
-                        LOG.error(TAG, "checkActionReplyJson: action [%s] with invalid parameter:" + response, actionId);
+                        LOG.error("checkActionReplyJson: action [{}] with invalid parameter:" + response, actionId);
                         return Status.PARAMETER_INVALID;
                     }
                     break;
                 }
             }
             if(i == mActionJson.length()) { //action not found
-                LOG.error(TAG, "checkActionReplyJson: no such action id :" +  actionId);
+                LOG.error("checkActionReplyJson: no such action id :" +  actionId);
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
-            LOG.error(TAG, "checkActionReplyJson: events invalid!");
+            LOG.error("checkActionReplyJson: events invalid!");
             e.printStackTrace();
         }
         return  Status.OK;

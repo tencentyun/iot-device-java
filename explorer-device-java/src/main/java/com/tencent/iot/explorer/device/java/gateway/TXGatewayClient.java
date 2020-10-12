@@ -30,7 +30,6 @@ import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 import java.util.HashMap;
 
 public class TXGatewayClient extends TXDataTemplateClient {
-    public static final String TAG = "TXGATEWAYCLIENT";
     private HashMap<String, TXGatewaySubdev> mSubdevs = new HashMap<String, TXGatewaySubdev>();
     private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
     private static final String GW_OPERATION_PREFIX = "$gateway/operation/";
@@ -52,8 +51,8 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return null if not existed otherwise the subdev
      */
     public TXGatewaySubdev findSubdev(String productId, String devName) {
-        LOG.debug(TAG, "input product id is " + productId + ", input device name is " + devName);
-        LOG.debug(TAG, "The hashed information is " + mSubdevs);
+        LOG.debug("input product id is " + productId + ", input device name is " + devName);
+        LOG.debug("The hashed information is " + mSubdevs);
         return mSubdevs.get(productId + devName);
     }
 
@@ -133,18 +132,18 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return the result of operation
      */
     public Status subdevOffline(String subProductID, String subDeviceName) {
-        LOG.debug(TAG, "Try to find " + subProductID + " & " + subDeviceName);
+        LOG.debug("Try to find " + subProductID + " & " + subDeviceName);
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
-            LOG.debug(TAG, "Cant find the subdev");
+            LOG.debug("Cant find the subdev");
             return Status.SUBDEV_STAT_NOT_EXIST;
         } else if (subdev.getSubdevStatus() == Status.SUBDEV_STAT_OFFLINE) {
-            LOG.debug(TAG, "subdev has already offline!");
+            LOG.debug("subdev has already offline!");
             return  Status.SUBDEV_STAT_OFFLINE;
         }
 
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        LOG.debug(TAG, "set " + subProductID + " & " + subDeviceName + " to offline");
+        LOG.debug("set " + subProductID + " & " + subDeviceName + " to offline");
 
         // format the payload
         JSONObject obj = new JSONObject();
@@ -161,7 +160,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        LOG.debug(TAG, "publish message " + message);
+        LOG.debug("publish message " + message);
         return super.publish(topic, message, null);
 }
 
@@ -174,14 +173,14 @@ public class TXGatewayClient extends TXDataTemplateClient {
     public Status subdevOnline(String subProductID, String subDeviceName) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
-            LOG.error(TAG, "Cant find the subdev");
+            LOG.error("Cant find the subdev");
             return Status.SUBDEV_STAT_NOT_EXIST;
         } else if(subdev.getSubdevStatus() == Status.SUBDEV_STAT_ONLINE) {
-            LOG.error(TAG, "subdev has already online!");
+            LOG.error("subdev has already online!");
             return  Status.SUBDEV_STAT_ONLINE;
         }
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        LOG.debug(TAG, "set " + subProductID + " & " + subDeviceName + " to Online");
+        LOG.debug("set " + subProductID + " & " + subDeviceName + " to Online");
 
         // format the payload
         JSONObject obj = new JSONObject();
@@ -199,7 +198,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        LOG.debug(TAG, "publish message " + message);
+        LOG.debug("publish message " + message);
         return super.publish(topic, message, null);
     }
 
@@ -347,7 +346,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
         if (!topic.startsWith(GW_OPERATION_RES_PREFIX)) {
             return false;
         }
-        LOG.debug(TAG, "got gate operation messga " + topic + message);
+        LOG.debug("got gate operation messga " + topic + message);
 
         try {
             byte[] payload = message.getPayload();
@@ -386,7 +385,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        LOG.debug(TAG, "message received " + topic);
+        LOG.debug("message received " + topic);
         if (!consumeGwOperationMsg(topic, message)) {
             String [] productInfo = topic.split("/");
             String productId = productInfo[3];
@@ -399,7 +398,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 if(null != subdev) {
                     subdev.onMessageArrived(topic, message);
                 } else {
-                    LOG.error(TAG, "Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
+                    LOG.error("Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
                 }
             }
         }
@@ -408,18 +407,18 @@ public class TXGatewayClient extends TXDataTemplateClient {
     @Override
     public synchronized Status connect(MqttConnectOptions options, Object userContext) {
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
-            LOG.info(TAG, "The client is connecting. Connect return directly.");
+            LOG.info("The client is connecting. Connect return directly.");
             return Status.MQTT_CONNECT_IN_PROGRESS;
         }
 
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnected)) {
-            LOG.info(TAG, "The client is already connected. Connect return directly.");
+            LOG.info("The client is already connected. Connect return directly.");
             return Status.OK;
         }
 
         this.mConnOptions = options;
         if (mConnOptions == null) {
-            LOG.error(TAG, "Connect options == null, will not connect.");
+            LOG.error("Connect options == null, will not connect.");
             return Status.PARAMETER_INVALID;
         }
 
@@ -434,7 +433,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 mConnOptions.setPassword(passWordStr.toCharArray());
             }
             catch (IllegalArgumentException e) {
-                LOG.debug(TAG, "Failed to set password");
+                LOG.debug("Failed to set password");
             }
         }
 
@@ -443,19 +442,19 @@ public class TXGatewayClient extends TXDataTemplateClient {
         IMqttActionListener mActionListener = new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken token) {
-                LOG.info(TAG, "onSuccess!");
+                LOG.info("onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
                 mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI);
                 // If the connection is established, subscribe the gateway operation topic
                 String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
                 int qos = TXMqttConstants.QOS1;
                 subscribe(gwTopic, qos, "Subscribe GATEWAY result topic");
-                LOG.debug(TAG, "Connected, then subscribe the gateway result topic");
+                LOG.debug("Connected, then subscribe the gateway result topic");
             }
 
             @Override
             public void onFailure(IMqttToken token, Throwable exception) {
-                LOG.error(TAG, exception, "onFailure!");
+                LOG.error("{}", "onFailure!", exception);
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
                 mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
             }
@@ -469,18 +468,18 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 mMqttClient.setBufferOpts(super.bufferOpts);
                 mMqttClient.setManualAcks(false);
             } catch (Exception e) {
-                LOG.error(TAG, "new MqttClient failed", e);
+                LOG.error("{}", "new MqttClient failed", e);
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
                 return Status.ERROR;
             }
         }
 
         try {
-            LOG.info(TAG, "Start connecting to %s", mServerURI);
+            LOG.info("Start connecting to {}", mServerURI);
             setConnectingState(TXMqttConstants.ConnectStatus.kConnecting);
             mMqttClient.connect(mConnOptions, userContext, mActionListener);
         } catch (Exception e) {
-            LOG.error(TAG, "MqttClient connect failed", e);
+            LOG.error("{}", "MqttClient connect failed", e);
             setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
             return Status.ERROR;
         }

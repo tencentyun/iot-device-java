@@ -40,7 +40,6 @@ public class IoTDataTemplate {
     private ProductAirconditioner mSubDev2 = null;
     private final static String mJsonFileName = "网关.json";
 
-    private static final String TAG = "TXDataTemplate";
     private static JSONObject jsonObject = new JSONObject();
     private static int pubCount = 0;
     private static final int testCnt = 100;
@@ -172,18 +171,18 @@ public class IoTDataTemplate {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
-            LOG.debug(TAG, "reply received : " + replyMsg);
+            LOG.debug("reply received : " + replyMsg);
         }
 
         @Override
         public void onGetStatusReplyCallBack(JSONObject data) {
             //可根据自己需求进行处理状态和控制信息的获取结果
-            LOG.debug(TAG, "event down stream message received : " + data);
+            LOG.debug("event down stream message received : " + data);
         }
 
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
-            LOG.debug(TAG, "control down stream message received : " + msg);
+            LOG.debug("control down stream message received : " + msg);
             //do something
 
             //output
@@ -200,14 +199,14 @@ public class IoTDataTemplate {
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug(TAG, "action [%s] received, input:" + params, actionId);
+            LOG.debug("action [{}] received, input:" + params, actionId);
             //do something based action id and input
             if(actionId.equals("blink")) {
                 try {
                     Iterator<String> it = params.keys();
                     while (it.hasNext()) {
                         String key = it.next();
-                        LOG.debug(TAG,"Input parameter[%s]:" + params.get(key), key);
+                        LOG.debug("Input parameter[{}]:" + params.get(key), key);
                     }
                     //construct result
                     JSONObject result = new JSONObject();
