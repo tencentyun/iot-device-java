@@ -6,6 +6,11 @@ import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAImpl;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -24,8 +29,8 @@ import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static com.tencent.iot.explorer.device.android.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 
 public class TXMqttConnection implements MqttCallbackExtended {

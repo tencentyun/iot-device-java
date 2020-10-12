@@ -4,14 +4,14 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateClient;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.android.mqtt.TXOTACallBack;
-import com.tencent.iot.explorer.device.android.mqtt.TXOTAConstansts;
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -180,6 +180,11 @@ public class DataTemplateSample {
             @Override
             public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
                 TXLog.e(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+            }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                return false;
             }
 
             @Override

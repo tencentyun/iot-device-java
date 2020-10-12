@@ -1,6 +1,7 @@
 package com.tencent.iot.explorer.device.android.mqtt;
 
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
