@@ -1,17 +1,20 @@
-* [腾讯云物联网开发平台 Java-SDK](#腾讯云物联网开发平台-Java-SDK)
-  * [控制台创建设备](#控制台创建设备)
+* [腾讯云物联网开发平台设备端 IoT Explorer Java-SDK](#腾讯云物联网开发平台设备端-IoT-Explorer-Java-SDK)
+  * [前提条件](#前提条件)
   * [工程配置](#工程配置)
+  * [下载IoT Explorer Java-SDK Demo示例代码](#下载IoT-Explorer-Java-SDK-Demo示例代码)
   * [设备认证说明](#设备认证说明)
   * [子设备管理](#子设备管理)
   * [SDK设计说明](#SDK设计说明)
   * [SDK API 说明](#SDK-API-说明)
 
-# 腾讯云物联网开发平台 Java-SDK
-腾讯云物联网开发平台 Java-SDK  配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT_Explorer Java SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。
+# 腾讯云物联网开发平台设备端 IoT Explorer Java-SDK
+欢迎使用腾讯云物联网开发平台设备端 IoT Explorer Java-SDK 。
 
-## 控制台创建设备
+腾讯云物联网开发平台设备端IoT Explorer Java-SDK， 配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT Explorer Java-SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。此文档将介绍如何获取 IoT Explorer Java-SDK 并开始调用。 如果您在使用 IoT Explorer Java-SDK 的过程中遇到任何问题，[欢迎在当前 GitHub 提交 Issues](https://github.com/tencentyun/iot-device-java/issues/new)。
 
-设备接入SDK前需要在控制台中创建项目产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
+## 前提条件
+* 您需要创建一个腾讯云账号，在腾讯云控制台中开通物联网开发平台产品。
+* 在控制台上创建项目产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。具体步骤请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
 
 ## 工程配置
 
@@ -88,6 +91,9 @@
 
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java)下载Java Sdk源码。
 
+## 下载IoT Explorer Java-SDK Demo示例代码
+下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Explorer Java-SDK Demo示例代码在 [explorer-device-java](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java) 的module下。
+
 ## 设备认证说明
 
 IoT Explorer物联网开发平台支持设备以密钥认证和证书认证，两种认证方式接入。
@@ -97,9 +103,9 @@ IoT Explorer物联网开发平台支持设备以密钥认证和证书认证，�
 示例中编辑 [IoTDataTemplate.java](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/test/IoTDataTemplate.java) 文件中的参数配置信息
 ```
 {
-private static String mProductID = "";
-private static String mDevName = "";
-private static String mDevPSK  = ""; //若使用证书验证，设为null
+    private static String mProductID = "";
+    private static String mDevName = "";
+    private static String mDevPSK  = ""; //若使用证书验证，设为null
 }
 ```
 如果控制台创建设备使用的是密钥认证方式，需要在 IoTDataTemplate.java 填写 mProductID（产品ID）、mDevName（设备名称）、mDevPSK（设备密钥），示例中使用的是密钥认证。
