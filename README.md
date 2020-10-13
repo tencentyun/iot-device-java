@@ -21,5 +21,3 @@
 * [腾讯云物联网通信（IoT Hub）设备端 Android-SDK](hub-device-android/README.md)
 
 * [腾讯云物联网通信（IoT Hub）设备端 Java-SDK](hub-device-java/README.md)
-
-[Demo下载安装](https://github.com/tencentyun/iot-device-android/wiki/下载安装)
