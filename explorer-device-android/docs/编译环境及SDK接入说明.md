@@ -1,7 +1,6 @@
  * [准备开发环境](#准备开发环境)
  * [创建一个新的Android工程](#创建一个新的Android工程)
  * [引用方式](#引用方式)
- * [根据用户业务逻辑开发相关功能](#根据用户业务逻辑开发相关功能)
 
 ## 准备开发环境
 SDK Demo示例中使用的是Android Studio版本为4.0.1，gradle版本为6.3。
@@ -49,5 +48,4 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
     }
      ```
 
-## 根据用户业务逻辑开发相关功能
-用户调用各个功能API接口可以参考[explorer-device-android示例Demo目录索引.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/explorer-device-android示例Demo目录索引.md) 中对应各个功能示例。
+Demo示例工程使用的是 依赖本地sdk源码 构建方式。
