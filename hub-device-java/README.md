@@ -1,6 +1,7 @@
-* [腾讯云物联网通信设备端 Java-SDK](#腾讯云物联网通信设备端-Java-SDK)
-  * [控制台创建设备](#控制台创建设备)
+* [腾讯云物联网通信设备端 IoT Hub Java-SDK](#腾讯云物联网通信设备端-IoT-Hub-Java-SDK)
+  * [前提条件](#前提条件)
   * [工程配置](#工程配置)
+  * [下载IoT Hub Java-SDK Demo示例代码](#下载IoT-Hub-Java-SDK-Demo示例代码)
   * [认证连接](#认证连接)
   * [子设备管理](#子设备管理)
   * [设备影子](#设备影子)
@@ -9,15 +10,15 @@
   * [Demo示例体验-设备状态上报与状态设置](#Demo示例体验-设备状态上报与状态设置)
   * [常见问题](#常见问题)
 
-# 腾讯云物联网通信设备端 Java-SDK
+# 腾讯云物联网通信设备端 IoT Hub Java-SDK
+欢迎使用腾讯云物联网通信设备端 IoT Hub Java-SDK 。
 
-腾讯云物联网通信设备端 Java-SDK  依靠安全且性能强大的数据通道，为物联网领域开发人员提供设备端快速接入云端，并和云端进行双向通信的能力。
+腾讯云物联网通信设备端 IoT Hub Java-SDK， 依靠安全且性能强大的数据通道，为物联网领域开发人员提供终端(如传感器, 执行器, 嵌入式设备或智能家电等等)和云端的双向通信能力。此文档将介绍如何获取 IoT Hub Java-SDK 并开始调用。 如果您在使用 IoT Hub Java-SDK 的过程中遇到任何问题，[欢迎在当前 GitHub 提交 Issues](https://github.com/tencentyun/iot-device-java/issues/new)。
 
-## 控制台创建设备
-
-设备接入SDK前需要在控制台中创建产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。请参考官网 [控制台使用手册-设备接入准备](https://cloud.tencent.com/document/product/634/14442)。
-
-当在控制台中成功创建产品后，该产品默认有三条权限。订阅：${productId}/${deviceName}/control，订阅和发布：${productId}/${deviceName}/data，发布：${productId}/${deviceName}/event。请参考官网 [控制台使用手册-权限列表](https://cloud.tencent.com/document/product/634/14444) 操作Topic权限。
+## 前提条件
+* 您需要创建一个腾讯云账号，在腾讯云控制台中开通物联网通信产品。
+* 在控制台上创建物联网产品和设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。具体步骤请参考官网 [控制台使用手册-设备接入准备](https://cloud.tencent.com/document/product/634/14442)。
+* 理解Topic权限，当在控制台中成功创建产品后，该产品默认有三条权限。订阅：${productId}/${deviceName}/control，订阅和发布：${productId}/${deviceName}/data，发布：${productId}/${deviceName}/event。请参考官网 [控制台使用手册-权限列表](https://cloud.tencent.com/document/product/634/14444) 操作Topic权限。
 
 ## 工程配置
 
@@ -25,13 +26,13 @@
 
 -  gradle 工程 正式版SDK 远程构建
 
-如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
-```
-dependencies {
-    ...
-    implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
-}
-```
+    如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
+    ```
+    dependencies {
+        ...
+        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
+    }
+    ```
 
 -  maven 工程 正式版SDK 远程构建
 
@@ -93,6 +94,9 @@ dependencies {
 **Java Sdk源码**
 
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java)下载Java Sdk源码。
+
+## 下载IoT Hub Java-SDK Demo示例代码
+下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java) 的module下。
 
 
 ## 认证连接
