@@ -22,6 +22,30 @@
       "revId": "71ac4d920ee1b0a928e5a482a356dfc90282c7c7",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5dc5839_2389eeaa",
+        "filename": "hub-device-java/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-13T07:20:33Z",
+      "side": 1,
+      "message": "好的，在Patchset 2中添加了。",
+      "parentUuid": "d28ca8c6_6f895003",
+      "range": {
+        "startLine": 16,
+        "startChar": 165,
+        "endLine": 16,
+        "endChar": 187
+      },
+      "revId": "71ac4d920ee1b0a928e5a482a356dfc90282c7c7",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
