@@ -21,6 +21,8 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 ## 下载IoT Hub Android-SDK Demo示例代码
 下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Hub Android-SDK Demo示例代码在 [hub-demo](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android/hub-demo) 的module下。
 
+[Demo apk安装包下载](https://github.com/tencentyun/iot-device-android/wiki/下载安装)
+
 ## 功能文档
 调用API接口可以参考以下对应功能示例Demo的使用。
 
