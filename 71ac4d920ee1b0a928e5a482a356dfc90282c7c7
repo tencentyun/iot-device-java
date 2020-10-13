@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d28ca8c6_6f895003",
+        "filename": "hub-device-java/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-10-13T06:22:10Z",
+      "side": 1,
+      "message": "是否需要添加跳转链接 https://github.com/tencentyun/iot-device-java/issues/new",
+      "range": {
+        "startLine": 16,
+        "startChar": 165,
+        "endLine": 16,
+        "endChar": 187
+      },
+      "revId": "71ac4d920ee1b0a928e5a482a356dfc90282c7c7",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
