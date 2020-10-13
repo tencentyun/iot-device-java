@@ -22,6 +22,30 @@
       "revId": "d80557e043ee3417f507829e54d670323f3c9fca",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5d3d0725_6c73342c",
+        "filename": "hub-device-android/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-13T07:21:41Z",
+      "side": 1,
+      "message": "好的，在Patchset 3添加了。",
+      "parentUuid": "a7ac25d6_233d5b66",
+      "range": {
+        "startLine": 12,
+        "startChar": 174,
+        "endLine": 12,
+        "endChar": 196
+      },
+      "revId": "d80557e043ee3417f507829e54d670323f3c9fca",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
