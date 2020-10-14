@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.android.app;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +15,10 @@ import android.widget.TextView;
 
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+
+import java.io.File;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 
 public class IoTMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -87,6 +92,11 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         btnGateway.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
+
+        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
+        logConfigurator.configure();
     }
 
     /**
