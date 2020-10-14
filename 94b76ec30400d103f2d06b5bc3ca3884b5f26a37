@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cf8ee6ea_ba1b867b",
+        "filename": "explorer-device-android/docs/事件上报以及多事件上报.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`事件上报`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`事件上报`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1a3ebd8c_e60433b7",
+        "filename": "explorer-device-android/docs/事件上报以及多事件上报.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`多事件上报`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`多事件上报`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f31d4521_069f7b23",
+        "filename": "explorer-device-android/docs/属性上报.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "在腾讯云物联网开发平台创建产品时，\n----\u003e\n在腾讯云物联网开发平台控制台（以下简称控制台）创建产品时，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "67aa2abb_b6689aad",
+        "filename": "explorer-device-android/docs/属性上报.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上，点击`属性上报`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`属性上报`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8d6603e2_1a0a7c25",
+        "filename": "explorer-device-android/docs/控制设备上下线.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "本文将介绍如何在腾讯云物联网开发平台控制台创建设备, \n----\u003e\n本文将介绍如何在腾讯云物联网开发平台控制台(以下简称控制台)创建设备,",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e30a0a06_a412acb2",
+        "filename": "explorer-device-android/docs/检查固件更新.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`事件上报`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`事件上报`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f696683_496a8f37",
+        "filename": "explorer-device-android/docs/清除控制.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`清除控制`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`清除控制`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bb48df57_22787614",
+        "filename": "explorer-device-android/docs/网关使用示例.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "体验网关示例Demo需要在控制台创建一个网关设备，\n----\u003e\n体验网关示例Demo需要在腾讯云物联网开发平台控制台（以下简称控制台）创建一个网关设备，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "62b41c80_5ac01831",
+        "filename": "explorer-device-android/docs/获取设备最新上报信息.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "在腾讯云物联网开发平台创建产品时，\n----\u003e\n在腾讯云物联网开发平台控制台（以下简称控制台）创建产品时，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "11d44ac0_8e9708d2",
+        "filename": "explorer-device-android/docs/获取设备最新上报信息.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`状态更新`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`状态更新`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ec3e0f73_3e463f7c",
+        "filename": "explorer-device-android/docs/订阅与取消订阅 Topic 主题.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "在腾讯云物联网开发平台创建产品时，\n----\u003e\n在腾讯云物联网开发平台控制台（以下简称控制台）创建产品时，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "571c3016_bc76e5b4",
+        "filename": "explorer-device-android/docs/订阅与取消订阅 Topic 主题.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`订阅主题`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`订阅主题`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "49feb1a3_d511969e",
+        "filename": "explorer-device-android/docs/设备信息上报.md",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-14T11:30:22Z",
+      "side": 1,
+      "message": "点击`设备上线`按钮且设备成功上线后，在数据模板模块上点击`设备信息上报`按钮，\n----\u003e\n在数据模板模块上点击`设备上线`按钮且设备成功上线后，点击`设备信息上报`按钮，",
+      "revId": "94b76ec30400d103f2d06b5bc3ca3884b5f26a37",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
