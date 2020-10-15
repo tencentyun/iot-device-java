@@ -25,17 +25,16 @@
 步骤一：在设备中订阅 RRPC 消息 Topic
 
 请先按照 [基于TCP的MQTT设备接入](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤，将设备 连接MQTT 进行认证接入。
-运行示例程序，在基础功能模块上，点击 订阅RRPC主题 按钮，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
+运行示例程序，在基础功能模块上，点击`订阅RRPC主题`按钮，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
 ```
 mMQTTSample.subscribeRRPCTopic(); //订阅RRPC消息Topic
 ```
 
-观察Logcat日志。
+以下是设备成功订阅 RRPC 消息 Topic 的日志
 ```
 I/TXMQTT_1.3.0: Starting subscribe topic: $rrpc/rxd/4A8E1MAMCT/car5/+
 D/TXMQTT: onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/4A8E1MAMCT/car5/+]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
 ```
-以上日志为订阅 RRPC 消息 Topic 成功
 
 步骤二：调用云 API PublishRRPCMessage 发送 RRPC 请求消息。
 打开腾讯云 [API控制台](https://console.cloud.tencent.com/api/explorer?Product=iotcloud&Version=2018-06-14&Action=PublishRRPCMessage&SignVersion=)，填写个人密钥和设备参数信息，选择在线调用并发送请求。
@@ -66,9 +65,8 @@ public void messageArrived(String topic, MqttMessage message) throws Exception {
 }
 ```
 
-观察Logcat日志。
+以下是成功发送 RRPC 应答消息 Topic 的日志
 ```
 I/TXMQTT_1.3.0: Starting publish topic: $rrpc/txd/4A8E1MAMCT/car5/4689 Message: {"test-key":"test-value"}
 D/TXMQTT: onPublishCompleted, status[OK], topics[[$rrpc/txd/4A8E1MAMCT/car5/4689]],  userContext[], errMsg[publish success]
 ```
-以上日志为发送 RRPC 应答消息 Topic 成功
