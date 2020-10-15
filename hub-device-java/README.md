@@ -17,7 +17,7 @@
 
 ## 前提条件
 * 您需要创建一个腾讯云账号，在腾讯云控制台中开通物联网通信产品。
-* 在控制台上创建物联网产品和设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。具体步骤请参考官网 [控制台使用手册-设备接入准备](https://cloud.tencent.com/document/product/634/14442)。
+* 在控制台上创建物联网产品和设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），设备与云端认证连接时需要用到以上信息。具体步骤请参考官网 [控制台使用手册-设备接入准备](https://cloud.tencent.com/document/product/634/14442)。
 * 理解Topic权限，当在控制台中成功创建产品后，该产品默认有三条权限。订阅：${productId}/${deviceName}/control，订阅和发布：${productId}/${deviceName}/data，发布：${productId}/${deviceName}/event。请参考官网 [控制台使用手册-权限列表](https://cloud.tencent.com/document/product/634/14444) 操作Topic权限。
 
 ## 工程配置

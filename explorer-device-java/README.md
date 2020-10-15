@@ -10,11 +10,11 @@
 # 腾讯云物联网开发平台设备端 IoT Explorer Java-SDK
 欢迎使用腾讯云物联网开发平台设备端 IoT Explorer Java-SDK 。
 
-腾讯云物联网开发平台设备端IoT Explorer Java-SDK， 配合平台对设备数据模板化的定义，实现和云端基于数据模板协议的数据交互框架，开发者基于IoT Explorer Java-SDK数据模板框架，快速实现设备和平台、设备和应用之间的数据交互。此文档将介绍如何获取 IoT Explorer Java-SDK 并开始调用。 如果您在使用 IoT Explorer Java-SDK 的过程中遇到任何问题，[欢迎在当前 GitHub 提交 Issues](https://github.com/tencentyun/iot-device-java/issues/new)。
+腾讯云物联网开发平台设备端IoT Explorer Java-SDK， 配合平台对设备数据模板化进行定义，基于数据模板协议实现设备和云端的数据交互框架。开发者基于IoT Explorer Java-SDK数据模板框架，可快速实现设备和平台、设备和应用之间的数据交互。此文档将介绍如何获取 IoT Explorer Java-SDK 并开始调用。 如果您在使用 IoT Explorer Java-SDK 的过程中遇到任何问题，[欢迎在当前 GitHub 提交 Issues](https://github.com/tencentyun/iot-device-java/issues/new)。
 
 ## 前提条件
 * 您需要创建一个腾讯云账号，在腾讯云控制台中开通物联网开发平台产品。
-* 在控制台上创建项目产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），将设备与云端认证连接时需要用到。具体步骤请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
+* 在控制台上创建项目产品设备，获取产品ID、设备名称、设备证书（证书认证）、设备私钥（证书认证）、设备密钥（密钥认证），设备与云端认证连接时需要用到以上信息。具体步骤请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
 
 ## 工程配置
 
@@ -22,7 +22,7 @@
 
 -  gradle 工程 正式版SDK 远程构建
 
-    如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
+    如果您想通过引用jar的方式进行项目开发，可在module目录下的build.gradle中添加如下依赖：
     ```
     dependencies {
         ...
@@ -114,13 +114,15 @@ IoT Explorer物联网开发平台支持设备以密钥认证和证书认证，�
 
 将证书放到resources文件夹中，将psk设置null，然后将证书名称填写入指定区域
 
-如果控制台创建设备使用的是证书认证方式，除了需要在 IoTDataTemplate.java 填写 mProductID（产品ID）、mDevName（设备名称），mDevPSK（设备密钥）设置为null，还需修改 DataTemplateSample 初始化方法为 `public DataTemplateSample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
-final String jsonFileName,TXDataTemplateDownStreamCallBack downStreamCallBack)` ， 将证书放到resources文件夹中，在 DataTemplateSample 初始化时传入 devCertName（设备证书文件名称）devKeyName（设备私钥文件名称）。
+如果控制台创建设备使用的是证书认证方式，除了需要在 IoTDataTemplate.java 填写 mProductID（产品ID）、mDevName（设备名称），mDevPSK（设备密钥）设置为null，还需修改 DataTemplateSample 初始化方法为
+```
+public DataTemplateSample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack, final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack)
+```
+将证书放到resources文件夹中，在 DataTemplateSample 初始化时传入 devCertName（设备证书文件名称）devKeyName（设备私钥文件名称）。
 
 ## 子设备管理
-如果当前设备是一个网关，且该网关下的子设备需接入平台从而可以通过平台对子设备进行控制与管理，此时需要使用子设备管理功能。
-网关子设备管理提供了添加子设备，删除子设备，子设备上线、子设备下线的能力。
-
+有些设备必须依托网关设备才可与物联网开发平台进行通信，这类设备我们称之为子设备。网关类型的设备通过与云端进行数据通信，可代理其下的子设备进行上下线，以及提供添加/删除子设备的能力。
+示例代码如下：
 ```
   mGatewaySample.addSubDev(mSubDev1ProductId,mSubDev1DeviceName);
   //mGatewaySample.delSubDev(mSubDev1ProductId,mSubDev1DeviceName);
