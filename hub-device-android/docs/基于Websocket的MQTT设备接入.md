@@ -12,7 +12,7 @@
 
 请先按照 [基于TCP的MQTT设备接入](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤 需要填写好 app-config.json 中对应参数，PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称）、DEVICE_PSK（设备密钥）。
 
-运行示例程序，在基础功能模块上，点击 连接MQTT(WEBSOCKET) 按钮，进行MQTT认证连接。示例代码如下：
+运行示例程序，在基础功能模块上，点击`连接MQTT(WEBSOCKET)`按钮，进行MQTT认证连接。示例代码如下：
 ```
 TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK, socketFactory); //设置PRODUCT_ID、DEVICE_NAME、DEVICE_PSK
 TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() { //设置回调
@@ -35,30 +35,28 @@ TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketA
 });
 ```
 
-观察Logcat日志。
+以下是 Websocket 的 MQTT 成功连接云端的日志，在控制台中观察可发现该设备状态已更新为在线。
 ```
 E/XXX: onConnected
 ```
-以上日志为 Websocket 的 MQTT 已连接 成功，刷新观察控制台中的该设备已显示在线。
 
 ## 运行示例程序体验通过Websocket断开MQTT连接功能
 
-运行示例程序，在基础功能模块上，点击 断开MQTT连接(WEBSOCKET) 按钮，断开 MQTT 认证连接。示例代码如下：
+运行示例程序，在基础功能模块上，点击`断开MQTT连接(WEBSOCKET)`按钮，断开 MQTT 认证连接。示例代码如下：
 ```
 TXWebSocketManager.getInstance().getClient(mProductID, mDevName).disconnect(); //断开MQTT连接
 TXWebSocketManager.getInstance().releaseClient(mProductID, mDevName); // 移除对象，关闭MQTT连接
 ```
 
-观察Logcat日志。
+以下是 Websocket 的 MQTT 成功断开连接的日志，在控制台中观察可发现该设备状态已更新为离线。
 ```
 I/System.out: disconnect onSuccess
 E/XXX: onDisconnected
 ```
-以上日志为 Websocket 的 MQTT 断开连接 成功，刷新观察控制台中的该设备显示离线。
 
 ## 运行示例程序体验查看通过Websocket的MQTT连接状态
 
-运行示例程序，在基础功能模块上，点击 MQTT连接状态(WEBSOCKET) 按钮，查看MQTT连接状态。示例代码如下：
+运行示例程序，在基础功能模块上，点击`MQTT连接状态(WEBSOCKET)`按钮，查看MQTT连接状态。示例代码如下：
 
 ```
 ConnectionState show = TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState();//查询通过Websocket的MQTT连接状态
