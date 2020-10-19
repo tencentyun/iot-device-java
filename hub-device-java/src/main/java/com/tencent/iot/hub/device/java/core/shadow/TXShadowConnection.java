@@ -23,6 +23,9 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 public class TXShadowConnection {
 
 	public static final String TAG = TXShadowConnection.class.getName();
@@ -118,7 +121,7 @@ public class TXShadowConnection {
 	public TXShadowConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 			TXShadowActionCallBack callBack) {
-		this( TXMqttConstants.DEFAULT_SERVER_URI, productID, deviceName, secretKey, bufferOpts,
+		this( TXMqttConstants.PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS, productID, deviceName, secretKey, bufferOpts,
 				clientPersistence, callBack);
 	}
 

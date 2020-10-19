@@ -31,8 +31,10 @@ import java.util.Iterator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
 import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 public class TXMqttConnection implements MqttCallbackExtended {
 
@@ -43,7 +45,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	/**
 	 * tcp://localhost:port ssl://localhost:port
 	 */
-	public String mServerURI = TXMqttConstants.DEFAULT_SERVER_URI;
+	public String mServerURI;
 	public String mClientId;
 	public String mProductId;
 	public String mDeviceName;
@@ -162,7 +164,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public TXMqttConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 			TXMqttActionCallBack callBack) {
-		this(DEFAULT_SERVER_URI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+		this(PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
 	}
 
 	/**

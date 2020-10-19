@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 /**
  * Created by willssong on 2018/12/25.
@@ -78,7 +80,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 	public TXGatewayConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 			TXMqttActionCallBack callBack) {
-		this(DEFAULT_SERVER_URI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+		this(PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
 	}
 
 	/**
