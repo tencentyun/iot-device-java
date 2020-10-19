@@ -30,7 +30,7 @@ public class MQTTSample {
 
     private static final String TAG = "TXMQTT";
     // Default Value, should be changed in testing
-    private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = "PRODUCT-ID";
     private String mDevName = "DEVICE-NAME";
     private String mDevPSK = "DEVICE-SECRET";

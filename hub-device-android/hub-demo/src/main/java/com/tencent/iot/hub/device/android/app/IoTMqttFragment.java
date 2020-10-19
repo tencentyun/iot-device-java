@@ -102,7 +102,7 @@ public class IoTMqttFragment extends Fragment {
     private Button mReportSubDevVersionBtn;
 
     // Default testing parameters
-    private String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = BuildConfig.PRODUCT_ID;
     private String mDevName = BuildConfig.DEVICE_NAME;
     private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
