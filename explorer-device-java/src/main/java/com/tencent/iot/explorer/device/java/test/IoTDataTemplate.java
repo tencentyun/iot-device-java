@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class IoTDataTemplate {
     private static final Logger LOG = LoggerFactory.getLogger(IoTDataTemplate.class);
     
-    private static String mBrokerURL = "ssl://iotcloud-mqtt.gz.tencentdevices.com:8883";
+    private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private static String mProductID = "YOUR_PRODUCT_ID";
     private static String mDevName = "YOUR_DEVICE_NAME";
     private static String mDevPSK  = "null"; //若使用证书验证，设为null
