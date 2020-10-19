@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 
 public class TXShadowConnection {
@@ -111,7 +113,7 @@ public class TXShadowConnection {
      */
     public TXShadowConnection(Context context, String productID, String deviceName, String secretKey,
                               DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXShadowActionCallBack callBack) {
-        this(context, TXMqttConstants.DEFAULT_SERVER_URI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+        this(context, null, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
     }
 
     /**

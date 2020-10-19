@@ -31,8 +31,9 @@ import java.util.Iterator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.DEFAULT_SERVER_URI;
-import static  com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 public class TXMqttConnection implements MqttCallbackExtended {
 
@@ -43,7 +44,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	/**
 	 * tcp://localhost:port ssl://localhost:port
 	 */
-	public String mServerURI = TXMqttConstants.DEFAULT_SERVER_URI;
+	public String mServerURI;
 	public String mClientId;
 	public String mProductId;
 	public String mDeviceName;
@@ -146,6 +147,8 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
+	 * 使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+	 *
 	 * @param productID
 	 *            产品名
 	 * @param deviceName
@@ -162,13 +165,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public TXMqttConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 			TXMqttActionCallBack callBack) {
-		this(DEFAULT_SERVER_URI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+		this(null, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
 	}
 
 	/**
 	 * @param serverURI
-	 *            服务器URI，腾讯云默认唯一地址 TXMqttConstants.DEFAULT_SERVER_URI=
-	 *            "ssl://connect.iot.qcloud.com:8883"
+	 *            服务器URI
 	 * @param productID
 	 *            产品名
 	 * @param deviceName
@@ -187,7 +189,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			TXMqttActionCallBack callBack) {
 
 		this.mSecretKey = secretKey;
-		this.mServerURI = serverURI;
+		if (serverURI == null) {
+			this.mServerURI = PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS;
+		} else {
+			this.mServerURI = serverURI;
+		}
 		this.mProductId = productID;
 		this.mClientId = productID + deviceName;
 		this.mDeviceName = deviceName;
