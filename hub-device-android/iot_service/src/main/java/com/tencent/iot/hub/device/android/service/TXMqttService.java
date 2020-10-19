@@ -31,6 +31,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 /**
  * MQTT 远程服务
  * <p>
@@ -291,7 +295,7 @@ public class TXMqttService extends Service {
         mUseShadow = options.isUseShadow();
         if (mUseShadow) {
             if (TextUtils.isEmpty(mServerURI)) {
-                mShadowConnection = new TXShadowConnection(mContext, TXMqttConstants.DEFAULT_SERVER_URI, mProductId, mDeviceName, mSecretKey,
+                mShadowConnection = new TXShadowConnection(mContext, PREFIX + mProductId + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS, mProductId, mDeviceName, mSecretKey,
                         mDisconnectedBufferOptions, mClientPersistence, mShadowActionCallBack);
             } else {
                 mShadowConnection = new TXShadowConnection(mContext, mServerURI, mProductId, mDeviceName, mSecretKey,
