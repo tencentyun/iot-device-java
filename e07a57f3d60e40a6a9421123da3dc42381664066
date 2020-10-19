@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2cef60ff_cb0b91c6",
+        "filename": "hub-device-android/docs/网关功能.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-19T02:06:22Z",
+      "side": 1,
+      "message": "可用于代理子设备与 IoT Hub 进行数据交互。\n----\u003e\n可用于代理子设备与腾讯云物联网通信 IoT Hub 进行数据交互。",
+      "revId": "e07a57f3d60e40a6a9421123da3dc42381664066",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
