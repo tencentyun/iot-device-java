@@ -25,12 +25,12 @@ mDataTemplateSample.subscribeTopic(); // 订阅主题
 
 观察Logcat日志。
 ```
-I/TXMQTT_1.3.0: Starting subscribe topic: $thing/down/property/LWVUL5SZ2L/dahei
-I/TXMQTT_1.3.0: Starting subscribe topic: $thing/down/event/LWVUL5SZ2L/dahei
-I/TXMQTT_1.3.0: Starting subscribe topic: $thing/down/action/LWVUL5SZ2L/dahei
-D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[subscribe success]
-D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[subscribe success]
-D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting subscribe topic: $thing/down/property/LWVUL5SZ2L/light1
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting subscribe topic: $thing/down/event/LWVUL5SZ2L/light1
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting subscribe topic: $thing/down/action/LWVUL5SZ2L/light1
+D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[subscribe success]
+D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
+D/TXDataTemplateFragment: onSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[subscribe success]
 ```
 以上日志为 订阅 Topic 主题 成功。
 
@@ -49,11 +49,11 @@ mDataTemplateSample.unSubscribeTopic(); // 取消订阅主题
 
 观察Logcat日志。
 ```
-I/TXMQTT_1.3.0: Starting unSubscribe topic: $thing/down/property/LWVUL5SZ2L/dahei
-I/TXMQTT_1.3.0: Starting unSubscribe topic: $thing/down/event/LWVUL5SZ2L/dahei
-I/TXMQTT_1.3.0: Starting unSubscribe topic: $thing/down/action/LWVUL5SZ2L/dahei
-D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=3}], errMsg[unsubscribe success]
-D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=4}], errMsg[unsubscribe success]
-D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/dahei]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=5}], errMsg[unsubscribe success]
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting unSubscribe topic: $thing/down/property/LWVUL5SZ2L/light1
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting unSubscribe topic: $thing/down/event/LWVUL5SZ2L/light1
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting unSubscribe topic: $thing/down/action/LWVUL5SZ2L/light1
+D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=3}], errMsg[unsubscribe success]
+D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=5}], errMsg[unsubscribe success]
+D/TXDataTemplateFragment: onUnSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=4}], errMsg[unsubscribe success]
 ```
 以上日志为 取消订阅 Topic 主题 成功。
