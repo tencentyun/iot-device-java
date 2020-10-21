@@ -28,7 +28,7 @@ MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot
 | subscribeBroadcastTopic            | 订阅广播主题                                      |
 
 ### MQTT 网关接口
-对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。 MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java)类中，介绍如下：
+对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入腾讯云物联网通信IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。 MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java)类中，介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |

@@ -18,26 +18,22 @@ TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mD
 TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() { //设置回调
     @Override
     public void onConnected() {//MQTT已连接
-        Log.e("XXX", "onConnected");
     }
     @Override
     public void onMessageArrived(String topic, MqttMessage message) {//消息到达回调函数， topic 消息主题， message 消息内容
-        Log.e("XXX", "onMessageArrived topic=" + topic);
     }
     @Override
     public void onConnectionLost(Throwable cause) {//MQTT连接断开回调, cause 连接断开原因
-        Log.e("XXX", "onConnectionLost");
     }
     @Override
     public void onDisconnected() {//MQTT Disconnect断开连接完成回调
-        Log.e("XXX", "onDisconnected");
     }
 });
 ```
 
 以下是 Websocket 的 MQTT 成功连接云端的日志，在控制台中观察可发现该设备状态已更新为在线。
 ```
-E/XXX: onConnected
+I/System.out: connectComplete
 ```
 
 ## 运行示例程序体验通过Websocket断开MQTT连接功能
@@ -51,7 +47,6 @@ TXWebSocketManager.getInstance().releaseClient(mProductID, mDevName); // 移除�
 以下是 Websocket 的 MQTT 成功断开连接的日志，在控制台中观察可发现该设备状态已更新为离线。
 ```
 I/System.out: disconnect onSuccess
-E/XXX: onDisconnected
 ```
 
 ## 运行示例程序体验查看通过Websocket的MQTT连接状态

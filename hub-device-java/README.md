@@ -152,7 +152,7 @@
 ## API接口说明
 
 ### MQTT接口 ###
-MQTT的相关接口定义在TXMqttConnection类中，支持发布和订阅功能；如果需支持设备影子功能，则需使用TXShadowConnection类及其方法，TXMqttConnection类的接口介绍如下：
+MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java)类中，支持发布和订阅功能；如果需支持设备影子功能，则需使用TXShadowConnection类及其方法，TXMqttConnection类的接口介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -171,9 +171,9 @@ MQTT的相关接口定义在TXMqttConnection类中，支持发布和订阅功能
 
 ### MQTT网关接口 ###
 
-对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。
+对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入腾讯云物联网通信IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。
 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。
-MQTT网关的相关接口定义在TXGatewayConnection类中，介绍如下：
+MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java)类中，介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -195,7 +195,7 @@ MQTT网关的相关接口定义在TXGatewayConnection类中，介绍如下：
 
 ### 设备影子接口 ###
 
-如果需要支持设备影子功能，需使用TXShadowConnection类中的方法，介绍如下：
+如果需要支持设备影子功能，需使用[TXShadowConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java)类中的方法，介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |

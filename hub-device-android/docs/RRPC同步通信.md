@@ -32,8 +32,8 @@ mMQTTSample.subscribeRRPCTopic(); //订阅RRPC消息Topic
 
 以下是设备成功订阅 RRPC 消息 Topic 的日志
 ```
-I/TXMQTT_1.3.0: Starting subscribe topic: $rrpc/rxd/4A8E1MAMCT/car5/+
-D/TXMQTT: onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/4A8E1MAMCT/car5/+]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting subscribe topic: $rrpc/rxd/AP9ZLEVFKT/gateway1/+
+D/TXMQTT: onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/AP9ZLEVFKT/gateway1/+]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
 ```
 
 步骤二：调用云 API PublishRRPCMessage 发送 RRPC 请求消息。
@@ -42,9 +42,9 @@ D/TXMQTT: onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/4A8E1MAMCT/car5/+]
 步骤三：观察设备端接收到发布 RRPC 请求消息Logcat日志，获取 **processID** 
 
 ```
-I/TXMQTT_1.3.0: Received topic: $rrpc/rxd/4A8E1MAMCT/car5/4689, id: 0, message: hello
+I/TXMQTT_1.2.3: Received topic: $rrpc/rxd/AP9ZLEVFKT/gateway1/8209, id: 0, message: hello
 ```
-以上日志为 设备端成功接收到发布 RRPC 请求消息，其中可以观察到此时 **processID** 为4689。
+以上日志为 设备端成功接收到发布 RRPC 请求消息，其中可以观察到此时 **processID** 为8209。
 
 步骤四：设备将应答消息 Topic 的 processID 设置为截取的 processID，并向应答消息 Topic 发布设备的返回消息。
 
@@ -67,6 +67,6 @@ public void messageArrived(String topic, MqttMessage message) throws Exception {
 
 以下是成功发送 RRPC 应答消息 Topic 的日志
 ```
-I/TXMQTT_1.3.0: Starting publish topic: $rrpc/txd/4A8E1MAMCT/car5/4689 Message: {"test-key":"test-value"}
-D/TXMQTT: onPublishCompleted, status[OK], topics[[$rrpc/txd/4A8E1MAMCT/car5/4689]],  userContext[], errMsg[publish success]
+I/com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection: Starting publish topic: $rrpc/txd/AP9ZLEVFKT/gateway1/8209 Message: {"test-key":"test-value"}
+D/TXMQTT: onPublishCompleted, status[OK], topics[[$rrpc/txd/AP9ZLEVFKT/gateway1/8209]],  userContext[], errMsg[publish success]
 ```
