@@ -109,7 +109,9 @@ public class TXOTAImpl {
 		prepareOTAServerCA();
 
 		subscribeTopic();  // 提前订阅话题
-		subscribeSubDevTopic();  //网管子设备订阅
+		if (mConnection.getSubProductID() != null) { // 设置子设备时
+			subscribeSubDevTopic();  //网关子设备订阅
+		}
 	}
 
 	/**
