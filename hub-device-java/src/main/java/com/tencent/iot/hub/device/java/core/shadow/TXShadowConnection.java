@@ -600,22 +600,29 @@ public class TXShadowConnection {
 
 				if (stateObj.has(property.mKey)) {
 					// edited by v_vweisun 2020/09/22 start
+					String value = "";
 					if (TXShadowConstants.JSONDataType.INT == property.mDataType) {
 						property.data(stateObj.getInt(property.mKey));
+						value = String.valueOf(stateObj.getInt(property.mKey));
 					} else if (TXShadowConstants.JSONDataType.LONG == property.mDataType) {
 						property.data(stateObj.getLong(property.mKey));
+						value = String.valueOf(stateObj.getLong(property.mKey));
 					} else if (TXShadowConstants.JSONDataType.FLOAT == property.mDataType) {
 						property.data(stateObj.getFloat(property.mKey));
+						value = String.valueOf(stateObj.getFloat(property.mKey));
 					} else if (TXShadowConstants.JSONDataType.DOUBLE == property.mDataType) {
 						property.data(stateObj.getDouble(property.mKey));
+						value = String.valueOf(stateObj.getDouble(property.mKey));
 					} else if (TXShadowConstants.JSONDataType.BOOLEAN == property.mDataType) {
 						property.data(stateObj.getBoolean(property.mKey));
+						value = String.valueOf(stateObj.getBoolean(property.mKey));
 					} else {
 						property.data(stateObj.getString(property.mKey));
+						value = String.valueOf(stateObj.getString(property.mKey));
 					}
 					// edited by v_vweisun 2020/09/22 end
 					propertyList.add(property);
-					LOG.debug("******{}, {}", property.mKey, stateObj.getString(property.mKey));
+					LOG.debug("******{}, {}", property.mKey, value);
 				}
 			}
 		} catch (Exception e) {

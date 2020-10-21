@@ -96,6 +96,7 @@ public class ShadowApp {
 	     * @param jsonDocument   云端返回的json文档
 	     */
 	    public void onRequestCallback(String type, int result, String jsonDocument) {
+			System.out.println("onRequestCallback" + jsonDocument);
 	    }
 
 	    /**
@@ -105,7 +106,7 @@ public class ShadowApp {
 	     * @param propertyList   更新后的设备属性集
 	     */
 	    public void onDevicePropertyCallback(String propertyJSONDocument, List<? extends DeviceProperty> propertyList) {
-			System.out.println("onDevicePropertyCallback " +propertyJSONDocument);
+			System.out.println("onDevicePropertyCallback " +propertyList);
 	    }
 
 
