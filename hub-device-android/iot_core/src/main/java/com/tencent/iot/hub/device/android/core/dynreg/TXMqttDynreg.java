@@ -44,7 +44,8 @@ public class TXMqttDynreg {
 
     private TXMqttDynregCallback mCallback;
 
-    private final String mDefaultDynRegUrl ="http://gateway.tencentdevices.com/register/dev";
+    // 默认的动态注册URL，文档链接：https://cloud.tencent.com/document/product/634/47225
+    private final String mDefaultDynRegUrl ="http://ap-guangzhou.gateway.tencentdevices.com/register/dev";
 
 
     /**
