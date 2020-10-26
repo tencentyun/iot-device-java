@@ -1,6 +1,7 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
@@ -697,6 +698,17 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	 */
 	public void initOTA(String storagePath, TXOTACallBack callback) {
 		mOTAImpl = new TXOTAImpl(this, storagePath, callback);
+	}
+
+	/**
+	 * 初始化OTA功能。
+	 *
+	 * @param storagePath OTA升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
+	 * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
+	 * @param callback OTA事件回调
+	 */
+	public void initOTA(String storagePath, String[] cosServerCaCrtList, TXOTACallBack callback) {
+		mOTAImpl = new TXOTAImpl(this, storagePath, cosServerCaCrtList, callback);
 	}
 
 	/**

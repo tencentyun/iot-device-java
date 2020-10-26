@@ -52,7 +52,6 @@ public class AsymcSslUtils {
      * 证书文件及Key文件存放在Android asset目录下，通过AssetManager读取文件内容获取输入流，
      * 通过输入流构造双向认证SSLSocketFactory
      *
-     * @param context              Android上下文，可使用进程上下文/Activity
      * @param clientCrtFileName    客户端证书文件名
      * @param clientPriKeyFileName 客户端私钥文件名
      * @return
@@ -63,7 +62,7 @@ public class AsymcSslUtils {
         InputStream keyInputStream = null;
         clientInputStream=AsymcSslUtils.class.getClassLoader().getResourceAsStream(clientCrtFileName);
         keyInputStream=AsymcSslUtils.class.getClassLoader().getResourceAsStream(clientPriKeyFileName);
-        factory = getSocketFactoryByStream(clientInputStream, keyInputStream);;
+        factory = getSocketFactoryByStream(clientInputStream, keyInputStream);
 
         return factory;
     }
@@ -117,6 +116,18 @@ public class AsymcSslUtils {
      * @return
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput) {
+        return getSocketFactoryByStream(clientInput, keyInput, null);
+    }
+
+    /**
+     * 获取双向认证SSLSocketFactory
+     *
+     * @param clientInput 设备证书文件输入流
+     * @param keyInput    设备私钥文件输入流
+     * @param customCA 自定义CA证书
+     * @return
+     */
+    public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput, String customCA) {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory certFactory = null;
         try {
@@ -132,7 +143,12 @@ public class AsymcSslUtils {
 
         // load CA certificate
         {
-            ByteArrayInputStream caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
+            ByteArrayInputStream caInput = null;
+            if (customCA != null && customCA.length() > 0) {
+                caInput = new ByteArrayInputStream(customCA.getBytes(Charset.forName("UTF-8")));
+            } else {
+                caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
+            }
             parser = new PEMParser(new InputStreamReader(caInput));
             Object object = null;
             try {
@@ -226,11 +242,21 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 获取SSLSocketFactory
+     * 获取默认CA证书的SSLSocketFactory
      *
-     * @return
+     * @return SSLSocketFactory
      */
     public static SSLSocketFactory getSocketFactory() {
+        return getSocketFactory(null);
+    }
+
+    /**
+     * 获取自定义CA证书的SSLSocketFactory
+     *
+     * @param customCA 自定义CA证书
+     * @return SSLSocketFactory
+     */
+    public static SSLSocketFactory getSocketFactory(String customCA) {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory certFactory = null;
         try {
@@ -244,7 +270,12 @@ public class AsymcSslUtils {
 
         // load CA certificate
         {
-            ByteArrayInputStream caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
+            ByteArrayInputStream caInput = null;
+            if (customCA != null && customCA.length() > 0) {
+                caInput = new ByteArrayInputStream(customCA.getBytes(Charset.forName("UTF-8")));
+            } else {
+                caInput = new ByteArrayInputStream(CA.caCrt.getBytes(Charset.forName("UTF-8")));
+            }
             parser = new PEMParser(new InputStreamReader(caInput));
             Object object = null;
             try {
