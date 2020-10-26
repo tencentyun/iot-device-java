@@ -22,6 +22,30 @@
       "revId": "67919fbfde6756c48ab7718a365b1b09ca34412b",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ab171f1a_84088da3",
+        "filename": "hub-device-android/docs/网关子设备固件升级.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-26T07:42:56Z",
+      "side": 1,
+      "message": "已在Patchset2中修改。",
+      "parentUuid": "80ad4cbe_2c57be65",
+      "range": {
+        "startLine": 8,
+        "startChar": 21,
+        "endLine": 8,
+        "endChar": 23
+      },
+      "revId": "67919fbfde6756c48ab7718a365b1b09ca34412b",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
