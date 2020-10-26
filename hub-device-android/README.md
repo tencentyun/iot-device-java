@@ -33,6 +33,7 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 * [广播通信](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/广播通信.md)
 * [网关功能](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/网关功能.md)
 * [固件升级](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/固件升级.md)
+* [网关子设备固件升级](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/网关子设备固件升级.md)
 * [设备日志上报](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/设备日志上报.md)
 * [网关设备拓扑关系](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/网关设备拓扑关系.md)
 * [设备互通](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/docs/设备互通.md)
