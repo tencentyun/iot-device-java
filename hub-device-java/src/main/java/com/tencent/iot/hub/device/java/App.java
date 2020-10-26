@@ -114,7 +114,7 @@ public class App {
 		//客户端证书文件名  mDevPSK是设备秘钥
 
 		if (mDevPSK != null) {
-		//	options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+			options.setSocketFactory(AsymcSslUtils.getSocketFactory());
 		} else {
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
