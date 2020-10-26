@@ -52,13 +52,13 @@ public class TXOTAImpl {
 	private final int DEFAULT_READ_TIMEOUT = 10000; // 毫秒
 	private final int MAX_TRY_TIMES = 3;
 	private static List<X509Certificate> serverCertList = null;
+	private static String[] mCosServerCaCrtList = CA.cosServerCaCrtList;
 
 	// 加载服务器证书
 	private static void prepareOTAServerCA() {
-
 		if (serverCertList == null) {
 			serverCertList = new ArrayList<>();
-			for (String certStr : CA.cosServerCaCrtList) {
+			for (String certStr : mCosServerCaCrtList) {
 				ByteArrayInputStream caInput = null;
 				try {
 					CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -87,14 +87,12 @@ public class TXOTAImpl {
 	/**
 	 * 构造OTA对象
 	 *
-	 * @param connection
-	 *            MQTT连接
-	 * @param storagePath
-	 *            用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
-	 * @param callback
-	 *            OTA事件回调
+	 * @param connection MQTT连接
+	 * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
+	 * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
+	 * @param callback OTA事件回调
 	 */
-	public TXOTAImpl(TXMqttConnection connection, String storagePath, TXOTACallBack callback) {
+	public TXOTAImpl(TXMqttConnection connection, String storagePath, String[] cosServerCaCrtList, TXOTACallBack callback) {
 		this.mConnection = connection;
 		this.mStoragePath = storagePath;
 		this.mCallback = callback;
@@ -105,6 +103,9 @@ public class TXOTAImpl {
 		OTA_SUB_DEV_UPDATE_TOPIC = "$ota/update/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
 		OTA_SUB_DEV_REPORT_TOPIC = "$ota/report/" + mConnection.getSubProductID() + "/" + mConnection.getSubDevName();
 
+		if (cosServerCaCrtList != null && cosServerCaCrtList.length > 0) {
+			mCosServerCaCrtList = cosServerCaCrtList;
+		}
 
 		prepareOTAServerCA();
 
@@ -112,6 +113,17 @@ public class TXOTAImpl {
 		if (mConnection.getSubProductID() != null) { // 设置子设备时
 			subscribeSubDevTopic();  //网关子设备订阅
 		}
+	}
+
+	/**
+	 * 构造OTA对象
+	 *
+	 * @param connection MQTT连接
+	 * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
+	 * @param callback OTA事件回调
+	 */
+	public TXOTAImpl(TXMqttConnection connection, String storagePath, TXOTACallBack callback) {
+		this(connection, storagePath, null, callback);
 	}
 
 	/**
@@ -430,7 +442,7 @@ public class TXOTAImpl {
 						}
 					}
 
-					if (match > 0 && match == CA.cosServerCaCrtList.length) {
+					if (match > 0 && match == mCosServerCaCrtList.length) {
 						LOG.info("checkServerTrusted OK!!!");
 						return;
 					}

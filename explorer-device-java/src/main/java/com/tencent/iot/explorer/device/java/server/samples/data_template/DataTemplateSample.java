@@ -77,8 +77,8 @@ public class DataTemplateSample {
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXDataTemplateClient(  mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack,
-                                                    mJsonFileName, mDownStreamCallBack);
+        mMqttConnection = new TXDataTemplateClient(mBrokerURL, mProductID, mDevName, mDevPSK,
+                null,null, mMqttActionCallBack, mJsonFileName, mDownStreamCallBack);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
