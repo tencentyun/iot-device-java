@@ -44,7 +44,7 @@ public class TXMqttDynreg {
 
     private TXMqttDynregCallback mCallback;
 
-    private final String mDefaultDynRegUrl ="http://gateway.tencentdevices.com/register/dev";
+    private final String mDefaultDynRegUrl ="http://ap-guangzhou.gateway.tencentdevices.com/register/dev";
 
 
     /**
