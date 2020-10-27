@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9897f9b0_b0e8221d",
+        "filename": "hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/util/AsymcSslUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-27T09:04:45Z",
+      "side": 1,
+      "message": "获取自定义CA证书的SSLSocketFactory\n----------------\u003e\n获取默认CA证书的SSLSocketFactory",
+      "revId": "276a13dbf568e31e6b20ebcd72df39ecd17cb82f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cc4e5a77_92987a9d",
+        "filename": "hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/util/AsymcSslUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-10-27T09:04:45Z",
+      "side": 1,
+      "message": "获取默认CA证书的SSLSocketFactory\n----------------\u003e\n获取自定义CA证书的SSLSocketFactory",
+      "revId": "276a13dbf568e31e6b20ebcd72df39ecd17cb82f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
