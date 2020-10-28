@@ -20,4 +20,24 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 
 物联网接入层有设备互踢的逻辑，如果是用同一个设备 ID 在不同地方登录，会导致其中一方被另一方踢下线。因此发现设备一直上下线时，需要确认是否有不同的人或者多线程在使用同一个设备 ID 执行登录操作。
 
+#### 如何使用自建的Broker？
+
+SDK提供自定义brokerUrl的能力，例如：
+```
+TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack)
+TXShadowConnection(String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXShadowActionCallBack callBack)
+...
+```
+其中serverURI参数 用户可以传入自建服务的broker地址
+
+#### 如何自定义CA证书？
+
+可以通过调用AsymcSslUtils.getSocketFactory(String customCA)方法，示例代码如下：
+```
+String myCA = "..."
+MqttConnectOptions options = new MqttConnectOptions();
+options.setSocketFactory(AsymcSslUtils.getSocketFactory(myCA));
+mShadowConnection = new TXShadowConnection(testProductIDString, testDeviceNameString, testPSKString, new callback());
+mShadowConnection.connect(options, null);
+```
 

@@ -147,6 +147,16 @@ public class AsymcSslUtils {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactory();
     }
 
+    /**
+     * 获取自定义CA证书的SSLSocketFactory
+     *
+     * @param customCA 自定义CA证书
+     * @return SSLSocketFactory
+     */
+    public static SSLSocketFactory getSocketFactory(String customCA) {
+        return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactory();
+    }
+
     private static PrivateKey getPrivateKey(InputStream stream, String algorithm) throws IOException,
             GeneralSecurityException {
         PrivateKey key = null;
