@@ -36,12 +36,19 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO_REPLY;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_DEL_RESOURCE;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_REPORT_VERSION_RSP;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_REQUEST_RESOURCE_RSP;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_REQUEST_URL_RESP;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_UPDATE_RESOURCE;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_EVENT_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
@@ -62,6 +69,9 @@ public class TXDataTemplate {
 
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
+
+    private String mServiceDownStreamTopic;
+    private String mServiceUptreamTopic;
 
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
@@ -92,6 +102,8 @@ public class TXDataTemplate {
         this.mEventUptreamTopic = TOPIC_EVENT_UP_PREFIX + productId + "/"  + deviceName;
         this.mActionDownStreamTopic = TOPIC_ACTION_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + productId + "/"  + deviceName;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/"  + deviceName;
+        this.mServiceUptreamTopic = TOPIC_SERVICE_UP_PREFIX + productId + "/"  + deviceName;
         this.mDataTemplateJson = new TXDataTemplateJson (context,jsonFileName);
         this.mDownStreamCallBack = downStreamCallBack;
         this.mDeviceName = deviceName;
@@ -127,6 +139,9 @@ public class TXDataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
+                break;
             default:
                 TXLog.e(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
                 return Status.PARAMETER_INVALID;
@@ -160,6 +175,8 @@ public class TXDataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
             default:
                 TXLog.e(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
                 return Status.PARAMETER_INVALID;
@@ -597,6 +614,46 @@ public class TXDataTemplate {
             TXLog.e(TAG, "onActionMessageArrivedCallBack: invalid message:" + message);
         }
     }
+    /**
+     * 资源管理下行消息处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+
+        TXLog.d(TAG, "service down stream message received " + message);
+        //根据method进行相应处理
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if (!method.equals(METHOD_SERVICE_REPORT_VERSION_RSP)  &&
+                    !method.equals(METHOD_SERVICE_UPDATE_RESOURCE) &&
+                    !method.equals(METHOD_SERVICE_DEL_RESOURCE) &&
+                    !method.equals(METHOD_SERVICE_REQUEST_URL_RESP) &&
+                    !method.equals(METHOD_SERVICE_REQUEST_RESOURCE_RSP)) {
+                TXLog.e(TAG, "onPropertyCallBack: invalid method:" + method);
+                return;
+            }
+//            //控制下发消息处理
+//            if (method.equals(METHOD_PROPERTY_CONTROL)) {
+//                if(null != mDownStreamCallBack) {
+//                    JSONObject result = mDownStreamCallBack.onControlCallBack(jsonObj.getJSONObject("params"));
+//                    if (Status.OK != controlReply(jsonObj.getString("clientToken"), result.getInt("code"), result.getString("status"))) {
+//                        TXLog.e(TAG, "control reply failed!");
+//                    }
+//                }
+//            } else if(method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
+//                JSONObject data =  jsonObj.getJSONObject("data");
+//                if(null != mDownStreamCallBack) {
+//                    handleReply(message, true);
+//                    mDownStreamCallBack.onGetStatusReplyCallBack(data);
+//                }
+//            } else {
+//                handleReply(message, false);
+//            }
+        } catch (Exception e) {
+            TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
+        }
+    }
 
     /**
      * 消息到达回调函数
@@ -611,6 +668,8 @@ public class TXDataTemplate {
             onEventMessageArrivedCallBack(message);
         } else if (topic.equals(mActionDownStreamTopic)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageArrivedCallBack(message);
         }
     }
 }
