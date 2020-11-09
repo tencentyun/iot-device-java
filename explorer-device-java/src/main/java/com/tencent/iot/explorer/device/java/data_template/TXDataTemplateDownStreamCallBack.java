@@ -10,4 +10,6 @@ public abstract class TXDataTemplateDownStreamCallBack {
     public abstract JSONObject onControlCallBack(JSONObject msg);
 
     public abstract JSONObject onActionCallBack(String actionId, JSONObject params);
+
+    public abstract void onGetAIFaceLicenseCallBack(Integer code, String status, String license);
 }
