@@ -6,6 +6,7 @@
   * [子设备管理](#子设备管理)
   * [设备影子](#设备影子)
   * [API接口说明](#API接口说明)
+  * [自建服务器接入](#自建服务器接入)
   * [Demo示例体验-设备互通](#Demo示例体验-设备互通)
   * [Demo示例体验-设备状态上报与状态设置](#Demo示例体验-设备状态上报与状态设置)
   * [Demo示例体验-网关子设备固件升级](#Demo示例体验-网关子设备固件升级)
@@ -213,6 +214,9 @@ MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tence
 | registerProperty      | 注册当前设备的设备属性                                 |  
 | unRegisterProperty      | 取消注册当前设备的指定属性                                 |  
 
+
+## 自建服务器接入
+自建服务器接入，请参考 [自建服务器接入.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/自建服务器接入.md)
 
 ## Demo示例体验-设备互通
 官网上假设的一个示例场景，请参考 [设备互通.md](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-java/docs/设备互通.md)
