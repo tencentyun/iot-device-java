@@ -42,6 +42,8 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
