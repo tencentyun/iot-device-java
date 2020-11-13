@@ -20,4 +20,8 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 
 物联网接入层有设备互踢的逻辑，如果是用同一个设备 ID 在不同地方登录，会导致其中一方被另一方踢下线。因此发现设备一直上下线时，需要确认是否有不同的人或者多线程在使用同一个设备 ID 执行登录操作。
 
+#### 动态注册的设备认证连接时报无权连接(5)，如何排查？
+
+在SDK中调用动态注册对应注册成功的日志会返回 `I/TXMQTT: Dynamic register OK! onGetDevicePSK, devicePSK[**********************]` 或者 `I/TXMQTT: Dynamic register OK!onGetDeviceCert, deviceCert[**********************] devicePriv[**********************]` 可以检查一下认证连接的时候，传入的密钥或证书是不是对应动态注册的得到的密钥或证书。
+
 
