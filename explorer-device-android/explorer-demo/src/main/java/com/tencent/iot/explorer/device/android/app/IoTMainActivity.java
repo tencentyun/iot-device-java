@@ -49,7 +49,6 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iot_main);
         initComponent();
-
         //日志功能开启写权限
         try {
             int permission = ActivityCompat.checkSelfPermission(this,
@@ -60,6 +59,10 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
+        logConfigurator.configure();
     }
 
     @Override
@@ -92,11 +95,6 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         btnGateway.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
-
-        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
-        LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
-        logConfigurator.configure();
     }
 
     /**

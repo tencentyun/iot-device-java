@@ -65,6 +65,10 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "hub-demo.log");
+        logConfigurator.configure();
     }
 
     @Override
@@ -98,11 +102,6 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         btnMqtt.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
-
-        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
-        LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "hub-demo.log");
-        logConfigurator.configure();
     }
 
     /**
