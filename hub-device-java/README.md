@@ -117,6 +117,13 @@
     String mPrivKeyFilePath = null;
 
     TXMqttConnection mqttconnection = new TXMqttConnection(mProductID, mDevName, mDevPSK, new callBack());
+    options = new MqttConnectOptions();
+    options.setAutomaticReconnect(true);  //是否自动重连
+    if (mDevPSK != null) {
+        options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+    } else {
+        options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
+    }
     mqttconnection.connect(options, null);
     try {
             Thread.sleep(20000);
