@@ -227,6 +227,11 @@ public class IoTDataTemplate {
             }
             return null;
         }
+
+        @Override
+        public void onGetAIFaceLicenseCallBack(Integer code, String status, String license) {
+
+        }
     }
 
 }

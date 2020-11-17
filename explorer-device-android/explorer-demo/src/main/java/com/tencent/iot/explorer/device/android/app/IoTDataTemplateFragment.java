@@ -53,6 +53,7 @@ public class IoTDataTemplateFragment extends Fragment {
     private Button mEventsPostBtn;
 
     private Button mCheckFirmwareBtn;
+    private Button mCheckResourceBtn;
 
     private Spinner mSpinner;
     private TextView mLogInfoText;
@@ -95,6 +96,7 @@ public class IoTDataTemplateFragment extends Fragment {
         mEventPostBtn = view.findViewById(R.id.event_report);
         mEventsPostBtn = view.findViewById(R.id.events_report);
         mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
+        mCheckResourceBtn = view.findViewById(R.id.check_resource);
         mSpinner = view.findViewById(R.id.spinner4);
         mLogInfoText = view.findViewById(R.id.log_info);
         mItemText = view.findViewById(R.id.editText2);
@@ -374,6 +376,15 @@ public class IoTDataTemplateFragment extends Fragment {
             }
         });
 
+        mCheckResourceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mDataTemplateSample == null)
+                    return;
+                mDataTemplateSample.checkResource();
+            }
+        });
+
         return view;
     }
 
@@ -446,6 +457,15 @@ public class IoTDataTemplateFragment extends Fragment {
                 //do your action
             }
             return null;
+        }
+
+        @Override
+        public void onGetAIFaceLicenseCallBack(Integer code, String status, String license) {
+            if (code == 0) {
+                TXLog.d(TAG,"get AI face license success: ", license);
+            } else {
+                TXLog.d(TAG,"get AI face license failed message: ", status);
+            }
         }
     }
 

@@ -70,6 +70,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected int mLastReceivedMessageId = INVALID_MESSAGE_ID;
 
 	protected TXOTAImpl mOTAImpl = null;
+	protected TXResourceImpl mResourceImpl = null;
 
 	public String getSubDevVersion() {
 		return subDevVersion;
@@ -395,6 +396,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			mOTAImpl.setSubscribedState(false);
 		}
 
+		if (mResourceImpl != null) {
+			mResourceImpl.setSubscribedState(false);
+		}
+
 		if (mMqttClient != null && mMqttClient.isConnected()) {
 			IMqttActionListener mActionListener = new IMqttActionListener() {
 				@Override
@@ -712,6 +717,29 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
+	 * 初始化资源下载功能。
+	 *
+	 * @param storagePath 资源下载文件存储路径(调用者必须确保路径已存在，并且具有写权限)
+	 * @param cosServerCaCrtList 资源下载服务器的CA证书链
+	 * @param callback 事件回调
+	 */
+	public void initResource(String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
+		mResourceImpl = new TXResourceImpl(this, storagePath, cosServerCaCrtList, callback);
+	}
+
+	/**
+	 * 初始化资源下载功能。
+	 *
+	 * @param storagePath
+	 *            资源下载文件存储路径(调用者必须确保路径已存在，并且具有写权限)
+	 * @param callback
+	 *            事件回调
+	 */
+	public void initResource(String storagePath, TXResourceCallBack callback) {
+		mResourceImpl = new TXResourceImpl(this, storagePath, callback);
+	}
+
+	/**
 	 * 上报设备当前版本信息到后台服务器。
 	 *
 	 * @param currentFirmwareVersion
@@ -721,6 +749,21 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
 		if (mOTAImpl != null && currentFirmwareVersion != null) {
 			return mOTAImpl.reportCurrentFirmwareVersion(currentFirmwareVersion);
+		}
+
+		return Status.ERROR;
+	}
+
+	/**
+	 * 上报设备当前资源版本信息到后台服务器。
+	 *
+	 * @param resourceList JSONArray
+	 *            装载 {"resource_name": "audio_woman_mandarin", "version": "1.0.0", "resource_type": "FILE"},此格式的JSONObject
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status reportCurrentResourceVersion(JSONArray resourceList) {
+		if (mResourceImpl != null) {
+			return mResourceImpl.reportCurrentFirmwareVersion(resourceList);
 		}
 
 		return Status.ERROR;
@@ -810,6 +853,28 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
+	 * 上报设备资源下载状态到后台服务器。
+	 *
+	 * @param state
+	 *            状态
+	 * @param resultCode
+	 *            结果代码。0：表示成功；其它：表示失败；常见错误码：-1: 下载超时;
+	 *            -2:文件不存在；-3:签名过期；-4:校验错误；-5:更新资源文件失败
+	 * @param resultMsg
+	 *            结果描述
+	 * @param version
+	 *            版本号
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status reportResourceState(String resourceName ,TXOTAConstansts.ReportState state, int resultCode, String resultMsg, String version) {
+		if (mResourceImpl != null) {
+			return mResourceImpl.reportUpdateResourceState(state.toString().toLowerCase(), resourceName, resultCode, resultMsg, version);
+		}
+
+		return Status.ERROR;
+	}
+
+	/**
 	 * 设置当前连接状态
 	 *
 	 * @param connectStatus
@@ -869,6 +934,9 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		if (mOTAImpl != null) {
 			mOTAImpl.setSubscribedState(false);
 		}
+		if (mResourceImpl != null) {
+			mResourceImpl.setSubscribedState(false);
+		}
 	}
 
 	/**
@@ -895,6 +963,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		boolean consumed = false;
 		if (mOTAImpl != null) {
 			consumed = mOTAImpl.processMessage(topic, message);
+		}
+
+		if (mResourceImpl != null) {
+			consumed = mResourceImpl.processMessage(topic, message);
 		}
 
 		if (mActionCallBack != null) {
@@ -971,6 +1043,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 					if (mOTAImpl != null) {
 						mOTAImpl.onSubscribeCompleted(Status.OK, token, token.getUserContext(),
+								TXMqttConstants.SUBSCRIBE_SUCCESS);
+					}
+					if (mResourceImpl != null) {
+						mResourceImpl.onSubscribeCompleted(Status.OK, token, token.getUserContext(),
 								TXMqttConstants.SUBSCRIBE_SUCCESS);
 					}
 				}
