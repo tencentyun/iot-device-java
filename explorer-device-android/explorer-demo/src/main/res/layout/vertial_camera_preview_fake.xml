@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent">
+
+    <!-- 彩图 -->
+    <ImageView
+        android:id="@+id/imgColor"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_marginTop="60dp"
+        android:layout_marginRight="0dp"
+        app:layout_widthPercent="60%"
+        app:layout_aspectRatio="56.25%"/>
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerColor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgColor"
+        android:layout_alignTop="@id/imgColor"
+        android:layout_alignRight="@id/imgColor"
+        android:layout_alignBottom="@id/imgColor" />
+
+    <!-- 红外 -->
+    <ImageView
+        android:id="@+id/imgIr"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_alignTop="@+id/imgColor"
+        android:layout_toRightOf="@+id/imgColor"
+        app:layout_widthPercent="40%"
+        app:layout_aspectRatio="75%"/>
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerIr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgIr"
+        android:layout_alignTop="@id/imgIr"
+        android:layout_alignRight="@id/imgIr"
+        android:layout_alignBottom="@id/imgIr" />
+
+    <!-- 深度 -->
+    <ImageView
+        android:id="@+id/imgDepth"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_below="@+id/imgIr"
+        android:layout_alignLeft="@+id/imgIr"
+        app:layout_widthPercent="40%"
+        app:layout_aspectRatio="75%"/>
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerDepth"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgDepth"
+        android:layout_alignTop="@id/imgDepth"
+        android:layout_alignRight="@id/imgDepth"
+        android:layout_alignBottom="@id/imgDepth" />
+</android.support.percent.PercentRelativeLayout>
