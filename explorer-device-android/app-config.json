@@ -1,11 +1,11 @@
 {
-  "PRODUCT_ID":        "",
-  "DEVICE_NAME":       "",
-  "DEVICE_PSK":        "",
-  "SUB_PRODUCT_ID":    "",
-  "SUB_DEV_NAME":      "",
-  "SUB_DEV_PSK":       "",
-  "SUB_PRODUCT_ID2":   "",
-  "SUB_DEV_NAME2":     "",
-  "SUB_DEV_PSK2":      ""
+  "PRODUCT_ID":        "4ZM5TRYJX6",
+  "DEVICE_NAME":       "gateway_dev01",
+  "DEVICE_PSK":        "Io0r0ztBkZk6IhbJUEnfEg==",
+  "SUB_PRODUCT_ID":    "F4873C7RNN",
+  "SUB_DEV_NAME":      "light_dev01",
+  "SUB_DEV_PSK":       "WhF4MqdxaOa/RgkuR7wALQ==",
+  "SUB_PRODUCT_ID2":   "2MEGTNH1FG",
+  "SUB_DEV_NAME2":     "aircondition_dev01",
+  "SUB_DEV_PSK2":      "R7kB833WF8w3lmBkHChGkA=="
 }
