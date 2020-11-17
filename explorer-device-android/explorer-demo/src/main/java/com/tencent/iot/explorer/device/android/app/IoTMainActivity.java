@@ -59,10 +59,19 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
-        LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
-        logConfigurator.configure();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission Granted
+                // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+                LogConfigurator logConfigurator = new LogConfigurator();
+                logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
+                logConfigurator.configure();
+            }
+        }
     }
 
     @Override

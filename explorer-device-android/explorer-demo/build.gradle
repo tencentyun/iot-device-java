@@ -7,7 +7,7 @@ android {
     buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.tencent.iot.explorer.device.android.app"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -68,6 +68,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':explorer-device-android:iot_explorer')
+    implementation project(':explorer-device-android:iot_face')
     implementation project(':explorer-device-java')
     implementation project(':hub-device-java')
     implementation 'com.android.support:appcompat-v7:26.1.0'

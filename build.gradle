@@ -1,4 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+def lmr = 'file://' + new File('/maven/repo').absolutePath
 
 buildscript {
     repositories {
@@ -24,6 +25,8 @@ allprojects {
     repositories {
         jcenter()
         google()
+        mavenLocal()
+        maven { url lmr }
     }
 }
 

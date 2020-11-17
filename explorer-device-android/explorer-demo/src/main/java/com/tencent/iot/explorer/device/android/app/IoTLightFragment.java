@@ -103,12 +103,14 @@ public class IoTLightFragment extends Fragment {
                 }
 
                 final String text = textInfo.toString();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProperty.setText(text);
-                    }
-                });
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProperty.setText(text);
+                        }
+                    });
+                }
 
                 try {
                     Thread.sleep(200);
