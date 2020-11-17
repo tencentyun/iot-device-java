@@ -12,6 +12,7 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.java.core.mqtt.TXResourceCallBack;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -207,6 +208,44 @@ public class DataTemplateSample {
             }
         });
         mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
+    }
+
+    public void checkResource() {
+
+        mMqttConnection.initResource(Environment.getExternalStorageDirectory().getAbsolutePath(), new TXResourceCallBack() {
+
+            @Override
+            public void onReportResourceVersion(int resultCode, JSONArray resourceList, String resultMsg) {
+                TXLog.e(TAG, "onReportResourceVersion:" + resultCode + ", resourceList:" + resourceList + ", resultMsg:" + resultMsg);
+            }
+
+            @Override
+            public boolean onLastestResourceReady(String url, String md5, String version) {
+                return false;
+            }
+
+            @Override
+            public void onDownloadProgress(int percent, String version) {
+                TXLog.e(TAG, "onDownloadProgress:" + percent);
+            }
+
+            @Override
+            public void onDownloadCompleted(String outputFile, String version) {
+                TXLog.e(TAG, "onDownloadCompleted:" + outputFile + ", version:" + version);
+
+                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
+            }
+
+            @Override
+            public void onDownloadFailure(int errCode, String version) {
+                TXLog.e(TAG, "onDownloadFailure:" + errCode);
+
+                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
+            }
+        });
+
+        JSONArray resourceList = new JSONArray();
+        mMqttConnection.reportCurrentResourceVersion(resourceList);
     }
 
 }

@@ -10,17 +10,21 @@ public interface TXDataTemplateConstants {
     String TOPIC_EVENT_UP_PREFIX = "$thing/up/event/";
     String TOPIC_ACTION_DOWN_PREFIX = "$thing/down/action/";
     String TOPIC_ACTION_UP_PREFIX = "$thing/up/action/";
+    String TOPIC_SERVICE_DOWN_PREFIX = "$thing/down/service/";
+    String TOPIC_SERVICE_UP_PREFIX = "$thing/up/service/";
 
     enum TemplateSubTopic{
         PROPERTY_DOWN_STREAM_TOPIC,
         EVENT_DOWN_STREAM_TOPIC,
-        ACTION_DOWN_STREAM_TOPIC
+        ACTION_DOWN_STREAM_TOPIC,
+        SERVICE_DOWN_STREAM_TOPIC
     }
 
     enum TemplatePubTopic{
         PROPERTY_UP_STREAM_TOPIC,
         EVENT_UP_STREAM_TOPIC,
-        ACTION_UP_STREAM_TOPIC
+        ACTION_UP_STREAM_TOPIC,
+        SERVICE_UP_STREAM_TOPIC
     }
 
     /**
@@ -55,4 +59,32 @@ public interface TXDataTemplateConstants {
     String METHOD_ACTION = "action";
     String METHOD_ACTION_REPLY = "action_reply";
 
+    /**
+     * service method
+     */
+    String METHOD_SERVICE_REPORT_VERSION = "report_version";
+    String METHOD_SERVICE_REPORT_VERSION_RSP = "report_version_rsp";
+    String METHOD_SERVICE_UPDATE_RESOURCE = "update_resource";
+
+    String METHOD_SERVICE_REPORT_PROGRESS = "report_progress";
+    String METHOD_SERVICE_REPORT_RESULT = "report_result";
+
+    String METHOD_SERVICE_DEL_RESOURCE = "del_resource";
+    String METHOD_SERVICE_DEL_RESULT = "del_result";
+
+    String METHOD_SERVICE_REQUEST_URL = "request_url";
+    String METHOD_SERVICE_REQUEST_URL_RESP = "request_url_resp";
+
+    String METHOD_SERVICE_REPORT_POST_RESULT = "report_post_result";
+    String METHOD_SERVICE_REQUEST_RESOURCE = "request_resource";
+    String METHOD_SERVICE_REQUEST_RESOURCE_RSP = "request_resource_rsp";
+
+    String METHOD_SERVICE_CALL_SERVICE = "call_service";
+    String METHOD_SERVICE_CALL_SERVICE_REPLY = "call_service_reply";
+
+    /**
+     * service id
+     */
+
+    String SERVICE_ID_AI_FACE_LICENSE = "request_ai_face_license";
 }

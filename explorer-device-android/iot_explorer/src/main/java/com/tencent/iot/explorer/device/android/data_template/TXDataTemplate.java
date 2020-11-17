@@ -36,15 +36,21 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_INFO_REPLY;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_CALL_SERVICE;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_SERVICE_CALL_SERVICE_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.SERVICE_ID_AI_FACE_LICENSE;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_EVENT_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_EVENT_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_PROPERTY_UP_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.ACTION_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.SERVICE_UP_STREAM_TOPIC;
 
 public class TXDataTemplate {
     public static final String TAG = "TXDATATEMPLATE";
@@ -54,14 +60,18 @@ public class TXDataTemplate {
     public String mProductId;
 
     //上下行消息主题
+    //设备属性
     public String mPropertyDownStreamTopic;
     private String mPropertyUptreamTopic;
-
+    //设备事件
     private String mEventDownStreamTopic;
     private String mEventUptreamTopic;
-
+    //设备行为
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
+    //设备服务
+    private String mServiceDownStreamTopic;
+    private String mServiceUptreamTopic;
 
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
@@ -92,6 +102,8 @@ public class TXDataTemplate {
         this.mEventUptreamTopic = TOPIC_EVENT_UP_PREFIX + productId + "/"  + deviceName;
         this.mActionDownStreamTopic = TOPIC_ACTION_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + productId + "/"  + deviceName;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/"  + deviceName;
+        this.mServiceUptreamTopic = TOPIC_SERVICE_UP_PREFIX + productId + "/"  + deviceName;
         this.mDataTemplateJson = new TXDataTemplateJson (context,jsonFileName);
         this.mDownStreamCallBack = downStreamCallBack;
         this.mDeviceName = deviceName;
@@ -127,6 +139,9 @@ public class TXDataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
+                break;
             default:
                 TXLog.e(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
                 return Status.PARAMETER_INVALID;
@@ -160,6 +175,9 @@ public class TXDataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
+                break;
             default:
                 TXLog.e(TAG, "subscribeTemplateTopic: topic id invalid!" + topicId );
                 return Status.PARAMETER_INVALID;
@@ -190,6 +208,9 @@ public class TXDataTemplate {
                 break;
             case ACTION_UP_STREAM_TOPIC:
                 topic = mActionUptreamTopic;
+                break;
+            case SERVICE_UP_STREAM_TOPIC:
+                topic = mServiceUptreamTopic;
                 break;
             default:
                 TXLog.e(TAG, "publishTemplateMessage: topic id invalid!" + topicId );
@@ -389,6 +410,40 @@ public class TXDataTemplate {
         message.setPayload(object.toString().getBytes());
 
         return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
+    }
+
+    /**
+     * 请求AI的License
+     * @param machineId 设备序列号
+     * @param machineInfo 设备硬件信息
+     * @return 结果
+     */
+    public Status requestAIFaceLicense(String machineId, String machineInfo) {
+
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
+        try {
+            object.put("method", METHOD_SERVICE_CALL_SERVICE);
+            object.put("timestamp", System.currentTimeMillis());
+            object.put("serviceId", SERVICE_ID_AI_FACE_LICENSE);
+            object.put("clientToken", clientToken);
+
+            JSONObject params = new JSONObject();
+            params.put("machine_id",machineId);
+            params.put("machine_type", "Android");
+            params.put("machine_info", machineInfo);
+            object.put("params", params);
+        } catch (Exception e) {
+            TXLog.e(TAG, "requestAIFaceLicense: failed!" );
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(1); //qos 1
+        message.setPayload(object.toString().getBytes());
+
+        return publishTemplateMessage(clientToken, SERVICE_UP_STREAM_TOPIC, message);
     }
 
     /**
@@ -599,6 +654,40 @@ public class TXDataTemplate {
     }
 
     /**
+     * 服务下行消息处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+        TXLog.d(TAG, "service down stream message received " + message);
+        //根据method进行相应处理
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if (!method.equals(METHOD_SERVICE_CALL_SERVICE_REPLY)) {
+                TXLog.e(TAG, "onServiceCallBack: invalid method:" + method);
+                return;
+            }
+            //控制下发消息处理
+            if (method.equals(METHOD_SERVICE_CALL_SERVICE_REPLY)) {
+                if(null != mDownStreamCallBack) {//onGetAIFaceLicenseCallBack
+                    Integer code = jsonObj.getInt("code");
+                    String status = jsonObj.getString("status");
+                    String license = null;
+                    if (code == 0) {//获取AI License成功，解析获取License
+                        JSONObject response = jsonObj.getJSONObject("response");
+                        license = response.getString("license");
+                    }
+                    mDownStreamCallBack.onGetAIFaceLicenseCallBack(code,status,license);
+                }
+            } else {
+                handleReply(message, false);
+            }
+        } catch (Exception e) {
+            TXLog.e(TAG, "onServiceMessageArrivedCallBack: invalid message: " + message);
+        }
+    }
+
+    /**
      * 消息到达回调函数
      * @param topic   消息主题
      * @param message 消息内容
@@ -611,6 +700,8 @@ public class TXDataTemplate {
             onEventMessageArrivedCallBack(message);
         } else if (topic.equals(mActionDownStreamTopic)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageArrivedCallBack(message);
         }
     }
 }

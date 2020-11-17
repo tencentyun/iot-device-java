@@ -115,6 +115,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:text="检查固件更新" />
+
+        <Button
+            android:id="@+id/check_resource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="检查资源更新" />
     </LinearLayout>
 
     <LinearLayout

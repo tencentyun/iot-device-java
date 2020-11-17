@@ -153,6 +153,11 @@ public class GatewaySample {
             TXLog.d(TAG, "action [%s] received, input:" + params, actionId);
             return null;
         }
+
+        @Override
+        public void onGetAIFaceLicenseCallBack(Integer code, String status, String license) {
+
+        }
     }
 
     /**
