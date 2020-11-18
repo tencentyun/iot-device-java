@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imgColor"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_marginTop="60dp"
+        app:layout_widthPercent="100%"
+        app:layout_aspectRatio="177.77%"
+        />
+
+    <ImageView
+        android:id="@+id/imgIr"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_below="@+id/imgColor"
+        app:layout_widthPercent="50%"
+        app:layout_aspectRatio="133.33%"/>
+
+    <ImageView
+        android:id="@+id/imgDepth"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_below="@+id/imgColor"
+        android:layout_toRightOf="@+id/imgIr"
+        app:layout_widthPercent="50%"
+        app:layout_aspectRatio="133.33%"/>
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerColor"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgColor"
+        android:layout_alignTop="@id/imgColor"
+        android:layout_alignRight="@id/imgColor"
+        android:layout_alignBottom="@id/imgColor" />
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerIr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgIr"
+        android:layout_alignTop="@id/imgIr"
+        android:layout_alignRight="@id/imgIr"
+        android:layout_alignBottom="@id/imgIr" />
+
+    <FrameLayout
+        android:id="@+id/drawViewContainerDepth"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_alignLeft="@id/imgDepth"
+        android:layout_alignTop="@id/imgDepth"
+        android:layout_alignRight="@id/imgDepth"
+        android:layout_alignBottom="@id/imgDepth" />
+</android.support.percent.PercentRelativeLayout>
