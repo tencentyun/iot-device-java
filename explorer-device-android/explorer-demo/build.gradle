@@ -3,12 +3,12 @@ apply plugin: 'com.android.application'
 apply from: "../../parse_json.gradle"
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 29
     buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.tencent.iot.explorer.device.android.app"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdkVersion 16
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -77,4 +77,9 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     implementation 'log4j:log4j:1.2.17'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
+    implementation 'com.tencent.iot.explorer:explorer-device-camera:1.0.0'
+    implementation 'com.tencent.iot.explorer:explorer-device-face:1.0.0'
+    implementation 'com.tencent.bugly:crashreport:3.2.1' //bugly
+    implementation 'com.tencent.bugly:nativecrashreport:3.7.1' //bugly native
+    implementation 'com.android.support:percent:26.1.0'
 }

@@ -34,4 +34,14 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    if (findProject(':hub-device-java') != null) {
+        implementation project(':explorer-device-android:iot_explorer')
+        implementation project(':explorer-device-java')
+        implementation project(':hub-device-java')
+    } else {
+        implementation "com.tencent.iot.explorer:explorer-device-android:3.2.1"
+    }
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3"
+    implementation 'com.tencent.iot.explorer:explorer-device-camera:1.0.0'
+    implementation 'com.tencent.iot.explorer:explorer-device-face:1.0.0'
 }

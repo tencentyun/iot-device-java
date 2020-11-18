@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_layout_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#aa000000"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="腾讯云离线人脸识别"
+        android:textColor="@android:color/white"
+        app:autoSizeTextType="uniform" />
+
+    <TextView
+        android:id="@+id/tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:padding="10dp"
+        android:textColor="#00ff00"
+        android:textSize="14sp"
+        tools:text="tips" />
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_width="250dp"
+        android:orientation="vertical" />
+
+</LinearLayout>
+
