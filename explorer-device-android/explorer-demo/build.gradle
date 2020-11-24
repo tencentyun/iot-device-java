@@ -69,6 +69,7 @@ dependencies {
     })
     implementation project(':explorer-device-android:iot_explorer')
     implementation project(':explorer-device-android:iot_face')
+    implementation project(':explorer-device-android:iot_trtc')
     implementation project(':explorer-device-java')
     implementation project(':hub-device-java')
     implementation 'com.android.support:appcompat-v7:26.1.0'
