@@ -34,4 +34,11 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation project(':explorer-device-java')
+    implementation project(':hub-device-java')
+    implementation project(':explorer-device-android:iot_explorer')
+    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3"
+    testImplementation 'junit:junit:4.13'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
 }
