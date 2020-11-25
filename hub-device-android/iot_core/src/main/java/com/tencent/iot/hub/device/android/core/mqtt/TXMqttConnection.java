@@ -145,6 +145,24 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
+     * @param context           用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI         服务器URI
+     * @param productID         产品名
+     * @param deviceName        设备名，唯一
+     * @param secretKey         密钥
+     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+     * @param clientPersistence 消息永久存储
+     * @param callBack          连接、消息发布、消息订阅回调接口
+     * @param logUrl            日志上报url
+     */
+    public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
+        super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
+        this.mContext = context;
+        this.mMqttLogFlag = mqttLogFlag;
+        this.mMqttLogCallBack = logCallBack;
+    }
+
+    /**
      * 连接MQTT服务器，结果通过回调函数通知。
      *
      * @param options     连接参数
@@ -244,7 +262,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
      */
     protected void initMqttLog(final String tag) {
         if (mMqttLog == null) {
-            this.mMqttLog = new TXMqttLog(this);
+            if (mLogUrl != null) {
+                this.mMqttLog = new TXMqttLog(this, mLogUrl);
+            } else {
+                this.mMqttLog = new TXMqttLog(this);
+            }
         }
 
         if (Status.OK != mMqttLog.initMqttLog()){

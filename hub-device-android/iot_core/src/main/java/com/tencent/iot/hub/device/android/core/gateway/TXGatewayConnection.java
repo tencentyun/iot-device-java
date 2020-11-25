@@ -52,6 +52,11 @@ public class TXGatewayConnection  extends TXMqttConnection {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, mqttLogFlag,logCallBack,callBack);
     }
 
+    public TXGatewayConnection(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
+                               MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
+        super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, mqttLogFlag,logCallBack,callBack,logUrl);
+    }
+
     /**
      * @param context           用户上下文（这个参数在回调函数时透传给用户）
      * @param serverURI         服务器URI

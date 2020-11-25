@@ -36,6 +36,11 @@ public class TXMqttLog {
         this.mqttLogImp = new TXMqttLogImpl(mqttConnection);
     }
 
+    public TXMqttLog(TXMqttConnection mqttConnection, String logUrl) {
+        this.mMqttConnection = mqttConnection;
+        this.mqttLogImp = new TXMqttLogImpl(mqttConnection, logUrl);
+    }
+
     /**
      * 日志上传初始化，订阅指令下行topic，向数据上行topic发布消息
      * @return 初始化成功时返回Status.OK; 其它返回值表示初始化失败；

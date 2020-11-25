@@ -51,6 +51,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public String mDeviceName;
 	public String mUserName;
 	public String mSecretKey;
+	public String mLogUrl;
 
 	private String mSubProductID;
 	private String mSubDevName;
@@ -203,6 +204,45 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		this.mMqttPersist = clientPersistence;
 
 		this.mActionCallBack = callBack;
+	}
+
+	/**
+	 * @param serverURI
+	 *            服务器URI
+	 * @param productID
+	 *            产品名
+	 * @param deviceName
+	 *            设备名，唯一
+	 * @param secretKey
+	 *            密钥
+	 * @param bufferOpts
+	 *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+	 * @param clientPersistence
+	 *            消息永久存储
+	 * @param callBack
+	 *            连接、消息发布、消息订阅回调接口
+	 * @param logUrl
+	 *            日志上报URL
+	 */
+	public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
+							DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
+							TXMqttActionCallBack callBack, String logUrl) {
+
+		this.mSecretKey = secretKey;
+		if (serverURI == null) {
+			this.mServerURI = PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS;
+		} else {
+			this.mServerURI = serverURI;
+		}
+		this.mProductId = productID;
+		this.mClientId = productID + deviceName;
+		this.mDeviceName = deviceName;
+		this.mUserName = mClientId + ";" + TXMqttConstants.APPID;
+		this.bufferOpts = bufferOpts;
+		this.mMqttPersist = clientPersistence;
+
+		this.mActionCallBack = callBack;
+		this.mLogUrl = logUrl;
 	}
 
 	/**

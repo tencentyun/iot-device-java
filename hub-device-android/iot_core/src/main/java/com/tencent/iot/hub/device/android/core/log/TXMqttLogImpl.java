@@ -62,7 +62,28 @@ public class TXMqttLogImpl {
      */
     private TXMqttLogCallBack mMqttLogCallBack;
 
+    /**
+     * 日志上报URL
+     */
+    private String mLogUrl;
+
     TXMqttLogImpl(TXMqttConnection mqttConnection) {
+        this.mOkHttpClient =  new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
+        this.logDeque = new LinkedBlockingDeque<String>(dequeSize);
+        //固定头部格式：[鉴权类型（1字符，C代表证书方式，P代表PSK方式）][预留（3字符，填充#）][产品ID（10字符，不足后面补#）][设备ID（48字符，不足后面补#）]
+        this.mFixedHead = String.format("%c###%s%s",
+                mqttConnection.mSecretKey == null ? 'C' : 'P',
+                String.format("%-10s",mqttConnection.mProductId).replace(" ","#"),
+                String.format("%-48s", mqttConnection.mDeviceName).replace(" ","#")
+        );
+        this.mUploadFlag = false;
+        this.mMqttLogCallBack = mqttConnection.mMqttLogCallBack;
+        this.mSecretKey = mMqttLogCallBack.setSecretKey();
+        new UploaderToServer().start();
+    }
+
+    TXMqttLogImpl(TXMqttConnection mqttConnection, String logUrl) {
+        this.mLogUrl = logUrl;
         this.mOkHttpClient =  new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
         this.logDeque = new LinkedBlockingDeque<String>(dequeSize);
         //固定头部格式：[鉴权类型（1字符，C代表证书方式，P代表PSK方式）][预留（3字符，填充#）][产品ID（10字符，不足后面补#）][设备ID（48字符，不足后面补#）]
@@ -110,8 +131,13 @@ public class TXMqttLogImpl {
                     String payLoad = String.format("%s%s%s", mFixedHead, String.valueOf(System.currentTimeMillis()).substring(0, 10), log.toString());
                     payLoad = HmacSha1.getSignature(payLoad.getBytes(), mSecretKey.getBytes()) + payLoad;
 
+                    String url = MQTT_LOG_UPLOAD_SERVER_URL;
+                    if (mLogUrl != null) {
+                        url = mLogUrl;
+                    }
+
                     Request request = new Request.Builder()
-                            .url(MQTT_LOG_UPLOAD_SERVER_URL)
+                            .url(url)
                             .post(RequestBody.create(MEDIA_TYPE_LOG, payLoad))
                             .build();
 
@@ -119,9 +145,9 @@ public class TXMqttLogImpl {
                     try {
                         Response response = mOkHttpClient.newCall(request).execute();
                         if(!response.isSuccessful()) {
-                            mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",MQTT_LOG_UPLOAD_SERVER_URL,response.body().string()));
+                            mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
                         } else {
-                            mMqttLogCallBack.printDebug(String.format("Upload log to %s success!",MQTT_LOG_UPLOAD_SERVER_URL));
+                            mMqttLogCallBack.printDebug(String.format("Upload log to %s success!",url));
                         }
                     } catch (IOException e) {
                         mMqttLogCallBack.saveLogOffline(log.toString()); //存在文本中

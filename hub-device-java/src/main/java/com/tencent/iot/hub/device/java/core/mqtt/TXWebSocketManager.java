@@ -26,6 +26,33 @@ public class TXWebSocketManager {
         return instance;
     }
 
+    public synchronized TXWebSocketClient getClient(String wsUrl, String productId, String devicename) {
+        if (isEmpty(productId) || isEmpty(devicename)) {
+            System.out.println("productId or devicename empty");
+            return null;
+        }
+
+        String clientId = productId + devicename;
+
+        if (clients.containsKey(clientId) && clients.get(clientId) != null) {
+            // 集合内已经存在连接对象，不需要对连接对象做任何处理
+        } else {    // 集合内不存在连接对象，新创建一个连接对象
+            try {
+                String uriStr = PREFIX + productId + defaultUriStr;
+                if (wsUrl != null) {
+                    uriStr = wsUrl;
+                }
+                TXWebSocketClient client = new TXWebSocketClient(uriStr, clientId);
+                clients.put(clientId, client);
+            } catch (MqttException e) {
+                e.printStackTrace();
+                System.out.println("e=" + e.toString());
+            }
+
+        }
+        return clients.get(clientId);
+    }
+
     public synchronized TXWebSocketClient getClient(String productId, String devicename) {
         if (isEmpty(productId) || isEmpty(devicename)) {
             System.out.println("productId or devicename empty");
