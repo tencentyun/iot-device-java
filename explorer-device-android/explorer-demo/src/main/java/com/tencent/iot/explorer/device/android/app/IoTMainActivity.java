@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 
 import java.io.File;
