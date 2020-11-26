@@ -2,4 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tencent.iot.explorer.device.face">
 
+    <!-- 绑定设备的授权方式需要读取机器序列号 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 </manifest>
