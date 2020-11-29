@@ -106,6 +106,17 @@ public class AsymcSslUtils {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByStream(clientInput, keyInput);
     }
 
+    /**
+     * 获取双向认证SSLSocketFactory
+     *
+     * @param clientInput 设备证书文件输入流
+     * @param keyInput    设备私钥文件输入流
+     * @return
+     */
+    public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput, String customCA) {
+        return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByStream(clientInput, keyInput, customCA);
+    }
+
     public static SSLContext getDefaultSLLContext() {
         SSLContext sslContext = null;
         try {
