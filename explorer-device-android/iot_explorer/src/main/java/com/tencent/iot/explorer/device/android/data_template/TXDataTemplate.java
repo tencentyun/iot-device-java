@@ -238,10 +238,12 @@ public class TXDataTemplate {
             TXLog.e(TAG, "propertyReport: failed!" );
             return Status.ERR_JSON_CONSTRUCT;
         }
+        String objectString = object.toString();
+        objectString = objectString.replace("\\/", "/");
 
         MqttMessage message = new MqttMessage();
         message.setQos(0);
-        message.setPayload(object.toString().getBytes());
+        message.setPayload(objectString.getBytes());
 
         return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }

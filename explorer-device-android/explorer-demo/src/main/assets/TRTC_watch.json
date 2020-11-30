@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "profile": {
+    "ProductId": "XHJPZ28ARJ",
+    "CategoryId": "1"
+  },
+  "properties": [
+    {
+      "id": "_sys_video_call_status",
+      "name": "视频呼叫状态",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "空闲或拒绝",
+          "1": "呼叫中",
+          "2": "通话中"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "_sys_audio_call_status",
+      "name": "语音呼叫状态",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "空闲或拒绝",
+          "1": "呼叫中",
+          "2": "通话中"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "_sys_userid",
+      "name": "userid",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "id": "_sys_trtc_join_room",
+      "name": "设备加房间",
+      "desc": "http://tapd.oa.com/NEW_IOT/markdown_wikis/show/#1220393192001751795",
+      "input": [
+        {
+          "id": "SdkAppId",
+          "name": "SdkAppId",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "4300000000",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        },
+        {
+          "id": "UserId",
+          "name": "UserId",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "128"
+          }
+        },
+        {
+          "id": "UserSig",
+          "name": "UserSig",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "256"
+          }
+        },
+        {
+          "id": "StrRoomId",
+          "name": "StrRoomId",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "2048"
+          }
+        },
+        {
+          "id": "PrivateMapKey",
+          "name": "PrivateMapKey",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "2048"
+          }
+        }
+      ],
+      "output": [
+        {
+          "id": "Code",
+          "name": "Code",
+          "define": {
+            "type": "int",
+            "min": "-100",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    }
+  ]
+}

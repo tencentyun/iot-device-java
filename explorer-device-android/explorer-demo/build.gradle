@@ -7,11 +7,12 @@ android {
     buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.tencent.iot.explorer.device.android.app"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         externalNativeBuild {
             cmake {
                 cppFlags "-std=c++11 -frtti"
@@ -64,11 +65,13 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.3'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation project(':explorer-device-android:iot_explorer')
     implementation project(':explorer-device-android:iot_face')
+    implementation project(':explorer-device-android:iot_trtc')
     implementation project(':explorer-device-java')
     implementation project(':hub-device-java')
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -77,4 +80,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     implementation 'log4j:log4j:1.2.17'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
+
+    //依赖一个utils类
+    compile 'com.blankj:utilcode:1.25.9'
 }
