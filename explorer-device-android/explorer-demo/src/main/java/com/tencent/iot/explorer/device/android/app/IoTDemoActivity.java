@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.tencent.iot.explorer.device.android.app.trtc.TRTCMainActivity;
+
+
 public class IoTDemoActivity extends AppCompatActivity {
 
     private Button mIoTDemoBtn;
@@ -38,7 +41,7 @@ public class IoTDemoActivity extends AppCompatActivity {
         mIoTTrtcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(IoTDemoActivity.this, TRTCMainActivity.class));
             }
         });
     }

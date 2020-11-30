@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Environment;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -63,6 +64,7 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         LogConfigurator logConfigurator = new LogConfigurator();
         logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
         logConfigurator.configure();
+        MultiDex.install(this);
     }
 
     @Override

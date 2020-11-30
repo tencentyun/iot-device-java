@@ -1,3 +1,4 @@
+include ':explorer-device-android:iot_trtc'
 include ':explorer-device-android:iot_face'
 include ':explorer-device-java'
 include ':hub-device-java'
