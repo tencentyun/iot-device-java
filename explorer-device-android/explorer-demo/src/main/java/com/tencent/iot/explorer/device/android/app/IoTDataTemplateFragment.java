@@ -58,7 +58,7 @@ public class IoTDataTemplateFragment extends Fragment {
     private TextView mLogInfoText;
 
     // Default testing parameters
-    private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+    private String mBrokerURL = "tcp://111.230.126.244:1883";  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = BuildConfig.SUB_PRODUCT_ID;
     private String mDevName = BuildConfig.SUB_DEV_NAME;
     private String mDevPSK  = BuildConfig.SUB_DEV_PSK; //若使用证书验证，设为null
@@ -204,10 +204,13 @@ public class IoTDataTemplateFragment extends Fragment {
                     return;
                 JSONObject property = new JSONObject();
                 try {
-                    property.put("power_switch",0);
-                    property.put("color",0);
-                    property.put("brightness",0);
-                    property.put("name","test");
+//                    property.put("power_switch",0);
+//                    property.put("color",0);
+//                    property.put("brightness",0);
+//                    property.put("name","test");
+
+                    property.put("video_call_status", Integer.parseInt(mItemText.getText().toString()));
+                    property.put("userid", mProductID+"/"+mDevName);
                 } catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct property json failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;
@@ -243,16 +246,18 @@ public class IoTDataTemplateFragment extends Fragment {
                 //report info
                 JSONObject params = new JSONObject();
                 try {
-                    JSONObject label = new JSONObject();  //device label
-                    label.put("version", "v1.0.0");
-                    label.put("company", "tencent");
-
-                    params.put("module_hardinfo", "v1.0.0");
-                    params.put("module_softinfo", "v1.0.0");
-                    params.put("fw_ver", "v1.0.0");
-                    params.put("imei", "0");
-                    params.put("mac", "00:00:00:00");
-                    params.put("device_label", label);
+//                    JSONObject label = new JSONObject();  //device label
+//                    label.put("version", "v1.0.0");
+//                    label.put("company", "tencent");
+//
+//                    params.put("module_hardinfo", "v1.0.0");
+//                    params.put("module_softinfo", "v1.0.0");
+//                    params.put("fw_ver", "v1.0.0");
+//                    params.put("imei", "0");
+//                    params.put("mac", "00:00:00:00");
+//                    params.put("device_label", label);
+                    params.put("call_status",2);
+//                    params.put("userid", mProductID+"/"+mDevName);
                 }catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct params failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;

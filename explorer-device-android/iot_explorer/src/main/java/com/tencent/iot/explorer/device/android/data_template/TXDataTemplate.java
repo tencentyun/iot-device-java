@@ -219,10 +219,10 @@ public class TXDataTemplate {
      */
     public Status propertyReport(JSONObject property, JSONObject metadata) {
         //检查构造是否符合json文件中的定义
-        if(Status.OK != mDataTemplateJson.checkPropertyJson(property)){
-            TXLog.e(TAG, "propertyReport: invalid property json!");
-            return Status.PARAMETER_INVALID;
-        }
+//        if(Status.OK != mDataTemplateJson.checkPropertyJson(property)){
+//            TXLog.e(TAG, "propertyReport: invalid property json!");
+//            return Status.PARAMETER_INVALID;
+//        }
 
         //构造发布信息
         JSONObject object = new JSONObject();

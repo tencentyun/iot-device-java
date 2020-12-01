@@ -106,7 +106,7 @@ public class IoTMqttFragment extends Fragment {
     private String mProductID = BuildConfig.PRODUCT_ID;
     private String mDevName = BuildConfig.DEVICE_NAME;
     private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
-    private String mSubProductID = BuildConfig.SUB_PRODUCT_ID; // If you wont test gateway, let this to be null
+    private String mSubProductID = null; // If you wont test gateway, let this to be null
     private String mSubDevName = BuildConfig.SUB_DEV_NAME;
     private String mSubDevPsk = BuildConfig.SUB_DEVICE_PSK;
     private String mTestTopic = BuildConfig.TEST_TOPIC;    // productID/DeviceName/TopicName
@@ -225,6 +225,7 @@ public class IoTMqttFragment extends Fragment {
 
                     mDevCert = settings.getString(DEVICE_CERT, mDevCert);
                     mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
+                    mBrokerURL = "tcp://111.230.126.244:1883";
 
                     mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
                             mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
