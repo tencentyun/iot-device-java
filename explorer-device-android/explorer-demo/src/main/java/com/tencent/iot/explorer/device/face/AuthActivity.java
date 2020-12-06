@@ -15,8 +15,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.cloud.ai.fr.BuildConfig;
 import com.tencent.cloud.ai.fr.RegWithFileActivity;
 import com.tencent.cloud.ai.fr.business.thread.AIThreadPool;
 import com.tencent.cloud.ai.fr.utils.PermissionHandler;
@@ -73,7 +71,6 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CrashReport.initCrashReport(getApplicationContext(), "YOUR_BUGLY_APPID"/*修改BUGLY的APPID为实际的值*/, BuildConfig.DEBUG);
 
         setContentView(R.layout.activity_auth);
 

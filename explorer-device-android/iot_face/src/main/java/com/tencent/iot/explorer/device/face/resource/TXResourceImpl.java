@@ -60,7 +60,7 @@ public class TXResourceImpl {
     private static String[] mCosServerCaCrtList = CA.cosServerCaCrtList;
 
     // 加载服务器证书
-    private static void prepareOTAServerCA() {
+    private static void prepareResourceServerCA() {
         if (serverCertList == null) {
             serverCertList = new ArrayList<>();
             for (String certStr : mCosServerCaCrtList) {
@@ -75,7 +75,7 @@ public class TXResourceImpl {
                         serverCertList.add(certificate);
                     }
                 } catch (Exception e) {
-                    LOG.error("{}", "prepareOTAServerCA error:", e);
+                    LOG.error("{}", "prepareResourceServerCA error:", e);
                 } finally {
                     if (caInput != null) {
                         try {
@@ -94,7 +94,7 @@ public class TXResourceImpl {
      *
      * @param connection MQTT连接
      * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
-     * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
+     * @param cosServerCaCrtList Resource升级包下载服务器的CA证书链
      * @param callback 事件回调
      */
     public TXResourceImpl(TXMqttConnection connection, String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
@@ -109,7 +109,7 @@ public class TXResourceImpl {
             mCosServerCaCrtList = cosServerCaCrtList;
         }
 
-        prepareOTAServerCA();
+        prepareResourceServerCA();
 
         subscribeTopic();  // 提前订阅话题
     }
@@ -187,7 +187,7 @@ public class TXResourceImpl {
      *            来自哪个TOPIC的消息
      * @param message
      *            MQTT消息
-     * @return 返回true, 表示此消息已由OTA模块处理；返回false，表示些消息不是OTA消息；
+     * @return 返回true, 表示此消息已由Resource模块处理；返回false，表示些消息不是Resource消息；
      */
     public boolean processMessage(String topic, MqttMessage message) {
         if (!(topic.startsWith("$thing/down/service/") || topic.startsWith("$thing/up/service/"))) {
@@ -291,6 +291,10 @@ public class TXResourceImpl {
 
     public Status reportSuccessMessage(String resourceName ,String version) {
         return reportMessage(RESOURCE_UP_TOPIC, "report_progress", resourceName, "done", 0, "success", version);
+    }
+
+    public Status reportBurnngMessage(String resourceName ,String version) {
+        return reportMessage(RESOURCE_UP_TOPIC, "report_progress", resourceName, "burning", 0, "", version);
     }
 
     /**
@@ -399,11 +403,11 @@ public class TXResourceImpl {
                         throws CertificateException {
 
                     if (x509Certificates == null) {
-                        throw new CertificateException("check OTA server x509Certificates is null");
+                        throw new CertificateException("check Resource server x509Certificates is null");
                     }
 
                     if (x509Certificates.length <= 0) {
-                        throw new CertificateException("check OTA server x509Certificates is empty");
+                        throw new CertificateException("check Resource server x509Certificates is empty");
                     }
 
                     int match = 0;
@@ -426,7 +430,7 @@ public class TXResourceImpl {
                         return;
                     }
 
-                    throw new CertificateException("check OTA server x509Certificates failed");
+                    throw new CertificateException("check Resource server x509Certificates failed");
                 }
 
                 @Override
@@ -555,7 +559,15 @@ public class TXResourceImpl {
                             continue; // try again
                         } else {
                             if (mCallback != null) {
+                                reportBurnngMessage(resourceName, version);
                                 reportSuccessMessage(resourceName, version);
+                                JSONArray array = new JSONArray();
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("resource_name", resourceName);
+                                jsonObject.put("version", version);
+                                jsonObject.put("resource_type", "FILE");
+                                array.put(jsonObject);
+                                reportCurrentFirmwareVersion(array);
                                 mCallback.onDownloadCompleted(outputFile, version);
                                 downloadCsvResource(outputFile, version);
                             }
@@ -691,7 +703,7 @@ public class TXResourceImpl {
                     stream.close();
                 }
 
-                String calcMD5 = fileToMD5(mStoragePath + "/" + staffId);
+                String calcMD5 = fileToMD5(mStoragePath + "/" + staffId + "." + formatStr);
 
                 if (!calcMD5.equalsIgnoreCase(headerMd5)) {
                     LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
@@ -706,6 +718,7 @@ public class TXResourceImpl {
 //                    continue; // try again
                 } else {
                     if (mCallback != null) {
+                        reportBurnngMessage(staffId, version);
                         reportSuccessMessage(staffId, version);
                         mCallback.onDownloadCompleted(mStoragePath + "/" + staffId, version);
                     }
