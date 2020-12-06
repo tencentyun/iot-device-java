@@ -59,8 +59,11 @@ public class TXResourceImpl {
     private static List<X509Certificate> serverCertList = null;
     private static String[] mCosServerCaCrtList = CA.cosServerCaCrtList;
 
+    /** AI FACE SDK 存储本地feature的文件夹 */
+    private static final String FACE_FEATURE_LIBRAR = "/sdcard/FaceLibrary";
+
     // 加载服务器证书
-    private static void prepareOTAServerCA() {
+    private static void prepareResourceServerCA() {
         if (serverCertList == null) {
             serverCertList = new ArrayList<>();
             for (String certStr : mCosServerCaCrtList) {
@@ -75,7 +78,7 @@ public class TXResourceImpl {
                         serverCertList.add(certificate);
                     }
                 } catch (Exception e) {
-                    LOG.error("{}", "prepareOTAServerCA error:", e);
+                    LOG.error("{}", "prepareResourceServerCA error:", e);
                 } finally {
                     if (caInput != null) {
                         try {
@@ -94,7 +97,7 @@ public class TXResourceImpl {
      *
      * @param connection MQTT连接
      * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
-     * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
+     * @param cosServerCaCrtList Resource升级包下载服务器的CA证书链
      * @param callback 事件回调
      */
     public TXResourceImpl(TXMqttConnection connection, String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
@@ -109,7 +112,7 @@ public class TXResourceImpl {
             mCosServerCaCrtList = cosServerCaCrtList;
         }
 
-        prepareOTAServerCA();
+        prepareResourceServerCA();
 
         subscribeTopic();  // 提前订阅话题
     }
@@ -187,7 +190,7 @@ public class TXResourceImpl {
      *            来自哪个TOPIC的消息
      * @param message
      *            MQTT消息
-     * @return 返回true, 表示此消息已由OTA模块处理；返回false，表示些消息不是OTA消息；
+     * @return 返回true, 表示此消息已由Resource模块处理；返回false，表示些消息不是Resource消息；
      */
     public boolean processMessage(String topic, MqttMessage message) {
         if (!(topic.startsWith("$thing/down/service/") || topic.startsWith("$thing/up/service/"))) {
@@ -204,11 +207,12 @@ public class TXResourceImpl {
                 String md5Sum = jsonObject.getString("md5sum");
                 String version = jsonObject.getString("version");
                 String resourceName = jsonObject.getString("resource_name");
+                String resourceType = jsonObject.getString("resource_type");
 
                 System.out.println("mStoragePath=" + mStoragePath);
 
                 if (!mCallback.onLastestResourceReady(firmwareURL, md5Sum, version)) {
-                    downloadResource(firmwareURL, mStoragePath + "/" + resourceName, resourceName, md5Sum, version);
+                    downloadResource(firmwareURL, mStoragePath + "/" + resourceName, resourceName, md5Sum, version, resourceType);
                 }
             } else if (method.equalsIgnoreCase("report_version_rsp")) {
                 String resultCode = jsonObject.getString("result_code");
@@ -218,6 +222,14 @@ public class TXResourceImpl {
                 if (mCallback != null) {
                     mCallback.onReportResourceVersion(Integer.valueOf(resultCode), resourceList, resultMsg);
                 }
+            } else if (method.equalsIgnoreCase("del_resource")) { //人员库都被删除了。
+
+                deleteDirectory(mStoragePath);
+                deleteDirectory(FACE_FEATURE_LIBRAR);
+
+                String version = jsonObject.getString("version");
+                String resourceName = jsonObject.getString("resource_name");
+                reportDeleteSuccessMessage(resourceName, version);
             }
 
         } catch (JSONException e) {
@@ -291,6 +303,14 @@ public class TXResourceImpl {
 
     public Status reportSuccessMessage(String resourceName ,String version) {
         return reportMessage(RESOURCE_UP_TOPIC, "report_progress", resourceName, "done", 0, "success", version);
+    }
+
+    public Status reportDeleteSuccessMessage(String resourceName ,String version) {
+        return reportMessage(RESOURCE_UP_TOPIC, "del_result", resourceName, "done", 0, "success", version);
+    }
+
+    public Status reportBurnngMessage(String resourceName ,String version) {
+        return reportMessage(RESOURCE_UP_TOPIC, "report_progress", resourceName, "burning", 0, "", version);
     }
 
     /**
@@ -399,11 +419,11 @@ public class TXResourceImpl {
                         throws CertificateException {
 
                     if (x509Certificates == null) {
-                        throw new CertificateException("check OTA server x509Certificates is null");
+                        throw new CertificateException("check Resource server x509Certificates is null");
                     }
 
                     if (x509Certificates.length <= 0) {
-                        throw new CertificateException("check OTA server x509Certificates is empty");
+                        throw new CertificateException("check Resource server x509Certificates is empty");
                     }
 
                     int match = 0;
@@ -426,7 +446,7 @@ public class TXResourceImpl {
                         return;
                     }
 
-                    throw new CertificateException("check OTA server x509Certificates failed");
+                    throw new CertificateException("check Resource server x509Certificates failed");
                 }
 
                 @Override
@@ -449,6 +469,21 @@ public class TXResourceImpl {
         return conn;
     }
 
+    private JSONArray generalReportVersionData(String resourceName, String version, String resourceType) {
+
+        JSONArray array = new JSONArray();
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("resource_name", resourceName);
+            jsonObject.put("version", version);
+            jsonObject.put("resource_type", resourceType);
+            array.put(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return array;
+    }
+
     /**
      * 开启线程下载资源文件
      *
@@ -460,7 +495,7 @@ public class TXResourceImpl {
      *            用于下载完成后做校验的MD5
      */
     private void downloadResource(final String resourceURL, final String outputFile, final String resourceName, final String md5Sum,
-                                  final String version) {
+                                  final String version, final String resourceType) {
 
         if (mDownloadThreadRunning) {
             return;
@@ -555,7 +590,9 @@ public class TXResourceImpl {
                             continue; // try again
                         } else {
                             if (mCallback != null) {
+                                reportBurnngMessage(resourceName, version);
                                 reportSuccessMessage(resourceName, version);
+                                reportCurrentFirmwareVersion(generalReportVersionData(resourceName, version, resourceType));
                                 mCallback.onDownloadCompleted(outputFile, version);
                                 downloadCsvResource(outputFile, version);
                             }
@@ -613,7 +650,6 @@ public class TXResourceImpl {
             String headerSize = line.getString("headerSize");
             String headerMd5 = line.getString("headerMd5");
 
-
             RandomAccessFile fos = null;
             InputStream stream = null;
 
@@ -631,6 +667,26 @@ public class TXResourceImpl {
                     continue;
                 }
                 String formatStr = lastPartSplitStr[lastPartSplitStr.length -1];
+
+                if (status.equals("1")) { //1为删除，0为新增或更新
+                    //删掉本地存储的.feature
+                    String featurePath = FACE_FEATURE_LIBRAR + "/" + staffId + "." + formatStr + ".feature";
+                    File featureFile = new File(featurePath);
+                    if (featureFile.exists()) {//存在创建文件,需要删除
+                        featureFile.delete();
+                    }
+                    //删掉本地存储的 图片
+                    String resourcePath = mStoragePath + "/" + staffId + "." + formatStr;
+                    File resourceFile = new File(resourcePath);
+                    if (resourceFile.exists()) {//存在创建文件,需要删除
+                        resourceFile.delete();
+                    }
+                    if (mCallback != null) {
+                        mCallback.onResourceDelete(staffId, staffId + "." + formatStr);
+                    }
+                    return;
+                }
+
                 fos = new RandomAccessFile(mStoragePath + "/" + staffId + "." + formatStr, "rw");
                 LOG.debug("fileLength " + fos.length() + " bytes");
 
@@ -691,7 +747,7 @@ public class TXResourceImpl {
                     stream.close();
                 }
 
-                String calcMD5 = fileToMD5(mStoragePath + "/" + staffId);
+                String calcMD5 = fileToMD5(mStoragePath + "/" + staffId + "." + formatStr);
 
                 if (!calcMD5.equalsIgnoreCase(headerMd5)) {
                     LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
@@ -706,6 +762,7 @@ public class TXResourceImpl {
 //                    continue; // try again
                 } else {
                     if (mCallback != null) {
+                        reportBurnngMessage(staffId, version);
                         reportSuccessMessage(staffId, version);
                         mCallback.onDownloadCompleted(mStoragePath + "/" + staffId, version);
                     }
@@ -830,6 +887,51 @@ public class TXResourceImpl {
         return readerArr;
     }
 
+    /**
+     * 删除单个文件
+     * @param   filePath    被删除文件的文件名
+     * @return 文件删除成功返回true，否则返回false
+     */
+    public boolean deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.isFile() && file.exists()) {
+            return file.delete();
+        }
+        return false;
+    }
 
+    /**
+     * 删除文件夹以及目录下的文件
+     * @param   filePath 被删除目录的文件路径
+     * @return  目录删除成功返回true，否则返回false
+     */
+    public boolean deleteDirectory(String filePath) {
+        boolean flag = false;
+        //如果filePath不以文件分隔符结尾，自动添加文件分隔符
+        if (!filePath.endsWith(File.separator)) {
+            filePath = filePath + File.separator;
+        }
+        File dirFile = new File(filePath);
+        if (!dirFile.exists() || !dirFile.isDirectory()) {
+            return false;
+        }
+        flag = true;
+        File[] files = dirFile.listFiles();
+        //遍历删除文件夹下的所有文件(包括子目录)
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                //删除子文件
+                flag = deleteFile(files[i].getAbsolutePath());
+                if (!flag) break;
+            } else {
+                //删除子目录
+                flag = deleteDirectory(files[i].getAbsolutePath());
+                if (!flag) break;
+            }
+        }
+        if (!flag) return false;
+        //删除当前空目录
+        return dirFile.delete();
+    }
 
 }

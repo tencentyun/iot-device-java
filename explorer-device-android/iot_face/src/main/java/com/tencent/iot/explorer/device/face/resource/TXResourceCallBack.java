@@ -43,4 +43,12 @@ public interface TXResourceCallBack {
      * @param version  版本；
      */
     void onDownloadFailure(int errCode, String version);
+
+    /**
+     * 资源文件删除回调
+     *
+     * @param featureId     特征Id   featureId
+     * @param resourceName  资源文件名称，包含featureId和文件格式
+     */
+    void onResourceDelete(String featureId, String resourceName);
 }

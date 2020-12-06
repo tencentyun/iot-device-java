@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.face.data_template;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
@@ -12,6 +13,7 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.youtu.YTFaceRetrieval;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -20,6 +22,7 @@ import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.tencent.cloud.ai.fr.sdksupport.YTSDKManager.FACE_FEAT_LENGTH;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
@@ -256,6 +259,20 @@ public class FaceKitSample {
                 TXLog.e(TAG, "onDownloadFailure:" + errCode);
 
                 mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
+            }
+
+            @Override
+            public void onResourceDelete(String featureId, String resourceName) {
+                TXLog.e(TAG, "onResourceDelete:" + resourceName);
+
+                String[] featureIds = new String[1];
+                featureIds[0] = resourceName;
+                float[] cvtTable = YTFaceRetrieval.loadConvertTable(mContext.getAssets(), "models/face-feature-v705/cvt_table_1vN_705.txt");
+                YTFaceRetrieval mYTFaceRetriever = new YTFaceRetrieval(cvtTable, FACE_FEAT_LENGTH);
+                int code = mYTFaceRetriever.deleteFeatures(featureIds);
+                if (code != 0) {
+                    Log.w(TAG, resourceName + "deleteFeatures() code=" + code);
+                }
             }
         });
 
