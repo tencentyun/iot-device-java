@@ -104,6 +104,10 @@ public class FaceKitSample {
         mMqttConnection.setBufferOpts(bufferOptions);
     }
 
+    public boolean isConnected() {
+        return mMqttConnection.isConnected();
+    }
+
     /**
      * 断开MQTT连接
      */
@@ -184,6 +188,10 @@ public class FaceKitSample {
 
     public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim){
         return  mMqttConnection.reportSysRetrievalResultEvent(feature_id, score, sim);
+    }
+
+    public void reportOfflineSysRetrievalResultData() {
+        mMqttConnection.reportOfflineSysRetrievalResultData();
     }
 
     /**

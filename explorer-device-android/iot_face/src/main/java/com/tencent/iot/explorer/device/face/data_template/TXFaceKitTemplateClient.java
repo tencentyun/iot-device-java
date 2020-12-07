@@ -25,7 +25,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class TXFaceKitTemplateClient extends TXMqttConnection {
 
@@ -40,6 +42,8 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     String METHOD_SERVICE_CALL_SERVICE_REPLY = "call_service_reply";
 
     private static final String LICENSE_FILE = "licenseKey.dat";
+
+    private static final String OFFLINE_RETRIEVAL_RESULT_FILE = "offlineRetrievalResult.dat";
 
     private Boolean isAuthoried = false;
 
@@ -176,6 +180,12 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
             Log.d(TAG, "Construct params failed!");
             return Status.ERROR;
         }
+
+        if (!isConnected()) { //设备断连，存储数据
+            saveOfflineSysRetrievalResultData(params);
+            return Status.ERROR;
+        }
+
         return eventSinglePost(eventId, type, params);
     }
 
@@ -218,6 +228,75 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
             license = jsonResponse.getString("license");
             secret_key = jsonResponse.getString("secret_key");
             onGetAIFaceLicenseCallBack(0,"ok",license, secret_key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 存储离线时缓存的数据。
+     */
+    private void saveOfflineSysRetrievalResultData(JSONObject params) {
+        try {
+            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
+            byte[] buffer = new byte[1024];
+            int hasRead = 0;
+            StringBuilder sb = new StringBuilder();
+            while ((hasRead = inStream.read(buffer)) != -1) {
+                sb.append(new String(buffer, 0, hasRead));
+            }
+            inStream.close();
+            String result = sb.toString();
+            // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
+            FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
+                    Context.MODE_PRIVATE);
+            // 步骤2：将获取过来的值放入文件 拼接;号来区分每条数据
+            String string = result + params.toString() + ";";
+            fos.write(string.getBytes());
+            // 步骤3：关闭数据流
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 上报离线时缓存的数据。
+     */
+    public void reportOfflineSysRetrievalResultData() {
+        try {
+            //检查本地是否有license文件
+            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
+            byte[] buffer = new byte[1024];
+            int hasRead = 0;
+            StringBuilder sb = new StringBuilder();
+            while ((hasRead = inStream.read(buffer)) != -1) {
+                sb.append(new String(buffer, 0, hasRead));
+            }
+            inStream.close();
+            String result = sb.toString();
+            if (result.contains(";")) {//用;分割每条Retrieval数据
+                String [] splitStr = result.split(";");
+                for (int i = 0; i < splitStr.length; i++) {
+                    String retrieval = splitStr[i];
+                    if (retrieval.length() != 0) {
+                        JSONObject params = new JSONObject(retrieval);
+                        String eventId = "_sys_retrieval_result";
+                        String type = "info";
+                        eventSinglePost(eventId, type, params);
+                    }
+                }
+                //上报过把数据清除
+                // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
+                FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
+                        Context.MODE_PRIVATE);
+                // 步骤2：将获取过来的值放入文件
+                fos.write("".getBytes());
+                // 步骤3：关闭数据流
+                fos.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -326,6 +326,7 @@ public class AuthActivity extends AppCompatActivity {
                     }
                 });
                 FaceKitSample.getInstance().checkResource(FACE_IMG_DIR);
+                FaceKitSample.getInstance().reportOfflineSysRetrievalResultData();
             }
         }
 
