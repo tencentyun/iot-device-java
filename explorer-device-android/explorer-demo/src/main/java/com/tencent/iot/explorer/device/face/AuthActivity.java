@@ -146,14 +146,24 @@ public class AuthActivity extends AppCompatActivity {
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AuthActivity.this, RegWithFileActivity.class));
+                if (FaceKitSample.getInstance().isAuthoried()) {
+                    startActivity(new Intent(AuthActivity.this, RegWithFileActivity.class));
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "授权失败", Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 
         mSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AuthActivity.this, RetrieveWithAndroidCameraActivity.class));
+                if (FaceKitSample.getInstance().isAuthoried()) {
+                    startActivity(new Intent(AuthActivity.this, RetrieveWithAndroidCameraActivity.class));
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(), "授权失败", Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 
@@ -321,7 +331,7 @@ public class AuthActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Integer code, String status) {
-                        String logInfo = String.format("initAuth onFailure, code[%i], status[%s]", code, status);
+                        String logInfo = String.format("initAuth onFailure, code[%d], status[%s]", code, status);
                         printLogInfo(TAG, logInfo, mLogInfoText);
                     }
                 });

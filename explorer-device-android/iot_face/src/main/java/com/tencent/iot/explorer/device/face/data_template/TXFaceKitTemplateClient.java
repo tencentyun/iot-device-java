@@ -71,6 +71,10 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
     }
 
+    public boolean isAuthoried() {
+        return this.isAuthoried;
+    }
+
     /**
      * 订阅数据模板相关主题
      * @param topicId 主题ID

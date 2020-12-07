@@ -104,8 +104,18 @@ public class FaceKitSample {
         mMqttConnection.setBufferOpts(bufferOptions);
     }
 
+    /**
+     * 是否已经连接物联网开发平台
+     */
     public boolean isConnected() {
         return mMqttConnection.isConnected();
+    }
+
+    /**
+     * 是否AI人脸识别 SDK 是否鉴权通过
+     */
+    public boolean isAuthoried() {
+        return mMqttConnection.isAuthoried();
     }
 
     /**
