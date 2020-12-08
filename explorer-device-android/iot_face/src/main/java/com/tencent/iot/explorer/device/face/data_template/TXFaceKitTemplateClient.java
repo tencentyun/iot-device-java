@@ -153,7 +153,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
-        return  mDataTemplate.eventSinglePost(eventId, type, params);
+        return  mDataTemplate.sysEventSinglePost(eventId, type, params);
     }
 
     public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim){

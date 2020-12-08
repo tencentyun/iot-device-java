@@ -7,6 +7,7 @@ import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.face.resource.TXResourceCallBack;
 import com.tencent.iot.explorer.device.face.resource.TXResourceImpl;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -17,6 +18,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_EVENT_POST;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 
 public class TXFaceKitTemplate extends TXDataTemplate {
 
@@ -83,6 +87,38 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      */
     public void initResource(String storagePath, TXResourceCallBack callback) {
         mResourceImpl = new TXResourceImpl(mConnection, storagePath, callback);
+    }
+
+    /**
+     * 系统单个事件上报， 不检查构造是否符合json文件中的定义
+     * @param eventId 事件ID
+     * @param type 事件类型
+     * @param params 参数
+     * @return 结果
+     */
+    public Status sysEventSinglePost(String eventId, String type, JSONObject params) {
+        //不检查构造是否符合json文件中的定义
+
+        JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
+        long timestamp =  System.currentTimeMillis();
+        try {
+            object.put("method", METHOD_EVENT_POST);
+            object.put("clientToken", clientToken);
+            object.put("eventId", eventId);
+            object.put("type", type);
+            object.put("timestamp", timestamp);
+            object.put("params", params);
+        } catch (Exception e) {
+            TXLog.e(TAG, "eventSinglePost: failed!");
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(object.toString().getBytes());
+
+        return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
     }
 
     /**
