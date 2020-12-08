@@ -179,7 +179,7 @@ public class TXDataTemplate {
      * @param message 消息内容
      * @return 发送请求成功时返回Status.OK;
      */
-    private Status publishTemplateMessage(String clientToken, TXDataTemplateConstants.TemplatePubTopic topicId, MqttMessage message) {
+    protected Status publishTemplateMessage(String clientToken, TXDataTemplateConstants.TemplatePubTopic topicId, MqttMessage message) {
         String topic;
         switch (topicId) {
             case PROPERTY_UP_STREAM_TOPIC:
