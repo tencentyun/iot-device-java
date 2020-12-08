@@ -24,10 +24,11 @@ public interface TXResourceCallBack {
     /**
      * 资源文件下载进度回调
      *
+     * @param resourceName  人脸库资源文件名称 或 资源文件名称，不含路径，包含featureId和文件格式;
      * @param percent  下载进度（0 ~ 100）;
      * @param version  版本；
      */
-    void onDownloadProgress(int percent, String version);
+    void onDownloadProgress(String resourceName, int percent, String version);
 
     /**
      * 资源文件下载完成回调
@@ -39,16 +40,35 @@ public interface TXResourceCallBack {
     /**
      * 资源文件下载失败回调
      *
+     * @param resourceName  人脸库资源文件名称 或 资源文件名称，不含路径，包含featureId和文件格式;
      * @param errCode  失败错误码; -1: 下载超时; -2:文件不存在；-3:签名过期；-4:校验错误；-5:更新固件失败
      * @param version  版本；
      */
-    void onDownloadFailure(int errCode, String version);
+    void onDownloadFailure(String resourceName, int errCode, String version);
 
     /**
-     * 资源文件删除回调
+     * 删除特征回调
      *
      * @param featureId     特征Id   featureId
-     * @param resourceName  资源文件名称，包含featureId和文件格式
+     * @param resourceName  资源文件名称，不含路径，包含featureId和文件格式
      */
-    void onResourceDelete(String featureId, String resourceName);
+    void onFeatureDelete(String featureId, String resourceName);
+
+    /**
+     * 人脸库删除回调
+     *
+     * @param version       人脸库资源文件版本号
+     * @param resourceName  人脸库资源文件名称
+     */
+    void onFaceLibDelete(String version, String resourceName);
+
+    /**
+     * 离线检索事件需要保存的回调
+     *
+     * @param feature_id    特征id，对应控制台的人员ID。
+     * @param score         检索分数
+     * @param sim           检索和特征的相似度
+     * @param timestamp     时间戳
+     */
+    void onOfflineRetrievalResultEventSave(String feature_id, float score, float sim, int timestamp);
 }

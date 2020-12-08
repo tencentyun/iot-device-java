@@ -18,8 +18,13 @@ import com.tencent.youtu.YTFaceRetrieval;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.cloud.ai.fr.sdksupport.YTSDKManager.FACE_FEAT_LENGTH;
@@ -40,6 +45,8 @@ public class FaceKitSample {
     private Context mContext;
 
     private String mDeviceType = "DEVICE_TYPE";
+
+    private static final String OFFLINE_RETRIEVAL_RESULT_FILE = "offlineRetrievalResult.dat";
 
     private TXMqttActionCallBack mMqttActionCallBack;
     /**
@@ -200,8 +207,93 @@ public class FaceKitSample {
         return  mMqttConnection.reportSysRetrievalResultEvent(feature_id, score, sim);
     }
 
+    public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim, int timestamp){
+        return  mMqttConnection.reportSysRetrievalResultEvent(feature_id, score, sim, timestamp);
+    }
+
+    /**
+     * 上报离线时缓存的数据。
+     */
     public void reportOfflineSysRetrievalResultData() {
-        mMqttConnection.reportOfflineSysRetrievalResultData();
+        try {
+            //检查本地是否有license文件
+            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
+            byte[] buffer = new byte[1024];
+            int hasRead = 0;
+            StringBuilder sb = new StringBuilder();
+            while ((hasRead = inStream.read(buffer)) != -1) {
+                sb.append(new String(buffer, 0, hasRead));
+            }
+            inStream.close();
+            String result = sb.toString();
+            if (result.contains(";")) {//用;分割每条Retrieval数据
+                String [] splitStr = result.split(";");
+                for (int i = 0; i < splitStr.length; i++) {
+                    String retrieval = splitStr[i];
+                    if (retrieval.length() != 0) {
+                        JSONObject params = new JSONObject(retrieval);
+                        String feature_id = params.getString("feature_id");//特征id
+                        float score = (float) params.getDouble("score");//特征id
+                        float sim = (float) params.getDouble("sim");//相似度
+                        int timestamp = params.getInt("timestamp");//图像时间戳
+                        reportSysRetrievalResultEvent(feature_id, score, sim, timestamp);
+                    }
+                }
+                //上报过数据后清除本地存储
+                // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
+                FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
+                        Context.MODE_PRIVATE);
+                // 步骤2：将获取过来的值放入文件
+                fos.write("".getBytes());
+                // 步骤3：关闭数据流
+                fos.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 存储离线时缓存的数据。
+     */
+    private void saveOfflineSysRetrievalResultData(JSONObject params) {
+        try {
+            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
+            byte[] buffer = new byte[1024];
+            int hasRead = 0;
+            StringBuilder sb = new StringBuilder();
+            while ((hasRead = inStream.read(buffer)) != -1) {
+                sb.append(new String(buffer, 0, hasRead));
+            }
+            inStream.close();
+            String result = sb.toString();
+            // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
+            FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
+                    Context.MODE_PRIVATE);
+            // 步骤2：将获取过来的值放入文件 拼接;号来区分每条数据
+            String string = result + params.toString() + ";";
+            fos.write(string.getBytes());
+            // 步骤3：关闭数据流
+            fos.close();
+        } catch (FileNotFoundException e) {//第一次文件不存在，直接存
+            try {
+                // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
+                FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
+                        Context.MODE_PRIVATE);
+                // 步骤2：将获取过来的值放入文件 拼接;号来区分每条数据
+                String string = params.toString() + ";";
+                fos.write(string.getBytes());
+                // 步骤3：关闭数据流
+                fos.close();
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -261,27 +353,23 @@ public class FaceKitSample {
             }
 
             @Override
-            public void onDownloadProgress(int percent, String version) {
+            public void onDownloadProgress(String resourceName, int percent, String version) {
                 TXLog.e(TAG, "onDownloadProgress:" + percent);
             }
 
             @Override
             public void onDownloadCompleted(String outputFile, String version) {
                 TXLog.e(TAG, "onDownloadCompleted:" + outputFile + ", version:" + version);
-
-                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
             }
 
             @Override
-            public void onDownloadFailure(int errCode, String version) {
+            public void onDownloadFailure(String resourceName, int errCode, String version) {
                 TXLog.e(TAG, "onDownloadFailure:" + errCode);
-
-                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
             }
 
             @Override
-            public void onResourceDelete(String featureId, String resourceName) {
-                TXLog.e(TAG, "onResourceDelete:" + resourceName);
+            public void onFeatureDelete(String featureId, String resourceName) {
+                TXLog.e(TAG, "onFeatureDelete:" + resourceName);
 
                 String[] featureIds = new String[1];
                 featureIds[0] = resourceName;
@@ -291,6 +379,25 @@ public class FaceKitSample {
                 if (code != 0) {
                     Log.w(TAG, resourceName + "deleteFeatures() code=" + code);
                 }
+            }
+
+            @Override
+            public void onFaceLibDelete(String version, String resourceName) {
+                TXLog.e(TAG, "onFaceLibDelete: version: " + version + "resourceName:" + resourceName);
+            }
+
+            @Override
+            public void onOfflineRetrievalResultEventSave(String feature_id, float score, float sim, int timestamp) {
+                JSONObject params = new JSONObject();
+                try {
+                    params.put("feature_id", feature_id);//特征id
+                    params.put("score", score);//分数
+                    params.put("sim", sim);//相似度
+                    params.put("timestamp", timestamp);//图像时间戳
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                saveOfflineSysRetrievalResultData(params);
             }
         });
 

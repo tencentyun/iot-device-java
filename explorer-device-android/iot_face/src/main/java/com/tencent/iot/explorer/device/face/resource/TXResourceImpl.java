@@ -230,6 +230,10 @@ public class TXResourceImpl {
                 String version = jsonObject.getString("version");
                 String resourceName = jsonObject.getString("resource_name");
                 reportDeleteSuccessMessage(resourceName, version);
+
+                if (mCallback != null) {
+                    mCallback.onFaceLibDelete(version, resourceName);
+                }
             }
 
         } catch (JSONException e) {
@@ -560,7 +564,7 @@ public class TXResourceImpl {
                                 lastPercent = percent;
 
                                 if (mCallback != null) {
-                                    mCallback.onDownloadProgress(percent, version);
+                                    mCallback.onDownloadProgress(resourceName, percent, version);
                                 }
 
                                 LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
@@ -582,7 +586,7 @@ public class TXResourceImpl {
 
                             if (mCallback != null) {
                                 reportFailedMessage(resourceName, -4, "MD5不匹配", version);
-                                mCallback.onDownloadFailure(-4, version); // 校验失败
+                                mCallback.onDownloadFailure(resourceName, -4, version); // 校验失败
                             }
 
                             new File(outputFile).delete(); // delete
@@ -602,7 +606,7 @@ public class TXResourceImpl {
                     } catch (CertificateException e) {
                         if (mCallback != null) {
                             reportFailedMessage(resourceName,-4, "MD5不匹配", version);
-                            mCallback.onDownloadFailure(-4, version); // 校验失败
+                            mCallback.onDownloadFailure(resourceName, -4, version); // 校验失败
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -653,20 +657,20 @@ public class TXResourceImpl {
             RandomAccessFile fos = null;
             InputStream stream = null;
 
-            try {
+            String [] headerUrlSplitStr = headerUrl.split("/");
+            if (headerUrlSplitStr.length <= 0) {
+                LOG.debug("download headerUrl" + headerUrl);
+                continue;
+            }
+            String lastPartStr = headerUrlSplitStr[headerUrlSplitStr.length -1];
+            String [] lastPartSplitStr = lastPartStr.split("\\.");
+            if (lastPartSplitStr.length <= 0) {
+                LOG.debug("download headerUrl" + headerUrl);
+                continue;
+            }
+            String formatStr = lastPartSplitStr[lastPartSplitStr.length -1];
 
-                String [] headerUrlSplitStr = headerUrl.split("/");
-                if (headerUrlSplitStr.length <= 0) {
-                    LOG.debug("download headerUrl" + headerUrl);
-                    continue;
-                }
-                String lastPartStr = headerUrlSplitStr[headerUrlSplitStr.length -1];
-                String [] lastPartSplitStr = lastPartStr.split("\\.");
-                if (lastPartSplitStr.length <= 0) {
-                    LOG.debug("download headerUrl" + headerUrl);
-                    continue;
-                }
-                String formatStr = lastPartSplitStr[lastPartSplitStr.length -1];
+            try {
 
                 if (status.equals("1")) { //1为删除，0为新增或更新
                     //删掉本地存储的.feature
@@ -682,7 +686,7 @@ public class TXResourceImpl {
                         resourceFile.delete();
                     }
                     if (mCallback != null) {
-                        mCallback.onResourceDelete(staffId, staffId + "." + formatStr);
+                        mCallback.onFeatureDelete(staffId, staffId + "." + formatStr);
                     }
                     return;
                 }
@@ -727,7 +731,7 @@ public class TXResourceImpl {
                         lastPercent = percent;
 
                         if (mCallback != null) {
-                            mCallback.onDownloadProgress(percent, version);
+                            mCallback.onDownloadProgress(staffId + "." + formatStr, percent, version);
                         }
 
                         LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
@@ -754,7 +758,7 @@ public class TXResourceImpl {
 
                     if (mCallback != null) {
                         reportFailedMessage(staffId, -4, "MD5不匹配", version);
-                        mCallback.onDownloadFailure(-4, version); // 校验失败
+                        mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
                     }
 
                     new File(mStoragePath + "/" + staffId).delete(); // delete
@@ -772,13 +776,13 @@ public class TXResourceImpl {
             } catch (CertificateException e) {
                 if (mCallback != null) {
                     reportFailedMessage(staffId,-4, "MD5不匹配", version);
-                    mCallback.onDownloadFailure(-4, version); // 校验失败
+                    mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 if (mCallback != null && e.getMessage() != null) {
                     reportFailedMessage(staffId,-5, e.getMessage(), version);
-                    mCallback.onDownloadFailure(-5, version); // 下载资源失败
+                    mCallback.onDownloadFailure(staffId + "." + formatStr, -5, version); // 下载资源失败
                 }
             } finally {
                 if (fos != null) {

@@ -43,11 +43,11 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
 
     private static final String LICENSE_FILE = "licenseKey.dat";
 
-    private static final String OFFLINE_RETRIEVAL_RESULT_FILE = "offlineRetrievalResult.dat";
-
     private Boolean isAuthoried = false;
 
     private TXAuthCallBack mAuthCallBack;
+
+    private TXResourceCallBack mResourceCallBack;
     /**
      * @param context           用户上下文（这个参数在回调函数时透传给用户）
      * @param productID         产品名
@@ -67,10 +67,16 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
+    /**
+     * 是否已经连接物联网开发平台
+     */
     public boolean isConnected() {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
     }
 
+    /**
+     * 是否AI人脸识别 SDK 是否鉴权通过
+     */
     public boolean isAuthoried() {
         return this.isAuthoried;
     }
@@ -153,10 +159,48 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
+        return  mDataTemplate.eventSinglePost(eventId, type, params);
+    }
+
+    /**
+     * 系统单个事件上报，不对本地json进行检验
+     * @param eventId 事件ID
+     * @param type 事件类型
+     * @param params 参数
+     * @return 结果
+     */
+    private Status sysEventSinglePost(String eventId, String type, JSONObject params) {
         return  mDataTemplate.sysEventSinglePost(eventId, type, params);
     }
 
+    /**
+     * 检索人脸事件上报  当前断连则通过resource的资源回调通知上层
+     * @param feature_id 特征id，对应控制台的人员ID。
+     * @param score 检索分数
+     * @param sim 检索和特征的相似度
+     * @return 结果
+     */
     public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim){
+
+        if (!isConnected()) { //设备断连，存储数据
+            if (mResourceCallBack != null) {
+                Long timestamp = System.currentTimeMillis()/1000; // 图像时间戳
+                mResourceCallBack.onOfflineRetrievalResultEventSave(feature_id, score, sim, timestamp.intValue());
+            }
+            return Status.MQTT_NO_CONN;
+        }
+        return reportSysRetrievalResultEvent(feature_id, score, sim, 0);
+    }
+
+    /**
+     * 检索人脸事件上报
+     * @param feature_id    特征id，对应控制台的人员ID。
+     * @param score         检索分数
+     * @param sim           检索和特征的相似度
+     * @param timestamp     时间戳
+     * @return 结果
+     */
+    public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim, int timestamp){
         if (mDataTemplate == null) {
             Log.d(TAG, "mDataTemplate is null!");
             return Status.ERROR;
@@ -178,19 +222,18 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
             }
             params.put("score",score);//分数
             params.put("sim",sim);//相似度
-            Long timestamp = System.currentTimeMillis()/1000;
-            params.put("timestamp", timestamp.intValue());//图像时间戳
+            if (timestamp == 0) {
+                Long timestampOnline = System.currentTimeMillis()/1000;
+                params.put("timestamp", timestampOnline.intValue());//图像时间戳
+            } else {
+                params.put("timestamp", timestamp);//图像时间戳
+            }
         } catch (JSONException e) {
             Log.d(TAG, "Construct params failed!");
             return Status.ERROR;
         }
 
-        if (!isConnected()) { //设备断连，存储数据
-            saveOfflineSysRetrievalResultData(params);
-            return Status.ERROR;
-        }
-
-        return eventSinglePost(eventId, type, params);
+        return sysEventSinglePost(eventId, type, params);
     }
 
     /**
@@ -214,6 +257,9 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
         checkLocalAuthLicense();
     }
 
+    /**
+     * 检查本地是否有license文件，有可以提前调用进行鉴权
+     */
     private void checkLocalAuthLicense() {
         try {
             //检查本地是否有license文件
@@ -238,74 +284,6 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     }
 
     /**
-     * 存储离线时缓存的数据。
-     */
-    private void saveOfflineSysRetrievalResultData(JSONObject params) {
-        try {
-            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
-            byte[] buffer = new byte[1024];
-            int hasRead = 0;
-            StringBuilder sb = new StringBuilder();
-            while ((hasRead = inStream.read(buffer)) != -1) {
-                sb.append(new String(buffer, 0, hasRead));
-            }
-            inStream.close();
-            String result = sb.toString();
-            // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
-            FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
-                    Context.MODE_PRIVATE);
-            // 步骤2：将获取过来的值放入文件 拼接;号来区分每条数据
-            String string = result + params.toString() + ";";
-            fos.write(string.getBytes());
-            // 步骤3：关闭数据流
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 上报离线时缓存的数据。
-     */
-    public void reportOfflineSysRetrievalResultData() {
-        try {
-            //检查本地是否有license文件
-            FileInputStream inStream = mContext.openFileInput(OFFLINE_RETRIEVAL_RESULT_FILE);
-            byte[] buffer = new byte[1024];
-            int hasRead = 0;
-            StringBuilder sb = new StringBuilder();
-            while ((hasRead = inStream.read(buffer)) != -1) {
-                sb.append(new String(buffer, 0, hasRead));
-            }
-            inStream.close();
-            String result = sb.toString();
-            if (result.contains(";")) {//用;分割每条Retrieval数据
-                String [] splitStr = result.split(";");
-                for (int i = 0; i < splitStr.length; i++) {
-                    String retrieval = splitStr[i];
-                    if (retrieval.length() != 0) {
-                        JSONObject params = new JSONObject(retrieval);
-                        String eventId = "_sys_retrieval_result";
-                        String type = "info";
-                        eventSinglePost(eventId, type, params);
-                    }
-                }
-                //上报过把数据清除
-                // 步骤1:创建一个FileOutputStream对象,MODE_APPEND追加模式
-                FileOutputStream fos = mContext.openFileOutput(OFFLINE_RETRIEVAL_RESULT_FILE,
-                        Context.MODE_PRIVATE);
-                // 步骤2：将获取过来的值放入文件
-                fos.write("".getBytes());
-                // 步骤3：关闭数据流
-                fos.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    /**
      * 初始化资源下载功能。
      *
      * @param storagePath 资源下载文件存储路径(调用者必须确保路径已存在，并且具有写权限)
@@ -314,6 +292,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      */
     public void initResource(String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
         mDataTemplate.initResource(storagePath, cosServerCaCrtList, callback);
+        mResourceCallBack = callback;
     }
 
     /**
@@ -326,6 +305,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      */
     public void initResource(String storagePath, TXResourceCallBack callback) {
         mDataTemplate.initResource(storagePath, callback);
+        mResourceCallBack = callback;
     }
 
     /**
