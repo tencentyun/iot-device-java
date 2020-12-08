@@ -47,5 +47,5 @@ dependencies {
         implementation "com.tencent.iot.explorer:explorer-device-android:3.2.0"
     }
     implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3"
-    implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140-SNAPSHOT'
+    implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.141-SNAPSHOT'
 }
