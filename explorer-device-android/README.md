@@ -3,6 +3,7 @@
   * [SDK接入指南](#SDK接入指南)
   * [下载IoT Explorer Android-SDK Demo示例代码](#下载IoT-Explorer-Android-SDK-Demo示例代码)
   * [功能文档](#功能文档)
+  * [第三方服务接入指引](#第三方服务接入指引)
   * [SDK API及参数说明](#SDK-API及参数说明)
 
 # 腾讯云物联网开发平台设备端 IoT Explorer Android-SDK
@@ -34,6 +35,9 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 * [事件上报以及多事件上报](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/事件上报以及多事件上报.md)
 * [检查固件更新](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/检查固件更新.md)
 * [网关使用示例](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/网关使用示例.md)
+
+## 第三方服务接入指引
+* [IoT Explorer人脸识别 Android SDK开发指南](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/IOT-Explorer人脸识别%20Android%20SDK开发指南.md)
 
 ## SDK API及参数说明
 SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/SDK%20API及参数说明.md)
