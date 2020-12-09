@@ -364,7 +364,7 @@ public class AuthActivity extends AppCompatActivity {
             }
             String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-            printLogInfo(TAG, logInfo, mLogInfoText);
+//            printLogInfo(TAG, logInfo, mLogInfoText);
         }
 
         @Override
