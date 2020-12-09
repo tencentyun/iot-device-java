@@ -27,6 +27,9 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -61,6 +64,9 @@ public class TXResourceImpl {
 
     /** AI FACE SDK 存储本地feature的文件夹 */
     private static final String FACE_FEATURE_LIBRAR = "/sdcard/FaceLibrary";
+
+    final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(5,10,1, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<Runnable>(50000));
 
     // 加载服务器证书
     private static void prepareResourceServerCA() {
@@ -654,9 +660,6 @@ public class TXResourceImpl {
             String headerSize = line.getString("headerSize");
             String headerMd5 = line.getString("headerMd5");
 
-            RandomAccessFile fos = null;
-            InputStream stream = null;
-
             String [] headerUrlSplitStr = headerUrl.split("/");
             if (headerUrlSplitStr.length <= 0) {
                 LOG.debug("download headerUrl" + headerUrl);
@@ -670,137 +673,148 @@ public class TXResourceImpl {
             }
             String formatStr = lastPartSplitStr[lastPartSplitStr.length -1];
 
-            try {
 
-                if (status.equals("1")) { //1为删除，0为新增或更新
-                    //删掉本地存储的.feature
-                    String featurePath = FACE_FEATURE_LIBRAR + "/" + staffId + "." + formatStr + ".feature";
-                    File featureFile = new File(featurePath);
-                    if (featureFile.exists()) {//存在创建文件,需要删除
-                        featureFile.delete();
-                    }
-                    //删掉本地存储的 图片
-                    String resourcePath = mStoragePath + "/" + staffId + "." + formatStr;
-                    File resourceFile = new File(resourcePath);
-                    if (resourceFile.exists()) {//存在创建文件,需要删除
-                        resourceFile.delete();
-                    }
-                    if (mCallback != null) {
-                        mCallback.onFeatureDelete(staffId, staffId + "." + formatStr);
-                    }
-                    return;
-                }
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
 
-                fos = new RandomAccessFile(mStoragePath + "/" + staffId + "." + formatStr, "rw");
-                LOG.debug("fileLength " + fos.length() + " bytes");
+                    RandomAccessFile fos = null;
+                    InputStream stream = null;
+                    try {
 
-                long downloadBytes = 0;
-                int lastPercent = 0;
-
-                if (downloadBytes > 0) {
-                    fos.seek(downloadBytes);
-                }
-
-                LOG.debug("connect: " + headerUrl);
-                HttpURLConnection conn = createURLConnection(headerUrl);
-
-                conn.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
-                conn.setReadTimeout(DEFAULT_READ_TIMEOUT);
-                conn.setRequestProperty("Range", "bytes=" + downloadBytes + "-");
-
-                conn.connect();
-
-                int totalLength = conn.getContentLength();
-                LOG.debug(staffId + "totalLength " + totalLength + " bytes");
-
-                stream = conn.getInputStream();
-                byte buffer[] = new byte[1024 * 1024];
-
-                while (downloadBytes < totalLength) {
-                    int len = stream.read(buffer);
-                    if (len < 0) {
-                        break;
-                    }
-                    downloadBytes += len;
-
-                    fos.write(buffer, 0, len);
-
-                    int percent = (int) (((float) downloadBytes / (float) totalLength) * 100);
-
-                    if (percent != lastPercent) {
-                        lastPercent = percent;
-
-                        if (mCallback != null) {
-                            mCallback.onDownloadProgress(staffId + "." + formatStr, percent, version);
+                        if (status.equals("1")) { //1为删除，0为新增或更新
+                            //删掉本地存储的.feature
+                            String featurePath = FACE_FEATURE_LIBRAR + "/" + staffId + "." + formatStr + ".feature";
+                            File featureFile = new File(featurePath);
+                            if (featureFile.exists()) {//存在创建文件,需要删除
+                                featureFile.delete();
+                            }
+                            //删掉本地存储的 图片
+                            String resourcePath = mStoragePath + "/" + staffId + "." + formatStr;
+                            File resourceFile = new File(resourcePath);
+                            if (resourceFile.exists()) {//存在创建文件,需要删除
+                                resourceFile.delete();
+                            }
+                            if (mCallback != null) {
+                                mCallback.onFeatureDelete(staffId, staffId + "." + formatStr);
+                            }
+                            return;
                         }
 
-                        LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
-                        reportProgressMessage(RESOURCE_UP_TOPIC, staffId, percent, version);
-                    }
-                }
+                        fos = new RandomAccessFile(mStoragePath + "/" + staffId + "." + formatStr, "rw");
+                        LOG.debug("fileLength " + fos.length() + " bytes");
 
-                File tmpeFile = new File(csvOutputFile);
-                if (tmpeFile.exists()) {
-                    tmpeFile.delete();
-                }
+                        long downloadBytes = 0;
+                        int lastPercent = 0;
 
-                if (fos != null) {
-                    fos.close();
-                }
-                if (stream != null) {
-                    stream.close();
-                }
+                        if (downloadBytes > 0) {
+                            fos.seek(downloadBytes);
+                        }
 
-                String calcMD5 = fileToMD5(mStoragePath + "/" + staffId + "." + formatStr);
+                        LOG.debug("connect: " + headerUrl);
+                        HttpURLConnection conn = createURLConnection(headerUrl);
 
-                if (!calcMD5.equalsIgnoreCase(headerMd5)) {
-                    LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
+                        conn.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
+                        conn.setReadTimeout(DEFAULT_READ_TIMEOUT);
+                        conn.setRequestProperty("Range", "bytes=" + downloadBytes + "-");
 
-                    if (mCallback != null) {
-                        reportFailedMessage(staffId, -4, "MD5不匹配", version);
-                        mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
-                    }
+                        conn.connect();
 
-                    new File(mStoragePath + "/" + staffId).delete(); // delete
+                        int totalLength = conn.getContentLength();
+                        LOG.debug(staffId + "totalLength " + totalLength + " bytes");
+
+                        stream = conn.getInputStream();
+                        byte buffer[] = new byte[1024 * 1024];
+
+                        while (downloadBytes < totalLength) {
+                            int len = stream.read(buffer);
+                            if (len < 0) {
+                                break;
+                            }
+                            downloadBytes += len;
+
+                            fos.write(buffer, 0, len);
+
+                            int percent = (int) (((float) downloadBytes / (float) totalLength) * 100);
+
+                            if (percent != lastPercent) {
+                                lastPercent = percent;
+
+                                if (mCallback != null) {
+                                    mCallback.onDownloadProgress(staffId + "." + formatStr, percent, version);
+                                }
+
+                                LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
+                                reportProgressMessage(RESOURCE_UP_TOPIC, staffId, percent, version);
+                            }
+                        }
+
+                        File tmpeFile = new File(csvOutputFile);
+                        if (tmpeFile.exists()) {
+                            tmpeFile.delete();
+                        }
+
+                        if (fos != null) {
+                            fos.close();
+                        }
+                        if (stream != null) {
+                            stream.close();
+                        }
+
+                        String calcMD5 = fileToMD5(mStoragePath + "/" + staffId + "." + formatStr);
+
+                        if (!calcMD5.equalsIgnoreCase(headerMd5)) {
+                            LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
+
+                            if (mCallback != null) {
+                                reportFailedMessage(staffId, -4, "MD5不匹配", version);
+                                mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
+                            }
+
+                            new File(mStoragePath + "/" + staffId).delete(); // delete
 
 //                    continue; // try again
-                } else {
-                    if (mCallback != null) {
-                        reportBurnngMessage(staffId, version);
-                        reportSuccessMessage(staffId, version);
-                        mCallback.onDownloadCompleted(mStoragePath + "/" + staffId, version);
-                    }
+                        } else {
+                            if (mCallback != null) {
+                                reportBurnngMessage(staffId, version);
+                                reportSuccessMessage(staffId, version);
+                                mCallback.onDownloadCompleted(mStoragePath + "/" + staffId, version);
+                            }
 
 //                    break; // quit loop
-                }
-            } catch (CertificateException e) {
-                if (mCallback != null) {
-                    reportFailedMessage(staffId,-4, "MD5不匹配", version);
-                    mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (mCallback != null && e.getMessage() != null) {
-                    reportFailedMessage(staffId,-5, e.getMessage(), version);
-                    mCallback.onDownloadFailure(staffId + "." + formatStr, -5, version); // 下载资源失败
-                }
-            } finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
+                        }
+                    } catch (CertificateException e) {
+                        if (mCallback != null) {
+                            reportFailedMessage(staffId,-4, "MD5不匹配", version);
+                            mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
+                        }
                     } catch (Exception e) {
+                        e.printStackTrace();
+                        if (mCallback != null && e.getMessage() != null) {
+                            reportFailedMessage(staffId,-5, e.getMessage(), version);
+                            mCallback.onDownloadFailure(staffId + "." + formatStr, -5, version); // 下载资源失败
+                        }
+                    } finally {
+                        if (fos != null) {
+                            try {
+                                fos.close();
+                            } catch (Exception e) {
 
+                            }
+                        }
+
+                        if (stream != null) {
+                            try {
+                                stream.close();
+                            } catch (Exception e) {
+
+                            }
+                        }
                     }
                 }
 
-                if (stream != null) {
-                    try {
-                        stream.close();
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
+            };
+            threadPoolExecutor.execute(runnable);
 
         }
 
