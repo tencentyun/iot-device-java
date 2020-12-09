@@ -16,8 +16,9 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-def libVersion = '1.0.1-SNAPSHOT'
+def libVersion = rootProject.ext.sdk.version
 ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
+ext.isPublishing = false
 publishing {
     publications {
         jar(MavenPublication) {
@@ -52,6 +53,7 @@ publishing {
                 }
             }
             pom.withXml {
+                isPublishing = true
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
                     if (dp.version != "unspecified") {
@@ -106,9 +108,12 @@ dependencies {
     implementation 'net.iharder:base64:2.3.9'
     implementation 'com.google.code.gson:gson:2.8.6'
     if (findProject(':hub-device-java') != null) {
-        implementation project(path: ':hub-device-java')
-    } else {
-        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
+        api project(path: ':hub-device-java')
+    }
+    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
+        if (isPublishing) {
+            implementation "com.tencent.iot.hub:hub-device-java:${rootProject.ext.sdk.version}"
+        }
     }
 }
 

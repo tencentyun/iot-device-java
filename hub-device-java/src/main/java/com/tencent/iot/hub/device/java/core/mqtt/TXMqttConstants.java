@@ -93,5 +93,5 @@ public interface TXMqttConstants {
 
     String UNSUBSCRIBE_SUCCESS = "unsubscribe success";
 
-    String MQTT_SDK_VER = "1.2.3";
+    String MQTT_SDK_VER = "1.1.0";
 }

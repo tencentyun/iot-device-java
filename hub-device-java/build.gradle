@@ -13,7 +13,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-def libVersion = '1.0.1-SNAPSHOT'
+def libVersion = rootProject.ext.sdk.version
 ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
 publishing {
     publications {

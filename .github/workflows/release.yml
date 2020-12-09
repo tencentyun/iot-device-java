@@ -26,6 +26,13 @@ jobs:
           java-version: 1.8
       - name: install fir
         run: sudo gem install fir-cli
+
+      - name: Fix SDKs Version
+        run: |
+          rtt=$(git describe --tags `git rev-list --tags --max-count=1`)
+          rt=${rtt#*v}
+          rc=$(git rev-parse --short HEAD)
+          sed -i 's#def version.*#def version = \"'$rt'\"#g' config.gradle
       - name: Update Values of Signing
         run: |
           export KEY_ID_OF_SIGN=$IOT_GPG_KEYNAME

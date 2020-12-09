@@ -75,12 +75,9 @@ dependencies {
     })
     implementation project(':explorer-device-android:iot_explorer')
     implementation project(':explorer-device-android:iot_face')
-    implementation project(':explorer-device-java')
-    implementation project(':hub-device-java')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.13'
     implementation 'log4j:log4j:1.2.17'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
-    implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.141-SNAPSHOT'
 }
