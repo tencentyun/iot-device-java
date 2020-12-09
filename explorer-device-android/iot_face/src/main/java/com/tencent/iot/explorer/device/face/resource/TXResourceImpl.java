@@ -674,7 +674,7 @@ public class TXResourceImpl {
 
             String resourcePath1 = mStoragePath + "/" + staffId + "." + formatStr;
             File resourceFile1 = new File(resourcePath1);
-            if (resourceFile1.exists() && resourceFile1.length() == Long.parseLong(headerSize)) {//存在创建文件，并且下载完整，就跳过下载下一张
+            if (resourceFile1.exists() && resourceFile1.length() == Long.parseLong(headerSize) && status.equals("0")) {//存在创建文件，并且下载完整，并且是新增或更新，就跳过下载下一张
                 LOG.debug("resourceFile exists");
                 continue;
             }
