@@ -602,9 +602,8 @@ public class TXResourceImpl {
                             if (mCallback != null) {
                                 reportBurnngMessage(resourceName, version);
                                 reportSuccessMessage(resourceName, version);
-                                reportCurrentFirmwareVersion(generalReportVersionData(resourceName, version, resourceType));
                                 mCallback.onDownloadCompleted(outputFile, version);
-                                downloadCsvResource(outputFile, version);
+                                downloadCsvResource(outputFile, version, resourceName, resourceType);
                             }
 
                             break; // quit loop
@@ -648,7 +647,7 @@ public class TXResourceImpl {
      * @param csvOutputFile
      *            人脸csv资源文件要的路径
      */
-    private void downloadCsvResource(final String csvOutputFile, final String version) throws JSONException {
+    private void downloadCsvResource(final String csvOutputFile, final String version, final String csvResourceName, final String csvResourceType) throws JSONException {
         ArrayList<JSONObject> readerArr = readCsv(csvOutputFile);
         LOG.debug("readerArr.size :" + readerArr.size());
         for (int i = 0; i < readerArr.size(); i++) {
@@ -673,7 +672,14 @@ public class TXResourceImpl {
             }
             String formatStr = lastPartSplitStr[lastPartSplitStr.length -1];
 
+            String resourcePath1 = mStoragePath + "/" + staffId + "." + formatStr;
+            File resourceFile1 = new File(resourcePath1);
+            if (resourceFile1.exists() && resourceFile1.length() == Long.parseLong(headerSize)) {//存在创建文件，并且下载完整，就跳过下载下一张
+                LOG.debug("resourceFile exists");
+                continue;
+            }
 
+            int finalI = i;
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -775,6 +781,9 @@ public class TXResourceImpl {
 
 //                    continue; // try again
                         } else {
+                            if (finalI == (readerArr.size() - 1)) {
+                                reportCurrentFirmwareVersion(generalReportVersionData(csvResourceName, version, csvResourceType));
+                            }
                             if (mCallback != null) {
                                 reportBurnngMessage(staffId, version);
                                 reportSuccessMessage(staffId, version);
