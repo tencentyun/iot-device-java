@@ -126,7 +126,6 @@ dependencies {
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.13'
-    implementation "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
