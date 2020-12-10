@@ -135,8 +135,8 @@ dependencies {
     implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
 
-    if (findProject(':explorer-device-java') != null) {
-        api project(path: ':explorer-device-java')
+    if (findProject(':explorer:explorer-device-java') != null) {
+        api project(path: ':explorer:explorer-device-java')
     }
 }
 
