@@ -37,7 +37,7 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 * [网关使用示例](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs网关使用示例.md)
 
 ## 第三方服务接入指引
-* [IoT Explorer人脸识别 Android SDK开发指南](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docsIOT-Explorer人脸识别%20Android%20SDK开发指南.md)
+* [IoT Explorer人脸识别 Android SDK开发指南](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face/docs/IOT-Explorer人脸识别%20Android%20SDK开发指南.md)
 
 ## SDK API及参数说明
-SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docsSDK%20API及参数说明.md)
+SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs/SDK%20API及参数说明.md)
