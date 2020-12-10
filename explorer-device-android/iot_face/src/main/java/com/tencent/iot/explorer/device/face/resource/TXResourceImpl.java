@@ -704,6 +704,9 @@ public class TXResourceImpl {
                             if (mCallback != null) {
                                 mCallback.onFeatureDelete(staffId, staffId + "." + formatStr);
                             }
+                            if (finalI == (readerArr.size() - 1)) { //删除后上报一下版本
+                                reportCurrentFirmwareVersion(generalReportVersionData(csvResourceName, version, csvResourceType));
+                            }
                             return;
                         }
 
