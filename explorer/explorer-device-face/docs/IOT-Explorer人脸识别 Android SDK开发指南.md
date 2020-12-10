@@ -1,9 +1,9 @@
 * [IoT Explorer人脸识别 Android SDK开发指南](#IoT-Explorer人脸识别-Android-SDK开发指南)
   * [引用方式](#引用方式)
   * [API说明](#API说明)
-     *  [iot_explorer SDK 设计说明](#iot_explorer-SDK-设计说明)
-     *  [iot_face SDK 设计说明](#iot_face-SDK-设计说明)
-     *  [iot_face SDK 回调callback 设计说明](#iot_face-SDK-回调callback-设计说明)
+     *  [explorer-device-android SDK 设计说明](#explorer-device-android-SDK-设计说明)
+     *  [explorer-device-face SDK 设计说明](#explorer-device-face-SDK-设计说明)
+     *  [explorer-device-face SDK 回调callback 设计说明](#explorer-device-face-SDK-回调callback-设计说明)
 
 # IoT Explorer人脸识别 Android SDK开发指南
 
@@ -13,7 +13,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入人脸识别离线SDK，仅需要接入iot_explorer SDK，请参考 [编译环境及SDK接入说明.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs编译环境及SDK接入说明.md)
+如果不需要接入人脸识别离线SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs/编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
@@ -46,22 +46,22 @@
     }
     ```
  -  依赖本地sdk源码 构建
-    修改应用模块的 **[build.gradle](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/explorer-demo/build.gradle)**，使应用模块依赖 [iot_face](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-android/iot_face)源码，示例如下：
+    修改应用模块的 **[build.gradle](https://github.com/tencentyun/iot-device-java/blob/master/explorer/device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-face](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face)源码，示例如下：
      ```gr
     dependencies {
-        implementation project(':explorer-device-android:iot_face') //IoT Explorer 与 人脸识别离线交互 的依赖
+        implementation project(':explorer:explorer-device-face') //IoT Explorer 与 人脸识别离线交互 的依赖
     }
      ```
 
-Demo示例工程使用的是 依赖本地 iot_explorer 和 iot_face 的 sdk源码 构建方式。
+Demo示例工程使用的是 依赖本地 explorer-device-android 和 explorer-device-face 的 sdk源码 构建方式。
 
 ## API说明
 
-### iot_explorer SDK 设计说明
+### explorer-device-android SDK 设计说明
 
-iot_explorer 请参考 [SDK API及参数说明.md](https://github.com/tencentyun/iot-device-java/edit/master/explorer/explorer-device-android/docsSDK%20API及参数说明.md)
+explorer-device-android 请参考 [SDK API及参数说明.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs/SDK%20API及参数说明.md)
 
-### iot_face SDK 设计说明
+### explorer-device-face SDK 设计说明
 
 | 类名                     | 功能                                         |
 | ----------------------- | -------------------------------------------- |
@@ -104,7 +104,7 @@ TXFaceKitTemplate 继承自 TXDataTemplate类
 | initResource                  | 初始化人员库资源下载功能                |
 | reportCurrentResourceVersion  | 上报设备当前人员库资源版本信息到后台服务器 |
 
-### iot_face SDK 回调callback 设计说明
+### explorer-device-face SDK 回调callback 设计说明
 
 TXAuthCallBack 授权回调callback说明如下：
 
