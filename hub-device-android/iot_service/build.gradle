@@ -62,7 +62,6 @@ task androidSourcesJar(type: Jar) {
 
 def libVersion = rootProject.ext.sdk.version
 ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
-ext.isPublishing = false
 publishing {
     publications {
         aar(MavenPublication) {
@@ -98,7 +97,6 @@ publishing {
             }
 
             pom.withXml {
-                isPublishing = true
                 def dependenciesNode = asNode().appendNode('dependencies')
                 configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
                     if (dp.version != "unspecified") {
@@ -118,6 +116,10 @@ publishing {
                         }
                     }
                 }
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', "com.tencent.iot.hub")
+                dependencyNode.appendNode('artifactId', "hub-device-android-core")
+                dependencyNode.appendNode('version', "${rootProject.ext.sdk.version}")
             }
         }
     }
@@ -147,11 +149,11 @@ dependencies {
     if (findProject(':hub-device-android:iot_core') != null) {
         api project(path: ':hub-device-android:iot_core')
     }
-    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
-        if (isPublishing) {
-            implementation "com.tencent.iot.hub:hub-device-android-core:${rootProject.ext.sdk.version}"
-        }
-    }
+//    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
+//        if (isPublishing) {
+//            implementation "com.tencent.iot.hub:hub-device-android-core:${rootProject.ext.sdk.version}"
+//        }
+//    }
 }
 
 signing {
