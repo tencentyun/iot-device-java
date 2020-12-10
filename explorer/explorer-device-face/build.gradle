@@ -135,8 +135,8 @@ dependencies {
     implementation 'log4j:log4j:1.2.17'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    if (findProject(':explorer-device-android:iot_explorer') != null) {
-        api project(':explorer-device-android:iot_explorer')
+    if (findProject(':explorer:explorer-device-android') != null) {
+        api project(':explorer:explorer-device-android')
     }
     api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140'
 }
