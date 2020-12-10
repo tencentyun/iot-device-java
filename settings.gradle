@@ -1,5 +1,6 @@
+include ':hub:hub-java-demo'
 include ':explorer-device-android:iot_face'
 include ':explorer-device-java'
-include ':hub-device-java'
-include 'hub-device-android:iot_core', 'hub-device-android:iot_service', 'hub-device-android:hub-demo'
+include ':hub:hub-device-java'
+include 'hub:hub-device-android:iot_core', 'hub:hub-device-android:iot_service', 'hub:hub-android-demo'
 include 'explorer-device-android:explorer-demo', 'explorer-device-android:iot_explorer'

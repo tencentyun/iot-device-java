@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+rootProject.ext.configPath = "app-config.json"
+
 apply from: "../../parse_json.gradle"
 
 android {
@@ -62,12 +64,10 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(path: ':hub-device-java')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation project(':hub-device-android:iot_core')
-    implementation project(':hub-device-android:iot_service')
+    api project(':hub:hub-device-android:iot_service')
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
