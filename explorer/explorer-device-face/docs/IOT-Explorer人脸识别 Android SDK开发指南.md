@@ -13,7 +13,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入人脸识别离线SDK，仅需要接入iot_explorer SDK，请参考 [编译环境及SDK接入说明.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/docs/编译环境及SDK接入说明.md)
+如果不需要接入人脸识别离线SDK，仅需要接入iot_explorer SDK，请参考 [编译环境及SDK接入说明.md](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/docs编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
@@ -59,7 +59,7 @@ Demo示例工程使用的是 依赖本地 iot_explorer 和 iot_face 的 sdk源�
 
 ### iot_explorer SDK 设计说明
 
-iot_explorer 请参考 [SDK API及参数说明.md](https://github.com/tencentyun/iot-device-java/edit/master/explorer-device-android/docs/SDK%20API及参数说明.md)
+iot_explorer 请参考 [SDK API及参数说明.md](https://github.com/tencentyun/iot-device-java/edit/master/explorer/explorer-device-android/docsSDK%20API及参数说明.md)
 
 ### iot_face SDK 设计说明
 

@@ -92,7 +92,7 @@
 如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java)下载Java Sdk源码。
 
 ## 下载IoT Explorer Java-SDK Demo示例代码
-下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Explorer Java-SDK Demo示例代码在 [explorer-device-java](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-java) 的module下。
+下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Explorer Java-SDK Demo示例代码在 [explorer-device-java](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-java) 的module下。
 
 ## 设备认证说明
 
@@ -100,7 +100,7 @@ IoT Explorer物联网开发平台支持设备以密钥认证和证书认证，�
 
 #### 密钥认证接入
 
-示例中编辑 [IoTDataTemplate.java](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/test/IoTDataTemplate.java) 文件中的参数配置信息
+示例中编辑 [IoTDataTemplate.java](https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/test/IoTDataTemplate.java) 文件中的参数配置信息
 ```
 {
     private static String mProductID = "";
