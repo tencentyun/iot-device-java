@@ -109,14 +109,9 @@ dependencies {
     implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation 'net.iharder:base64:2.3.9'
     implementation 'com.google.code.gson:gson:2.8.6'
-    if (findProject(':hub-device-java') != null) {
-        api project(path: ':hub-device-java')
+    if (findProject(':hub:hub-device-java') != null) {
+        api project(path: ':hub:hub-device-java')
     }
-//    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
-//        if (isPublishing) {
-//            implementation "com.tencent.iot.hub:hub-device-java:${rootProject.ext.sdk.version}"
-//        }
-//    }
 }
 
 signing {

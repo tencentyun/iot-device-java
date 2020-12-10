@@ -1,6 +1,8 @@
-def version = "3.2.1-SNAPSHOT"
+def version = "3.2.2-SNAPSHOT"
 ext {
     sdk = [
             version: version,
     ]
+
+    configPath = ""
 }
