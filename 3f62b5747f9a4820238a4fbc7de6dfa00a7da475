@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2aff0f8f_ec983542",
+        "filename": "explorer-device-android/docs/IOT-Explorer人脸识别 Android SDK开发指南.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-10T02:51:01Z",
+      "side": 1,
+      "message": "implementation \u0027com.tencent.iot.explorer:explorer-device-face:3.2.1-SNAPSHOT\u0027",
+      "revId": "3f62b5747f9a4820238a4fbc7de6dfa00a7da475",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
