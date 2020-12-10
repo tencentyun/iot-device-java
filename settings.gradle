@@ -1,5 +1,6 @@
 include 'explorer:device-java-demo'
 include 'explorer:explorer-device-face'
+include 'explorer:explorer-device-trtc'
 include 'explorer:explorer-device-android'
 include 'explorer:device-android-demo'
 include 'explorer:explorer-device-java'
