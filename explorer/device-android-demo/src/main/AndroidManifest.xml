@@ -21,6 +21,9 @@
         <activity android:name=".IoTMainActivity"/>
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity"/>
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.trtc.TRTCMainActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.trtc.data_template.ui.videocall.TRTCVideoCallActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.trtc.data_template.ui.audiocall.TRTCAudioCallActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -29,6 +32,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 绑定设备的授权方式需要读取机器序列号 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 </manifest>
