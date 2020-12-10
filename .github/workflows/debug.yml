@@ -26,9 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          rm -rf hub/hub-android-demo/app-config.json explorer-device-android/app-config.json
+          rm -rf hub/hub-android-demo/app-config.json explorer/device-android-demo/app-config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/hub-device-android/app-config.json.asc > hub/hub-android-demo/app-config.json
-          gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/explorer-device-android/app-config.json.asc > explorer-device-android/app-config.json
+          gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/explorer-device-android/app-config.json.asc > explorer/device-android-demo/app-config.json
       - name: set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -45,7 +45,7 @@ jobs:
           path: '*-device-android/*-demo/build/outputs/apk/debug/*.apk'
       - name: Upload apks to fir
         run: |
-          expApk=$(ls explorer-device-android/explorer-demo/build/outputs/apk/debug/*.apk)
+          expApk=$(ls explorer/device-android-demo/build/outputs/apk/debug/*.apk)
           hubApk=$(ls hub/hub-android-demo/build/outputs/apk/debug/*.apk)
           
           fir publish $expApk -T $IOT_FIRIM_API_TOKEN --oversea_turbo --force_pin_history
