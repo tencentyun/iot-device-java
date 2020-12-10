@@ -16,6 +16,24 @@
       "revId": "3f62b5747f9a4820238a4fbc7de6dfa00a7da475",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "82419aa5_18606755",
+        "filename": "explorer-device-android/docs/IOT-Explorer人脸识别 Android SDK开发指南.md",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-10T02:57:48Z",
+      "side": 1,
+      "message": "已修改",
+      "parentUuid": "2aff0f8f_ec983542",
+      "revId": "3f62b5747f9a4820238a4fbc7de6dfa00a7da475",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
     }
   ]
 }
