@@ -20,9 +20,7 @@
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-android:3.2.1' //IoT Explorer Android-SDK的依赖
         implementation 'com.tencent.iot.explorer:explorer-device-android-face:3.2.1' //IoT Explorer 与 人脸识别离线交互 的依赖
-        implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140' //人脸识别离线 Android-SDK的依赖
     }
     ```
  -  gradle 工程 snapshot版SDK 远程构建
@@ -44,18 +42,14 @@
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-android:3.2.1-SNAPSHOT' //IoT Explorer Android-SDK的依赖
         implementation 'com.tencent.iot.explorer:explorer-device-android-face:3.2.1-SNAPSHOT' //IoT Explorer 与 人脸识别离线交互 的依赖
-        implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.141-SNAPSHOT' //人脸识别离线 Android-SDK的依赖
     }
     ```
  -  依赖本地sdk源码 构建
     修改应用模块的 **[build.gradle](https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/explorer-demo/build.gradle)**，使应用模块依赖 [iot_explorer](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-android/iot_explorer)源码 和 [iot_face](https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-android/iot_face)源码，示例如下：
      ```gr
     dependencies {
-        implementation project(':explorer-device-android:iot_explorer') //IoT Explorer Android-SDK的依赖
         implementation project(':explorer-device-android:iot_face') //IoT Explorer 与 人脸识别离线交互 的依赖
-        implementation 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140' //人脸识别离线 Android-SDK的依赖
     }
      ```
 
