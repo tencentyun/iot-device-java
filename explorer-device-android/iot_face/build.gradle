@@ -138,9 +138,6 @@ dependencies {
     if (findProject(':explorer-device-android:iot_explorer') != null) {
         api project(':explorer-device-android:iot_explorer')
     }
-//    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
-//        implementation "com.tencent.iot.explorer:explorer-device-android:${rootProject.ext.sdk.version}"
-//    }
     api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140'
 }
 

@@ -138,9 +138,6 @@ dependencies {
     if (findProject(':explorer-device-java') != null) {
         api project(path: ':explorer-device-java')
     }
-//    if (System.getenv("IOT_SONATYPE_USERNAME") != null) { // 正在持续集成环境
-//        implementation "com.tencent.iot.explorer:explorer-device-java:${rootProject.ext.sdk.version}"
-//    }
 }
 
 signing {

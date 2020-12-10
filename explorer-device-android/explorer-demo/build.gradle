@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+rootProject.ext.configPath = "../app-config.json"
+
 apply from: "../../parse_json.gradle"
 
 android {
