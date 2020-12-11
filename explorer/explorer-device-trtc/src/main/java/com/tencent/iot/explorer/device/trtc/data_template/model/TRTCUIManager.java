@@ -33,6 +33,10 @@ public class TRTCUIManager {
         sessionManager.joinRoom(callingType, deviceId);
     }
 
+    public void didExitRoom(Integer callingType, String deviceId) {
+        sessionManager.didExitRoom(callingType, deviceId);
+    }
+
     public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
         if (callingParamsCallback != null) {
             callingParamsCallback.joinRoom(callingType, deviceId, roomKey);

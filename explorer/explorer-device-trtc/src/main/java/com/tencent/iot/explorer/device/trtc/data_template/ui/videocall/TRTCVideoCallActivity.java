@@ -330,6 +330,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private void stopCameraAndFinish() {
         mTRTCCalling.closeCamera();
 //        mTRTCCalling.removeDelegate(mTRTCCallingDelegate);
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, "");
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();

@@ -121,6 +121,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 callMobile = true;
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL);
+                TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
             }
@@ -132,6 +133,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 callMobile = true;
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL);
+                TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
             }
