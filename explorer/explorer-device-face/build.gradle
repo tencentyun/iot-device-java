@@ -63,7 +63,7 @@ publishing {
             version libVersion
             artifact(androidSourcesJar)
             artifact(androidJavadocsJar)
-            artifact file('build/outputs/aar/iot_face-release.aar')
+            artifact file('build/outputs/aar/explorer-device-face-release.aar')
 
             pom {
                 name = 'explorer device face'
