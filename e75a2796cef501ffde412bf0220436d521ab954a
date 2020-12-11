@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ac2c063d_09c55f69",
+        "filename": "explorer/explorer-device-trtc/build.gradle",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "这三个改成api project(path: \u0027:explorer:explorer-device-android\u0027) 试试\n现在应该是可以传递依赖，不用重复依赖了",
+      "range": {
+        "startLine": 41,
+        "startChar": 2,
+        "endLine": 43,
+        "endChar": 68
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9497bfa7_19700f01",
+        "filename": "explorer/explorer-device-trtc/build.gradle",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "写成具体版本号（和link下的保持一致），之前这种写法在发release包的时候会报错",
+      "range": {
+        "startLine": 49,
+        "startChar": 54,
+        "endLine": 49,
+        "endChar": 68
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "034ca30d_e4dd14de",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "这种要不要封成常量",
+      "range": {
+        "startLine": 74,
+        "startChar": 43,
+        "endLine": 74,
+        "endChar": 65
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5c82f2f_78634bf4",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "缩进",
+      "range": {
+        "startLine": 24,
+        "startChar": 35,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3789589d_2689130a",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "缩进",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 32
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc93d893_2773ac9f",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "注释的代码 是不是可以清掉\n如果有需要就保留着",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 15
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1eb57ac3_d2def8ec",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/ui/audiocall/audiolayout/TRTCAudioLayoutManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "缩进",
+      "range": {
+        "startLine": 21,
+        "startChar": 15,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13577406_7e94bfc6",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/ui/audiocall/audiolayout/Utils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-11T06:24:55Z",
+      "side": 1,
+      "message": "缩进，下面也有",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 84
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
