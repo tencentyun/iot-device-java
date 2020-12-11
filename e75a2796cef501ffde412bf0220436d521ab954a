@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "170d1b58_2bdce6e5",
+        "filename": "explorer/explorer-device-trtc/build.gradle",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "ac2c063d_09c55f69",
+      "range": {
+        "startLine": 41,
+        "startChar": 2,
+        "endLine": 43,
+        "endChar": 68
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9497bfa7_19700f01",
         "filename": "explorer/explorer-device-trtc/build.gradle",
         "patchSetId": 4
@@ -45,6 +69,30 @@
       "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "faf0be12_70b1a74a",
+        "filename": "explorer/explorer-device-trtc/build.gradle",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "9497bfa7_19700f01",
+      "range": {
+        "startLine": 49,
+        "startChar": 54,
+        "endLine": 49,
+        "endChar": 68
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "28e5f797_5d1f1cc5",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中封了关于TRTC的部分常量，其余的公用常量看看后面单独优化一下。",
+      "parentUuid": "034ca30d_e4dd14de",
+      "range": {
+        "startLine": 74,
+        "startChar": 43,
+        "endLine": 74,
+        "endChar": 65
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5c82f2f_78634bf4",
         "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
         "patchSetId": 4
@@ -91,6 +163,30 @@
       "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e39718f4_dbefb009",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "d5c82f2f_78634bf4",
+      "range": {
+        "startLine": 24,
+        "startChar": 35,
+        "endLine": 24,
+        "endChar": 47
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "c474a592_0014da7f",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "3789589d_2689130a",
+      "range": {
+        "startLine": 28,
+        "startChar": 23,
+        "endLine": 28,
+        "endChar": 32
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dc93d893_2773ac9f",
         "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
         "patchSetId": 4
@@ -137,6 +257,30 @@
       "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "86612172_d352f008",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/impl/TRTCCallingImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中清除",
+      "parentUuid": "dc93d893_2773ac9f",
+      "range": {
+        "startLine": 52,
+        "startChar": 0,
+        "endLine": 56,
+        "endChar": 15
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "fa06b12a_7ac7feb3",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/ui/audiocall/audiolayout/TRTCAudioLayoutManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "1eb57ac3_d2def8ec",
+      "range": {
+        "startLine": 21,
+        "startChar": 15,
+        "endLine": 21,
+        "endChar": 31
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "13577406_7e94bfc6",
         "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/ui/audiocall/audiolayout/Utils.java",
         "patchSetId": 4
@@ -183,6 +351,30 @@
       "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f3dead94_d1aca532",
+        "filename": "explorer/explorer-device-trtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/ui/audiocall/audiolayout/Utils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-11T07:30:16Z",
+      "side": 1,
+      "message": "已在Patchset5中修改",
+      "parentUuid": "13577406_7e94bfc6",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 84
+      },
+      "revId": "e75a2796cef501ffde412bf0220436d521ab954a",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
