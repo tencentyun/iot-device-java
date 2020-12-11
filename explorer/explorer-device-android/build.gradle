@@ -58,7 +58,7 @@ publishing {
             version libVersion
             artifact(androidSourcesJar)
             artifact(androidJavadocsJar)
-            artifact file('build/outputs/aar/iot_explorer-release.aar')
+            artifact file('build/outputs/aar/explorer-device-android-release.aar')
 
             pom {
                 name = 'explorer device android'
