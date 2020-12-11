@@ -68,11 +68,11 @@ publishing {
             pom {
                 name = 'explorer device face'
                 description = 'Explorer Device Face library'
-                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-android'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android'
                 licenses {
                     license {
                         name = 'Tencent Binary License'
-                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/LICENSE'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/LICENSE'
                     }
                 }
                 developers {

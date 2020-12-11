@@ -16,7 +16,7 @@
 * 在控制台上创建项目产品设备，具体步骤请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
 
 ## SDK接入指南
-SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [编译环境及SDK接入说明](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer/explorer-device-android/docs/编译环境及SDK接入说明.md)
+SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [编译环境及SDK接入说明](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android/docs/编译环境及SDK接入说明.md)
 
 ## 下载IoT Explorer Android-SDK Demo示例代码
 下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Explorer Android-SDK Demo示例代码在 [device-android-demo](https://github.com/tencentyun/iot-device-java/tree/master/explorer/device-android-demo) 的module下。

@@ -63,11 +63,11 @@ publishing {
             pom {
                 name = 'explorer device android'
                 description = 'Explorer Device Android library'
-                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer-device-android'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android'
                 licenses {
                     license {
                         name = 'Tencent Binary License'
-                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer-device-android/LICENSE'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-android/LICENSE'
                     }
                 }
                 developers {
