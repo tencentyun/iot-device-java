@@ -58,8 +58,8 @@ jobs:
           path: '*-device-android/*-demo/build/outputs/apk/release/*.apk'
       - name: Upload apks to fir
         run: |
-          expApk=$(ls explorer-device-android/explorer-demo/build/outputs/apk/release/*.apk)
-          hubApk=$(ls hub-device-android/hub-demo/build/outputs/apk/release/*.apk)
+          expApk=$(ls explorer/device-android-demo/build/outputs/apk/release/*.apk)
+          hubApk=$(ls hub/hub-android-demo/build/outputs/apk/release/*.apk)
           
           fir publish $expApk -T $IOT_FIRIM_API_TOKEN --oversea_turbo --force_pin_history
           fir publish $hubApk -T $IOT_FIRIM_API_TOKEN --oversea_turbo --force_pin_history

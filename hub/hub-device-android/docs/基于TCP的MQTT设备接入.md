@@ -28,7 +28,7 @@ ${productId}/${deviceName}/event    // 发布
 [下载IoT Hub Android-SDK Demo示例代码](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
 
 #### 填写认证连接设备的参数
-编辑 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的配置信息
+编辑 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json) 文件中的配置信息
 ```
 {
   "PRODUCT_ID":        "",
@@ -44,8 +44,8 @@ ${productId}/${deviceName}/event    // 发布
 ```
 如果在控制台创建设备时使用的是密钥认证方式，需要在 app-config.json 填写 PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称）、DEVICE_PSK（设备密钥）；
 
-如果在控制台创建设备时使用的是证书认证方式，除了需要在 app-config.json 填写 PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称），DEVICE_PSK（设备密钥）设置为null之外，还需在 [IoTMqttFragment.java](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/hub-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTMqttFragment.java) 文件中配置 mDevCert（设备证书内容字符串）mDevPriv（设备私钥内容字符串）。
-或者通过 AssetManager 读取证书，具体地，在工程 hub-device-android/hub-demo/src/main 路径下创建 assets 目录并将设备证书、私钥放置在该目录中，在 [IoTMqttFragment.java](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/hub-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTMqttFragment.java) 文件中配置 mDevCertName（设备证书文件名称）和mDevKeyName（设备私钥文件名称）。
+如果在控制台创建设备时使用的是证书认证方式，除了需要在 app-config.json 填写 PRODUCT_ID（产品ID）、DEVICE_NAME（设备名称），DEVICE_PSK（设备密钥）设置为null之外，还需在 [IoTMqttFragment.java](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTMqttFragment.java) 文件中配置 mDevCert（设备证书内容字符串）mDevPriv（设备私钥内容字符串）。
+或者通过 AssetManager 读取证书，具体地，在工程 hub-android-demo/src/main 路径下创建 assets 目录并将设备证书、私钥放置在该目录中，在 [IoTMqttFragment.java](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/src/main/java/com/tencent/iot/hub/device/android/app/IoTMqttFragment.java) 文件中配置 mDevCertName（设备证书文件名称）和mDevKeyName（设备私钥文件名称）。
 ```
 private String mDevCertName = "";
 private String mDevKeyName  = "";
@@ -81,7 +81,7 @@ I/TXMQTT: onDisconnectCompleted, status[OK], userContext[MQTTRequest{requestType
 ```
 
 #### 订阅 Topic 主题
-运行示例程序前，需要把将要订阅的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
+运行示例程序前，需要把将要订阅的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
 
 运行示例程序，在基础功能模块上，点击`订阅主题`按钮，订阅 Topic 主题。示例代码如下：
 ```
@@ -109,7 +109,7 @@ D/TXMQTT: onUnSubscribeCompleted, status[OK], topics[[AP9ZLEVFKT/gateway1/data]]
 ```
 
 #### 发布 Topic 主题
-运行示例程序前，需要把将要发布的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
+运行示例程序前，需要把将要发布的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
 
 运行示例程序，在基础功能模块上，点击`发布主题`按钮，发布 Topic 主题。示例代码如下：
 ```
