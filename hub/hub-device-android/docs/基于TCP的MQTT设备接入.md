@@ -28,7 +28,7 @@ ${productId}/${deviceName}/event    // 发布
 [下载IoT Hub Android-SDK Demo示例代码](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
 
 #### 填写认证连接设备的参数
-编辑 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的配置信息
+编辑 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json) 文件中的配置信息
 ```
 {
   "PRODUCT_ID":        "",
@@ -81,7 +81,7 @@ I/TXMQTT: onDisconnectCompleted, status[OK], userContext[MQTTRequest{requestType
 ```
 
 #### 订阅 Topic 主题
-运行示例程序前，需要把将要订阅的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
+运行示例程序前，需要把将要订阅的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
 
 运行示例程序，在基础功能模块上，点击`订阅主题`按钮，订阅 Topic 主题。示例代码如下：
 ```
@@ -109,7 +109,7 @@ D/TXMQTT: onUnSubscribeCompleted, status[OK], topics[[AP9ZLEVFKT/gateway1/data]]
 ```
 
 #### 发布 Topic 主题
-运行示例程序前，需要把将要发布的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
+运行示例程序前，需要把将要发布的 Topic 主题配置在 [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/app-config.json) 文件中的TEST_TOPIC（Topic权限），Topic的生成请参考 [控制台创建设备](#控制台创建设备) 中权限的使用。
 
 运行示例程序，在基础功能模块上，点击`发布主题`按钮，发布 Topic 主题。示例代码如下：
 ```
