@@ -95,7 +95,7 @@
 
 **Java Sdk源码**
 
-如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub-device-java)下载Java Sdk源码。
+如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-java)下载Java Sdk源码。
 
 ## 下载IoT Hub Java-SDK Demo示例代码
 下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-java) 的module下。

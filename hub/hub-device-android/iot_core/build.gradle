@@ -75,11 +75,11 @@ publishing {
             pom {
                 name = 'hub device android core'
                 description = 'Hub Device Android Core library'
-                url = 'https://github.com/tencentyun/iot-device-java/tree/master/hub-device-android'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-android'
                 licenses {
                     license {
                         name = 'Tencent Binary License'
-                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/hub-device-android/LICENSE'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/LICENSE'
                     }
                 }
                 developers {
