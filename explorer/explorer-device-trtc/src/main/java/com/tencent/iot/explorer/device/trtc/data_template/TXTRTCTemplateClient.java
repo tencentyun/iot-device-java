@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCCalling;
+import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -167,5 +169,17 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         super.messageArrived(topic, message);
         mDataTemplate.onMessageArrived(topic, message);
+    }
+
+    /**
+     * mqtt连接成功
+     */
+    @Override
+    public void connectComplete(boolean reconnect, String serverURI) {
+        super.connectComplete(reconnect, serverURI);
+        if (!TRTCUIManager.getInstance().isCalling) {
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL);
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL);
+        }
     }
 }

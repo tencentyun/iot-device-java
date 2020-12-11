@@ -16,4 +16,11 @@ public class TRTCExplorerDemoSessionManager extends TRTCSessionManager {
         super.joinRoom(callingType, deviceId);
         mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, callingType);
     }
+
+    @Override
+    public void didExitRoom(Integer callingType, String deviceId) {
+        super.didExitRoom(callingType, deviceId);
+        //退出房间时需要设置callStatus为0初始状态
+        mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, callingType);
+    }
 }

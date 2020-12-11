@@ -135,6 +135,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                     if (userInfo != null) {
                         mCallUserInfoList.remove(userInfo);
                     }
+                    removeCallbackAndFinish();
                 }
             });
         }
@@ -321,7 +322,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     }
 
     private void removeCallbackAndFinish() {
-
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, "");
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();

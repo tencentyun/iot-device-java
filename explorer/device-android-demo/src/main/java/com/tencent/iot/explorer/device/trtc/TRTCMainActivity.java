@@ -121,6 +121,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 callMobile = true;
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL);
+                TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
             }
@@ -132,6 +133,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 callMobile = true;
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL);
+                TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
             }
@@ -306,8 +308,10 @@ public class TRTCMainActivity extends AppCompatActivity {
                         if (!callMobile) { //被呼叫了
                             TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                             if (mCallType == TRTCCalling.TYPE_AUDIO_CALL) {
+                                TRTCUIManager.getInstance().isCalling = true;
                                 TRTCAudioCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);
                             } else if (mCallType == TRTCCalling.TYPE_VIDEO_CALL) {
+                                TRTCUIManager.getInstance().isCalling = true;
                                 TRTCVideoCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);
                             }
                         }
@@ -367,30 +371,5 @@ public class TRTCMainActivity extends AppCompatActivity {
      */
     protected void printLogInfo(final String tag, final String logInfo, final TextView textView) {
         printLogInfo(tag, logInfo, textView, TXLog.LEVEL_DEBUG);
-    }
-
-    private void showLogoutDialog() {
-        if (mAlertDialog == null) {
-            mAlertDialog = new AlertDialog.Builder(this)
-                    .setMessage("您有一个音频/语音通话邀请")
-                    .setPositiveButton("接听", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, mCallType);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton("拒绝", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, mCallType);
-                            dialog.dismiss();
-                        }
-                    })
-                    .create();
-        }
-        if (!mAlertDialog.isShowing()) {
-            mAlertDialog.show();
-        }
     }
 }
