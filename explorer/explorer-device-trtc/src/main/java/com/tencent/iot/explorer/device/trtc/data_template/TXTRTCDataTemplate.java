@@ -122,6 +122,12 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         }
     }
 
+    /**
+     * 上报实时音视频类设备呼叫属性
+     * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
+     * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @return 结果
+     */
     public Status reportCallStatusProperty(Integer callStatus, Integer callType) {
         JSONObject property = new JSONObject();
         try {
@@ -139,7 +145,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
             return Status.ERROR;
         }
 
-        Status status = propertyReport(property, null);
+        Status status = sysPropertyReport(property, null);
         if(Status.OK != status) {
             TXLog.e(TAG, "property report failed!");
         }
@@ -152,7 +158,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
      * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
      * @return 结果
      */
-    public Status propertyReport(JSONObject property, JSONObject metadata) {
+    public Status sysPropertyReport(JSONObject property, JSONObject metadata) {
         //不检查构造是否符合json文件中的定义
 
         //构造发布信息

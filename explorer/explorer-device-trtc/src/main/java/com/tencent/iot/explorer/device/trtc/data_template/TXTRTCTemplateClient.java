@@ -40,10 +40,18 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
+    /**
+     * 是否已经连接物联网开发平台
+     */
     public boolean isConnected() {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
     }
 
+
+    /**
+     * 生成绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
     public String generalDeviceQRCodeContent() {
         // 格式为  ${product_id};${device_name};${random};${timestamp};hmacsha256;sign
 
@@ -108,6 +116,12 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
         return mDataTemplate.propertyReport(property, metadata);
     }
 
+    /**
+     * 上报实时音视频类设备呼叫属性
+     * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
+     * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @return 结果
+     */
     public Status reportCallStatusProperty(Integer callStatus, Integer callType) {
         return mDataTemplate.reportCallStatusProperty(callStatus, callType);
     }
