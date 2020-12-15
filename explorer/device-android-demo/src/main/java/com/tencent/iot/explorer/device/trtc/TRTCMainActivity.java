@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,6 +63,11 @@ public class TRTCMainActivity extends AppCompatActivity {
     private Button mAudioCallBtn;
     private Button mVideoCallBtn;
 
+    private EditText mProductIdEditText;
+    private EditText mDevNameEditText;
+    private EditText mDevPSKEditText;
+    private Button mGeneralQRCodeBtn;
+
     private TextView mLogInfoText;
 
     private AlertDialog mAlertDialog;
@@ -96,10 +102,29 @@ public class TRTCMainActivity extends AppCompatActivity {
         mVideoCallBtn = findViewById(R.id.video_call);
         mLogInfoText = findViewById(R.id.log_info);
 
+        mProductIdEditText = findViewById(R.id.et_productId);
+        mDevNameEditText = findViewById(R.id.et_deviceName);
+        mDevPSKEditText = findViewById(R.id.et_devicePsk);
+        mGeneralQRCodeBtn = findViewById(R.id.qrcode);
+
+        if (!mProductID.equals("")) {
+            mProductIdEditText.setText(mProductID);
+        }
+
+        if (!mDevName.equals("")) {
+            mDevNameEditText.setText(mDevName);
+        }
+
+        if (!mDevPSK.equals("")) {
+            mDevPSKEditText.setText(mDevPSK);
+        }
+
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (!checkInput()) {
+                    return;
+                }
                 mDataTemplateSample = new TRTCDataTemplateSample(TRTCMainActivity.this, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack(), new TRTCCallBack());
                 mDataTemplateSample.connect();
             }
@@ -140,6 +165,36 @@ public class TRTCMainActivity extends AppCompatActivity {
         });
 
         initPermission();
+    }
+
+    private boolean checkInput() {
+        String inputProductId = String.valueOf(mProductIdEditText.getText());
+        if (inputProductId.equals("")) {
+            Toast toast = Toast.makeText(getApplicationContext(), "请输入productId", Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        } else {
+            mProductID = inputProductId;
+        }
+
+        String inputDevName = String.valueOf(mDevNameEditText.getText());
+        if (inputDevName.equals("")) {
+            Toast toast = Toast.makeText(getApplicationContext(), "请输入deviceName", Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        } else {
+            mDevName = inputDevName;
+        }
+
+        String inputDevPSK = String.valueOf(mDevPSKEditText.getText());
+        if (inputDevPSK.equals("")) {
+            Toast toast = Toast.makeText(getApplicationContext(), "请输入devicePsk", Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        } else {
+            mDevPSK = inputDevPSK;
+        }
+        return true;
     }
 
     private void initPermission() {
