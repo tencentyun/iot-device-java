@@ -67,14 +67,14 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         Integer callStatus = params.getInt(PROPERTY_SYS_VIDEO_CALL_STATUS);
                         String userid = "";
                         if (params.has(PROPERTY_SYS_USERID)) {
-                            params.getString(PROPERTY_SYS_USERID);
+                            userid = params.getString(PROPERTY_SYS_USERID);
                         }
                         mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_VIDEO_CALL);
                     } else if (params.has(PROPERTY_SYS_AUDIO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(PROPERTY_SYS_AUDIO_CALL_STATUS);
                         String userid = "";
                         if (params.has(PROPERTY_SYS_USERID)) {
-                            params.getString(PROPERTY_SYS_USERID);
+                            userid = params.getString(PROPERTY_SYS_USERID);
                         }
                         mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_AUDIO_CALL);
                     }
@@ -126,17 +126,22 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
      * 上报实时音视频类设备呼叫属性
      * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @param userId 被呼叫用户id json字符串
      * @return 结果
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType) {
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId) {
         JSONObject property = new JSONObject();
         try {
             if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
                 property.put(PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
-                property.put(PROPERTY_SYS_USERID,String.format("%s/%s", mProductId, mDeviceName));
+                if (!userId.equals("")) {
+                    property.put("_sys_userid",userId);
+                }
             } else if (callType == TRTCCalling.TYPE_AUDIO_CALL) { //audio
                 property.put(PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
-                property.put(PROPERTY_SYS_USERID,String.format("%s/%s", mProductId, mDeviceName));
+                if (!userId.equals("")) {
+                    property.put("_sys_userid",userId);
+                }
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }

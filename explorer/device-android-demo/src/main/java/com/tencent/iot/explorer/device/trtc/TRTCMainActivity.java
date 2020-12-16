@@ -145,10 +145,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 callMobile = true;
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL);
+                String userId = "";
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
+                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
             }
         });
         mAudioCallBtn.setOnClickListener(new View.OnClickListener() {
@@ -157,10 +158,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 callMobile = true;
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL);
+                String userId = "";
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
+                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
             }
         });
 
