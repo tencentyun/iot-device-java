@@ -1,16 +1,12 @@
 package com.tencent.iot.explorer.device.trtc;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,12 +17,12 @@ import android.widget.Toast;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
-import com.tencent.cloud.ai.fr.utils.PermissionHandler;
 import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.trtc.adapter.UserListAdapter;
 import com.tencent.iot.explorer.device.trtc.data_template.TRTCCallStatus;
 import com.tencent.iot.explorer.device.trtc.data_template.TRTCDataTemplateSample;
 import com.tencent.iot.explorer.device.trtc.data_template.TRTCExplorerDemoSessionManager;
@@ -36,20 +32,24 @@ import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCCalling;
 import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.trtc.data_template.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.trtc.data_template.ui.videocall.TRTCVideoCallActivity;
+import com.tencent.iot.explorer.device.trtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.trtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import de.mindpipe.android.logging.log4j.LogConfigurator;
+import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
+import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
 public class TRTCMainActivity extends AppCompatActivity {
 
@@ -70,7 +70,9 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private TextView mLogInfoText;
 
-    private AlertDialog mAlertDialog;
+    private RecyclerView mRecyclerView = null;
+    private UserListAdapter mAdapter = null;
+    private ArrayList<UserEntity> mDatas = null;
 
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
@@ -98,14 +100,23 @@ public class TRTCMainActivity extends AppCompatActivity {
         mQRCodeImgView = findViewById(R.id.iv_qrcode);
         mConnectBtn = findViewById(R.id.connect);
         mCloseConnectBtn = findViewById(R.id.close_connect);
-        mAudioCallBtn = findViewById(R.id.audio_call);
-        mVideoCallBtn = findViewById(R.id.video_call);
+        mAudioCallBtn = findViewById(R.id.select_audio_call);
+        mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
 
         mProductIdEditText = findViewById(R.id.et_productId);
         mDevNameEditText = findViewById(R.id.et_deviceName);
         mDevPSKEditText = findViewById(R.id.et_devicePsk);
         mGeneralQRCodeBtn = findViewById(R.id.qrcode);
+
+        // 获取组件
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_user_list);
+
+        // 设置管理器
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+        // 如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        mRecyclerView.setHasFixedSize(true);
 
         if (!mProductID.equals("")) {
             mProductIdEditText.setText(mProductID);
@@ -145,10 +156,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 callMobile = true;
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL);
+                String userId = "";
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
+                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
             }
         });
         mAudioCallBtn.setOnClickListener(new View.OnClickListener() {
@@ -157,10 +169,26 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 callMobile = true;
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL);
+                String userId = "";
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), "");
+                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
+            }
+        });
+        mGeneralQRCodeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataTemplateSample == null)
+                    return;
+                //get status
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
+                    printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
+
+                if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false)) {
+                    printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
+                }
             }
         });
 
@@ -223,8 +251,37 @@ public class TRTCMainActivity extends AppCompatActivity {
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
             Log.d(TAG, "control down stream message received : " + msg);
-            //do something
+            //do something 如果是userlist，刷新展示用户列表
+            if (msg.has(PROPERTY_SYS_CALL_USERLIST)) {
+                try {
+                    mDatas = new ArrayList<UserEntity>();
+                    String userList = msg.getString(PROPERTY_SYS_CALL_USERLIST);
+                    JSONArray userArrayList = new JSONArray(userList);
+                    for (int i = 0; i < userArrayList.length(); i++) {
+                        JSONObject userJson = (JSONObject) userArrayList.get(i);
+                        UserEntity user = new UserEntity();
+                        if (userJson.has(PROPERTY_SYS_CALL_USERLIST_USERID)) {
+                            user.setUserid(userJson.getString(PROPERTY_SYS_CALL_USERLIST_USERID));
+                        } else {//没有获取到UserID
+                            user.setUserid("");
+                        }
+                        if (userJson.has(PROPERTY_SYS_CALL_USERLIST_NICKNAME)) {
+                            user.setUserName(userJson.getString(PROPERTY_SYS_CALL_USERLIST_NICKNAME));
+                        } else {//没有获取到NickName
+                            user.setUserName("");
+                        }
+                        mDatas.add(user);
+                    }
 
+                    // 设置适配器，刷新展示用户列表
+                    mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                    mRecyclerView.setAdapter(mAdapter);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
             //output
             try {
                 JSONObject result = new JSONObject();
