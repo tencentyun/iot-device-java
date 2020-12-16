@@ -7,7 +7,7 @@ public interface TXTRTCDataTemplateConstants {
      */
     String PROPERTY_SYS_VIDEO_CALL_STATUS = "_sys_video_call_status";
     String PROPERTY_SYS_AUDIO_CALL_STATUS = "_sys_audio_call_status";
-    String PROPERTY_SYS_USERID = "_sys_userid";
+    String PROPERTY_SYS_USERID = "userid";
 
     /**
      * sys action
