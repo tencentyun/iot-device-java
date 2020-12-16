@@ -330,7 +330,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private void stopCameraAndFinish() {
         mTRTCCalling.closeCamera();
 //        mTRTCCalling.removeDelegate(mTRTCCallingDelegate);
-        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, "");
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();
@@ -384,9 +384,9 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         //自己的资料
 //        mSelfModel = (UserInfo) intent.getSerializableExtra(PARAM_SELF_INFO);
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
+        mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
-            mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
             IntentParams params = (IntentParams) intent.getSerializableExtra(PARAM_OTHER_INVITING_USER);
             if (params != null) {
                 mOtherInvitingUserInfoList = params.mUserInfos;

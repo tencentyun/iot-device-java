@@ -82,6 +82,7 @@ dependencies {
     implementation project(':explorer:explorer-device-trtc')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    api 'com.android.support:recyclerview-v7:26.0.0'
     testImplementation 'junit:junit:4.13'
     implementation 'log4j:log4j:1.2.17'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
