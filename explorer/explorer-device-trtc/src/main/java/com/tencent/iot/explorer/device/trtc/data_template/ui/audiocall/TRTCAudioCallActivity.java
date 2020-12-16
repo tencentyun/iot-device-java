@@ -322,7 +322,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     }
 
     private void removeCallbackAndFinish() {
-        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, "");
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();
