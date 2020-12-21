@@ -33,7 +33,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
 
     private TXTRTCCallBack mTrtcCallBack = null;
     private static AtomicInteger requestID = new AtomicInteger(0);
-    private String mUserId = "";
+    private boolean mIsBusy = false; //trtc设备是否空闲
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
@@ -47,7 +47,6 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack);
         this.mConnection = connection;
         this.mTrtcCallBack = trtcCallBack;
-        this.mUserId = productId + "/"  + deviceName;
     }
 
     /**
@@ -69,14 +68,20 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(PROPERTY_SYS_USERID)) {
                             userid = params.getString(PROPERTY_SYS_USERID);
                         }
-                        mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_VIDEO_CALL);
+                        if (!mIsBusy) {
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_VIDEO_CALL);
+                        }
+                        mIsBusy = true;
                     } else if (params.has(PROPERTY_SYS_AUDIO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(PROPERTY_SYS_AUDIO_CALL_STATUS);
                         String userid = "";
                         if (params.has(PROPERTY_SYS_USERID)) {
                             userid = params.getString(PROPERTY_SYS_USERID);
                         }
-                        mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_AUDIO_CALL);
+                        if (!mIsBusy) {
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_AUDIO_CALL);
+                        }
+                        mIsBusy = true;
                     }
                 }
             }
@@ -132,6 +137,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
     public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId) {
         JSONObject property = new JSONObject();
         try {
+            mIsBusy = callStatus != 0;
             if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
                 property.put(PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
