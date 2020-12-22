@@ -306,6 +306,11 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 mTRTCCalling.enterTRTCRoom(roomKey);
                 showCallingView();
             }
+
+            @Override
+            public void refuseEnterRoom() {
+                removeCallbackAndFinish();
+            }
         });
 
         initView();

@@ -312,6 +312,11 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 startInviting(roomKey);
                 showCallingView();
             }
+
+            @Override
+            public void refuseEnterRoom() {
+                stopCameraAndFinish();
+            }
         });
 
         initView();
