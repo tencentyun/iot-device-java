@@ -42,4 +42,10 @@ public class TRTCUIManager {
             callingParamsCallback.joinRoom(callingType, deviceId, roomKey);
         }
     }
+
+    public void refuseEnterRoom() {
+        if (callingParamsCallback != null) {
+            callingParamsCallback.refuseEnterRoom();
+        }
+    }
 }
