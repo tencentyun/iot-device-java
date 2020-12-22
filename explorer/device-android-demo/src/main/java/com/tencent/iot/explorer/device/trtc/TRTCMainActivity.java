@@ -46,6 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
 import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
@@ -429,6 +431,23 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                     }
                 });
+            } else if (callStatus == 0) { //被拒绝了
+                callMobile = false;
+                if (TRTCUIManager.getInstance().isCalling) { //当前正显示音视频通话页面，finish掉
+                    TimerTask task = new TimerTask(){
+                        public void run(){
+                            TRTCUIManager.getInstance().refuseEnterRoom();
+                        }
+                    };
+                    Timer timer = new Timer();
+                    timer.schedule(task, 500);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "对方正忙...", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
         }
 

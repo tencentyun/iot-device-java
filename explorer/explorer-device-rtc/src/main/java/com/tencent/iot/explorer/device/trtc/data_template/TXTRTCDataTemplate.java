@@ -68,20 +68,28 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(PROPERTY_SYS_USERID)) {
                             userid = params.getString(PROPERTY_SYS_USERID);
                         }
-                        if (!mIsBusy) {
+                        if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_VIDEO_CALL);
                         }
-                        mIsBusy = true;
+                        if (callStatus == 0) {
+                            mIsBusy = false;
+                        } else {
+                            mIsBusy = true;
+                        }
                     } else if (params.has(PROPERTY_SYS_AUDIO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(PROPERTY_SYS_AUDIO_CALL_STATUS);
                         String userid = "";
                         if (params.has(PROPERTY_SYS_USERID)) {
                             userid = params.getString(PROPERTY_SYS_USERID);
                         }
-                        if (!mIsBusy) {
+                        if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_AUDIO_CALL);
                         }
-                        mIsBusy = true;
+                        if (callStatus == 0) {
+                            mIsBusy = false;
+                        } else {
+                            mIsBusy = true;
+                        }
                     }
                 }
             }
