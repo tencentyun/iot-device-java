@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12f48d0f_99ac46c4",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/TRTCUIManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-23T02:18:14Z",
+      "side": 1,
+      "message": "这两个注释一样吗？",
+      "range": {
+        "startLine": 13,
+        "startChar": 39,
+        "endLine": 15,
+        "endChar": 54
+      },
+      "revId": "c721e89bdfcea469d9b0deb7817979a834d01355",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
