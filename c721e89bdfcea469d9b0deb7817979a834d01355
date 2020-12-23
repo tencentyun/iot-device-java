@@ -22,6 +22,30 @@
       "revId": "c721e89bdfcea469d9b0deb7817979a834d01355",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f027d05c_1a7d9580",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/model/TRTCUIManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-23T02:21:42Z",
+      "side": 1,
+      "message": "不是一样的，enterRoom是标识自己是否已经进入了房间，otherEnterRoom是用来标识被叫的那个人是否进入了房间。我另外再提交change的时候修改下。",
+      "parentUuid": "12f48d0f_99ac46c4",
+      "range": {
+        "startLine": 13,
+        "startChar": 39,
+        "endLine": 15,
+        "endChar": 54
+      },
+      "revId": "c721e89bdfcea469d9b0deb7817979a834d01355",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
