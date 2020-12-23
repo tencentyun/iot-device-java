@@ -87,7 +87,6 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private Integer mCallType = TRTCCalling.TYPE_UNKNOWN;
     private String mUserId = "";
-    private boolean callMobile = false;
 
     private final static String mJsonFileName = "TRTC_watch.json";
 
@@ -157,7 +156,7 @@ public class TRTCMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
-                callMobile = true;
+                TRTCUIManager.getInstance().callMobile = true;
                 String userId = "";
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
@@ -170,7 +169,7 @@ public class TRTCMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
-                callMobile = true;
+                TRTCUIManager.getInstance().callMobile = true;
                 String userId = "";
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
@@ -419,7 +418,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (!callMobile) { //被呼叫了
+                        if (!TRTCUIManager.getInstance().callMobile && !TRTCUIManager.getInstance().isCalling) { //被呼叫了
                             TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                             if (mCallType == TRTCCalling.TYPE_AUDIO_CALL) {
                                 TRTCUIManager.getInstance().isCalling = true;
@@ -432,7 +431,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     }
                 });
             } else if (callStatus == 0) { //被拒绝了
-                callMobile = false;
+                TRTCUIManager.getInstance().callMobile = false;
                 if (TRTCUIManager.getInstance().isCalling) { //当前正显示音视频通话页面，finish掉
                     TimerTask task = new TimerTask(){
                         public void run(){
@@ -457,7 +456,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     TRTCUIManager.getInstance().joinRoom(mCallType, "", room);
-                    callMobile = false;
+                    TRTCUIManager.getInstance().callMobile = false;
                 }
             });
         }
