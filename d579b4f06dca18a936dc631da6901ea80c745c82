@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1ccb8b3c_6179bd24",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2020-12-23T02:12:30Z",
+      "side": 1,
+      "message": "这块可以移到if里面，不过不移也就多敷了一次值，可以不改",
+      "range": {
+        "startLine": 74,
+        "startChar": 24,
+        "endLine": 74,
+        "endChar": 39
+      },
+      "revId": "d579b4f06dca18a936dc631da6901ea80c745c82",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
