@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tencent.iot.explorer.device.trtc.TRTCMainActivity">
+    tools:context="com.tencent.iot.explorer.device.rtc.TRTCMainActivity">
 
 
 

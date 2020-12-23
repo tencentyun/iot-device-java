@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tencent.iot.explorer.device.face.AuthActivity;
-import com.tencent.iot.explorer.device.trtc.TRTCMainActivity;
+import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
 
 public class IoTDemoActivity extends AppCompatActivity {
 
