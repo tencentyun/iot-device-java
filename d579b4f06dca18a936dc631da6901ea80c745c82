@@ -22,6 +22,30 @@
       "revId": "d579b4f06dca18a936dc631da6901ea80c745c82",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1ace4371_06a3a9e3",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/trtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2020-12-23T02:17:28Z",
+      "side": 1,
+      "message": "好的，另提交个change修改下。",
+      "parentUuid": "1ccb8b3c_6179bd24",
+      "range": {
+        "startLine": 74,
+        "startChar": 24,
+        "endLine": 74,
+        "endChar": 39
+      },
+      "revId": "d579b4f06dca18a936dc631da6901ea80c745c82",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
