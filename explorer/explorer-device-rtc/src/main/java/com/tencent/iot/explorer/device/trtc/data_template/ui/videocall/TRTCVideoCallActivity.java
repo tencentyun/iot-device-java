@@ -389,6 +389,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().enterRoom = false;
         TRTCUIManager.getInstance().otherEnterRoom = false;
+        TRTCUIManager.getInstance().callMobile = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();
         if (otherEnterRoomTask != null) {
             otherEnterRoomTask.cancel();
