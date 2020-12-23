@@ -7,6 +7,8 @@ import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
+import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCTemplateClient;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;

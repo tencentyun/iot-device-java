@@ -23,15 +23,15 @@ import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.trtc.adapter.UserListAdapter;
-import com.tencent.iot.explorer.device.trtc.data_template.TRTCCallStatus;
+import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
 import com.tencent.iot.explorer.device.trtc.data_template.TRTCDataTemplateSample;
 import com.tencent.iot.explorer.device.trtc.data_template.TRTCExplorerDemoSessionManager;
-import com.tencent.iot.explorer.device.trtc.data_template.TXTRTCCallBack;
-import com.tencent.iot.explorer.device.trtc.data_template.model.RoomKey;
-import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCCalling;
-import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCUIManager;
-import com.tencent.iot.explorer.device.trtc.data_template.ui.audiocall.TRTCAudioCallActivity;
-import com.tencent.iot.explorer.device.trtc.data_template.ui.videocall.TRTCVideoCallActivity;
+import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
+import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
+import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
+import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
+import com.tencent.iot.explorer.device.rtc.data_template.ui.audiocall.TRTCAudioCallActivity;
+import com.tencent.iot.explorer.device.rtc.data_template.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.iot.explorer.device.trtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.trtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -49,9 +49,9 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
-import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
-import static com.tencent.iot.explorer.device.trtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
 public class TRTCMainActivity extends AppCompatActivity {
 

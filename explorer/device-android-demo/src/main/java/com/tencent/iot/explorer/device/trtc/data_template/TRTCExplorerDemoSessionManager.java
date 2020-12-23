@@ -1,6 +1,7 @@
 package com.tencent.iot.explorer.device.trtc.data_template;
 
-import com.tencent.iot.explorer.device.trtc.data_template.model.TRTCSessionManager;
+import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
+import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCSessionManager;
 
 public class TRTCExplorerDemoSessionManager extends TRTCSessionManager {
 
