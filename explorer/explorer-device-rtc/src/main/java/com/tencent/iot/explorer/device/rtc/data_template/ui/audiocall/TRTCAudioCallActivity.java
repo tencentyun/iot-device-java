@@ -113,7 +113,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     showCallingView();
-                    TRTCUIManager.getInstance().otherEnterRoom = true;
+                    removeOtherIsEnterRoom15secondsTask();
                     TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(userId);
                     if (layout != null) {
                         layout.stopLoading();
@@ -296,37 +296,49 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private void checkoutOtherIsEnterRoom15seconds() {
         otherEnterRoomTask = new TimerTask(){
             public void run(){
-                if (!TRTCUIManager.getInstance().otherEnterRoom) { //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
-                            removeCallbackAndFinish();
-                        }
-                    });
-                }
+                //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消timertask
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
+                        removeCallbackAndFinish();
+                    }
+                });
             }
         };
         Timer timer = new Timer();
         timer.schedule(otherEnterRoomTask, 15000);
     }
 
+    private void removeOtherIsEnterRoom15secondsTask() {
+        if (otherEnterRoomTask != null) {
+            otherEnterRoomTask.cancel();
+            otherEnterRoomTask = null;
+        }
+    }
+
     private void checkoutIsEnterRoom60seconds() {
         enterRoomTask = new TimerTask(){
             public void run(){
-                if (!TRTCUIManager.getInstance().enterRoom) { //呼叫了60秒，对方未接听 显示对方无人接听，并退出
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "对方无人接听", Toast.LENGTH_LONG).show();
-                            removeCallbackAndFinish();
-                        }
-                    });
-                }
+                //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "对方无人接听", Toast.LENGTH_LONG).show();
+                        removeCallbackAndFinish();
+                    }
+                });
             }
         };
         Timer timer = new Timer();
         timer.schedule(enterRoomTask, 60000);
+    }
+
+    private void removeIsEnterRoom60secondsTask() {
+        if (enterRoomTask != null) {
+            enterRoomTask.cancel();
+            enterRoomTask = null;
+        }
     }
 
     @Override
@@ -348,7 +360,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 //                mTRTCCalling.accept();
                 mTRTCCalling.enterTRTCRoom(roomKey);
                 if (roomKey != null) {
-                    TRTCUIManager.getInstance().enterRoom = true;
+                    removeIsEnterRoom60secondsTask();
                 }
                 showCallingView();
                 checkoutOtherIsEnterRoom15seconds();
@@ -379,18 +391,10 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
         finish();
         TRTCUIManager.getInstance().isCalling = false;
-        TRTCUIManager.getInstance().enterRoom = false;
-        TRTCUIManager.getInstance().otherEnterRoom = false;
         TRTCUIManager.getInstance().callMobile = false;
         TRTCUIManager.getInstance().removeCallingParamsCallback();
-        if (otherEnterRoomTask != null) {
-            otherEnterRoomTask.cancel();
-            otherEnterRoomTask = null;
-        }
-        if (enterRoomTask != null) {
-            enterRoomTask.cancel();
-            enterRoomTask = null;
-        }
+        removeIsEnterRoom60secondsTask();
+        removeOtherIsEnterRoom15secondsTask();
     }
 
     @Override

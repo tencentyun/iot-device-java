@@ -12,10 +12,6 @@ public class TRTCUIManager {
 
     public Boolean callMobile = false;  //主动呼叫手机
 
-    public Boolean enterRoom = false;  //对方进入房间标识
-
-    public Boolean otherEnterRoom = false;  //对方进入房间标识
-
     public synchronized static TRTCUIManager getInstance() {
         if (instance == null) {
             instance = new TRTCUIManager();
