@@ -23,4 +23,10 @@ public class TRTCExplorerDemoSessionManager extends TRTCSessionManager {
         //退出房间时需要设置callStatus为0初始状态
         mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, callingType, deviceId);
     }
+
+    @Override
+    public void startOnThePhone(Integer callingType, String deviceId) {
+        super.startOnThePhone(callingType, deviceId);
+        mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_ON_THE_PHONE, callingType, deviceId);
+    }
 }
