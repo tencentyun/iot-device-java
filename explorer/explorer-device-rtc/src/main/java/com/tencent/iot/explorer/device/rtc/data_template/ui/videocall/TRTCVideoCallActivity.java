@@ -364,6 +364,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 //2.接听电话
 //                mTRTCCalling.accept();
 //                mTRTCCalling.enterTRTCRoom();
+                TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 startInviting(roomKey);
                 if (roomKey != null) {
                     removeIsEnterRoom60secondsTask();
@@ -400,6 +401,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().callMobile = false;
+        TRTCUIManager.getInstance().callingUserId = "";
         TRTCUIManager.getInstance().removeCallingParamsCallback();
         removeIsEnterRoom60secondsTask();
         removeOtherIsEnterRoom15secondsTask();
