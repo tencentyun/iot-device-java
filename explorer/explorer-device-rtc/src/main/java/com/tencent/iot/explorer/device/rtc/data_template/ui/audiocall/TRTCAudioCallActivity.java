@@ -114,6 +114,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
                     TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(userId);
                     if (layout != null) {
                         layout.stopLoading();

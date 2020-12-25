@@ -39,6 +39,10 @@ public class TRTCUIManager {
         sessionManager.didExitRoom(callingType, deviceId);
     }
 
+    public void startOnThePhone(Integer callingType, String deviceId) {
+        sessionManager.startOnThePhone(callingType, deviceId);
+    }
+
     public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
         if (callingParamsCallback != null) {
             callingParamsCallback.joinRoom(callingType, deviceId, roomKey);

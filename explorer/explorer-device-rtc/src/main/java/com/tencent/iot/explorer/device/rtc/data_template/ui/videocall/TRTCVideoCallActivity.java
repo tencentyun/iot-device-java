@@ -118,6 +118,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
                     //1.先造一个虚拟的用户添加到屏幕上
                     UserInfo model = new UserInfo();
                     model.setUserId(userId);
