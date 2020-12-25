@@ -12,6 +12,8 @@ public class TRTCUIManager {
 
     public Boolean callMobile = false;  //主动呼叫手机
 
+    public String callingUserId = "";  //应用端userid
+
     public synchronized static TRTCUIManager getInstance() {
         if (instance == null) {
             instance = new TRTCUIManager();

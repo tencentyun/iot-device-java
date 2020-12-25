@@ -118,6 +118,10 @@ public class TRTCMainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         // 如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
+        mDatas = new ArrayList<UserEntity>();
+        // 设置适配器，刷新展示用户列表
+        mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+        mRecyclerView.setAdapter(mAdapter);
 
         if (!mProductID.equals("")) {
             mProductIdEditText.setText(mProductID);
@@ -157,7 +161,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
-                String userId = "";
+                String userId = selectedUserIds();
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
@@ -170,7 +174,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
-                String userId = "";
+                String userId = selectedUserIds();
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
@@ -180,20 +184,25 @@ public class TRTCMainActivity extends AppCompatActivity {
         mGeneralQRCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDataTemplateSample == null)
-                    return;
-                //get status
-                if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
-                    printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
-                }
 
-                if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false)) {
-                    printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
-                }
             }
         });
 
         initPermission();
+    }
+
+    private String selectedUserIds() {
+        String userIds = "";
+        for (int i = 0; i < mDatas.size(); i++) {
+            UserEntity user = mDatas.get(i);
+            if (user.getIsSelect()) { //被勾选将要发起通话请求
+                userIds = userIds + user.getUserid() + ";";
+            }
+        }
+        if (userIds.length() > 0) {
+             userIds = userIds.substring(0, userIds.length() - 1);
+        }
+        return userIds;
     }
 
     private boolean checkInput() {
@@ -247,6 +256,41 @@ public class TRTCMainActivity extends AppCompatActivity {
         public void onGetStatusReplyCallBack(JSONObject data) {
             //可根据自己需求进行处理状态和控制信息的获取结果
             Log.d(TAG, "event down stream message received : " + data);
+            //do something 如果是userlist，刷新展示用户列表
+            try {
+                JSONObject property = data.getJSONObject("reported");
+                if (property.has(PROPERTY_SYS_CALL_USERLIST)) {
+                    mDatas = new ArrayList<UserEntity>();
+                    String userList = property.getString(PROPERTY_SYS_CALL_USERLIST);
+                    JSONArray userArrayList = new JSONArray(userList);
+                    for (int i = 0; i < userArrayList.length(); i++) {
+                        JSONObject userJson = (JSONObject) userArrayList.get(i);
+                        UserEntity user = new UserEntity();
+                        if (userJson.has(PROPERTY_SYS_CALL_USERLIST_USERID)) {
+                            user.setUserid(userJson.getString(PROPERTY_SYS_CALL_USERLIST_USERID));
+                        } else {//没有获取到UserID
+                            user.setUserid("");
+                        }
+                        if (userJson.has(PROPERTY_SYS_CALL_USERLIST_NICKNAME)) {
+                            user.setUserName(userJson.getString(PROPERTY_SYS_CALL_USERLIST_NICKNAME));
+                        } else {//没有获取到NickName
+                            user.setUserName("");
+                        }
+                        mDatas.add(user);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 设置适配器，刷新展示用户列表
+                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                            mRecyclerView.setAdapter(mAdapter);
+                        }
+                    });
+
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -273,10 +317,14 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                         mDatas.add(user);
                     }
-
-                    // 设置适配器，刷新展示用户列表
-                    mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
-                    mRecyclerView.setAdapter(mAdapter);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 设置适配器，刷新展示用户列表
+                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                            mRecyclerView.setAdapter(mAdapter);
+                        }
+                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -387,6 +435,10 @@ public class TRTCMainActivity extends AppCompatActivity {
                 printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_ERROR);
             } else {
                 printLogInfo(TAG, logInfo, mLogInfoText);
+            }
+            //get status
+            if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
+                printLogInfo(TAG, "property get status failed!", mLogInfoText, TXLog.LEVEL_ERROR);
             }
         }
 

@@ -8,6 +8,7 @@ import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
+import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
@@ -87,6 +88,12 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         } else {
                             mIsBusy = true;
                         }
+                    } else if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST)) {
+                        //上报下接收到的userlist
+                        Status status = sysPropertyReport(params, null);
+                        if(Status.OK != status) {
+                            TXLog.e(TAG, "property report failed!");
+                        }
                     }
                 }
             }
@@ -122,7 +129,9 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         room.setUserSig(UserSig);
                         room.setRoomId(StrRoomId);
                         room.setCallType(TRTCCalling.TYPE_VIDEO_CALL);
-                        mTrtcCallBack.trtcJoinRoomCallBack(room);
+                        if (TRTCUIManager.getInstance().callingUserId == "") {
+                            mTrtcCallBack.trtcJoinRoomCallBack(room);
+                        }
                     }
                 }
             }

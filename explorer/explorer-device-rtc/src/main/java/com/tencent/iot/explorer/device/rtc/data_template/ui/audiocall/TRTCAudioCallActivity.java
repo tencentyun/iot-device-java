@@ -359,6 +359,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 addUserToManager(mSelfModel);
                 //2.接听电话
 //                mTRTCCalling.accept();
+                TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 mTRTCCalling.enterTRTCRoom(roomKey);
                 if (roomKey != null) {
                     removeIsEnterRoom60secondsTask();
@@ -393,6 +394,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().callMobile = false;
+        TRTCUIManager.getInstance().callingUserId = "";
         TRTCUIManager.getInstance().removeCallingParamsCallback();
         removeIsEnterRoom60secondsTask();
         removeOtherIsEnterRoom15secondsTask();
