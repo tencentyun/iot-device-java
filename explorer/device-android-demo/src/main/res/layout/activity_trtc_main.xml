@@ -26,10 +26,18 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/et_productId"
+                android:id="@+id/et_broker_url"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="10dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:hint="私有化请输入BrokerURL" />
+
+            <EditText
+                android:id="@+id/et_productId"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:inputType="text"
                 android:textSize="16sp"
                 android:hint="请输入productId" />

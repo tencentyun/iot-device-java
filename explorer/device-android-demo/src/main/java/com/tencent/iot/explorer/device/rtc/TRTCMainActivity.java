@@ -65,6 +65,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private Button mAudioCallBtn;
     private Button mVideoCallBtn;
 
+    private EditText mBrokerURLEditText;
     private EditText mProductIdEditText;
     private EditText mDevNameEditText;
     private EditText mDevPSKEditText;
@@ -105,6 +106,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
 
+        mBrokerURLEditText = findViewById(R.id.et_broker_url);
         mProductIdEditText = findViewById(R.id.et_productId);
         mDevNameEditText = findViewById(R.id.et_deviceName);
         mDevPSKEditText = findViewById(R.id.et_devicePsk);
@@ -206,6 +208,12 @@ public class TRTCMainActivity extends AppCompatActivity {
     }
 
     private boolean checkInput() {
+        String inputBrokerURL = String.valueOf(mBrokerURLEditText.getText());
+        if (inputBrokerURL.equals("")) {
+        } else {
+            mBrokerURL = inputBrokerURL;
+        }
+
         String inputProductId = String.valueOf(mProductIdEditText.getText());
         if (inputProductId.equals("")) {
             Toast toast = Toast.makeText(getApplicationContext(), "请输入productId", Toast.LENGTH_LONG);
