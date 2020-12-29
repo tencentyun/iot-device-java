@@ -143,6 +143,9 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (!checkInput()) {
                     return;
                 }
+                if (mDataTemplateSample != null) {
+                    return;
+                }
                 mDataTemplateSample = new TRTCDataTemplateSample(TRTCMainActivity.this, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack(), new TRTCCallBack());
                 mDataTemplateSample.connect();
             }
@@ -154,6 +157,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (mDataTemplateSample == null)
                     return;
                 mDataTemplateSample.disconnect();
+                mDataTemplateSample = null;
             }
         });
 

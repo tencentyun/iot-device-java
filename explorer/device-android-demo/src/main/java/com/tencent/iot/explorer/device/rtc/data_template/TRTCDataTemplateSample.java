@@ -121,6 +121,13 @@ public class TRTCDataTemplateSample {
     }
 
     /**
+     * 是否已经连接物联网开发平台
+     */
+    public boolean isConnected() {
+        return mMqttConnection.isConnected();
+    }
+
+    /**
      * 断开MQTT连接
      */
     public void disconnect() {
