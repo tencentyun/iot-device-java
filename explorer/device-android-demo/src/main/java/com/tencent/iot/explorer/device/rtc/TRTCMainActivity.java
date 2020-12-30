@@ -402,9 +402,18 @@ public class TRTCMainActivity extends AppCompatActivity {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
-            mDataTemplateSample.subscribeTopic();
-            if (!reconnect) {
-                mQRCodeImgView.setImageBitmap(ZXingUtils.createQRCodeBitmap(mDataTemplateSample.generalDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE));
+            if (mDataTemplateSample != null) {
+                if (!reconnect) {
+                    mDataTemplateSample.subscribeTopic();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // 设置适配器，刷新展示用户列表
+                            mQRCodeImgView.setImageBitmap(ZXingUtils.createQRCodeBitmap(mDataTemplateSample.generalDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE));
+                        }
+                    });
+                }
             }
         }
 
@@ -524,6 +533,15 @@ public class TRTCMainActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mDataTemplateSample != null) {
+            mDataTemplateSample.disconnect();
+        }
+        mDataTemplateSample = null;
+        super.onDestroy();
     }
 
     /**
