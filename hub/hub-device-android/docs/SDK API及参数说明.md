@@ -7,7 +7,7 @@
 ## API 接口说明
 
 ### MQTT 接口
-MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java)类中，支持发布和订阅等功能，TXMqttConnection类的接口介绍如下：
+MQTT的相关接口定义在[TXMqttConnection](../../hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java)类中，支持发布和订阅等功能，TXMqttConnection类的接口介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |
@@ -28,7 +28,7 @@ MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot
 | subscribeBroadcastTopic            | 订阅广播主题                                      |
 
 ### MQTT 网关接口
-对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入腾讯云物联网通信IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。 MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java)类中，介绍如下：
+对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入腾讯云物联网通信IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。 MQTT网关的相关接口定义在[TXGatewayConnection](../../hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java)类中，介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |
@@ -49,7 +49,7 @@ MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot
 | getGatewaySubdevRealtion           | 查询设备拓扑关系                                   |
 
 ### 设备影子接口
-如果需要支持设备影子功能，需使用[TXShadowConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java)类中的方法，介绍如下：
+如果需要支持设备影子功能，需使用[TXShadowConnection](../../hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java)类中的方法，介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |
@@ -67,13 +67,13 @@ MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot
 | unRegisterProperty                 | 取消注册当前设备的指定属性                           |
 
 ### 动态注册接口
-如果需要支持动态注册功能，需使用[TXMqttDynreg](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynreg.java)类中的方法，介绍如下：
+如果需要支持动态注册功能，需使用[TXMqttDynreg](../../hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynreg.java)类中的方法，介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |
 | doDynamicRegister                  | 动态注册接口                                      |
 
-[TXMqttDynregCallback](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynregCallback.java)为动态注册回调接口，介绍如下：
+[TXMqttDynregCallback](../../hub-device-android/iot_core/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynregCallback.java)为动态注册回调接口，介绍如下：
 
 | 方法名                              | 说明                                                 |
 | ---------------------------------- | ----------------------------------------------------|
