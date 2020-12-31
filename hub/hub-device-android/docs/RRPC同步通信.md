@@ -24,8 +24,9 @@
 
 步骤一：在设备中订阅 RRPC 消息 Topic
 
-请先按照 [基于TCP的MQTT设备接入](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤，将设备 连接MQTT 进行认证接入。
+请先按照 [基于TCP的MQTT设备接入](../../hub-device-android/docs/基于TCP的MQTT设备接入.md) 的步骤，将设备 连接MQTT 进行认证接入。
 运行示例程序，在基础功能模块上，点击`订阅RRPC主题`按钮，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
+
 ```
 mMQTTSample.subscribeRRPCTopic(); //订阅RRPC消息Topic
 ```

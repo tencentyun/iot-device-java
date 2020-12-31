@@ -6,11 +6,11 @@
 
 #### 物联网通信有示例Demo吗
 
-Android的示例Demo在github仓库中 [hub-demo对应的App模块](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-android-demo)。
+Android的示例Demo在github仓库中 [hub-demo对应的App模块](../../hub-android-demo)。
 
 #### Android的示例Demo中PRODUCT_ID，DEVICE_NAME，DEVICE_PSK需要填什么？
 
-PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TCP的MQTT设备接入介绍填写认证连接设备的参数部分](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/基于TCP的MQTT设备接入.md#填写认证连接设备的参数)
+PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TCP的MQTT设备接入介绍填写认证连接设备的参数部分](../../hub-device-android/docs/基于TCP的MQTT设备接入.md#填写认证连接设备的参数)
 
 #### android的SDK中使用抛出javax.net.ssl.SSLHandshakeException异常，如何解决？
 
