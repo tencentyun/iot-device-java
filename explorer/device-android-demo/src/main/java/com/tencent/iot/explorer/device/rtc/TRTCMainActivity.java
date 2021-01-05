@@ -87,7 +87,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private String mDevPriv = "";           // Priv String
 
     private Integer mCallType = TRTCCalling.TYPE_UNKNOWN;
-    private String mUserId = "";
+    private Integer mCallMobileNumber = 0;
 
     private final static String mJsonFileName = "TRTC_watch.json";
 
@@ -199,14 +199,21 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private String selectedUserIds() {
         String userIds = "";
+        Integer callMobileNumber = 0;
         for (int i = 0; i < mDatas.size(); i++) {
             UserEntity user = mDatas.get(i);
             if (user.getIsSelect()) { //被勾选将要发起通话请求
                 userIds = userIds + user.getUserid() + ";";
+                callMobileNumber++;
             }
         }
         if (userIds.length() > 0) {
              userIds = userIds.substring(0, userIds.length() - 1);
+        }
+        if (callMobileNumber == 0) {
+            mCallMobileNumber = mDatas.size();
+        } else {
+            mCallMobileNumber = callMobileNumber;
         }
         return userIds;
     }
@@ -487,7 +494,6 @@ public class TRTCMainActivity extends AppCompatActivity {
         public void onGetCallStatusCallBack(Integer callStatus, final String userid, Integer callType) {
             if (callStatus == 1) { //表示被呼叫了
                 mCallType = callType;
-                mUserId = userid;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -504,21 +510,26 @@ public class TRTCMainActivity extends AppCompatActivity {
                     }
                 });
             } else if (callStatus == 0) { //被拒绝了
-                TRTCUIManager.getInstance().callMobile = false;
-                if (TRTCUIManager.getInstance().isCalling) { //当前正显示音视频通话页面，finish掉
-                    TimerTask task = new TimerTask(){
-                        public void run(){
-                            TRTCUIManager.getInstance().refuseEnterRoom();
-                        }
-                    };
-                    Timer timer = new Timer();
-                    timer.schedule(task, 500);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "对方正忙...", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                if (mCallMobileNumber > 0) {
+                    mCallMobileNumber--;
+                }
+                if (mCallMobileNumber == 0) {
+                    TRTCUIManager.getInstance().callMobile = false;
+                    if (TRTCUIManager.getInstance().isCalling) { //当前正显示音视频通话页面，finish掉
+                        TimerTask task = new TimerTask(){
+                            public void run(){
+                                TRTCUIManager.getInstance().refuseEnterRoom();
+                            }
+                        };
+                        Timer timer = new Timer();
+                        timer.schedule(task, 500);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), "对方正忙...", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
                 }
             }
         }
