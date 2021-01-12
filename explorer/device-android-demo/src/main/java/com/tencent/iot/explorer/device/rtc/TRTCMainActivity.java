@@ -1,5 +1,7 @@
 package com.tencent.iot.explorer.device.rtc;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -93,6 +95,11 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSTION = 1;
 
+    private final static String BROKER_URL = "broker_url";
+    private final static String PRODUCT_ID = "product_id";
+    private final static String DEVICE_NAME = "dev_name";
+    private final static String DEVICE_PSK = "dev_psk";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +131,14 @@ public class TRTCMainActivity extends AppCompatActivity {
         // 设置适配器，刷新展示用户列表
         mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
         mRecyclerView.setAdapter(mAdapter);
+        SharedPreferences settings = getSharedPreferences("rtc_config", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = settings.edit();
+        mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
+        mProductID = settings.getString(PRODUCT_ID, mProductID);
+        mDevName = settings.getString(DEVICE_NAME, mDevName);
+        mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+        editor.commit();
 
         if (!mProductID.equals("")) {
             mProductIdEditText.setText(mProductID);
@@ -143,6 +158,14 @@ public class TRTCMainActivity extends AppCompatActivity {
                 if (!checkInput()) {
                     return;
                 }
+                SharedPreferences settings = getSharedPreferences("rtc_config", Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString(BROKER_URL, mBrokerURL);
+                editor.putString(PRODUCT_ID, mProductID);
+                editor.putString(DEVICE_NAME, mDevName);
+                editor.putString(DEVICE_PSK, mDevPSK);
+                editor.commit();
                 if (mDataTemplateSample != null) {
                     return;
                 }
