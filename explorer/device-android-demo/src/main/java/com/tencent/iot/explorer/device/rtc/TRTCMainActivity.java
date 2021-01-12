@@ -493,6 +493,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         @Override
         public void onGetCallStatusCallBack(Integer callStatus, final String userid, Integer callType) {
             if (callStatus == 1) { //表示被呼叫了
+                mCallMobileNumber = 0;
                 mCallType = callType;
                 runOnUiThread(new Runnable() {
                     @Override
@@ -536,6 +537,7 @@ public class TRTCMainActivity extends AppCompatActivity {
 
         @Override
         public void trtcJoinRoomCallBack(final RoomKey room) {
+            mCallMobileNumber = 0;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
