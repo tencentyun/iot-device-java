@@ -19,8 +19,8 @@ import android.widget.Toast;
 
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.android.core.dynreg.TXMqttDynreg;
-import com.tencent.iot.hub.device.android.core.dynreg.TXMqttDynregCallback;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;

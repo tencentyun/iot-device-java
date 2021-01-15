@@ -1,13 +1,12 @@
-package com.tencent.iot.hub.device.android.core.dynreg;
+package com.tencent.iot.hub.device.java.core.dynreg;
 
-import android.os.NetworkOnMainThreadException;
-import android.util.Base64;
-import android.util.Log;
-
-import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -34,6 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class TXMqttDynreg {
     private static final String TAG = "TXMQTT";
+    private static final Logger LOG = LoggerFactory.getLogger(TXMqttDynreg.class);
     private static final String HMAC_ALGO = "HmacSHA1";
     private static final String DECRYPT_MODE = "AES/CBC/NoPadding";
 
@@ -144,15 +144,15 @@ public class TXMqttDynreg {
                     }
                     conn.disconnect();
                 }else {
-                    Log.e(TAG, "Get error rc "+ rc);
+                    LOG.error(TAG, "Get error rc "+ rc);
                     conn.disconnect();
 
                     mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
                     return;
                 }
 
-            } catch (IOException|NetworkOnMainThreadException e) {
-                Log.e(TAG, e.toString());
+            } catch (IOException e) {
+                LOG.error(TAG, e.toString());
                 e.printStackTrace();
 
                 mCallback.onFailedDynreg(e);
@@ -161,13 +161,13 @@ public class TXMqttDynreg {
 
             String plStr;
             int actLen;
-            Log.i(TAG, "Get response string " + serverRsp);
+            LOG.info(TAG, "Get response string " + serverRsp);
             try {
                 JSONObject rspObj = new JSONObject(serverRsp.toString());
                 plStr = rspObj.getString("payload");
                 actLen = rspObj.getInt("len");
             } catch (JSONException e) {
-                Log.e(TAG, e.toString());
+                LOG.error(TAG, e.toString());
                 e.printStackTrace();
                 mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
                 return ;
@@ -260,7 +260,7 @@ public class TXMqttDynreg {
             return false;
         }
 
-        TXLog.i(TAG, "Register request " + obj);
+        LOG.info(TAG, "Register request " + obj);
         HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl);
         httpThread.start();
 

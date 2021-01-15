@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.android.core.dynreg;
+package com.tencent.iot.hub.device.java.core.dynreg;
 
 /**
  * Created by willssong on 2019/7/15
