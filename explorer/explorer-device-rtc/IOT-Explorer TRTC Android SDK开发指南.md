@@ -13,7 +13,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入实时音视频 TRTC SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../../explorer-device-android/docs/编译环境及SDK接入说明.md)
+如果不需要接入实时音视频 TRTC SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
@@ -46,7 +46,7 @@
     }
     ```
  -  依赖本地sdk源码 构建
-    修改应用模块的 **[build.gradle](../../device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-trtc](../../explorer-device-rtc)源码，示例如下：
+    修改应用模块的 **[build.gradle](../device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-trtc](../explorer-device-rtc)源码，示例如下：
     
      ```gr
     dependencies {
@@ -60,7 +60,7 @@ Demo示例工程使用的是 依赖本地 explorer-device-android 和 explorer-d
 
 ### explorer-device-android SDK 设计说明
 
-explorer-device-android 请参考 [SDK API及参数说明.md](../../explorer-device-android/docs/SDK%20API及参数说明.md)
+explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/SDK%20API及参数说明.md)
 
 ### explorer-device-trtc SDK 设计说明
 
