@@ -1,4 +1,4 @@
-def version = "3.2.2-SNAPSHOT"
+def version = "3.4.0-SNAPSHOT"
 ext {
     sdk = [
             version: version,
