@@ -95,10 +95,10 @@
 
 **Java Sdk源码**
 
-如果您想通过代码集成方式进行项目开发，可访问[Github](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-java)下载Java Sdk源码。
+如果您想通过代码集成方式进行项目开发，可访问[Github](../hub-device-java)下载Java Sdk源码。
 
 ## 下载IoT Hub Java-SDK Demo示例代码
-下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-java) 的module下。
+下载[仓库](../..)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](../hub-device-java) 的module下。
 
 
 ## 认证连接
@@ -161,7 +161,7 @@
 ## API接口说明
 
 ### MQTT接口 ###
-MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java)类中，支持发布和订阅功能；如果需支持设备影子功能，则需使用TXShadowConnection类及其方法，TXMqttConnection类的接口介绍如下：
+MQTT的相关接口定义在[TXMqttConnection](src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java)类中，支持发布和订阅功能；如果需支持设备影子功能，则需使用TXShadowConnection类及其方法，TXMqttConnection类的接口介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -182,7 +182,7 @@ MQTT的相关接口定义在[TXMqttConnection](https://github.com/tencentyun/iot
 
 对于不具备直接接入以太网网络的设备，可先接入本地网关设备的网络，利用网关设备的通信功能，代理设备接入腾讯云物联网通信IoT Hub平台。对于局域网中加入或退出网络的子设备，需通过平台进行绑定或解绑操作。
 注：当子设备发起过上线，后续只要网关链接成功，后台就会显示子设备在线，除非设备发起下线操作。
-MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java)类中，介绍如下：
+MQTT网关的相关接口定义在[TXGatewayConnection](src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java)类中，介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -204,7 +204,7 @@ MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tence
 
 ### 设备影子接口 ###
 
-如果需要支持设备影子功能，需使用[TXShadowConnection](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java)类中的方法，介绍如下：
+如果需要支持设备影子功能，需使用[TXShadowConnection](src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java)类中的方法，介绍如下：
 
 | 方法名               | 说明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -223,17 +223,17 @@ MQTT网关的相关接口定义在[TXGatewayConnection](https://github.com/tence
 
 
 ## 自建服务器接入
-自建服务器接入，请参考 [自建服务器接入.md](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/docs/自建服务器接入.md)
+自建服务器接入，请参考 [自建服务器接入.md](docs/自建服务器接入.md)
 
 ## Demo示例体验-设备互通
-官网上假设的一个示例场景，请参考 [设备互通.md](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/docs/设备互通.md)
+官网上假设的一个示例场景，请参考 [设备互通.md](docs/设备互通.md)
 
 ## Demo示例体验-设备状态上报与状态设置
-官网上假设的一个示例场景，请参考 [设备状态上报与状态设置.md](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/docs/设备状态上报与状态设置.md)
+官网上假设的一个示例场景，请参考 [设备状态上报与状态设置.md](docs/设备状态上报与状态设置.md)
 
 ## Demo示例体验-网关子设备固件升级
-网关子设备固件升级Demo，请参考 [网关子设备固件升级.md](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/docs/网关子设备固件升级.md)
+网关子设备固件升级Demo，请参考 [网关子设备固件升级.md](docs/网关子设备固件升级.md)
 
 ## 常见问题
 
-常见问题请参考docs目录下的[常见问题java](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-java/docs/常见问题java.md)
+常见问题请参考docs目录下的[常见问题java](docs/常见问题java.md)

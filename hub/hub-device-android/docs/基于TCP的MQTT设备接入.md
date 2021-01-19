@@ -25,7 +25,7 @@ ${productId}/${deviceName}/event    // 发布
 
 ## 编译运行示例程序
 
-[下载IoT Hub Android-SDK Demo示例代码](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
+[下载IoT Hub Android-SDK Demo示例代码](../README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
 
 #### 填写认证连接设备的参数
 编辑 [app-config.json](../../hub-android-demo/app-config.json) 文件中的配置信息
