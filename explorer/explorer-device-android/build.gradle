@@ -132,8 +132,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
 
     if (findProject(':explorer:explorer-device-java') != null) {
         api project(path: ':explorer:explorer-device-java')

@@ -101,8 +101,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.8.0-beta0'
     api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
     implementation 'org.json:json:20190722'
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.64'
     testImplementation 'junit:junit:4.13'
 }
 
