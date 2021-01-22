@@ -3,6 +3,7 @@
     package="com.tencent.iot.explorer.device.android.app">
 
     <application
+        android:name=".App"
         android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -37,4 +38,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- 绑定设备的授权方式需要读取机器序列号 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+
 </manifest>
