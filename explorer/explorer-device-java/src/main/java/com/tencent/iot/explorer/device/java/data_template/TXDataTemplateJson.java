@@ -22,12 +22,13 @@ class TXDataTemplateJson {
     private static final Logger LOG = LoggerFactory.getLogger(TXDataTemplateJson.class);
 
     //value type
-    final static private String TYPE_BOOL = "bool";
-    final static private String TYPE_INT = "int";
-    final static private String TYPE_FLOAT = "float";
-    final static private String TYPE_STRING = "string";
-    final static private String TYPE_ENUM = "enum";
-    final static private String TYPE_TIMESTAMP = "timestamp";
+    final static public String TYPE_BOOL = "bool";
+    final static public String TYPE_INT = "int";
+    final static public String TYPE_FLOAT = "float";
+    final static public String TYPE_STRING = "string";
+    final static public String TYPE_ENUM = "enum";
+    final static public String TYPE_TIMESTAMP = "timestamp";
+    final static public String TYPE_STRUCT = "struct";
 
     TXDataTemplateJson( final String jsonFileName) {
         if (Status.OK != registerDataTemplateJson( jsonFileName)) {
@@ -67,11 +68,12 @@ class TXDataTemplateJson {
      */
     private Status registerDataTemplateJson(final String jsonFileName){
 
-        File file = new File("data/json/"+jsonFileName);
+        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/data/json/"+jsonFileName);
+        System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             try {
-                String puth = "data/json/"+jsonFileName;
-                String s = ReadFile.readJsonFile(puth);
+//                String puth = "data/json/"+jsonFileName;
+                String s = ReadFile.readJsonFile(file.getAbsolutePath());
                 JSONObject json = new JSONObject(s);
                 this.mPropertyJson = json.getJSONArray("properties");
                 this.mEventJson = json.getJSONArray("events");
@@ -79,7 +81,7 @@ class TXDataTemplateJson {
                 LOG.info("registerDataTemplateJson: propertyJson" + mPropertyJson);
                 LOG.info("registerDataTemplateJson: eventJson" + mEventJson);
                 LOG.info("registerDataTemplateJson: actionJson" + mActionJson);
-            }catch (JSONException t) {
+            } catch (JSONException t) {
                 LOG.error("Json file format is invalid!." + t);
                 return Status.ERROR;
             }
@@ -136,6 +138,9 @@ class TXDataTemplateJson {
                 if (value instanceof Integer || value instanceof Long){
                     return Status.OK;
                 }
+            } else if (type.equals(TYPE_STRUCT)) {
+                JSONArray valuesType = valueDescribeJson.getJSONArray("specs");
+                return StrcutCheckUtils.checkStructValues(valuesType, value);
             } else {
                 LOG.error("Invalid Data Template Json, please check and replace it!");
             }
@@ -192,6 +197,8 @@ class TXDataTemplateJson {
      * @return 检查结果
      */
     private Status checkActionParamsJson(JSONArray paramsDescribeJson, JSONObject paramsJson){
+        System.out.append("paramsDescribeJson " + paramsDescribeJson.toString());
+        System.out.append("paramsJson " + paramsJson.toString());
         if(null == paramsJson || null == paramsDescribeJson) {
             LOG.error("checkParamsJson: json is null!");
             return Status.PARAMETER_INVALID;

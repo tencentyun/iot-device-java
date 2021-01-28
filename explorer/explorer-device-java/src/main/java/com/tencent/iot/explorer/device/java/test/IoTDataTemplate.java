@@ -38,7 +38,7 @@ public class IoTDataTemplate {
     private static AtomicInteger requestID = new AtomicInteger(0);
     private ProductLight mSubDev1 = null;
     private ProductAirconditioner mSubDev2 = null;
-    private final static String mJsonFileName = "网关.json";
+    private final static String mJsonFileName = "struct.json";
 
     private static JSONObject jsonObject = new JSONObject();
     private static int pubCount = 0;
@@ -80,15 +80,18 @@ public class IoTDataTemplate {
         // 这里添加获取到的数据
         message.setPayload(jsonObject.toString().getBytes());
         JSONObject property = new JSONObject();
-            property.put("power_switch",1);
-            property.put("color",1);
-            property.put("brightness",100);
-            property.put("name","test2");
+        JSONObject structJson = new JSONObject();
+        structJson.put("par4", 2.11);  // 浮点类型
+        structJson.put("par5", 1);     // 枚举类型
+        structJson.put("par1", 1);     // 布尔类型
+        structJson.put("par2", 5);     // 整数类型
+        structJson.put("par3", "testStr");    // 字符串类型
+        structJson.put("par6", 1577871690);   // 时间戳类型
+        property.put("aaa", structJson);  // 自定义结构体属性
+        property.put("c1",1); // 一般属性
 
-        mDataTemplateSample.propertyReport(property,null);
-
-
-
+        Status status = mDataTemplateSample.propertyReport(property,null);
+        System.out.println("reported property status " + status);
     }
 
     public static class callBack extends TXMqttActionCallBack {
@@ -97,7 +100,7 @@ public class IoTDataTemplate {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
             // TODO Auto-generated method stub
             String topic = String.format("%s/%s/%s", mProductID, mDevName,"data");
-            System.out.println("MQTT Connect完成回调" + status.toString());
+            System.out.println("MQTT Connect 完成回调 " + status.toString());
 
         }
 

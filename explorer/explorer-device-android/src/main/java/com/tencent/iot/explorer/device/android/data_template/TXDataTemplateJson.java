@@ -5,6 +5,7 @@ import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.java.data_template.StrcutCheckUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.json.JSONArray;
@@ -32,6 +33,7 @@ class TXDataTemplateJson {
     final static private String TYPE_STRING = "string";
     final static private String TYPE_ENUM = "enum";
     final static private String TYPE_TIMESTAMP = "timestamp";
+    final static private String TYPE_STRUCT = "struct";
 
     TXDataTemplateJson(Context context, final String jsonFileName) {
         if (Status.OK != registerDataTemplateJson(context, jsonFileName)) {
@@ -149,10 +151,14 @@ class TXDataTemplateJson {
                 if (value instanceof Integer || value instanceof Long){
                     return Status.OK;
                 }
+            } else if (type.equals(TYPE_STRUCT)) {
+                JSONArray valuesType = valueDescribeJson.getJSONArray("specs");
+                return StrcutCheckUtils.checkStructValues(valuesType, value);
+
             } else {
                 TXLog.e(TAG, "Invalid Data Template Json, please check and replace it!");
             }
-            TXLog.e(TAG, "Invalid Value, excepted" + valueDescribeJson);
+            TXLog.e(TAG, "Invalid Value, excepted " + valueDescribeJson);
         } catch (JSONException e) {
             TXLog.e(TAG, "Invalid Data Template Json, please check and replace it!");
         }

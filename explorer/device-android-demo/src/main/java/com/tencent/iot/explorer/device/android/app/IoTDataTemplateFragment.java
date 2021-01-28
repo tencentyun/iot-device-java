@@ -66,7 +66,7 @@ public class IoTDataTemplateFragment extends Fragment {
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
 
-    private final static String mJsonFileName = "light_sample.json";
+    private final static String mJsonFileName = "struct.json";
 
     private EditText mItemText;
 
@@ -204,10 +204,15 @@ public class IoTDataTemplateFragment extends Fragment {
                     return;
                 JSONObject property = new JSONObject();
                 try {
-                    property.put("power_switch",0);
-                    property.put("color",0);
-                    property.put("brightness",0);
-                    property.put("name","test");
+                    JSONObject structJson = new JSONObject();
+                    structJson.put("par4", 2.1001); // 浮点类型
+                    structJson.put("par5", 1);      // 枚举类型
+                    structJson.put("par1", 1);      // 布尔类型
+                    structJson.put("par2", 10);      // 整数类型
+                    structJson.put("par3", "testStrAndroid");  // 字符串类型
+                    structJson.put("par6", 1577871650);        // 时间戳类型
+                    property.put("aaa", structJson);   // 自定义结构体属性
+                    property.put("c1",1);  // 一般属性
                 } catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct property json failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;
