@@ -15,7 +15,7 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-android:3.2.0'
+        implementation 'com.tencent.iot.explorer:explorer-device-android:3.3.0'
     }
     ```
  -  gradle 工程 snapshot版SDK 远程构建
@@ -37,7 +37,7 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-android:3.2.0-SNAPSHOT'
+        implementation 'com.tencent.iot.explorer:explorer-device-android:3.3.0-SNAPSHOT'
     }
     ```
  -  依赖本地sdk源码 构建
