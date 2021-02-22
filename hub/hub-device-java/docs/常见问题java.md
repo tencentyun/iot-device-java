@@ -24,4 +24,6 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 
 在SDK中调用动态注册对应注册成功的日志会返回 `I/TXMQTT: Dynamic register OK! onGetDevicePSK, devicePSK[**********************]` 或者 `I/TXMQTT: Dynamic register OK!onGetDeviceCert, deviceCert[**********************] devicePriv[**********************]` 可以检查一下认证连接的时候，传入的密钥或证书是不是对应动态注册的得到的密钥或证书。
 
+#### 是否支持通过API批量注册设备
 
+目前android 和 java 的sdk 还不支持批量动态注册, 可参考[动态注册接口说明](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C.md)
