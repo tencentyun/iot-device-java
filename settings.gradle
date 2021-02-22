@@ -1,4 +1,3 @@
-include 'explorer:device-java-demo'
 include 'explorer:explorer-device-face'
 include 'explorer:explorer-device-rtc'
 include 'explorer:explorer-device-android'
