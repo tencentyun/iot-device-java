@@ -68,7 +68,7 @@ class TXDataTemplateJson {
      */
     private Status registerDataTemplateJson(final String jsonFileName){
 
-        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/data/json/"+jsonFileName);
+        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/"+jsonFileName);
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             try {
@@ -114,9 +114,9 @@ class TXDataTemplateJson {
                     return Status.OK;
                 }
             } else if (type.equals(TYPE_FLOAT)){ //FLOAT类型取值符合范围
-                if (value instanceof Double &&
-                    ((Double) value).doubleValue() >= Double.parseDouble(valueDescribeJson.getString("min")) &&
-                    ((Double) value).doubleValue() <= Double.parseDouble(valueDescribeJson.getString("max"))){
+                if (value instanceof Float &&
+                    ((Float) value).floatValue() >= Float.parseFloat(valueDescribeJson.getString("min")) &&
+                    ((Float) value).floatValue() <= Float.parseFloat(valueDescribeJson.getString("max"))){
                     return Status.OK;
                 }
             } else if (type.equals(TYPE_STRING)){ //字符串类型长度不能超过最大长度

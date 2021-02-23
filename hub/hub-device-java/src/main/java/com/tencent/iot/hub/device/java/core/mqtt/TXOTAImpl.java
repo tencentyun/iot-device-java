@@ -189,7 +189,7 @@ public class TXOTAImpl {
 					downloadFirmware(firmwareURL, mStoragePath + "/" + md5Sum, md5Sum, version);
 				}
 			} else if (type.equalsIgnoreCase("report_version_rsp")) {
-				String resultCode = jsonObject.getString("result_code");
+				String resultCode = String.valueOf(jsonObject.getInt("result_code"));
 				String resultMsg = jsonObject.getString("result_msg");
 				String version = jsonObject.getString("version");
 

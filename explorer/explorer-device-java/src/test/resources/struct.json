@@ -1,0 +1,225 @@
+{
+  "version": "1.0",
+  "profile": {
+    "ProductId": "LWVUL5SZ2L",
+    "CategoryId": "3"
+  },
+  "properties": [
+    {
+      "id": "power_switch",
+      "name": "电灯开关",
+      "desc": "控制电灯开灭",
+      "required": true,
+      "mode": "rw",
+      "define": {
+        "type": "bool",
+        "mapping": {
+          "0": "关",
+          "1": "开"
+        }
+      }
+    },
+    {
+      "id": "color",
+      "name": "颜色",
+      "desc": "灯光颜色",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "Red",
+          "1": "Green",
+          "2": "Blue"
+        }
+      }
+    },
+    {
+      "id": "brightness",
+      "name": "亮度",
+      "desc": "灯光亮度",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "unit": "%",
+        "step": "1",
+        "min": "0",
+        "max": "100",
+        "start": "1"
+      }
+    },
+    {
+      "id": "name",
+      "name": "灯位置名称",
+      "desc": "灯位置名称：书房、客厅等",
+      "mode": "rw",
+      "required": false,
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "64"
+      }
+    },
+    {
+      "id": "struct_param",
+      "name": "结构体参数",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "struct",
+        "specs": [
+          {
+            "id": "bool_param",
+            "name": "布尔型参数",
+            "dataType": {
+              "type": "bool",
+              "mapping": {
+                "0": "关",
+                "1": "开"
+              }
+            }
+          },
+          {
+            "id": "int_param",
+            "name": "整数型参数",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "100",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "string_param",
+            "name": "字符串参数",
+            "dataType": {
+              "type": "string",
+              "min": "0",
+              "max": "2048"
+            }
+          },
+          {
+            "id": "float_param",
+            "name": "浮点型参数",
+            "dataType": {
+              "type": "float",
+              "min": "0",
+              "max": "100",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "enum_param",
+            "name": "枚举型参数",
+            "dataType": {
+              "type": "enum",
+              "mapping": {
+                "0": "enum0",
+                "1": "enum1"
+              }
+            }
+          },
+          {
+            "id": "timestamp_param",
+            "name": "时间型参数",
+            "dataType": {
+              "type": "timestamp"
+            }
+          }
+        ]
+      },
+      "required": false
+    }
+  ],
+  "events": [
+    {
+      "id": "status_report",
+      "name": "DeviceStatus",
+      "desc": "Report the device status",
+      "type": "info",
+      "required": false,
+      "params": [
+        {
+          "id": "status",
+          "name": "running_state",
+          "desc": "Report current device running state",
+          "define": {
+            "type": "bool",
+            "mapping": {
+              "0": "normal",
+              "1": "fault"
+            }
+          }
+        },
+        {
+          "id": "message",
+          "name": "Message",
+          "desc": "Some extra message",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        }
+      ]
+    },
+    {
+      "id": "low_voltage",
+      "name": "LowVoltage",
+      "desc": "Alert for device voltage is low",
+      "type": "alert",
+      "required": false,
+      "params": [
+        {
+          "id": "voltage",
+          "name": "Voltage",
+          "desc": "Current voltage",
+          "define": {
+            "type": "float",
+            "unit": "V",
+            "step": "1",
+            "min": "0.0",
+            "max": "24.0",
+            "start": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hardware_fault",
+      "name": "Hardware_fault",
+      "desc": "Report hardware fault",
+      "type": "fault",
+      "required": false,
+      "params": [
+        {
+          "id": "name",
+          "name": "Name",
+          "desc": "Name like: memory,tf card, censors ...",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        },
+        {
+          "id": "error_code",
+          "name": "Error_Code",
+          "desc": "Error code for fault",
+          "define": {
+            "type": "int",
+            "unit": "",
+            "step": "1",
+            "min": "0",
+            "max": "2000",
+            "start": "1"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": []
+}

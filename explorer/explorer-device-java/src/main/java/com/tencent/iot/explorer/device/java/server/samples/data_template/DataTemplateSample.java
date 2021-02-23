@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,6 +33,8 @@ public class DataTemplateSample {
     private String mDevCertName = "DEVICE_CERT-NAME ";
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
     private String mJsonFileName = "JSON_FILE_NAME";
+
+    private String workDir = System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/";
 
     private static final Logger LOG = LoggerFactory.getLogger(DataTemplateSample.class);
 
@@ -90,7 +94,7 @@ public class DataTemplateSample {
             options.setSocketFactory(AsymcSslUtils.getSocketFactory());
         } else {
             LOG.info(TAG, "Using cert assets file");
-            options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile( mDevCertName, mDevKeyName));
+            options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));
         }
         TXMqttRequest mqttRequest = new TXMqttRequest("connect", requestID.getAndIncrement());
         mMqttConnection.connect(options, mqttRequest);
@@ -165,6 +169,41 @@ public class DataTemplateSample {
 
     public Status eventSinglePost(String eventId, String type, JSONObject params){
         return  mMqttConnection.eventSinglePost(eventId, type, params);
+    }
+
+    public void checkFirmware() {
+
+        mMqttConnection.initOTA(workDir, new TXOTACallBack() {
+            @Override
+            public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
+                LOG.error("onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+            }
+
+            @Override
+            public boolean onLastestFirmwareReady(String url, String md5, String version) {
+                return false;
+            }
+
+            @Override
+            public void onDownloadProgress(int percent, String version) {
+                LOG.error("onDownloadProgress:" + percent);
+            }
+
+            @Override
+            public void onDownloadCompleted(String outputFile, String version) {
+                LOG.error("onDownloadCompleted:" + outputFile + ", version:" + version);
+
+                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
+            }
+
+            @Override
+            public void onDownloadFailure(int errCode, String version) {
+                LOG.error("onDownloadFailure:" + errCode);
+
+                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
+            }
+        });
+        mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
     }
 
 }
