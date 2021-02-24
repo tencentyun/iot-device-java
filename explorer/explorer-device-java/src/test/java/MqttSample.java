@@ -2,6 +2,8 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStre
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -24,15 +26,29 @@ public class MqttSample {
     private static String mDevName = "DEVICE_NAME";
     private static String mDevPSK  = "DEVICE_PSK"; //若使用证书验证，设为null
 
+    private static String mProductKey = "PRODUCT_KEY";             // Used for dynamic register
     private static String mDevCert = "DEVICE_CERT_NAME";           // Device Cert Name
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_NAME";            // Device Private Key Name
     private static AtomicInteger requestID = new AtomicInteger(0);
     private final static String mJsonFileName = "struct.json";
 
     private static DataTemplateSample mDataTemplateSample;
-    /**
-     * MQTT连接实例
-     */
+
+    private static void dynReg() {
+        try {
+            Thread.sleep(2000);
+            LOG.debug("Test Dynamic");
+            TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductKey, mDevName, new SelfMqttDynregCallback());
+            if (dynreg.doDynamicRegister()) {
+                LOG.debug("Dynamic Register OK!");
+            } else {
+                LOG.error("Dynamic Register failed!");
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     private static void disconnect() {
         try {
@@ -252,6 +268,15 @@ public class MqttSample {
 
     public static void main(String[] args) {
 
+        dynReg();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
         // init connection
         mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
                 mJsonFileName, new SelfDownStreamCallBack());
@@ -414,6 +439,39 @@ public class MqttSample {
                 //do your action
             }
             return null;
+        }
+    }
+
+    /**
+     * Callback for dynamic register
+     */
+    private static class SelfMqttDynregCallback extends TXMqttDynregCallback {
+
+        @Override
+        public void onGetDevicePSK(String devicePsk) {
+            mDevPSK = devicePsk;
+            String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK[%s]", devicePsk);
+            LOG.info(logInfo);
+        }
+
+        @Override
+        public void onGetDeviceCert(String deviceCert, String devicePriv) {
+//            mDevCert = deviceCert;   //这里获取的是证书内容字符串 创建对应ssl认证时可使用options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));方式，示例中使用的是读取本地文件路径的方式。
+//            mDevPriv = devicePriv;   //这里获取的是秘钥内容字符串
+            String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert[%s] devicePriv[%s]", deviceCert, devicePriv);
+            LOG.info(logInfo);
+        }
+
+        @Override
+        public void onFailedDynreg(Throwable cause, String errMsg) {
+            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString() + errMsg);
+            LOG.error(logInfo);
+        }
+
+        @Override
+        public void onFailedDynreg(Throwable cause) {
+            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString());
+            LOG.error(logInfo);
         }
     }
 }
