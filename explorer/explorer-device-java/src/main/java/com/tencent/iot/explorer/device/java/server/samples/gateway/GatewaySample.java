@@ -26,7 +26,6 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 
 
 public class GatewaySample {
-    private static final String TAG = "TXGatewaySample";
     private static final Logger LOG = LoggerFactory.getLogger(GatewaySample.class);
 
     // device info
@@ -36,11 +35,13 @@ public class GatewaySample {
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
 
     //sub dev info
-    private String mSubDev1ProductId = "DI0D24RRON";
-    private String mSubDev2ProductId = "YOUR_SUB_DEV_PRODUCTID";
+    private String mSubDev1ProductId = "YOUR_SUB_DEV1_PRODUCTID";
+    private String mSubDev2ProductId = "YOUR_SUB_DEV2_PRODUCTID";
 
     private TXGatewayClient mConnection;
     private static AtomicInteger requestID = new AtomicInteger(0);
+
+    private String workDir = System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/";
 
     public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
 
@@ -61,8 +62,11 @@ public class GatewaySample {
         options.setAutomaticReconnect(true);
 
         if (mDevPSK != null && mDevPSK.length() != 0) {
-            LOG.info(TAG, "Using PSK");
+            LOG.info("Using PSK");
             options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+        } else {
+            LOG.info("Using cert assets file");
+            options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));
         }
 
         TXMqttRequest mqttRequest = new TXMqttRequest("connect", requestID.getAndIncrement());
@@ -77,16 +81,24 @@ public class GatewaySample {
 
     public void offline() {
         if (Status.OK != mConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC)) {
-            LOG.error(TAG, "subscribeTopic: unSubscribe property down stream topic failed!");
+            LOG.error("subscribeTopic: unSubscribe property down stream topic failed!");
         }
         if (Status.OK != mConnection.unSubscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC)) {
-            LOG.error(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+            LOG.error("subscribeTopic: unSubscribe event down stream topic failed!");
         }
         if (Status.OK != mConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)) {
-            LOG.error(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
+            LOG.error("subscribeTopic: unSubscribe action down stream topic failed!");
         }
         TXMqttRequest mqttRequest = new TXMqttRequest("disconnect", requestID.getAndIncrement());
         mConnection.disConnect(mqttRequest);
+    }
+
+    public void gatewayBindSubdev(String productId, String deviceName, String devicePsk) {
+        mConnection.gatewayBindSubdev(productId, deviceName, devicePsk);
+    }
+
+    public void gatewayUnbindSubdev(String productId, String deviceName) {
+        mConnection.gatewayUnbindSubdev(productId, deviceName);
     }
 
     public Object addSubDev(String productId, String deviceName) {
@@ -99,7 +111,7 @@ public class GatewaySample {
             mConnection.addSubdev(subdev.mGatewaySubdev); //添加子设备到网关
             return subdev;
         } else  {
-            LOG.debug(TAG, "Unknown product! Product id is " + productId);
+            LOG.debug("Unknown product! Product id is " + productId);
             return null;
         }
     }
@@ -140,23 +152,23 @@ public class GatewaySample {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //Just print
-            LOG.debug(TAG, "reply received : " + replyMsg);
+            LOG.debug("reply received : " + replyMsg);
         }
 
         @Override
         public void onGetStatusReplyCallBack(JSONObject data) {
-            LOG.debug(TAG, "data received : " + data);
+            LOG.debug("data received : " + data);
         }
 
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
-            LOG.debug(TAG, "msg received : " + msg);
+            LOG.debug("msg received : " + msg);
             return null;
         }
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug(TAG, "action [%s] received, input:" + params, actionId);
+            LOG.debug("action [%s] received, input:" + params, actionId);
             return null;
         }
     }
@@ -170,13 +182,13 @@ public class GatewaySample {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
             if(Status.OK == status && !reconnect) { //初次连接订阅主题,重连后会自动订阅主题
                 if (Status.OK != mConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
-                    LOG.error(TAG, "subscribeTopic: subscribe property down stream topic failed!");
+                    LOG.error("subscribeTopic: subscribe property down stream topic failed!");
                 }
                 if (Status.OK != mConnection.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)) {
-                    LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+                    LOG.error("subscribeTopic: subscribe event down stream topic failed!");
                 }
                 if (Status.OK != mConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
-                    LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+                    LOG.error("subscribeTopic: subscribe event down stream topic failed!");
                 }
             } else {
                 String userContextInfo = "";
@@ -185,14 +197,14 @@ public class GatewaySample {
                 }
                 String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                         status.name(), reconnect, userContextInfo, msg);
-                LOG.debug(TAG,logInfo);
+                LOG.debug(logInfo);
             }
         }
 
         @Override
         public void onConnectionLost(Throwable cause) {
             String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-            LOG.error(TAG,logInfo);
+            LOG.error(logInfo);
         }
 
         @Override
@@ -202,7 +214,7 @@ public class GatewaySample {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-            LOG.debug(TAG,logInfo);
+            LOG.debug(logInfo);
         }
 
         @Override
@@ -213,7 +225,7 @@ public class GatewaySample {
             }
             String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-            LOG.debug(TAG,logInfo);
+            LOG.debug(logInfo);
         }
 
         /**订阅子设备主题相关主题成功，则调用子设备onSubscribeCompleted*/
@@ -228,20 +240,20 @@ public class GatewaySample {
                     status.name(), topic, userContextInfo, errMsg);
 
             if (Status.ERROR == status) {
-                LOG.error(TAG,logInfo);
+                LOG.error(logInfo);
             } else {
                 String [] splitStr = topic.split("/");
                 String productId = splitStr[3];
                 String devName = splitStr[4].substring(0,splitStr[4].length() - 1);
                 if(mConnection.mProductId.equals(productId) && mConnection.mDeviceName.equals(devName)) {
                     //订阅相关主题成功
-                    LOG.debug(TAG, logInfo);
+                    LOG.debug(logInfo);
                 } else {
                     TXGatewaySubdev subdev= mConnection.findSubdev(productId, devName);
                     if(null != subdev) {
                         subdev.mActionCallBack.onSubscribeCompleted(status, asyncActionToken, userContext, errMsg);
                     } else {
-                        LOG.error(TAG, "Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
+                        LOG.error("Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
                     }
                 }
             }
@@ -255,7 +267,7 @@ public class GatewaySample {
             }
             String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-            LOG.debug(TAG,logInfo);
+            LOG.debug(logInfo);
         }
 
         @Override

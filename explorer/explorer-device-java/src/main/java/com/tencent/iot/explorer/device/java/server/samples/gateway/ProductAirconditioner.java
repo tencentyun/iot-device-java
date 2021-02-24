@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 public class ProductAirconditioner {
-    private static final String TAG = "TXProductLight";
 
     public TXGatewaySubdev mGatewaySubdev;
     private final static String mSubDev1JsonFileName = "subdev2.json";
@@ -65,11 +64,11 @@ public class ProductAirconditioner {
             if(mProperty.containsKey(key)) {
                 try {
                     if(key.equals("power_switch") &&  mProperty.get(key) != params.get(key)) {
-                        LOG.error(TAG,mProperty.get(key).toString() + params.get(key).toString());
+                        LOG.error(mProperty.get(key).toString() + params.get(key).toString());
                     }
                     mProperty.put(key, params.get(key));
                 } catch (JSONException e) {
-                    LOG.error(TAG, "setPropertyBaseOnJson: failed! Invalid json!");
+                    LOG.error("setPropertyBaseOnJson: failed! Invalid json!");
                     return;
                 }
             }
@@ -81,11 +80,11 @@ public class ProductAirconditioner {
      */
     private void StatusGet() {
         if(Status.OK != mGatewaySubdev.propertyGetStatus("report", false)) {
-            LOG.error(TAG, "property get statuts failed!");
+            LOG.error("property get statuts failed!");
         }
 
         if(Status.OK != mGatewaySubdev.propertyGetStatus("control", false)) {
-            LOG.error(TAG, "property get statuts failed!");
+            LOG.error("property get statuts failed!");
         }
     }
 
@@ -106,11 +105,11 @@ public class ProductAirconditioner {
             params.put("mac", "00:00:00:00");
             params.put("device_label", label);
         } catch (JSONException e) {
-            LOG.error(TAG, "Construct light info failed!");
+            LOG.error("Construct light info failed!");
             return;
         }
         if(Status.OK != mGatewaySubdev.propertyReportInfo(params)) {
-            LOG.error(TAG, "light info report failed!");
+            LOG.error("light info report failed!");
         }
     }
 
@@ -119,7 +118,7 @@ public class ProductAirconditioner {
      */
     private void ControlClear() {
         if (Status.OK != mGatewaySubdev.propertyClearControl()){
-            LOG.error(TAG, "clear control failed!");
+            LOG.error("clear control failed!");
         }
     }
 
@@ -135,19 +134,19 @@ public class ProductAirconditioner {
                     try {
                         property.put(entry.getKey(),entry.getValue());
                     } catch (JSONException e) {
-                        LOG.error(TAG, "construct property failed!");
+                        LOG.error("construct property failed!");
                     }
                 }
 
                 if (Status.OK != mGatewaySubdev.propertyReport(property, null)) {
-                    LOG.error(TAG, "report property failed!");
+                    LOG.error("report property failed!");
                     break;
                 }
 
                 try {
                     Thread.sleep(reportPeriod);
                 } catch (InterruptedException e) {
-                    LOG.error(TAG, "The thread has been interrupted");
+                    LOG.error("The thread has been interrupted");
                     break;
                 }
             }
@@ -162,15 +161,15 @@ public class ProductAirconditioner {
         /**上线后，订阅相关主题*/
         @Override
         public void onSubDevOnline() {
-            LOG.debug(TAG, "dev[%s] online!", mGatewaySubdev.mDeviceName);
+            LOG.debug("dev[%s] online!", mGatewaySubdev.mDeviceName);
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error(TAG, "subscribeTopic: subscribe property down stream topic failed!");
+                LOG.error("subscribeTopic: subscribe property down stream topic failed!");
             }
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+                LOG.error("subscribeTopic: subscribe event down stream topic failed!");
             }
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+                LOG.error("subscribeTopic: subscribe event down stream topic failed!");
             }
         }
 
@@ -189,7 +188,7 @@ public class ProductAirconditioner {
             String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             if (Status.ERROR == status) {
-                LOG.error(TAG,logInfo);
+                LOG.error(logInfo);
             } else {
                 String topic = Arrays.toString(asyncActionToken.getTopics());
                 if(topic.substring(1,topic.length()-1).equals(mGatewaySubdev.mPropertyDownStreamTopic)) {
@@ -200,7 +199,7 @@ public class ProductAirconditioner {
                         mReportThread.start();
                     }
                 }
-                LOG.debug(TAG,logInfo);
+                LOG.debug(logInfo);
             }
         }
 
@@ -213,7 +212,7 @@ public class ProductAirconditioner {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //Just print
-            LOG.debug(TAG, "reply received : " + replyMsg);
+            LOG.debug("reply received : " + replyMsg);
         }
 
         @Override
@@ -233,7 +232,7 @@ public class ProductAirconditioner {
                     }
                 }
             } catch (JSONException e) {
-                LOG.error(TAG,"get status reply  params invalid!");
+                LOG.error("get status reply  params invalid!");
             }
         }
 
@@ -256,7 +255,7 @@ public class ProductAirconditioner {
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug(TAG, "action [%s] received, input:" + params, actionId);
+            LOG.debug("action [%s] received, input:" + params, actionId);
             //do something based action id and input
             if(actionId.equals("blink")) {
                 try {
