@@ -1,6 +1,7 @@
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
+import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,12 +29,34 @@ public class MqttSample {
     private static String mDevPSK  = "DEVICE_PSK"; //若使用证书验证，设为null
 
     private static String mProductKey = "PRODUCT_KEY";             // Used for dynamic register
-    private static String mDevCert = "DEVICE_CERT_NAME";           // Device Cert Name
-    private static String mDevPriv = "DEVICE_PRIVATE_KEY_NAME";            // Device Private Key Name
+    private static String mDevCert = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
+    private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
-    private final static String mJsonFileName = "struct.json";
+    private static String mJsonFileName = "struct.json";
 
     private static DataTemplateSample mDataTemplateSample;
+
+    private static void readDeviceInfoJson() {
+        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/device_info.json");
+        System.out.println(file.getAbsolutePath());
+        if (file.exists()) {
+            try {
+                String s = ReadFile.readJsonFile(file.getAbsolutePath());
+                JSONObject json = new JSONObject(s);
+                mProductID = json.getString("PRODUCT_ID");
+                mDevName = json.getString("DEVICE_NAME");
+                mDevPSK = json.getString("DEVICE_PSK").length() == 0 ? null : json.getString("DEVICE_PSK");
+                mDevCert = json.getString("DEVICE_CERT_FILE_NAME");
+                mDevPriv = json.getString("DEVICE_PRIVATE_KEY_FILE_NAME");
+                mProductKey = json.getString("PRODUCT_KEY");
+                mJsonFileName = json.getString("TEMPLATE_JSON_FILE_NAME").length() == 0 ? "struct.json" : json.getString("TEMPLATE_JSON_FILE_NAME");
+            } catch (JSONException t) {
+                LOG.error("device_info.json file format is invalid!." + t);
+            }
+        } else{
+            LOG.error("Cannot open device_info.json File.");
+        }
+    }
 
     private static void dynReg() {
         try {
@@ -267,6 +291,7 @@ public class MqttSample {
     }
 
     public static void main(String[] args) {
+        readDeviceInfoJson();
 
         dynReg();
 

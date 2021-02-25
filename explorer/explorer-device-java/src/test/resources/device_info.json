@@ -1,0 +1,15 @@
+{
+  "PRODUCT_ID":        "",
+  "DEVICE_NAME":       "",
+  "DEVICE_PSK":        "",
+  "DEVICE_CERT_FILE_NAME":  "",
+  "DEVICE_PRIVATE_KEY_FILE_NAME": "",
+  "TEMPLATE_JSON_FILE_NAME": "",
+  "SUB_PRODUCT_ID":    "",
+  "SUB_DEV_NAME":      "",
+  "SUB_DEV_PSK":       "",
+  "SUB_PRODUCT_ID2":   "",
+  "SUB_DEV_NAME2":     "",
+  "SUB_DEV_PSK2":      "",
+  "PRODUCT_KEY":       ""
+}
