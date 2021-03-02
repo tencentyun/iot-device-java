@@ -148,8 +148,17 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
      * @param userId 被呼叫用户id json字符串
      * @return 结果
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId) {
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params) {
         JSONObject property = new JSONObject();
+
+        if (userId.equals("null") && params != null && params.length() != 0) {
+            //检查构造是否符合json文件中的定义
+            if(Status.OK != checkPropertyJson(property)){
+                TXLog.e(TAG, "propertyReport: invalid property json!");
+                return Status.PARAMETER_INVALID;
+            }
+            property = params;
+        }
         try {
             mIsBusy = callStatus != 0;
             if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
@@ -183,7 +192,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
      * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
      * @return 结果
      */
-    public Status sysPropertyReport(JSONObject property, JSONObject metadata) {
+    private Status sysPropertyReport(JSONObject property, JSONObject metadata) {
         //不检查构造是否符合json文件中的定义
 
         //构造发布信息
