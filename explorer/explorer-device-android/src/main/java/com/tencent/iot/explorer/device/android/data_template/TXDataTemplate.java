@@ -212,6 +212,15 @@ public class TXDataTemplate {
     }
 
     /**
+     * 检查property是否符合定义
+     * @param property 用户构造的property json
+     * @return 检查结果
+     */
+    public Status checkPropertyJson(JSONObject property){
+        return  mDataTemplateJson.checkPropertyJson(property);
+    }
+
+    /**
      * 属性上报
      * @param property 属性的json
      * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳

@@ -191,7 +191,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId);//后续要从_sys_call_userlist选取传递userid
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
@@ -204,7 +204,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId);//后续要从_sys_call_userlist选取传递userid
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
                 TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
