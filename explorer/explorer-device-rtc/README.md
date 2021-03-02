@@ -20,7 +20,7 @@
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-trtc:3.2.1' //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation 'com.tencent.iot.explorer:explorer-device-rtc:3.2.1' //IoT Explorer 与 实时音视频 TRTC 的依赖
     }
     ```
  -  gradle 工程 snapshot版SDK 远程构建
@@ -42,19 +42,19 @@
     在应用模块的build.gradle中配置
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-trtc:3.2.1-SNAPSHOT' //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation 'com.tencent.iot.explorer:explorer-device-rtc:3.2.1-SNAPSHOT' //IoT Explorer 与 实时音视频 TRTC 的依赖
     }
     ```
  -  依赖本地sdk源码 构建
-    修改应用模块的 **[build.gradle](../device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-trtc](../explorer-device-rtc)源码，示例如下：
+    修改应用模块的 **[build.gradle](../device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-rtc](../explorer-device-rtc)源码，示例如下：
     
      ```gr
     dependencies {
-        implementation project(':explorer:explorer-device-trtc') //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation project(':explorer:explorer-device-rtc') //IoT Explorer 与 实时音视频 TRTC 的依赖
     }
      ```
 
-Demo示例工程使用的是 依赖本地 explorer-device-android 和 explorer-device-trtc 的 sdk源码 构建方式。
+Demo示例工程使用的是 依赖本地 explorer-device-android 和 explorer-device-rtc 的 sdk源码 构建方式。
 
 ## API说明
 
@@ -66,34 +66,112 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 
 | 类名                     | 功能                                         |
 | ----------------------- | -------------------------------------------- |
-| TXTRTCDataTemplate      | 实现人脸识别数据模板基本功能                     |
-| TXTRTCTemplateClient    | 实现直连设备根据人脸识别数据模板连接物联网开发平台  |
+| TXTRTCDataTemplate      | 实现实时音视频数据模板基本功能                   |
+| TXTRTCTemplateClient    | 实现直连设备根据实时音视频数据模板连接物联网开发平台|
 
 #### TXTRTCDataTemplate
 
 TXTRTCDataTemplate 继承自 TXDataTemplate类
 
-| 方法名                         | 说明                                            |
-| ----------------------------- | ---------------------------------------------- |
-| reportCallStatusProperty      | 上报TRTC音频视频呼叫状态                          |
-| sysPropertyReport             | 系统单个属性上报， 不检查构造是否符合json文件中的定义 |
+```
+    /**
+     * 上报实时音视频类设备呼叫属性
+     * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
+     * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @param userId 被呼叫用户id 多个用户id用";"分割，      也可以为空字符串""，表示群呼，      也可以为字符串"null"，传入params，请做数据转发到您的后台服务，请参考: https://cloud.tencent.com/document/product/1081/40298
+     * @param params 用户的物模型属性json
+     * @return 发送请求成功时返回Status.OK;。 OK 成功， ERROR 发生错误， ERR_JSON_CONSTRUCT json构造失败， PARAMETER_INVALID Topic无效， MQTT_NO_CONN MQTT未连接
+     */
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params)
+```
 
 
 #### TXTRTCTemplateClient
 
-| 方法名                         | 说明                                  |
-| ----------------------------- | ------------------------------------ |
-| isConnected                   | 是否已经连接物联网开发平台               |
-| generalDeviceQRCodeContent    | 生成绑定设备的二维码字符串               |
-| subscribeTemplateTopic        | 订阅数据模板相关主题                    |
-| unSubscribeTemplateTopic      | 取消订阅数据模板相关主题                |
-| propertyReport                | 上报属性                              |
-| reportCallStatusProperty      | 上报实时音视频类设备呼叫属性             |
-| propertyGetStatus             | 更新状态                              |
-| propertyReportInfo            | 上报设备信息                           |
-| propertyClearControl          | 清除控制信息                           |
-| eventSinglePost               | 上报单个事件                           |
-| eventsPost                    | 上报多个事件                           |
+
+```
+    /**
+     * 是否已经连接物联网开发平台
+     * @return 是 、 否
+     */
+    public boolean isConnected()
+
+    /**
+     * 生成绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public String generalDeviceQRCodeContent()
+
+    /**
+     * 订阅数据模板相关主题
+     * @param topicId 主题ID
+     * @param qos QOS等级
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status subscribeTemplateTopic(TXDataTemplateConstants.TemplateSubTopic topicId, final int qos)
+
+    /**
+     * 取消订阅数据模板相关主题
+     * @param topicId 主题ID
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status unSubscribeTemplateTopic(TXDataTemplateConstants.TemplateSubTopic topicId)
+
+    /**
+     * 属性上报
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status propertyReport(JSONObject property, JSONObject metadata)
+
+    /**
+     * 上报实时音视频类设备呼叫属性
+     * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
+     * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @param userId 被呼叫用户id 多个用户id用";"分割，      也可以为空字符串""，表示群呼，      也可以为字符串"null"，传入params，请做数据转发到您的后台服务，请参考: https://cloud.tencent.com/document/product/1081/40298
+     * @param params 用户的物模型属性json
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params)
+
+    /**
+     * 获取状态
+     * @param type 类型
+     * @param showmeta 是否携带showmeta
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status propertyGetStatus(String type, boolean showmeta)
+
+    /**
+     * 设备基本信息上报
+     * @param params 参数
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status propertyReportInfo(JSONObject params)
+
+    /**
+     * 清理控制信息
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status propertyClearControl()
+
+    /**
+     * 单个事件上报
+     * @param eventId 事件ID
+     * @param type 事件类型
+     * @param params 参数
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status eventSinglePost(String eventId, String type, JSONObject params)
+
+    /**
+     * 多个事件上报
+     * @param events 事件集合
+     * @return 发送请求成功时返回Status.OK;
+     */
+    public Status eventsPost(JSONArray events)
+```
 
 ### explorer-device-trtc SDK 回调callback 设计说明
 

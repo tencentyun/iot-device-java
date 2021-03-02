@@ -123,8 +123,8 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
      * @param userId 被呼叫用户id json字符串
      * @return 结果
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId) {
-        return mDataTemplate.reportCallStatusProperty(callStatus, callType, userId);
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params) {
+        return mDataTemplate.reportCallStatusProperty(callStatus, callType, userId, params);
     }
 
     /**
@@ -193,8 +193,8 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
         if (!TRTCUIManager.getInstance().isCalling) {
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL, "");
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL, "");
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL, "", null);
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL, "", null);
         }
     }
 }
