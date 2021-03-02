@@ -40,8 +40,6 @@ public class TXGatewayConnection extends TXMqttConnection {
 	private static final String GW_OPERATION_PREFIX = "$gateway/operation/";
 
 	/**
-	 * @param context
-	 *            用户上下文（这个参数在回调函数时透传给用户）
 	 * @param serverURI
 	 *            服务器URI
 	 * @param productID
@@ -65,7 +63,6 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 	/**
 	 * 使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
-	 * @param context
 	 * @param productID
 	 * @param deviceName
 	 * @param secretKey
@@ -81,7 +78,6 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 	/**
 	 *
-	 * @param context
 	 * @param productID
 	 * @param deviceName
 	 * @param secretKey
@@ -95,7 +91,6 @@ public class TXGatewayConnection extends TXMqttConnection {
 
 	/**
 	 *
-	 * @param context
 	 * @param productID
 	 * @param deviceName
 	 * @param secretKey
@@ -288,7 +283,6 @@ public class TXGatewayConnection extends TXMqttConnection {
 					removeSubdev(subdev);
 				}
 			}
-
 		} catch (JSONException e) {
 
 		}

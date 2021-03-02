@@ -129,45 +129,40 @@ public class TXMqttDynreg {
                 conn.setConnectTimeout(2000);
 
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-
                 os.writeBytes(postData);
                 os.flush();
                 os.close();
 
                 int rc = conn.getResponseCode();
-
                 String line;
-                if(rc == 200){
+                if (rc == 200) {
                     BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
                     while ((line = br.readLine()) != null) {
                         serverRsp.append(line);
                     }
                     conn.disconnect();
-                }else {
-                    LOG.error(TAG, "Get error rc "+ rc);
+                } else {
+                    LOG.error("Get error rc "+ rc);
                     conn.disconnect();
-
                     mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
                     return;
                 }
-
             } catch (IOException e) {
-                LOG.error(TAG, e.toString());
+                LOG.error(e.toString());
                 e.printStackTrace();
-
                 mCallback.onFailedDynreg(e);
                 return;
             }
 
             String plStr;
             int actLen;
-            LOG.info(TAG, "Get response string " + serverRsp);
+            LOG.debug("Get response string " + serverRsp);
             try {
                 JSONObject rspObj = new JSONObject(serverRsp.toString());
                 plStr = rspObj.getString("payload");
                 actLen = rspObj.getInt("len");
             } catch (JSONException e) {
-                LOG.error(TAG, e.toString());
+                LOG.error(e.toString());
                 e.printStackTrace();
                 mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
                 return ;
@@ -190,7 +185,6 @@ public class TXMqttDynreg {
             }
             String rspSb = new String(plBytes);
             rspSb = rspSb.substring(0, actLen);
-
             try {
                 JSONObject rspObj = new JSONObject(rspSb.toString());
                 int encryptionType = rspObj.getInt("encryptionType");
@@ -206,9 +200,7 @@ public class TXMqttDynreg {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-
                 mCallback.onFailedDynreg(e);
-                return;
             }
         }
     }
@@ -260,7 +252,7 @@ public class TXMqttDynreg {
             return false;
         }
 
-        LOG.info(TAG, "Register request " + obj);
+        LOG.info("Register request " + obj);
         HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl);
         httpThread.start();
 
