@@ -22,6 +22,30 @@
       "revId": "eeab6735d4b69e0eb597bf99d09c9df57c4193b2",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7b639366_e9900c11",
+        "filename": "explorer/explorer-device-rtc/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-03-03T02:34:34Z",
+      "side": 1,
+      "message": "是的，文档这里改差了，已在Patchset3中修改这处。",
+      "parentUuid": "152cd44e_a6884799",
+      "range": {
+        "startLine": 84,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 96
+      },
+      "revId": "eeab6735d4b69e0eb597bf99d09c9df57c4193b2",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
