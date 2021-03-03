@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 
 public class IoTMainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static String TAG = IoTMainActivity.class.getSimpleName();
 
     /**
      * 用于对Fragment进行管理
@@ -50,18 +53,43 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         initComponent();
         //日志功能开启写权限
         try {
-            int permission = ActivityCompat.checkSelfPermission(this,
-                    "android.permission.WRITE_EXTERNAL_STORAGE");
-            if (permission != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+            for (String ele: PERMISSIONS_STORAGE) {
+                int granted = ActivityCompat.checkSelfPermission(this, ele);
+                if (granted != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+                    break;
+                } else {
+                    initLogConfigurator();
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void initLogConfigurator() {
         // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
         LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "hub-demo.log");
         logConfigurator.configure();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG, "必要权限申请失败");
+                    finish();
+                } else {
+                    initLogConfigurator();
+                    break;
+                }
+            }
+        }
     }
 
     @Override
