@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "152cd44e_a6884799",
+        "filename": "explorer/explorer-device-rtc/README.md",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-03-03T02:16:01Z",
+      "side": 1,
+      "message": "这个要保留吗？\n我看调用的地方调的是重载的方法（带json参数的），最后一个json参数给的null",
+      "range": {
+        "startLine": 84,
+        "startChar": 4,
+        "endLine": 84,
+        "endChar": 96
+      },
+      "revId": "eeab6735d4b69e0eb597bf99d09c9df57c4193b2",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
