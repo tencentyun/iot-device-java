@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.android.core.log;
+package com.tencent.iot.hub.device.java.core.log;
 
 public interface TXMqttLogConstants {
     /**

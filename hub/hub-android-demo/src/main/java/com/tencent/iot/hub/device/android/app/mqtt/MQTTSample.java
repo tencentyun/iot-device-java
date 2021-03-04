@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.gateway.TXGatewayConnection;
 
-import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 
