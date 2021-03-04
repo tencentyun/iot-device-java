@@ -4,27 +4,22 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.tencent.iot.hub.device.android.core.log.TXMqttLog;
-import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
-import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTAImpl;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
@@ -265,7 +260,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             if (mLogUrl != null) {
                 this.mMqttLog = new TXMqttLog(this, mLogUrl);
             } else {
-                this.mMqttLog = new TXMqttLog(this);
+                this.mMqttLog = new TXMqttLog(this, mMqttLogCallBack);
             }
         }
 
