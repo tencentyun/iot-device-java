@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.android.core.util;
+package com.tencent.iot.hub.device.java.core.util;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
