@@ -2,6 +2,9 @@ package com.tencent.iot.hub.device.java.core.mqtt;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.device.CA;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
@@ -27,6 +30,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 import javax.crypto.Mac;
@@ -36,10 +40,12 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREF
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 public class TXMqttConnection implements MqttCallbackExtended {
 
+	public static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
     private static final Logger LOG = LoggerFactory.getLogger(TXMqttConnection.class);
 	private static final String HMAC_SHA_256 = "HmacSHA256";
 	private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
@@ -73,6 +79,15 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	protected int mLastReceivedMessageId = INVALID_MESSAGE_ID;
 
 	protected TXOTAImpl mOTAImpl = null;
+
+
+	protected boolean mMqttLogFlag;
+	public TXMqttLogCallBack mMqttLogCallBack = null;
+	protected TXMqttLog mMqttLog = null;
+
+	public void setmMqttLogCallBack(TXMqttLogCallBack mMqttLogCallBack) {
+		this.mMqttLogCallBack = mMqttLogCallBack;
+	}
 
 	public String getSubDevVersion() {
 		return subDevVersion;
@@ -256,6 +271,52 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
+	 * @param serverURI         服务器URI
+	 * @param productID         产品名
+	 * @param deviceName        设备名，唯一
+	 * @param secretKey         密钥
+	 * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+	 * @param clientPersistence 消息永久存储
+	 * @param logCallBack       日子上传回调接口
+	 * @param callBack          连接、消息发布、消息订阅回调接口
+	 */
+	public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
+							DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttLogCallBack logCallBack,TXMqttActionCallBack callBack) {
+		this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, true, logCallBack, callBack);
+	}
+
+	/**
+	 * @param serverURI         服务器URI
+	 * @param productID         产品名
+	 * @param deviceName        设备名，唯一
+	 * @param secretKey         密钥
+	 * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+	 * @param clientPersistence 消息永久存储
+	 * @param callBack          连接、消息发布、消息订阅回调接口
+	 */
+	public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
+		this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+		this.mMqttLogFlag = mqttLogFlag;
+		this.mMqttLogCallBack = logCallBack;
+	}
+
+	/**
+	 * @param serverURI         服务器URI
+	 * @param productID         产品名
+	 * @param deviceName        设备名，唯一
+	 * @param secretKey         密钥
+	 * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+	 * @param clientPersistence 消息永久存储
+	 * @param callBack          连接、消息发布、消息订阅回调接口
+	 * @param logUrl            日志上报url
+	 */
+	public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
+		this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
+		this.mMqttLogFlag = mqttLogFlag;
+		this.mMqttLogCallBack = logCallBack;
+	}
+
+	/**
 	 * 设置断连状态buffer缓冲区
 	 *
 	 * @param bufferOpts
@@ -301,7 +362,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 		mConnOptions.setUserName(userNameStr);
 
-		if (mSecretKey != null) {
+		if (mSecretKey != null && mSecretKey.length() != 0) {
 			try {
 				String passWordStr = HmacSha256.getSignature(userNameStr.getBytes(),
 						Base64.decode(mSecretKey, Base64.DEFAULT)) + ";hmacsha256";
@@ -320,6 +381,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
 				mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
 						"connected to " + mServerURI);
+				// 连接建立后，如果需要日志，则初始化日志功能
+				if (mMqttLogFlag) {
+					initMqttLog(TAG);
+				}
 			}
 
 			@Override
@@ -860,6 +925,122 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	}
 
 	/**
+	 * 初始化日志上传功能
+	 * @param tag
+	 */
+	protected void initMqttLog(final String tag) {
+		if (mMqttLog == null) {
+			if (mLogUrl != null) {
+				this.mMqttLog = new TXMqttLog(this, mLogUrl);
+			} else {
+				this.mMqttLog = new TXMqttLog(this);
+			}
+		}
+
+		if (Status.OK != mMqttLog.initMqttLog()){
+			LOG.info("Init MqttLog failed!" );
+		}
+	}
+
+	/**
+	 * 生成一条设备日志
+	 * @param logLevel 日志级别：
+	 *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
+	 *                 错误：TXMqttLogConstants.LEVEL_ERROR
+	 *                 警告：TXMqttLogConstants.LEVEL_WARN
+	 *                 通知：TXMqttLogConstants.LEVEL_INFO
+	 *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+	 * @param tag
+	 * @param format
+	 * @param obj
+	 */
+	public void mLog(int logLevel, final String tag,final String format, final Object... obj) {
+		if( mMqttLog != null) {
+			if( !(mMqttLog.saveMqttLog(logLevel, tag, format, obj))) {
+				LOG.warn("Save %s Level Log failed!", TXMqttLog.level_str[logLevel] );
+			}
+		}
+	}
+
+	public void mLog(int logLevel, final String tag,final String msg) {
+		if( mMqttLog != null) {
+			if( !(mMqttLog.saveMqttLog(logLevel, tag, msg))) {
+				LOG.warn("Save %s Level Log failed!", TXMqttLog.level_str[logLevel] );
+			}
+		}
+	}
+
+	/**
+	 * 触发一次日志上传
+	 */
+	public void uploadLog() {
+		if(mMqttLog != null) {
+			mMqttLog.uploadMqttLog();
+		}
+	}
+
+	/**
+	 * 订阅RRPC Topic, 结果通过回调函数通知。
+	 * topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
+	 *
+	 * @param qos         QOS等级(仅支持QOS=0的消息)
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status subscribeRRPCTopic(final int qos, Object userContext) {
+		String topic = String.format("$rrpc/rxd/%s/%s/+", mProductId, mDeviceName);
+		return subscribe(topic, qos, userContext);
+	}
+
+
+	private Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
+		// 应答topic格式: $rrpc/txd/${ProductId}/${DeviceName}/${messageid}
+		String topic  = String.format("$rrpc/txd/%s/%s/%s", mProductId, mDeviceName, processId);
+		//TODO 通过replyMsg构建mqtt messge
+		MqttMessage message = new MqttMessage();
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("test-key", "test-value"); // for test
+			for (Map.Entry<String, String> entrys : replyMsg.entrySet()) {
+				jsonObject.put(entrys.getKey(), entrys.getValue());
+			}
+		} catch (JSONException e) {
+			LOG.error(e.getMessage() + "pack json data failed!");
+		}
+		message.setQos(TXMqttConstants.QOS0);
+		message.setPayload(jsonObject.toString().getBytes());
+		return publish(topic, message ,userContext);
+	}
+
+
+	/**
+	 * 订阅广播Topic, 结果通过回调函数通知。
+	 * 广播Topic格式: $broadcast/rxd/${ProductId}/${DeviceName}
+	 *
+	 * @param qos         QOS等级
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status subscribeBroadcastTopic(final int qos, Object userContext) {
+		String broadCastTopic = "";
+		if ((mMqttClient != null) && (mMqttClient.isConnected())) {
+			broadCastTopic = String.format("$broadcast/rxd/%s/%s", mProductId, mDeviceName);
+			try {
+				mMqttClient.subscribe(broadCastTopic, qos ,userContext, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
+			} catch (Exception e) {
+				LOG.error(e.getMessage() + "subscribe topic: %s failed." + broadCastTopic);
+				mLog(TXMqttLogConstants.LEVEL_FATAL, TAG, "subscribe topic: %s failed.", broadCastTopic);
+				return Status.ERROR;
+			}
+		} else {
+			LOG.error("subscribe topic: %s failed, because mMqttClient not connected." + broadCastTopic);
+			mLog(TXMqttLogConstants.LEVEL_FATAL, TAG, "subscribe topic: %s failed, because mMqttClient not connected.", broadCastTopic);
+			return Status.MQTT_NO_CONN;
+		}
+		return Status.OK;
+	}
+
+	/**
 	 * 设置当前连接状态
 	 *
 	 * @param connectStatus
@@ -894,10 +1075,16 @@ public class TXMqttConnection implements MqttCallbackExtended {
 				mMqttClient.subscribe(topic, qos, null, new QcloudMqttActionListener(TXMqttConstants.SUBSCRIBE));
 			} catch (Exception e) {
 				LOG.error( "subscribe to {} failed.", topic);
+				mLog(TXMqttLogConstants.LEVEL_FATAL, TAG,"subscribe to %s failed.", topic);
 			}
 		}
 
 		mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI);
+
+		//重新连接，处理离线日志，重新获取日志级别
+		if (mMqttLogFlag) {
+			initMqttLog(TAG);
+		}
 	}
 
 	/**
@@ -935,10 +1122,19 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		if (message.getQos() > 0 && message.getId() == mLastReceivedMessageId) {
 			LOG.error("Received topic: {}, id: {}, message: {}, discard repeated message!!!",
 					topic, message.getId(), message);
+			mLog(TXMqttLogConstants.LEVEL_FATAL, TAG,"Received topic: %s, id: %d, message: %s, discard repeated message!!!", topic, message.getId(), message);
 			return;
 		}
 
 		LOG.info("Received topic: {}, id: {}, message: {}", topic, message.getId(), message);
+
+		if (topic != null && topic.contains("rrpc/rxd")) {
+			String[] items = topic.split("/");
+			String processId = items[items.length-1];
+			//TODO：数据格式暂不确定
+			Map<String, String> replyMessage = new HashMap<>();
+			publishRRPCToCloud(null, processId, replyMessage);
+		}
 
 		mLastReceivedMessageId = message.getId();
 
@@ -951,6 +1147,29 @@ public class TXMqttConnection implements MqttCallbackExtended {
 			if (!consumed) {
 				mActionCallBack.onMessageReceived(topic, message);
 			}
+		}
+
+		//判断获取日志等级
+		if (mMqttLog != null) {
+			if (topic.startsWith("$" + TXMqttLogConstants.LOG)) {
+				String jsonStr = new String(message.getPayload());
+
+				try {
+					JSONObject jsonObj = new JSONObject(jsonStr);
+
+					if (jsonObj.has(TXMqttLogConstants.LOG_LEVEL)) {
+						int logLevel = jsonObj.getInt(TXMqttLogConstants.LOG_LEVEL);
+						mMqttLog.setMqttLogLevel(logLevel);
+						uploadLog();
+						LOG.debug("******Set mqttLogLevel to " + logLevel);
+						return;
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			LOG.debug("******Get mqttLogLevel failed ");
 		}
 	}
 
@@ -1033,6 +1252,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 			default:
 				LOG.error("Unknown message on Success:" + token);
+				mLog(TXMqttLogConstants.LEVEL_FATAL, TAG,"Unknown message on Success:" + token);
 				break;
 			}
 		}
@@ -1052,6 +1272,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 				break;
 			default:
 				LOG.error("Unknown message on onFailure:" + token);
+				mLog(TXMqttLogConstants.LEVEL_FATAL, TAG,"Unknown message on onFailure:" + token);
 				break;
 			}
 		}

@@ -17,8 +17,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.iot.hub.device.android.core.log.TXMqttLogCallBack;
-import com.tencent.iot.hub.device.android.core.log.TXMqttLogConstants;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;

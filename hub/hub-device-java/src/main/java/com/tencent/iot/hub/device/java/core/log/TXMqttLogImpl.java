@@ -1,8 +1,12 @@
-package com.tencent.iot.hub.device.android.core.log;
+package com.tencent.iot.hub.device.java.core.log;
 
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.android.core.util.HmacSha1;
-import com.tencent.iot.hub.device.android.core.util.TXLog;
+
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.util.HmacSha1;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -15,6 +19,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class TXMqttLogImpl {
+    private static final Logger LOG = LoggerFactory.getLogger(TXMqttLogImpl.class);
 
     public static final String TAG = TXMqttLogImpl.class.getName();
 
@@ -147,7 +152,17 @@ public class TXMqttLogImpl {
                         if(!response.isSuccessful()) {
                             mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
                         } else {
-                            mMqttLogCallBack.printDebug(String.format("Upload log to %s success!",url));
+                            JSONObject jsonObj = new JSONObject(response.body().string());
+                            if (jsonObj.has("Retcode")) {
+                                int retcode = jsonObj.getInt("Retcode");
+                                if (retcode == 0) { // 上传成功
+                                    mMqttLogCallBack.printDebug(String.format("Upload log to %s success!",url));
+                                } else {
+                                    mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
+                                }
+                            } else {
+                                mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
+                            }
                         }
                     } catch (IOException e) {
                         mMqttLogCallBack.saveLogOffline(log.toString()); //存在文本中
@@ -163,7 +178,7 @@ public class TXMqttLogImpl {
                 try {
                     Thread.sleep(10); //休眠10ms
                 } catch (InterruptedException e) {
-                    TXLog.w(TAG, "The thread has been interrupted");
+                    LOG.warn("The thread has been interrupted");
                 }
             }
         }

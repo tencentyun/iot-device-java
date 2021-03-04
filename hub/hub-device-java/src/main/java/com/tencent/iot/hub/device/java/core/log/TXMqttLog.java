@@ -1,26 +1,26 @@
-package com.tencent.iot.hub.device.android.core.log;
+package com.tencent.iot.hub.device.java.core.log;
 
-import android.text.TextUtils;
-
-import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TXMqttLog {
+    private static final Logger LOG = LoggerFactory.getLogger(TXMqttLog.class);
 
     public static final String TAG = TXMqttLog.class.getName();
 
     private TXMqttLogImpl mqttLogImp;
 
-    private  TXMqttConnection mMqttConnection;
+    private TXMqttConnection mMqttConnection;
 
     public static final String level_str[] = new String[] {"ERR", "ERR", "WRN", "INF", "DBG"};
     private  int mLogLevel = TXMqttLogConstants.LEVEL_FATAL;
@@ -119,7 +119,7 @@ public class TXMqttLog {
         String jsonDocument = buildGetJsonDocument(clientToken);
 
         MqttMessage mqttMessage = new MqttMessage();
-        if (!TextUtils.isEmpty(jsonDocument)) {
+        if (!(jsonDocument == null || jsonDocument.length() == 0)) {
             mqttMessage.setPayload(jsonDocument.getBytes());
         }
         mqttMessage.setQos(TXMqttConstants.QOS0);
@@ -134,7 +134,7 @@ public class TXMqttLog {
             documentJSONObj.put(TXMqttLogConstants.TYPE, TXMqttLogConstants.GET_LOG_LEVEL);
             documentJSONObj.put(TXMqttLogConstants.CLIENT_TOKEN, clientToken);
         } catch (JSONException e) {
-            TXLog.e(TAG, e, "build report info failed");
+            LOG.error(e.getMessage() + "build report info failed");
             return "";
         }
 
