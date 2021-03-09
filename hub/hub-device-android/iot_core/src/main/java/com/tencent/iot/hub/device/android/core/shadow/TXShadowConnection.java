@@ -262,6 +262,15 @@ public class TXShadowConnection {
     }
 
     /**
+     * 上报空的reported信息，清空服务器中reported信息。
+     *
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status reportNullReportedInfo() {
+        return mTXShadowConn.reportNullReportedInfo();
+    }
+
+    /**
      * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
      *
      * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
