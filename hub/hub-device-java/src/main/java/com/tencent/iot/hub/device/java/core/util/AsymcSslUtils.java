@@ -9,19 +9,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateCrtKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Random;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -32,6 +37,8 @@ import javax.net.ssl.TrustManagerFactory;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -386,6 +393,28 @@ public class AsymcSslUtils {
                 exp2, crtCoef);
 
         return keySpec;
+    }
+
+    /**
+     * 从PEM格式的公钥字符串中提取rsa公钥的前24字节
+     * @param pemStr PEM格式的公钥字符串
+     * @return rsa公钥的前24字节
+     */
+    public static byte[] getRSAPublicKeyFromPem(String pemStr) {
+        byte[] ret = new byte[24];
+        try {
+            PemReader pemReader = new PemReader(new StringReader(pemStr));
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            PemObject pemObject = pemReader.readPemObject();
+            byte[] content = pemObject.getContent();
+            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(content);
+            RSAPublicKey pubKey = (RSAPublicKey) factory.generatePublic(pubKeySpec);
+            byte[] pubKeyBytes = pubKey.getModulus().toByteArray();
+            System.arraycopy(pubKeyBytes, 1, ret, 0, ret.length);
+        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 }
 
