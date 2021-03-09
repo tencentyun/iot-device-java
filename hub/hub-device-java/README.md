@@ -28,23 +28,23 @@
 
 -  gradle 工程 正式版SDK 远程构建
 
-    如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖：
+    如果您想通过jar引用方式进行项目开发，可在module目录下的build.gradle中添加依赖，如下依赖，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本：
     ```
     dependencies {
         ...
-        implementation 'com.tencent.iot.hub:hub-device-java:1.0.0'
+        implementation 'com.tencent.iot.hub:hub-device-java:x.x.x'
     }
     ```
 
 -  maven 工程 正式版SDK 远程构建
 
-    在工程根目录的pom.xml中添加：
+    在工程根目录的pom.xml中添加，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本：
     ```
     <dependencies>
         <dependency>
             <groupId>com.tencent.iot.hub</groupId>
             <artifactId>hub-device-java</artifactId>
-            <version>1.0.0</version>
+            <version>x.x.x</version>
         </dependency>
     </dependencies>
     ```
@@ -65,10 +65,10 @@
         }
     }
     ```
-    在应用模块的build.gradle中配置
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，中间位+1
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.hub:hub-device-java:1.0.1-SNAPSHOT'
+        implementation 'com.tencent.iot.hub:hub-device-java:x.x.x-SNAPSHOT'
     }
     ```
 

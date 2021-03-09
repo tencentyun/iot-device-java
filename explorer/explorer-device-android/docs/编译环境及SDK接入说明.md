@@ -12,7 +12,7 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
 - 集成 SDK 方式
  -  gradle 工程 正式版SDK 远程构建
 
-    在应用模块的build.gradle中配置，具体版本号可参考 [explorer-device-android](https://cloud.tencent.com/document/product/1081/48355) 。
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本 
     ``` gr
     dependencies {
         implementation 'com.tencent.iot.explorer:explorer-device-android:x.x.x'
@@ -34,7 +34,7 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
         }
     }
     ```
-    在应用模块的build.gradle中配置，具体版本号可参考 [explorer-device-android](https://cloud.tencent.com/document/product/1081/48355) 。
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，中间位+1
     ``` gr
     dependencies {
         implementation 'com.tencent.iot.explorer:explorer-device-android::x.x.x-SNAPSHOT'
