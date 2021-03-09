@@ -276,6 +276,25 @@ public class TXShadowConnection {
 	}
 
 	/**
+	 * 上报空的reported信息，清空服务器中reported信息。
+	 *
+	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 */
+	public Status reportNullReportedInfo() {
+		Status status = checkMqttStatus();
+		if (Status.OK != status) {
+			return status;
+		}
+
+		String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
+		String jsonDocument = buildReportNullJsonDocument(clientToken);
+
+		LOG.debug("reportNullReportedInfo, document: {}", jsonDocument);
+
+		return publish(OPERATION_TOPIC, jsonDocument, null);
+	}
+
+	/**
 	 * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
 	 *
 	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
@@ -459,6 +478,27 @@ public class TXShadowConnection {
 		return documentJSONObj.toString();
 	}
 
+	private String buildReportNullJsonDocument(String clientToken) {
+		JSONObject documentJSONObj = new JSONObject();
+
+		try {
+			documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.UPDATE);
+
+			JSONObject stateJSONObj = new JSONObject();
+			stateJSONObj.put(TXShadowConstants.REPORTED, JSONObject.NULL);
+
+			documentJSONObj.put(TXShadowConstants.STATE, stateJSONObj);
+			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
+			documentJSONObj.put(TXShadowConstants.VERSION, 0);
+
+		} catch (JSONException e) {
+			LOG.error("{}", "build report info failed", e);
+			return "";
+		}
+
+		return documentJSONObj.toString();
+	}
+
 	private String buildDesiredNullJsonDocument(String reportJsonDoc, String clientToken) {
 		JSONObject documentJSONObj = new JSONObject();
 
@@ -470,7 +510,7 @@ public class TXShadowConnection {
 				JSONObject reportedJSONObj = new JSONObject(reportJsonDoc);
 				stateJSONObj.put(TXShadowConstants.REPORTED, reportedJSONObj);
 			}
-			stateJSONObj.put(TXShadowConstants.DESIRED, "");
+			stateJSONObj.put(TXShadowConstants.DESIRED, JSONObject.NULL);
 
 			documentJSONObj.put(TXShadowConstants.STATE, stateJSONObj);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
