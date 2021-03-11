@@ -32,6 +32,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -387,21 +388,29 @@ public class IoTMqttFragment extends Fragment {
                 mDevCert = settings.getString(DEVICE_CERT, mDevCert);
                 mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
 
+                // init connection
+                MqttConnectOptions conOptions = new MqttConnectOptions();
+                conOptions.setCleanSession(true);
+
                 SocketFactory socketFactory = null;
                 if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0) {
                     TXLog.i(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
-                    socketFactory = AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes()));
+                    conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
                 } else if (mDevPSK != null && mDevPSK.length() != 0){
                     TXLog.i(TAG, "Using PSK");
-                    socketFactory = AsymcSslUtils.getSocketFactory();
+
                 } else {
                     TXLog.i(TAG, "Using cert assets file");
-                    socketFactory = AsymcSslUtils.getSocketFactoryByAssetsFile(getContext(), mDevCertName, mDevKeyName);
+                    conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(getContext(), mDevCertName, mDevKeyName));
                 }
 
-                TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK, socketFactory);
+                conOptions.setConnectionTimeout(8);
+                conOptions.setKeepAliveInterval(60);
+                conOptions.setAutomaticReconnect(true);
+
+                TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).setMqttConnectOptions(conOptions);
                 try {
-                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
 
                         @Override
                         public void onConnected() {
@@ -419,7 +428,7 @@ public class IoTMqttFragment extends Fragment {
                         public void onDisconnected() {
                         }
                     });
-                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connect();
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).connect();
                 } catch (MqttException e) {
                     e.printStackTrace();
                     Log.e(TAG, "MqttException " + e.toString());
@@ -430,7 +439,7 @@ public class IoTMqttFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName).disconnect();
+                    TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).disconnect();
                     TXWebSocketManager.getInstance().releaseClient(mProductID, mDevName);
                 } catch (MqttException e) {
                     e.printStackTrace();
@@ -440,7 +449,7 @@ public class IoTMqttFragment extends Fragment {
         mConnectStatusWebSocketBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConnectionState show = TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState();
+                ConnectionState show = TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState();
                 Log.e(TAG, "current state " + show);
             }
         });

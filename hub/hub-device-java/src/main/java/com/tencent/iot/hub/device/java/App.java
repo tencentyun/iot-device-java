@@ -136,7 +136,7 @@ public class App {
 
 	private static void websocketdisconnect() {
 		try {
-			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).disconnect();
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).disconnect();
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -144,21 +144,29 @@ public class App {
 
 	private static void websocketConnect() {
 
-		SocketFactory socketFactory = null;
-		if (mDevPSK != null) {
-			socketFactory = AsymcSslUtils.getSocketFactory();
-		} else {
-			String workDir = System.getProperty("user.dir") + "/";
-			socketFactory = AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath);
-		}
-
-		TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setSecretKey(mDevPSK, socketFactory);
 		try {
-			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
+			// init connection
+			MqttConnectOptions conOptions = new MqttConnectOptions();
+			conOptions.setCleanSession(true);
+
+			if (mDevPSK != null) {
+
+			} else {
+				String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
+				conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
+			}
+
+			conOptions.setConnectionTimeout(8);
+			conOptions.setKeepAliveInterval(60);
+			conOptions.setAutomaticReconnect(true);
+
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).setMqttConnectOptions(conOptions);
+
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).setTXWebSocketActionCallback(new TXWebSocketActionCallback() {
 
 				@Override
 				public void onConnected() {
-					System.out.println("onConnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+					System.out.println("onConnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
 				}
 
 				@Override
@@ -168,15 +176,15 @@ public class App {
 
 				@Override
 				public void onConnectionLost(Throwable cause) {
-					System.out.println("onConnectionLost" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+					System.out.println("onConnectionLost" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
 				}
 
 				@Override
 				public void onDisconnected() {
-					System.out.println("onDisconnected" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName).getConnectionState());
+					System.out.println("onDisconnected" + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
 				}
 			});
-			TXWebSocketManager.getInstance().getClient(mProductID, mDevName).connect();
+			TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).connect();
 		} catch (MqttException e) {
 			e.printStackTrace();
 			System.out.println("MqttException " + e.toString());
