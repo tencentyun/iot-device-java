@@ -1,6 +1,5 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
-import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
@@ -13,6 +12,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -21,6 +22,7 @@ import javax.net.SocketFactory;
 
 public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackExtended {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TXWebSocketClient.class);
     private volatile TXWebSocketActionCallback connectListener;
     private boolean automicReconnect = true;
     private String clientId;
@@ -29,8 +31,9 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     // 状态机
     private AtomicReference<ConnectionState> state = new AtomicReference<>(ConnectionState.DISCONNECTED);
 
-    public TXWebSocketClient(String serverURI, String clientId) throws MqttException {
+    public TXWebSocketClient(String serverURI, String clientId, String secretKey) throws MqttException {
         super(serverURI, clientId, new MemoryPersistence());
+        this.secretKey = secretKey;
         this.clientId = clientId;
         setCallback(this);
     }
@@ -41,7 +44,9 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
             System.out.println("already connect");
             throw new MqttException(MqttException.REASON_CODE_CLIENT_CONNECTED);
         }
+
         IMqttToken ret = super.connect(conOptions);
+        ret.waitForCompletion(-1);
         state.set(ConnectionState.CONNECTING);
         return ret;
     }
@@ -51,18 +56,19 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         super.reconnect();
     }
 
-    public void setSecretKey(String secretKey, SocketFactory socketFactory) {
-        this.secretKey = secretKey;
+    public void setMqttConnectOptions(MqttConnectOptions mqttConnectOptions) {
+        this.conOptions = mqttConnectOptions;
 
         // 设置密钥之后可以进行 mqtt 连接
-        conOptions = new MqttConnectOptions();
         String userName = generateUsername();
         conOptions.setUserName(userName);
-        conOptions.setPassword(generatePwd(userName).toCharArray());
-        conOptions.setCleanSession(true);
-        conOptions.setSocketFactory(socketFactory);
-        conOptions.setAutomaticReconnect(true);
-        conOptions.setKeepAliveInterval(60);
+        if (secretKey != null && secretKey.length() != 0) {
+            try {
+                conOptions.setPassword(generatePwd(userName).toCharArray());
+            } catch (IllegalArgumentException e) {
+                LOG.debug("Failed to set password");
+            }
+        }
         conOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
     }
 
