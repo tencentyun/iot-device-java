@@ -96,7 +96,7 @@ public class LightSample {
 
         if (mDevPSK != null && mDevPSK.length() != 0) {
             TXLog.i(TAG, "Using PSK");
-            options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+
         } else {
             TXLog.i(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, mDevCertName, mDevKeyName));

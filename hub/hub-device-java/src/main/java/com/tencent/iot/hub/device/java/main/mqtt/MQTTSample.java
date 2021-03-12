@@ -82,9 +82,6 @@ public class MQTTSample {
         options.setKeepAliveInterval(240);
         options.setAutomaticReconnect(true);
 
- //       options.setSocketFactory(AsymcSslUtils.getSocketFactory());
-       
-
         MQTTRequest mqttRequest = new MQTTRequest("connect", requestID.getAndIncrement());
         mMqttConnection.connect(options, mqttRequest);
 

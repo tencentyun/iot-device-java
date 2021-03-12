@@ -9,9 +9,14 @@ public interface TXMqttConstants {
     String APPID = "12020126";
 
     /**
-     * 腾讯云唯一连接地址
+     * 腾讯云密钥认证唯一连接地址
      */
-    String PREFIX = "ssl://";
+    String PSK_PREFIX = "tcp://";
+
+    /**
+     * 腾讯云证书认证唯一连接地址
+     */
+    String CER_PREFIX = "ssl://";
 
     /**
      * 腾讯云连接地址
@@ -21,12 +26,12 @@ public interface TXMqttConstants {
     /**
      * 腾讯云证书认证端口
      */
-    String MQTT_SERVER_PORT_TLS = "8883";
+    String MQTT_SERVER_PORT_CER = "8883";
 
     /**
      * 腾讯云密钥认证端口
      */
-    String MQTT_SERVER_PORT_NOTLS = "1883";
+    String MQTT_SERVER_PORT_PSK = "1883";
 
     /**
      * 云端保留主题的最大长度

@@ -63,7 +63,7 @@ public class GatewaySample {
 
         if (mDevPSK != null && mDevPSK.length() != 0) {
             LOG.info("Using PSK");
-            options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+
         } else {
             LOG.info("Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));

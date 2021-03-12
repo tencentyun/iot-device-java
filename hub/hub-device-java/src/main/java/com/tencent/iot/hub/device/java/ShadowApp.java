@@ -45,8 +45,6 @@ public class ShadowApp {
 		options.setKeepAliveInterval(240);
 		options.setAutomaticReconnect(false);
 		
-		options.setSocketFactory(AsymcSslUtils.getSocketFactory());
-		
 		mShadowConnection = new TXShadowConnection(testProductIDString, testDeviceNameString, testPSKString, new callback());
 		mShadowConnection.connect(options, null);
 		try {

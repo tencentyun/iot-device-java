@@ -32,8 +32,10 @@ import java.util.Iterator;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TLS;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 public class TXMqttConnection implements MqttCallbackExtended {
@@ -192,7 +194,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 		this.mSecretKey = secretKey;
 		if (serverURI == null) {
-			this.mServerURI = PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS;
+			if (this.mSecretKey != null && this.mSecretKey.length() != 0) {
+				this.mServerURI = PSK_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_PSK;
+			} else {
+				this.mServerURI = CER_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_CER;
+			}
 		} else {
 			this.mServerURI = serverURI;
 		}
@@ -230,7 +236,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 		this.mSecretKey = secretKey;
 		if (serverURI == null) {
-			this.mServerURI = PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TLS;
+			if (this.mSecretKey != null && this.mSecretKey.length() != 0) {
+				this.mServerURI = PSK_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_PSK;
+			} else {
+				this.mServerURI = CER_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_CER;
+			}
 		} else {
 			this.mServerURI = serverURI;
 		}

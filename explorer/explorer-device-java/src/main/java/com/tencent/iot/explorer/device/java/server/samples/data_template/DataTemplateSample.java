@@ -91,7 +91,7 @@ public class DataTemplateSample {
 
         if (mDevPSK != null && mDevPSK.length() != 0){
             LOG.info(TAG, "Using PSK");
-            options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+
         } else {
             LOG.info(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));

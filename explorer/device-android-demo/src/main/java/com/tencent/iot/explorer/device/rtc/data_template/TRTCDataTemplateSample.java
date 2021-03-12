@@ -101,10 +101,7 @@ public class TRTCDataTemplateSample {
 
         if (mDevPSK != null && mDevPSK.length() != 0){
             TXLog.i(TAG, "Using PSK");
-            if (mBrokerURL != null && mBrokerURL.contains("tcp")) {
-            } else {
-                options.setSocketFactory(AsymcSslUtils.getSocketFactory());
-            }
+
         } else {
             TXLog.i(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, mDevCertName, mDevKeyName));

@@ -113,8 +113,8 @@ public class ShadowSample {
         options.setKeepAliveInterval(240);
         options.setAutomaticReconnect(true);
 
-        if(SECRET_KEY != null){
-            options.setSocketFactory(AsymcSslUtils.getSocketFactory());
+        if(SECRET_KEY != null && SECRET_KEY.length() != 0){
+
         } else{
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, DEVICE_CERT_NAME, DEVICE_KEY_NAME));
         }
