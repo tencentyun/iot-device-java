@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27fa5b17_308b3361",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/App.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-03-12T07:17:45Z",
+      "side": 1,
+      "message": "if (mDevPSK !\u003d null) 分支下没有逻辑，可以省去",
+      "range": {
+        "startLine": 152,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 4
+      },
+      "revId": "627f94f0aab606e7e17fea0b86551b2b24c69330",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02dc9ed0_b9f3086b",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXWebSocketManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-03-12T07:17:45Z",
+      "side": 1,
+      "message": "if (wsUrl \u003d\u003d null) 进入后续分支",
+      "range": {
+        "startLine": 43,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 17
+      },
+      "revId": "627f94f0aab606e7e17fea0b86551b2b24c69330",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
