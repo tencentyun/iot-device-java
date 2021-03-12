@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d9a94e7d_71204c2c",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/App.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-03-12T09:14:55Z",
+      "side": 1,
+      "message": "好的，已在Patchset2修改判断。",
+      "parentUuid": "27fa5b17_308b3361",
+      "range": {
+        "startLine": 152,
+        "startChar": 0,
+        "endLine": 157,
+        "endChar": 4
+      },
+      "revId": "627f94f0aab606e7e17fea0b86551b2b24c69330",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "02dc9ed0_b9f3086b",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXWebSocketManager.java",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "627f94f0aab606e7e17fea0b86551b2b24c69330",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d0b34e92_69d3ba54",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXWebSocketManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-03-12T09:14:55Z",
+      "side": 1,
+      "message": "好的，已在Patchset2修改判断。",
+      "parentUuid": "02dc9ed0_b9f3086b",
+      "range": {
+        "startLine": 43,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 17
+      },
+      "revId": "627f94f0aab606e7e17fea0b86551b2b24c69330",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
