@@ -3,7 +3,7 @@ import com.tencent.iot.hub.device.java.core.dynreg.TXMqttBindDeviceCallback;
 
 import org.junit.Test;
 
-import unit.test.BuildConfig;
+import hub.unit.test.BuildConfig;
 
 import static org.junit.Assert.*;
 

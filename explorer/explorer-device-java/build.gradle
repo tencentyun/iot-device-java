@@ -9,7 +9,7 @@ rootProject.ext.configPath = "./src/test/unit_test_config.json"
 apply from: "../../parse_json.gradle"
 
 buildConfig {
-    packageName = 'unit.test'
+    packageName = 'explorer.unit.test'
     buildConfigField 'String', 'TESTCLASSNAME_CONFIGNAME', "${getValueById('TESTCLASSNAME_CONFIGNAME')}"
 }
 
