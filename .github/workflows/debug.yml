@@ -45,7 +45,9 @@ jobs:
       - name: Archive the apks
         uses: actions/upload-artifact@v2
         with:
-          path: '*-device-android/*-demo/build/outputs/apk/debug/*.apk'
+          path: |
+            'explorer/device-android-demo/build/outputs/apk/debug/*.apk'
+            'hub/hub-android-demo/build/outputs/apk/debug/*.apk'
       - name: Upload apks to fir
         run: |
           expApk=$(ls explorer/device-android-demo/build/outputs/apk/debug/*.apk)
