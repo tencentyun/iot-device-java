@@ -34,6 +34,11 @@ public interface TXMqttConstants {
     String MQTT_SERVER_PORT_PSK = "1883";
 
     /**
+     * 腾讯云TID认证端口
+     */
+    String MQTT_SERVER_PORT_TID = "1884";
+
+    /**
      * 云端保留主题的最大长度
      */
     int MAX_SIZE_OF_CLOUD_TOPIC = 128;
