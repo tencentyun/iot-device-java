@@ -18,16 +18,16 @@
         android:layout_height="wrap_content"
         android:entries="@array/setup_items"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/dynreg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="动态注册" />
 
         <Button
             android:id="@+id/connect"
@@ -42,6 +42,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="断开MQTT连接" />
+
+        <Button
+            android:id="@+id/dynreg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="动态注册" />
 
     </LinearLayout>
 
@@ -214,10 +221,18 @@
             android:text="上报子设备版本" />
     </LinearLayout>
 
+    </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:text="日志输出："
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
             android:id="@+id/log_info"
             android:layout_width="match_parent"
