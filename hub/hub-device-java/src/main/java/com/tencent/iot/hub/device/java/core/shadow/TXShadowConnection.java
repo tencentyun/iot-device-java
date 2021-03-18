@@ -236,6 +236,10 @@ public class TXShadowConnection {
 		return mMqttConnection.subscribe(topic, qos, userContext);
 	}
 
+	public Status unSubscribe(String topicName, Object userContext) {
+		return mMqttConnection.unSubscribe(topicName, userContext);
+	}
+
 	/**
 	 * 获取连接状态
 	 *
