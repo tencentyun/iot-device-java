@@ -322,7 +322,7 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textView.append(logInfo + "\n");
+                textView.append("==> " + logInfo + "\n\n");
             }
         });
     }
