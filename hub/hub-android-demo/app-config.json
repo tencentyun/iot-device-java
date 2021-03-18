@@ -1,11 +1,17 @@
 {
-  "PRODUCT_ID":        "",
-  "DEVICE_NAME":       "",
-  "DEVICE_PSK":        "",
-  "SUB_PRODUCT_ID":    "",
-  "SUB_DEVICE_PSK":    "",
-  "SUB_DEV_NAME":      "",
-  "TEST_TOPIC":        "",
-  "SHADOW_TEST_TOPIC": "",
-  "PRODUCT_KEY":       ""
+  "PRODUCT_ID":                 "",
+  "DEVICE_NAME":                "",
+  "DEVICE_PSK":                 "",
+  "SUB_PRODUCT_ID":             "",
+  "SUB_DEVICE_PSK":             "",
+  "SUB_DEV_NAME":               "",
+  "TEST_TOPIC":                 "",
+  "SHADOW_TEST_TOPIC":          "",
+  "PRODUCT_KEY":                "",
+  "DOOR_PRODUCT_ID":            "",
+  "DOOR_DEVICE_NAME":           "",
+  "DOOR_DEVICE_PSK":            "",
+  "AIRCONDITIONER_PRODUCT_ID":  "",
+  "AIRCONDITIONER_DEVICE_NAME": "",
+  "AIRCONDITIONER_DEVICE_PSK":  ""
 }
