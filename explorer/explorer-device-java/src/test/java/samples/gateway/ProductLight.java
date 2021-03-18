@@ -1,4 +1,5 @@
-package com.tencent.iot.explorer.device.java.server.samples.gateway;
+package samples.gateway;
+
 
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
@@ -8,6 +9,7 @@ import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -21,24 +23,25 @@ import java.util.concurrent.TimeUnit;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
-public class ProductAirconditioner {
+public class ProductLight {
+    private static final String TAG = "TXProductLight";
 
     public TXGatewaySubdev mGatewaySubdev;
-    private final static String mSubDev1JsonFileName = "subdev2.json";
-    private static final Logger LOG = LoggerFactory.getLogger(ProductAirconditioner.class);
+    private final static String mSubDev1JsonFileName = "gateway.json";
+    private static final Logger LOG = LoggerFactory.getLogger(ProductLight.class);
 
     /**上报周期*/
-    private int reportPeriod = 10 * 1000;
+    private int reportPeriod = 1000;
     private reportPropertyPeriodically mReportThread = null;
 
     //light property
     public ConcurrentHashMap<String, Object> mProperty = null;
 
-    public ProductAirconditioner(TXGatewayClient connection,  String productId, String deviceName) {
+    public ProductLight(TXGatewayClient connection, String productId, String deviceName) {
         //初始化模板数据
         initTemplateData();
         mGatewaySubdev = new TXGatewaySubdev(connection,  productId, deviceName, mSubDev1JsonFileName,
-                new ActionCallBack(), new DownStreamCallBack());
+                                            new ProductLightActionCallBack(), new ProductLightDownStreamCallBack());
     }
 
     /**
@@ -48,9 +51,9 @@ public class ProductAirconditioner {
         //初始化属性
         mProperty = new ConcurrentHashMap<String, Object>();
         mProperty.put("power_switch",0);
-        mProperty.put("Temperature",1);
-        mProperty.put("Mode",0);
-        mProperty.put("Wind",1);
+        mProperty.put("color",0);
+        mProperty.put("brightness",1);
+        mProperty.put("name","light");
     }
 
     /**
@@ -64,11 +67,12 @@ public class ProductAirconditioner {
             if(mProperty.containsKey(key)) {
                 try {
                     if(key.equals("power_switch") &&  mProperty.get(key) != params.get(key)) {
-                        LOG.error(mProperty.get(key).toString() + params.get(key).toString());
+                        LOG.error(TAG,mProperty.get(key).toString() + params.get(key).toString());
+                        LightSwitchEventPost(params.getInt(key));
                     }
                     mProperty.put(key, params.get(key));
                 } catch (JSONException e) {
-                    LOG.error("setPropertyBaseOnJson: failed! Invalid json!");
+                    LOG.error(TAG, "setPropertyBaseOnJson: failed! Invalid json!");
                     return;
                 }
             }
@@ -78,20 +82,20 @@ public class ProductAirconditioner {
     /**
      * 获取最后上报的信息以及未处理的control
      */
-    private void StatusGet() {
+    private void LightStatusGet() {
         if(Status.OK != mGatewaySubdev.propertyGetStatus("report", false)) {
-            LOG.error("property get statuts failed!");
+            LOG.error(TAG, "property get statuts failed!");
         }
 
         if(Status.OK != mGatewaySubdev.propertyGetStatus("control", false)) {
-            LOG.error("property get statuts failed!");
+            LOG.error(TAG, "property get statuts failed!");
         }
     }
 
     /**
      * 上报设备的基本信息
      */
-    private void InfoReport() {
+    private void LightInfoReport() {
         JSONObject params = new JSONObject();
         try {
             JSONObject label = new JSONObject();  //device label
@@ -105,20 +109,54 @@ public class ProductAirconditioner {
             params.put("mac", "00:00:00:00");
             params.put("device_label", label);
         } catch (JSONException e) {
-            LOG.error("Construct light info failed!");
+            LOG.error(TAG, "Construct light info failed!");
             return;
         }
         if(Status.OK != mGatewaySubdev.propertyReportInfo(params)) {
-            LOG.error("light info report failed!");
+            LOG.error(TAG, "light info report failed!");
         }
     }
 
     /**
      * 根据LightStatusGet中发送control的回复的参数判断需不需要处理control,如果处理完毕，则清除control
      */
-    private void ControlClear() {
+    private void LightControlClear() {
         if (Status.OK != mGatewaySubdev.propertyClearControl()){
-            LOG.error("clear control failed!");
+            LOG.error(TAG, "clear control failed!");
+        }
+    }
+
+    /**
+     * 当开关变化时，发送事件
+     */
+    private void LightSwitchEventPost(int isSwitchOpen) {
+        JSONArray events = new JSONArray();
+
+        //event:status_report
+        try {
+            JSONObject event = new JSONObject();
+            event.put("eventId","status_report");
+            event.put("type", "info");
+            event.put("timestamp", System.currentTimeMillis());
+
+            JSONObject params = new JSONObject();
+            params.put("status",0);
+
+            if(1 == isSwitchOpen)
+                params.put("message","switch open!");
+            else
+                params.put("message","switch close!");
+
+            event.put("params", params);
+
+            events.put(event);
+        } catch (JSONException e) {
+            LOG.error(TAG, "Construct event params failed!");
+            return;
+        }
+
+        if(Status.OK != mGatewaySubdev.eventsPost(events)){
+            LOG.error(TAG, "events post failed!");
         }
     }
 
@@ -134,19 +172,19 @@ public class ProductAirconditioner {
                     try {
                         property.put(entry.getKey(),entry.getValue());
                     } catch (JSONException e) {
-                        LOG.error("construct property failed!");
+                        LOG.error(TAG, "construct property failed!");
                     }
                 }
 
                 if (Status.OK != mGatewaySubdev.propertyReport(property, null)) {
-                    LOG.error("report property failed!");
+                    LOG.error(TAG, "report property failed!");
                     break;
                 }
 
                 try {
                     Thread.sleep(reportPeriod);
                 } catch (InterruptedException e) {
-                    LOG.error("The thread has been interrupted");
+                    LOG.error(TAG, "The thread has been interrupted");
                     break;
                 }
             }
@@ -156,20 +194,20 @@ public class ProductAirconditioner {
     /**
      * 实现子设备上下线，订阅成功接口
      */
-    private class ActionCallBack extends TXGatewaySubdevActionCallBack {
+    private class ProductLightActionCallBack extends TXGatewaySubdevActionCallBack {
 
         /**上线后，订阅相关主题*/
         @Override
         public void onSubDevOnline() {
-            LOG.debug("dev[%s] online!", mGatewaySubdev.mDeviceName);
+            LOG.debug(TAG, "dev[%s] online!", mGatewaySubdev.mDeviceName);
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error("subscribeTopic: subscribe property down stream topic failed!");
+                LOG.error(TAG, "subscribeTopic: subscribe property down stream topic failed!");
             }
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error("subscribeTopic: subscribe event down stream topic failed!");
+                LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
             }
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
-                LOG.error("subscribeTopic: subscribe event down stream topic failed!");
+                LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
             }
         }
 
@@ -188,18 +226,18 @@ public class ProductAirconditioner {
             String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             if (Status.ERROR == status) {
-                LOG.error(logInfo);
+                LOG.error(TAG,logInfo);
             } else {
                 String topic = Arrays.toString(asyncActionToken.getTopics());
                 if(topic.substring(1,topic.length()-1).equals(mGatewaySubdev.mPropertyDownStreamTopic)) {
-                    InfoReport(); //发送基本信息
-                    StatusGet();  //获取最后的状态以及未处理的control信息
+                    LightInfoReport(); //发送基本信息
+                    LightStatusGet();  //获取最后的状态以及未处理的control信息
                     if(null == mReportThread) {
                         mReportThread = new reportPropertyPeriodically(); //周期性上报
                         mReportThread.start();
                     }
                 }
-                LOG.debug(logInfo);
+                LOG.debug(TAG,logInfo);
             }
         }
 
@@ -208,11 +246,11 @@ public class ProductAirconditioner {
     /**
      * 实现下行消息处理的回调接口
      */
-    public class DownStreamCallBack extends TXDataTemplateDownStreamCallBack {
+    public class ProductLightDownStreamCallBack extends TXDataTemplateDownStreamCallBack {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //Just print
-            LOG.debug("reply received : " + replyMsg);
+            LOG.debug(TAG, "reply received : " + replyMsg);
         }
 
         @Override
@@ -228,11 +266,11 @@ public class ProductAirconditioner {
                     } else { //control
                         JSONObject params = data.getJSONObject("control");
                         setPropertyBaseOnJson(params);
-                        ControlClear();
+                        LightControlClear();
                     }
                 }
             } catch (JSONException e) {
-                LOG.error("get status reply  params invalid!");
+                LOG.error(TAG,"get status reply  params invalid!");
             }
         }
 
@@ -255,7 +293,7 @@ public class ProductAirconditioner {
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug("action [%s] received, input:" + params, actionId);
+            LOG.debug(TAG, "action [%s] received, input:" + params, actionId);
             //do something based action id and input
             if(actionId.equals("blink")) {
                 try {

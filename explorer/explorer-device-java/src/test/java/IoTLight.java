@@ -1,6 +1,4 @@
-package com.tencent.iot.explorer.device.java.test;
-
-import com.tencent.iot.explorer.device.java.server.samples.scenarized.LightSample;
+import samples.scenarized.LightSample;
 
 public class IoTLight {
 
