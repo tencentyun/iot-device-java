@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.java.server.samples.gateway;
+package samples.gateway;
 
 
 

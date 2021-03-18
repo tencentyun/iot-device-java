@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.java.server.samples.data_template;
+package samples.data_template;
 
 
 

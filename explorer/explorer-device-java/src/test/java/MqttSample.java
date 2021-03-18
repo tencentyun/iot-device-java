@@ -1,6 +1,6 @@
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.java.server.samples.data_template.DataTemplateSample;
+import samples.data_template.DataTemplateSample;
 import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;

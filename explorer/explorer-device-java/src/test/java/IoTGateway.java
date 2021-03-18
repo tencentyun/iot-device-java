@@ -4,13 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.tencent.iot.explorer.device.java.server.samples.gateway.GatewaySample;
+import samples.gateway.GatewaySample;
 import com.tencent.iot.explorer.device.java.utils.ReadFile;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.*;
 
 public class IoTGateway {
     private static final Logger LOG = LoggerFactory.getLogger(IoTGateway.class);
