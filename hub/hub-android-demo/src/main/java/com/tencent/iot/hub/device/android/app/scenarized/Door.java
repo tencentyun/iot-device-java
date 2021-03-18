@@ -1,7 +1,9 @@
 package com.tencent.iot.hub.device.android.app.scenarized;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.tencent.iot.hub.device.android.app.BuildConfig;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
@@ -21,17 +23,17 @@ public class Door {
     /**
      * 产品ID
      */
-    private static final String PRODUCT_ID = "YOUR_PRODUCT_ID";
+    private static final String PRODUCT_ID = BuildConfig.DOOR_PRODUCT_ID;
 
     /**
      * 设备名称
      */
-    private static final String DEVICE_NAME = "YOUR_DEVICE_NAME";
+    private static final String DEVICE_NAME = BuildConfig.DOOR_DEVICE_NAME;
 
     /**
      * 密钥
      */
-    private static final String SECRET_KEY = "YOUR_SECRET_KEY";
+    private static final String SECRET_KEY = BuildConfig.DOOR_DEVICE_PSK;
 	
     /**
      * 设备证书名
@@ -68,12 +70,9 @@ public class Door {
             options.setConnectionTimeout(8);
             options.setKeepAliveInterval(240);
             options.setAutomaticReconnect(true);
-            if (SECRET_KEY != null && SECRET_KEY.length() != 0) {
-
-            } else {
+            if (TextUtils.isEmpty(SECRET_KEY)) {
                 options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, DEVICE_CERT_NAME, DEVICE_KEY_NAME));
             }
-
             mqttConnection.connect(options, null);
             DisconnectedBufferOptions bufferOptions = new DisconnectedBufferOptions();
             bufferOptions.setBufferEnabled(true);

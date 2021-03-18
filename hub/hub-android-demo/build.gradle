@@ -28,6 +28,12 @@ android {
         buildConfigField 'String', 'TEST_TOPIC', "\"${getValueById('TEST_TOPIC')}\""
         buildConfigField 'String', 'SHADOW_TEST_TOPIC', "\"${getValueById('SHADOW_TEST_TOPIC')}\""
         buildConfigField 'String', 'PRODUCT_KEY', "\"${getValueById('PRODUCT_KEY')}\""
+        buildConfigField 'String', 'DOOR_PRODUCT_ID', "\"${getValueById('DOOR_PRODUCT_ID')}\""
+        buildConfigField 'String', 'DOOR_DEVICE_NAME', "\"${getValueById('DOOR_DEVICE_NAME')}\""
+        buildConfigField 'String', 'DOOR_DEVICE_PSK', "\"${getValueById('DOOR_DEVICE_PSK')}\""
+        buildConfigField 'String', 'AIRCONDITIONER_PRODUCT_ID', "\"${getValueById('AIRCONDITIONER_PRODUCT_ID')}\""
+        buildConfigField 'String', 'AIRCONDITIONER_DEVICE_NAME', "\"${getValueById('AIRCONDITIONER_DEVICE_NAME')}\""
+        buildConfigField 'String', 'AIRCONDITIONER_DEVICE_PSK', "\"${getValueById('AIRCONDITIONER_DEVICE_PSK')}\""
     }
     buildTypes {
         release {
