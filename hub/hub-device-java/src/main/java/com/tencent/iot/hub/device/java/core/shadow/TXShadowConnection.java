@@ -515,7 +515,7 @@ public class TXShadowConnection {
 
 			documentJSONObj.put(TXShadowConstants.STATE, stateJSONObj);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
-			documentJSONObj.put(TXShadowConstants.VERSION, mDocumentVersion);
+			documentJSONObj.put(TXShadowConstants.VERSION, 0);
 
 		} catch (JSONException e) {
 			LOG.error("{}", "build report info failed", e);
