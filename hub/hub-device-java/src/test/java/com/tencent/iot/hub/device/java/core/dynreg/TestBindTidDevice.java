@@ -1,3 +1,5 @@
+package com.tencent.iot.hub.device.java.core.dynreg;
+
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttBindDevice;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttBindDeviceCallback;
 
