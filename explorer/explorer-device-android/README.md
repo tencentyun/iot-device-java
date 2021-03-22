@@ -5,6 +5,7 @@
   * [功能文档](#功能文档)
   * [第三方服务接入指引](#第三方服务接入指引)
   * [SDK API及参数说明](#SDK-API及参数说明)
+  * [常见问题](#常见问题)
 
 # 腾讯云物联网开发平台设备端 IoT Explorer Android-SDK
 欢迎使用腾讯云物联网开发平台设备端 IoT Explorer Android-SDK 。
@@ -41,3 +42,6 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 
 ## SDK API及参数说明
 SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](docs/SDK%20API及参数说明.md)
+
+## 常见问题
+常见问题请参考docs目录下的[常见问题android](docs/常见问题android.md)

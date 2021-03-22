@@ -27,3 +27,12 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 #### 是否支持通过API批量注册设备
 
 目前android 和 java 的sdk 还不支持批量动态注册, 可参考[动态注册接口说明](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C.md)
+
+#### 使用java1.1.0版本的sdk 不发ping消息导致设备掉线
+
+该问题在新版本sdk已解决，请使用升级到最新的sdk。
+
+#### Android Studio编译抛错UTF-8编码识别为GBK编码，如何修改。
+
+关闭 android studio，打开 android studio 安装目录下的 bin 目录，找到 studio.exe.vmoptions，studio64.exe.vmoptions，使用文本编辑器打开这两个文件，添加如下内容 -Dfile.encoding=UTF-8 保存后，重新打开 Android Studio，就可以正常编译了。
+
