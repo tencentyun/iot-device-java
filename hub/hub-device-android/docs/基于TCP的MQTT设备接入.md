@@ -69,6 +69,74 @@ I/TXMQTT1.2.3: Start connecting to ssl://AP9ZLEVFKT.iotcloud.tencentdevices.com:
 I/TXMQTT: onConnectCompleted, status[OK], reconnect[false], userContext[MQTTRequest{requestType='connect', requestId=2}], msg[connected to ssl://AP9ZLEVFKT.iotcloud.tencentdevices.com:8883]
 ```
 
+TXMqttActionCallBack为设备连接的回调
+```
+/**
+ * MQTT Connect完成回调
+ *
+ * @param status        Status.OK: 连接成功； Status.ERROR: 连接失败
+ * @param reconnect     true: 重新连接      false: 首次连接
+ * @param userContext   用户上下文
+ * @param msg           连接信息
+ */
+@Override
+public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg){}
+/**
+ * MQTT连接断开回调
+ *
+ * @param cause       连接断开原因
+ */
+@Override
+public void onConnectionLost(Throwable cause) {}
+/**
+ * MQTT Disconnect完成回调
+ *
+ * @param status      Status.OK: 断连成功； Status.ERROR: 断连失败
+ * @param userContext 用户上下文
+ * @param msg         详细信息
+ */
+@Override
+public void onDisconnectCompleted(Status status, Object userContext, String msg) {}
+/**
+ * 发布消息完成回调
+ *
+ * @param status      Status.OK: 发布消息成功； Status.ERROR: 发布消息失败
+ * @param token       消息token，包含消息内容结构体
+ * @param userContext 用户上下文
+ * @param msg         详细信息
+ */
+@Override
+public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {}
+/**
+ * 订阅主题完成回调
+ *
+ * @param status      Status.OK: 订阅成功； Status.ERROR: 订阅失败
+ * @param token       消息token，包含消息内容结构体
+ * @param userContext 用户上下文
+ * @param msg        详细信息
+ */
+@Override
+public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {}
+/**
+ * 取消订阅主题完成回调
+ *
+ * @param status      Status.OK: 取消订阅成功； Status.ERROR: 取消订阅失败
+ * @param token       消息token，包含消息内容结构体
+ * @param userContext 用户上下文
+ * @param msg         详细信息
+ */
+@Override
+public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {}
+/**
+ * 收到订阅主题的消息Push
+ *
+ * @param topic        主题名称
+ * @param message      消息内容
+ */
+@Override
+public void onMessageReceived(final String topic, final MqttMessage message) {}
+```
+
 #### 运行示例程序进行断开 MQTT 连接
 
 运行示例程序，在基础功能模块上，点击`断开MQTT连接`按钮，断开 MQTT 认证连接。示例代码如下：
