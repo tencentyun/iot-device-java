@@ -24,4 +24,41 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 
 物联网接入层有设备互踢的逻辑，如果是用同一个设备 ID 在不同地方登录，会导致其中一方被另一方踢下线。因此发现设备一直上下线时，需要确认是否有不同的人或者多线程在使用同一个设备 ID 执行登录操作。
 
+#### onConnectionLost回调已断开连接（32109）
+
+频繁的在onConnectionLost回调抛出已断开连接（32109）错误，是因为同一个设备ID多次登录，被认为其中一方被另一方踢下线，链接是异步的，是否连接成功需要检查是否回调了onConnectCompleted，而设备回调了onDisconnectCompleted下线后再去调用MQTT连接的方法，使设备上线。
+
+#### 控制台发送消息给设备，设备收不到消息。
+
+可以在控制台的云日志中查看下发送消息的情况，如显示设备断开连接device offline，则检查一下设备是否在线，如显示no subscriber，则是因为设备未订阅发送的Topic。如果发送的是QoS1的消息，设备如果没有回复ack(sdk内部处理)，后台会再次重新发送，但是QoS0的消息如果没有回复ack，后台就不会再重新发送消息。
+
+#### 如果设备离线，之后又重新上线，是否能收到离线中发送的消息。
+
+连接的时候需要设置。MqttConnectOptions中setCleanSession为false，并且发送的消息为QoS1，重新上线订阅过Topic后即可收到累积的消息，且存储消息但设备最多150条，最多存储24小时。
+
+#### 调用sdk连接时，抛出错误代理程序不可用（3） 。
+
+连接MQTT时传入的设备信息不匹配，需要检查一下传入的设备信息（产品ID、设备名称、设备密钥或设备证书私钥）。
+
+#### 编译错误Could not determine java version from '55'。
+
+该错误是sdk中依赖的两个库（bcprov-jdk15on和bcpkix-jdk15on）的版本和开发环境jdk不兼容引起的，可以降低下这两个库的版本。
+```
+dependencies {
+...
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.57'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    implementation ('com.tencent.iot.hub:hub-device-android-core:x.x.x') {//x.x.x为引入sdk的版本号
+        exclude group: 'org.bouncycastle'
+    }
+...
+}
+```
+
+#### 如何设置心跳间隔。
+options.setKeepAliveInterval(240) 这里240的单位是秒，服务端会取客户端设置的keepalive*1.5最大间隔来判断有没有收到心跳包，是否要断开与客户端的连接。
+
+#### 如何设置是否需要自动重连。
+options.setAutomaticReconnect(true);
+
 
