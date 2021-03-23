@@ -4,7 +4,6 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.java.main.scenarized.Door;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXMqttActionListener;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXMqttService;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXOTAListener;

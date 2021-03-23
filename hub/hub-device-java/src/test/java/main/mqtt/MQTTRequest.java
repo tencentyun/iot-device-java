@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.java.main.mqtt;
+package main.mqtt;
 
 
 public class MQTTRequest {

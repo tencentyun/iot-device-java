@@ -11,7 +11,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
-import com.tencent.iot.hub.device.java.main.mqtt.MQTTRequest;
+import main.mqtt.MQTTRequest;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
@@ -40,8 +40,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Hello world!
- *
+ * Device Mqtt connect sample
  */
 public class MqttSample {
 
