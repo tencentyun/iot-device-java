@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.java.main.scenarized;
+package main.scenarized;
 
 
 import com.tencent.iot.hub.device.java.core.common.Status;

@@ -1,21 +1,11 @@
-package com.tencent.iot.hub.device.java;
+package main;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
-import org.bouncycastle.pqc.math.linearalgebra.GoppaCode.MaMaPe;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.logging.JSR47Logger;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +14,6 @@ import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
-import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 
 public class ShadowApp {

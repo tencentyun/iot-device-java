@@ -5,7 +5,7 @@ import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
-import com.tencent.iot.hub.device.java.main.mqtt.MQTTRequest;
+import main.mqtt.MQTTRequest;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;

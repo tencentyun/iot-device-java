@@ -1,9 +1,9 @@
-package com.tencent.iot.hub.device.java;
+package main;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.java.main.scenarized.Airconditioner;
-import com.tencent.iot.hub.device.java.main.scenarized.Door;
+import main.scenarized.Airconditioner;
+import main.scenarized.Door;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;

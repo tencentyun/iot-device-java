@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.java.main.shadow;
+package main.shadow;
 
 import java.util.Arrays;
 
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.java.main.mqtt.MQTTRequest;
+import main.mqtt.MQTTRequest;
 
 public class SelfMqttActionCallBack extends TXMqttActionCallBack {
 	private static final String TAG = "TXMQTT";

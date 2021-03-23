@@ -1,21 +1,17 @@
-package com.tencent.iot.hub.device.java.main.mqtt;
+package main.mqtt;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tencent.iot.hub.device.java.core.gateway.TXGatewayConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 public class MQTTSample {
 

@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.java.main.shadow;
+package main.shadow;
 
 
 import java.util.ArrayList;

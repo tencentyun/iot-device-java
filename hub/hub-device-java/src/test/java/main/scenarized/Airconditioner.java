@@ -1,4 +1,4 @@
-package com.tencent.iot.hub.device.java.main.scenarized;
+package main.scenarized;
 
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;

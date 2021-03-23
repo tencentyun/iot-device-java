@@ -1,6 +1,5 @@
-package com.tencent.iot.hub.device.java;
+package main;
 
-import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 import org.apache.log4j.LogManager;
@@ -21,8 +20,6 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
-
-import javax.net.SocketFactory;
 
 /**
  * Hello world!
