@@ -67,13 +67,13 @@ MQTT的相关接口定义在[TXMqttConnection](../../hub-device-android/src/main
 | unRegisterProperty                 | 取消注册当前设备的指定属性                           |
 
 ### 动态注册接口
-如果需要支持动态注册功能，需使用[TXMqttDynreg](../../hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynreg.java)类中的方法，介绍如下：
+如果需要支持动态注册功能，需使用[TXMqttDynreg](../../hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java)类中的方法，介绍如下：
 
 | 方法名                              | 说明                                             |
 | ---------------------------------- | ----------------------------------------------- |
 | doDynamicRegister                  | 动态注册接口                                      |
 
-[TXMqttDynregCallback](../../hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/dynreg/TXMqttDynregCallback.java)为动态注册回调接口，介绍如下：
+[TXMqttDynregCallback](../../hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynregCallback.java)为动态注册回调接口，介绍如下：
 
 | 方法名                              | 说明                                                 |
 | ---------------------------------- | ----------------------------------------------------|
