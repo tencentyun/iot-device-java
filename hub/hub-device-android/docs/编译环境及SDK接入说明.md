@@ -43,12 +43,12 @@ Android Studio 可在 [Android developers 官网](https://developer.android.com/
         implementation 'com.tencent.iot.hub:hub-device-android-service:x.x.x-SNAPSHOT'
     }
     ```
+    注：下一个正式版本(v3.3.1)会将iot_core和iot_service合并成一个sdk，引用方式会有变动，待发布后会更新上面引用方式
  -  依赖本地sdk源码 构建
-    修改应用模块的 **[build.gradle](../../hub-android-demo/build.gradle)**，使应用模块依赖 [iot_core](../../hub-device-android/iot_core) 和[iot_service](../../hub-device-android/iot_service)源码，示例如下：
+    修改应用模块的 **[build.gradle](../../hub-android-demo/build.gradle)**，使应用模块依赖 [hub-device-android](../../hub-device-android)源码，示例如下：
      ```gr
     dependencies {
-        implementation project(':hub-device-android:iot_core')
-        implementation project(':hub-device-android:iot_service')
+        implementation project(':hub-device-android')
     }
      ```
 
