@@ -36,3 +36,7 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 
 关闭 android studio，打开 android studio 安装目录下的 bin 目录，找到 studio.exe.vmoptions，studio64.exe.vmoptions，使用文本编辑器打开这两个文件，添加如下内容 -Dfile.encoding=UTF-8 保存后，重新打开 Android Studio，就可以正常编译了。
 
+
+#### 如何设置服务器根证书
+
+如果是接入公有云的话，不需要单独设置CA证书，SDK内部会使用默认的CA证书；如果是接入私有云的话，可以参考[自建服务器接入](自建服务器接入.md)的自定义CA证书部分
