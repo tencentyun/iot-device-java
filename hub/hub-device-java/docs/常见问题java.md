@@ -27,3 +27,7 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 #### 是否支持通过API批量注册设备
 
 目前android 和 java 的sdk 还不支持批量动态注册, 可参考[动态注册接口说明](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C.md)
+
+#### 如何设置服务器根证书
+
+如果是接入公有云的话，不需要单独设置CA证书，SDK内部会使用默认的CA证书；如果是接入私有云的话，可以参考[自建服务器接入](自建服务器接入.md)的自定义CA证书部分
