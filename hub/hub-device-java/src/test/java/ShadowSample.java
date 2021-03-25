@@ -207,6 +207,32 @@ public class ShadowSample {
 	}
 
 	public static class callback extends TXShadowActionCallBack{
+
+		/**
+		 * MQTT Connect完成回调
+		 *
+		 * @param status        Status.OK: 连接成功； Status.ERROR: 连接失败
+		 * @param reconnect     true: 重新连接      false: 首次连接
+		 * @param userContext   用户上下文
+		 * @param msg           连接信息
+		 */
+		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+			String userContextInfo = "";
+
+			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
+			LOG.info(logInfo);
+		}
+
+		/**
+		 * MQTT连接断开回调
+		 *
+		 * @param cause       连接断开原因
+		 */
+		public void onConnectionLost(Throwable cause) {
+			String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
+			LOG.info(logInfo);
+		}
+		
 		/**
 	     * 文档请求响应的回调接口
 	     *
@@ -294,17 +320,5 @@ public class ShadowSample {
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			LOG.debug(logInfo);
 	    }
-		
-	    public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
-			String userContextInfo = "";
-
-			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-			LOG.info(logInfo);
-		}
-
-		public void onConnectionLost(Throwable cause) {
-			String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-			LOG.info(logInfo);
-		}
 	}
 }
