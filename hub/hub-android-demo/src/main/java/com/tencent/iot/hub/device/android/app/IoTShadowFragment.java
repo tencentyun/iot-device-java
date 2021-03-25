@@ -16,6 +16,7 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -153,6 +154,26 @@ public class IoTShadowFragment extends Fragment {
     }
 
     private class ShadowActionCallBack extends TXShadowActionCallBack {
+
+        @Override
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+            super.onConnectCompleted(status, reconnect, userContext, msg);
+            String userContextInfo = "";
+            if (userContext instanceof MQTTRequest) {
+                userContextInfo = userContext.toString();
+            }
+            String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
+                    status.name(), reconnect, userContextInfo, msg);
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+        }
+
+        @Override
+        public void onConnectionLost(Throwable cause) {
+            super.onConnectionLost(cause);
+            String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+        }
+
         @Override
         public void onRequestCallback(String type, int result, String document) {
             super.onRequestCallback(type, result, document);
@@ -203,6 +224,13 @@ public class IoTShadowFragment extends Fragment {
             }
             String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText);
+        }
+
+        @Override
+        public void onMessageReceived(String topic, MqttMessage message) {
+            super.onMessageReceived(topic, message);
+            String logInfo = String.format("receive command, topic[%s], message[%s]", topic, message.toString());
             mParent.printLogInfo(TAG, logInfo, mLogInfoText);
         }
     }

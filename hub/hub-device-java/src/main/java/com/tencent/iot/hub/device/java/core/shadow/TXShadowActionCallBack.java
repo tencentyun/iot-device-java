@@ -14,6 +14,25 @@ import java.util.List;
 public abstract class TXShadowActionCallBack {
 
     /**
+     * MQTT Connect完成回调
+     *
+     * @param status        Status.OK: 连接成功； Status.ERROR: 连接失败
+     * @param reconnect     true: 重新连接      false: 首次连接
+     * @param userContext   用户上下文
+     * @param msg           连接信息
+     */
+    public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+    }
+
+    /**
+     * MQTT连接断开回调
+     *
+     * @param cause       连接断开原因
+     */
+    public void onConnectionLost(Throwable cause) {
+    }
+
+    /**
      * 文档请求响应的回调接口
      *
      * @param type 文档操作方式, get/update/delete
@@ -75,11 +94,5 @@ public abstract class TXShadowActionCallBack {
      */
     public void onUnSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
     }
-    
-    public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
 
-	}
-
-	public void onConnectionLost(Throwable cause) {
-	}
 }
