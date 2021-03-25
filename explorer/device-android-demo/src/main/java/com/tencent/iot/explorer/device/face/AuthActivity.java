@@ -183,7 +183,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void showMessage(final String msg) {
         Log.d(TAG, msg);
-        ((TextView) findViewById(R.id.tips)).setText(msg);
+        ((TextView) findViewById(R.id.log_info)).setText(msg);
     }
 
     private final PermissionHandler mPermissionHandler = new PermissionHandler(this) {
