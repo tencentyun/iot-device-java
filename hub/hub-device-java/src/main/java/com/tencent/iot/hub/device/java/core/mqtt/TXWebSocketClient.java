@@ -92,6 +92,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
 
         IMqttToken ret = this.disconnect(null, mActionListener);
         state.set(ConnectionState.DISCONNECTING);   // 接口调用成功后重新设置状态
+        onDisconnected();
         return ret;
     }
 
