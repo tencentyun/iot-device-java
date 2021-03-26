@@ -15,6 +15,18 @@ buildConfig {
     buildConfigField 'String', 'TESTBINDTIDDEVICE_DEVICE_NAME', "${getValueById('TESTBINDTIDDEVICE_DEVICE_NAME')}"
     buildConfigField 'String', 'TESTBINDTIDDEVICE_TID', "${getValueById('TESTBINDTIDDEVICE_TID')}"
     buildConfigField 'String', 'TESTBINDTIDDEVICE_PEM_PUBKEY', "${getValueById('TESTBINDTIDDEVICE_PEM_PUBKEY')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_PRODUCT_ID', "${getValueById('TESTMQTTSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PSK', "${getValueById('TESTMQTTSAMPLE_DEVICE_PSK')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_SUB_PRODUCT_ID', "${getValueById('TESTMQTTSAMPLE_SUB_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_SUB_DEV_NAME', "${getValueById('TESTMQTTSAMPLE_SUB_DEV_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_SUB_DEV_PSK', "${getValueById('TESTMQTTSAMPLE_SUB_DEV_PSK')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_TEST_TOPIC', "${getValueById('TESTMQTTSAMPLE_TEST_TOPIC')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_PRODUCT_KEY', "${getValueById('TESTMQTTSAMPLE_PRODUCT_KEY')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_CERT_FILE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_CERT_FILE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_FILE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_FILE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_CERT_CONTENT_STRING', "${getValueById('TESTMQTTSAMPLE_DEVICE_CERT_CONTENT_STRING')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_CONTENT_STRING', "${getValueById('TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_CONTENT_STRING')}"
 }
 
 task sourceJar(type: Jar, dependsOn: classes) {
