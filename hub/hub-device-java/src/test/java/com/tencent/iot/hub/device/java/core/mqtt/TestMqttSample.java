@@ -1,15 +1,10 @@
+package com.tencent.iot.hub.device.java.core.mqtt;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
-import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketManager;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 import main.mqtt.MQTTRequest;
 
@@ -21,6 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +35,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import hub.unit.test.BuildConfig;
+
+import static org.junit.Assert.assertTrue;
+
 /**
  * Device Mqtt connect sample
  */
-public class MqttSample {
+public class TestMqttSample {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MqttSample.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestMqttSample.class);
 
 	private static final String TAG = "TXMQTT";
 
@@ -54,18 +54,18 @@ public class MqttSample {
 
 	private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
 
-	private static String mProductID = "PRODUCT_ID";
-	private static String mDevName = "DEVICE_NAME";
-	private static String mDevPSK = "DEVICE_PSK";
-	private static String mSubProductID = "SUB_PRODUCT_ID";
-	private static String mSubDevName = "SUB_DEV_NAME";
-	private static String mSubDevProductKey = "SUB_DEV_PSK";
-	private static String mTestTopic = "TEST_TOPIC";
-	private static String mProductKey = "PRODUCT_KEY";             // Used for dynamic register
-	private static String mCertFilePath = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
-	private static String mPrivKeyFilePath = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
-	private static String mDevCert = "DEVICE_CERT_CONTENT_STRING";           // Cert String
-	private static String mDevPriv = "DEVICE_PRIVATE_KEY_CONTENT_STRING";           // Priv String
+	private static String mProductID = BuildConfig.TESTMQTTSAMPLE_PRODUCT_ID;
+	private static String mDevName = BuildConfig.TESTMQTTSAMPLE_DEVICE_NAME;
+	private static String mDevPSK = BuildConfig.TESTMQTTSAMPLE_DEVICE_PSK;
+	private static String mSubProductID = BuildConfig.TESTMQTTSAMPLE_SUB_PRODUCT_ID;
+	private static String mSubDevName = BuildConfig.TESTMQTTSAMPLE_SUB_DEV_NAME;
+	private static String mSubDevProductKey = BuildConfig.TESTMQTTSAMPLE_SUB_DEV_PSK;
+	private static String mTestTopic = BuildConfig.TESTMQTTSAMPLE_TEST_TOPIC;
+	private static String mProductKey = BuildConfig.TESTMQTTSAMPLE_PRODUCT_KEY;             // Used for dynamic register
+	private static String mCertFilePath = BuildConfig.TESTMQTTSAMPLE_DEVICE_CERT_FILE_NAME;           // Device Cert File Name
+	private static String mPrivKeyFilePath = BuildConfig.TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_FILE_NAME;            // Device Private Key File Name
+	private static String mDevCert = BuildConfig.TESTMQTTSAMPLE_DEVICE_CERT_CONTENT_STRING;           // Cert String
+	private static String mDevPriv = BuildConfig.TESTMQTTSAMPLE_DEVICE_PRIVATE_KEY_CONTENT_STRING;           // Priv String
 	private static JSONObject jsonObject = new JSONObject();
 
 	private static TXMqttConnection mqttconnection;
@@ -253,10 +253,61 @@ public class MqttSample {
 		}
 	}
 
+	private static Object mLock = new Object(); // 同步锁
+	private static int mCount = 0; // 加解锁条件
+	private static boolean mUnitTest = false;
+
+	@Test
+	public void testMqttConnect() {
+		mUnitTest = true;
+		LogManager.resetConfiguration();
+		LOG.isDebugEnabled();
+		PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		String workDir = System.getProperty("user.dir") + "/";
+
+		// init connection
+		options = new MqttConnectOptions();
+		options.setConnectionTimeout(8);
+		options.setKeepAliveInterval(60);
+		options.setAutomaticReconnect(true);
+		//客户端证书文件名  mDevPSK是设备秘钥
+
+		if (mDevPSK != null) {
+
+		} else {
+			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
+		}
+		mqttconnection = new TXMqttConnection(mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,true, new SelfMqttLogCallBack(), new callBack());
+		mqttconnection.setSubDevName(mSubDevName);
+		mqttconnection.setSubDevProductKey(mSubDevProductKey);
+		mqttconnection.setSubProductID(mSubProductID);
+		mqttconnection.connect(options, null);
+		synchronized (mLock) {
+			mCount = 1;  // 设置锁条件
+			while (mCount > 0) {
+				try {
+					mLock.wait(); // 等待唤醒
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		LOG.debug("after connect result");
+		assertTrue(true);
+	}
+
 	public static void main(String[] args) {
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSample.class.getResource("/log4j.properties"));
+		PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
 
 //		dynReg();
 
@@ -379,6 +430,12 @@ public class MqttSample {
 			String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
 					status.name(), reconnect, userContextInfo, msg);
 			LOG.info(logInfo);
+			if (mUnitTest) {
+				synchronized (mLock) {
+					mCount = 0;
+					mLock.notifyAll(); // 回调执行完毕，唤醒主线程
+				}
+			}
 		}
 
 		private TXOTACallBack oTACallBack = new TXOTACallBack() {

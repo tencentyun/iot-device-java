@@ -170,7 +170,7 @@ public class GatewaySample {
 	public static void main(String[] args) {
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSample.class.getResource("/log4j.properties"));
+		PropertyConfigurator.configure(GatewaySample.class.getResource("/log4j.properties"));
 
 
 		String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
@@ -187,7 +187,7 @@ public class GatewaySample {
 		} else {
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
-		mqttconnection = new TXGatewayConnection(mProductID, mDevName, mDevPSK, new MqttSample.callBack());
+		mqttconnection = new TXGatewayConnection(mProductID, mDevName, mDevPSK, new callBack());
 		mqttconnection.setSubDevName(mSubDevName);
 		mqttconnection.setSubDevProductKey(mSubDevPsk);
 		mqttconnection.setSubProductID(mSubProductID);
