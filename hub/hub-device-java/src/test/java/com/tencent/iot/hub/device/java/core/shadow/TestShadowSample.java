@@ -1,20 +1,23 @@
+package com.tencent.iot.hub.device.java.core.shadow;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
-import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
-import com.tencent.iot.hub.device.java.core.shadow.TXShadowConstants;
+import com.tencent.iot.hub.device.java.core.mqtt.TestMqttSample;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 import main.mqtt.MQTTRequest;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,17 +25,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import hub.unit.test.BuildConfig;
 
-public class ShadowSample {
-	private static final Logger LOG = LoggerFactory.getLogger(ShadowSample.class);
+import static org.junit.Assert.assertSame;
+
+/**
+ * Device shadow sample
+ */
+public class TestShadowSample {
+	private static final Logger LOG = LoggerFactory.getLogger(TestShadowSample.class);
 	private static TXShadowConnection mShadowConnection;
 
-	private static String mProductID = "PRODUCT_ID";
-	private static String mDevName = "DEVICE_NAME";
-	private static String mDevPSK = null;
+	private static String mProductID = BuildConfig.TESTSHADOWSAMPLE_PRODUCT_ID;
+	private static String mDevName = BuildConfig.TESTSHADOWSAMPLE_DEVICE_NAME;
+	private static String mDevPSK = BuildConfig.TESTSHADOWSAMPLE_DEVICE_PSK;
 	private static String mTestTopic = mProductID + "/" + mDevName + "/data";
 	private static String mCertFilePath = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
 	private static String mPrivKeyFilePath = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
+	private static String mDevCert = "DEVICE_CERT_CONTENT_STRING";           // Cert String
+	private static String mDevPriv = "DEVICE_PRIVATE_KEY_CONTENT_STRING";           // Priv String
 
 	private static AtomicInteger mUpdateCount = new AtomicInteger(0);
 
@@ -43,6 +54,36 @@ public class ShadowSample {
 
 	//设备属性集（该变量必须为全局变量）
 	private static List<DeviceProperty> mDevicePropertyList = new ArrayList<>();
+
+	private static void connect() {
+		try {
+			Thread.sleep(2000);
+			String workDir = System.getProperty("user.dir") + "/";
+
+			// init connection
+			MqttConnectOptions options = new MqttConnectOptions();
+			options.setConnectionTimeout(8);
+			options.setKeepAliveInterval(60);
+			options.setAutomaticReconnect(true);
+			//客户端证书文件名  mDevPSK是设备秘钥
+
+			if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
+				LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
+			} else if (mDevPSK != null && mDevPSK.length() != 0){
+				LOG.info("Using PSK");
+
+			} else {
+				LOG.info("Using cert assets file");
+				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
+			}
+			mShadowConnection = new TXShadowConnection(mProductID, mDevName, mDevPSK, new callback());
+			mShadowConnection.connect(options, null);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void closeConnect() {
 		try {
@@ -175,34 +216,21 @@ public class ShadowSample {
 	
 	public static void main(String[] args) {
 		// init connection
-		MqttConnectOptions options = new MqttConnectOptions();
-		options.setConnectionTimeout(8);
-		options.setKeepAliveInterval(60);
-		options.setAutomaticReconnect(true);
-        if (mDevPSK != null) {
+		connect();
 
-        } else {
-        	String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
-            options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
-        }
-		
-		mShadowConnection = new TXShadowConnection(mProductID, mDevName, mDevPSK, new callback());
-		mShadowConnection.connect(options, null);
+		subscribeTopic();
 
-//		subscribeTopic();
-//
-//		publishTopic();
-//
-//		unSubscribeTopic();
-//
-//		getDeviceDocument();
-//
-//		registerProperty();
-//
-//		update();
-//
+		publishTopic();
+
+		unSubscribeTopic();
+
+		getDeviceDocument();
+
+		registerProperty();
+
+		update();
+
 //		closeConnect();
-
 
 	}
 
@@ -219,8 +247,9 @@ public class ShadowSample {
 		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
 			String userContextInfo = "";
 
-			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
+			String logInfo = String.format("onConnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
 			LOG.info(logInfo);
+			unlock();
 		}
 
 		/**
@@ -243,6 +272,9 @@ public class ShadowSample {
 	    public void onRequestCallback(String type, int result, String document) {
 			String logInfo = String.format("onRequestCallback, type[%s], result[%d], document[%s]", type, result, document);
 			LOG.info(logInfo);
+			if (type.equals("get")) {
+				unlock();
+			}
 	    }
 
 	    /**
@@ -283,6 +315,10 @@ public class ShadowSample {
 			String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
 			LOG.debug(logInfo);
+
+			if (status == Status.OK && Arrays.toString(token.getTopics()).contains(mTestTopic)) {
+				unlock();
+			}
 	    }
 
 	    /**
@@ -303,6 +339,10 @@ public class ShadowSample {
 			} else {
 				LOG.debug(logInfo);
 			}
+
+			if (Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
+				unlock();
+			}
 	    }
 
 	    /**
@@ -319,6 +359,69 @@ public class ShadowSample {
 			String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			LOG.debug(logInfo);
+
+			if (status == Status.OK && Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
+				unlock();
+			}
 	    }
+	}
+
+	/** ============================================================================== Unit Test ============================================================================== **/
+
+	private static Object mLock = new Object(); // 同步锁
+	private static int mCount = 0; // 加解锁条件
+	private static boolean mUnitTest = false;
+
+	private static void lock() {
+		synchronized (mLock) {
+			mCount = 1;  // 设置锁条件
+			while (mCount > 0) {
+				try {
+					mLock.wait(); // 等待唤醒
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private static void unlock() {
+		if (mUnitTest) {
+			synchronized (mLock) {
+				mCount = 0;
+				mLock.notifyAll(); // 回调执行完毕，唤醒主线程
+			}
+		}
+	}
+
+	@Test
+	public void testShadowConnect() {
+		mUnitTest = true;
+		LogManager.resetConfiguration();
+		LOG.isDebugEnabled();
+		PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+
+		connect();
+		LOG.debug("after connect");
+
+		subscribeTopic();
+		lock();
+		LOG.debug("after subscribe");
+
+		publishTopic();
+		lock();
+		LOG.debug("after publish");
+
+		unSubscribeTopic();
+		lock();
+		LOG.debug("after unSubscribe");
+
+		getDeviceDocument();
+		lock();
+		LOG.debug("after getDeviceDocument");
+
+		registerProperty();
+		LOG.debug("after registerProperty");
+		assertSame(mShadowConnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 	}
 }

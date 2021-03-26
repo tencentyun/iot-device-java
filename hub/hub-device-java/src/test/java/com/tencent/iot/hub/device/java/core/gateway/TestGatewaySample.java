@@ -1,9 +1,11 @@
+package com.tencent.iot.hub.device.java.core.gateway;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.gateway.TXGatewayConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
+import com.tencent.iot.hub.device.java.core.mqtt.TestMqttSample;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 import org.apache.log4j.LogManager;
@@ -13,20 +15,27 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import hub.unit.test.BuildConfig;
+
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Hello world!
  *
  */
-public class GatewaySample {
+public class TestGatewaySample {
 
-	private static final Logger LOG = LoggerFactory.getLogger(GatewaySample.class);
+	private static final Logger LOG = LoggerFactory.getLogger(TestGatewaySample.class);
 
 	private static String path2Store = System.getProperty("user.dir");
 
@@ -34,19 +43,57 @@ public class GatewaySample {
 
 	private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
 
-	private static String mProductID = "PRODUCT_ID";
-	private static String mDevName = "DEVICE_NAME";
-	private static String mDevPSK = "DEVICE_PSK";
-	private static String mSubProductID = "SUB_PRODUCT_ID";
-	private static String mSubDevName = "SUB_DEV_NAME";
-	private static String mSubDevPsk = "SUB_DEV_PSK";
-	private static String mTestTopic = "TEST_TOPIC";
+	private static String mProductID = BuildConfig.TESTGATEWAYSAMPLE_PRODUCT_ID;
+	private static String mDevName = BuildConfig.TESTGATEWAYSAMPLE_DEVICE_NAME;
+	private static String mDevPSK = BuildConfig.TESTGATEWAYSAMPLE_DEVICE_PSK;
+	private static String mSubProductID = BuildConfig.TESTGATEWAYSAMPLE_SUB_PRODUCT_ID;
+	private static String mSubDevName = BuildConfig.TESTGATEWAYSAMPLE_SUB_DEV_NAME;
+	private static String mSubDevPsk = BuildConfig.TESTGATEWAYSAMPLE_SUB_DEV_PSK;
+	private static String mTestTopic = BuildConfig.TESTGATEWAYSAMPLE_TEST_TOPIC;
 	private static String mCertFilePath = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
 	private static String mPrivKeyFilePath = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
+	private static String mDevCert = "DEVICE_CERT_CONTENT_STRING";           // Cert String
+	private static String mDevPriv = "DEVICE_PRIVATE_KEY_CONTENT_STRING";           // Priv String
 	private static JSONObject jsonObject = new JSONObject();
 
 	private static TXGatewayConnection mqttconnection;
 	private static MqttConnectOptions options;
+
+	private static void connect() {
+		try {
+			Thread.sleep(2000);
+
+			String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
+
+			// init connection
+			options = new MqttConnectOptions();
+			options.setConnectionTimeout(8);
+			options.setKeepAliveInterval(60);
+			options.setAutomaticReconnect(true);
+			//客户端证书文件名  mDevPSK是设备秘钥
+
+			if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
+				LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
+			} else if (mDevPSK != null && mDevPSK.length() != 0){
+				LOG.info("Using PSK");
+
+			} else {
+				LOG.info("Using cert assets file");
+				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
+			}
+
+			mqttconnection = new TXGatewayConnection(mProductID, mDevName, mDevPSK, new callBack());
+			mqttconnection.setSubDevName(mSubDevName);
+			mqttconnection.setSubDevProductKey(mSubDevPsk);
+			mqttconnection.setSubProductID(mSubProductID);
+			mqttconnection.connect(options, null);
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static void gatewaySubdevOnline() {
 		try {
@@ -170,28 +217,9 @@ public class GatewaySample {
 	public static void main(String[] args) {
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSample.class.getResource("/log4j.properties"));
+		PropertyConfigurator.configure(TestGatewaySample.class.getResource("/log4j.properties"));
 
-
-		String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
-
-		// init connection
-		options = new MqttConnectOptions();
-		options.setConnectionTimeout(8);
-		options.setKeepAliveInterval(60);
-		options.setAutomaticReconnect(true);
-		//客户端证书文件名  mDevPSK是设备秘钥
-
-		if (mDevPSK != null) {
-
-		} else {
-			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
-		}
-		mqttconnection = new TXGatewayConnection(mProductID, mDevName, mDevPSK, new MqttSample.callBack());
-		mqttconnection.setSubDevName(mSubDevName);
-		mqttconnection.setSubDevProductKey(mSubDevPsk);
-		mqttconnection.setSubProductID(mSubProductID);
-		mqttconnection.connect(options, null);
+		connect();
 
 		gatewaySubdevOnline();
 
@@ -224,6 +252,7 @@ public class GatewaySample {
 			String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
 					status.name(), reconnect, userContextInfo, msg);
 			LOG.info(logInfo);
+			unlock();
 		}
 
 		private TXOTACallBack oTACallBack = new TXOTACallBack() {
@@ -309,6 +338,79 @@ public class GatewaySample {
 		public void onMessageReceived(final String topic, final MqttMessage message) {
 			String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
 			LOG.debug(logInfo);
+			if (message.toString().contains("online") && message.toString().contains(mSubDevName)) {
+				unlock();
+			} else if (message.toString().contains("offline") && message.toString().contains(mSubDevName)) {
+				unlock();
+			} else if (message.toString().contains("bind") && message.toString().contains(mSubDevName)) {
+				unlock();
+			} else if (message.toString().contains("unbind") && message.toString().contains(mSubDevName)) {
+				unlock();
+			} else if (message.toString().contains("describe_sub_devices")) {
+				unlock();
+			}
 		}
+	}
+
+	/** ============================================================================== Unit Test ============================================================================== **/
+
+	private static Object mLock = new Object(); // 同步锁
+	private static int mCount = 0; // 加解锁条件
+	private static boolean mUnitTest = false;
+
+	private static void lock() {
+		synchronized (mLock) {
+			mCount = 1;  // 设置锁条件
+			while (mCount > 0) {
+				try {
+					mLock.wait(); // 等待唤醒
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	private static void unlock() {
+		if (mUnitTest) {
+			synchronized (mLock) {
+				mCount = 0;
+				mLock.notifyAll(); // 回调执行完毕，唤醒主线程
+			}
+		}
+	}
+
+	@Test
+	public void testGatewayConnect() {
+		mUnitTest = true;
+		LogManager.resetConfiguration();
+		LOG.isDebugEnabled();
+		PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+
+		connect();
+		lock();
+		LOG.debug("after connect");
+
+		setSubDevUnbinded();
+		lock();
+		LOG.debug("after setSubDevUnbinded");
+
+		setSubDevBinded();
+		lock();
+		LOG.debug("after setSubDevBinded");
+
+		gatewaySubdevOnline();
+		lock();
+		LOG.debug("after gatewaySubdevOnline");
+
+		checkSubdevRelation();
+		lock();
+		LOG.debug("after checkSubdevRelation");
+
+		gatewaySubdevOffline();
+		lock();
+		LOG.debug("after gatewaySubdevOffline");
+
+		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 	}
 }
