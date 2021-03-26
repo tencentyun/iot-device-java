@@ -15,6 +15,35 @@ buildConfig {
     buildConfigField 'String', 'TESTBINDTIDDEVICE_DEVICE_NAME', "${getValueById('TESTBINDTIDDEVICE_DEVICE_NAME')}"
     buildConfigField 'String', 'TESTBINDTIDDEVICE_TID', "${getValueById('TESTBINDTIDDEVICE_TID')}"
     buildConfigField 'String', 'TESTBINDTIDDEVICE_PEM_PUBKEY', "${getValueById('TESTBINDTIDDEVICE_PEM_PUBKEY')}"
+
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_ID', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_DEVICE_NAME', "${getValueById('TESTDYNREGDEVSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_SECRET', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_SECRET')}"
+
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_NAME', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_PSK', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_SUB_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB_DEV_NAME', "${getValueById('TESTGATEWAYSAMPLE_SUB_DEV_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB_DEV_PSK', "${getValueById('TESTGATEWAYSAMPLE_SUB_DEV_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_TEST_TOPIC', "${getValueById('TESTGATEWAYSAMPLE_TEST_TOPIC')}"
+
+    buildConfigField 'String', 'TESTMQTTSAMPLE_PRODUCT_ID', "${getValueById('TESTMQTTSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PSK', "${getValueById('TESTMQTTSAMPLE_DEVICE_PSK')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_TEST_TOPIC', "${getValueById('TESTMQTTSAMPLE_TEST_TOPIC')}"
+
+    buildConfigField 'String', 'TESTWEBSOCKETMQTTSAMPLE_PRODUCT_ID', "${getValueById('TESTWEBSOCKETMQTTSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTWEBSOCKETMQTTSAMPLE_DEVICE_NAME', "${getValueById('TESTWEBSOCKETMQTTSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTWEBSOCKETMQTTSAMPLE_DEVICE_PSK', "${getValueById('TESTWEBSOCKETMQTTSAMPLE_DEVICE_PSK')}"
+
+    buildConfigField 'String', 'TESTOTASAMPLE_PRODUCT_ID', "${getValueById('TESTOTASAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_NAME', "${getValueById('TESTOTASAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_PSK', "${getValueById('TESTOTASAMPLE_DEVICE_PSK')}"
+
+    buildConfigField 'String', 'TESTSHADOWSAMPLE_PRODUCT_ID', "${getValueById('TESTSHADOWSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTSHADOWSAMPLE_DEVICE_NAME', "${getValueById('TESTSHADOWSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTSHADOWSAMPLE_DEVICE_PSK', "${getValueById('TESTSHADOWSAMPLE_DEVICE_PSK')}"
 }
 
 task sourceJar(type: Jar, dependsOn: classes) {
