@@ -85,6 +85,12 @@
             android:text="下线" />
     </LinearLayout>
 
+    <TextView
+        android:text="日志输出："
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
