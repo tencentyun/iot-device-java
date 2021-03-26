@@ -41,11 +41,11 @@ public class TXWebSocketManager {
         } else {    // 集合内不存在连接对象，新创建一个连接对象
             try {
                 if (wsUrl == null || wsUrl.length() == 0) {
-                    if (secretKey != null && secretKey.length() != 0) {
-                        wsUrl = WS_PREFIX + productId + defaultUriStr;
-                    } else {
+//                    if (secretKey != null && secretKey.length() != 0) {
+//                        wsUrl = WS_PREFIX + productId + defaultUriStr;
+//                    } else {
                         wsUrl = WSS_PREFIX + productId + defaultUriStr;
-                    }
+//                    }
                 }
                 TXWebSocketClient client = new TXWebSocketClient(wsUrl, clientId, secretKey);
                 clients.put(clientId, client);
