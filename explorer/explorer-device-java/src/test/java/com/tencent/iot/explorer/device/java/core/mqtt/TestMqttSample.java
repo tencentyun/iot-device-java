@@ -1,34 +1,39 @@
+package com.tencent.iot.explorer.device.java.core.mqtt;
+
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import samples.data_template.DataTemplateSample;
-import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MqttSample {
-    private static final Logger LOG = LoggerFactory.getLogger(MqttSample.class);
+import explorer.unit.test.BuildConfig;
+
+import static org.junit.Assert.assertSame;
+
+public class TestMqttSample {
+    private static final Logger LOG = LoggerFactory.getLogger(TestMqttSample.class);
 
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
-    private static String mProductID = "PRODUCT_ID";
-    private static String mDevName = "DEVICE_NAME";
-    private static String mDevPSK  = "DEVICE_PSK"; //若使用证书验证，设为null
+    private static String mProductID = BuildConfig.TESTMQTTSAMPLE_PRODUCT_ID;
+    private static String mDevName = BuildConfig.TESTMQTTSAMPLE_DEVICE_NAME;
+    private static String mDevPSK  = BuildConfig.TESTMQTTSAMPLE_DEVICE_PSK; //若使用证书验证，设为null
 
-    private static String mProductKey = "PRODUCT_KEY";             // Used for dynamic register
     private static String mDevCert = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
@@ -36,38 +41,13 @@ public class MqttSample {
 
     private static DataTemplateSample mDataTemplateSample;
 
-    private static void readDeviceInfoJson() {
-        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/device_info.json");
-        System.out.println(file.getAbsolutePath());
-        if (file.exists()) {
-            try {
-                String s = ReadFile.readJsonFile(file.getAbsolutePath());
-                JSONObject json = new JSONObject(s);
-                mProductID = json.getString("PRODUCT_ID");
-                mDevName = json.getString("DEVICE_NAME");
-                mDevPSK = json.getString("DEVICE_PSK").length() == 0 ? null : json.getString("DEVICE_PSK");
-                mDevCert = json.getString("DEVICE_CERT_FILE_NAME");
-                mDevPriv = json.getString("DEVICE_PRIVATE_KEY_FILE_NAME");
-                mProductKey = json.getString("PRODUCT_KEY");
-                mJsonFileName = json.getString("TEMPLATE_JSON_FILE_NAME").length() == 0 ? "struct.json" : json.getString("TEMPLATE_JSON_FILE_NAME");
-            } catch (JSONException t) {
-                LOG.error("device_info.json file format is invalid!." + t);
-            }
-        } else{
-            LOG.error("Cannot open device_info.json File.");
-        }
-    }
-
-    private static void dynReg() {
+    private static void connect() {
         try {
             Thread.sleep(2000);
-            LOG.debug("Test Dynamic");
-            TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductKey, mDevName, new SelfMqttDynregCallback());
-            if (dynreg.doDynamicRegister()) {
-                LOG.debug("Dynamic Register OK!");
-            } else {
-                LOG.error("Dynamic Register failed!");
-            }
+            // init connection
+            mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
+                    mJsonFileName, new SelfDownStreamCallBack());
+            mDataTemplateSample.connect();
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -280,32 +260,9 @@ public class MqttSample {
         }
     }
 
-    private static void checkFirmware() {
-        try {
-            Thread.sleep(2000);
-            mDataTemplateSample.checkFirmware();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        readDeviceInfoJson();
 
-        dynReg();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        // init connection
-        mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
-                mJsonFileName, new SelfDownStreamCallBack());
-        mDataTemplateSample.connect();
+        connect();
 
         subscribeTopic();
 
@@ -323,8 +280,6 @@ public class MqttSample {
 
         eventsPost();
 
-        checkFirmware();
-
         disconnect();
     }
 
@@ -339,7 +294,7 @@ public class MqttSample {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-
+            unlock();
         }
 
         @Override
@@ -356,6 +311,7 @@ public class MqttSample {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             LOG.info(logInfo);
+            unlock();
         }
 
         @Override
@@ -382,6 +338,9 @@ public class MqttSample {
             } else {
                 LOG.debug(logInfo);
             }
+            if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
+                unlock();
+            }
         }
 
         @Override
@@ -393,12 +352,18 @@ public class MqttSample {
             String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             LOG.debug(logInfo);
+            if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
+                unlock();
+            }
         }
 
         @Override
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
             LOG.debug(logInfo);
+            if (message.toString().contains("report_reply") || message.toString().contains("get_status_reply") || message.toString().contains("report_info_reply") || message.toString().contains("clear_control_reply") || message.toString().contains("event_reply") || message.toString().contains("events_reply")) {
+                unlock();
+            }
         }
     }
 
@@ -467,36 +432,79 @@ public class MqttSample {
         }
     }
 
-    /**
-     * Callback for dynamic register
-     */
-    private static class SelfMqttDynregCallback extends TXMqttDynregCallback {
+    /** ============================================================================== Unit Test ============================================================================== **/
 
-        @Override
-        public void onGetDevicePSK(String devicePsk) {
-            mDevPSK = devicePsk;
-            String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK[%s]", devicePsk);
-            LOG.info(logInfo);
-        }
+    private static Object mLock = new Object(); // 同步锁
+    private static int mCount = 0; // 加解锁条件
+    private static boolean mUnitTest = false;
 
-        @Override
-        public void onGetDeviceCert(String deviceCert, String devicePriv) {
-//            mDevCert = deviceCert;   //这里获取的是证书内容字符串 创建对应ssl认证时可使用options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));方式，示例中使用的是读取本地文件路径的方式。
-//            mDevPriv = devicePriv;   //这里获取的是秘钥内容字符串
-            String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert[%s] devicePriv[%s]", deviceCert, devicePriv);
-            LOG.info(logInfo);
+    private static void lock() {
+        synchronized (mLock) {
+            mCount = 1;  // 设置锁条件
+            while (mCount > 0) {
+                try {
+                    mLock.wait(); // 等待唤醒
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+    }
 
-        @Override
-        public void onFailedDynreg(Throwable cause, String errMsg) {
-            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString() + errMsg);
-            LOG.error(logInfo);
+    private static void unlock() {
+        if (mUnitTest) {
+            synchronized (mLock) {
+                mCount = 0;
+                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
+            }
         }
+    }
 
-        @Override
-        public void onFailedDynreg(Throwable cause) {
-            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString());
-            LOG.error(logInfo);
-        }
+    @Test
+    public void testMqttConnect() {
+        mUnitTest = true;
+        LogManager.resetConfiguration();
+        LOG.isDebugEnabled();
+        PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+
+        connect();
+        LOG.debug("after connect");
+
+        subscribeTopic();
+        lock();
+        LOG.debug("after subscribe");
+
+//        propertyReport();
+//        lock();
+//        LOG.debug("after propertyReport");
+
+        propertyGetStatus();
+        lock();
+        LOG.debug("after propertyGetStatus");
+
+        propertyReportInfo();
+        lock();
+        LOG.debug("after propertyReportInfo");
+
+        propertyClearControl();
+        lock();
+        LOG.debug("after propertyClearControl");
+
+//        eventSinglePost();
+//        lock();
+//        LOG.debug("after eventSinglePost");
+//
+//        eventsPost();
+//        lock();
+//        LOG.debug("after eventsPost");
+
+        unSubscribeTopic();
+        lock();
+        LOG.debug("after unSubscribe");
+
+        disconnect();
+        lock();
+        LOG.debug("after disconnect");
+        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
     }
 }
