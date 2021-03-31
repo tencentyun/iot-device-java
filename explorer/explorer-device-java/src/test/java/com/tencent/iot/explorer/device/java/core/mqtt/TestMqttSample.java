@@ -1,3 +1,5 @@
+package com.tencent.iot.explorer.device.java.core.mqtt;
+
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import samples.data_template.DataTemplateSample;
@@ -20,8 +22,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MqttSample {
-    private static final Logger LOG = LoggerFactory.getLogger(MqttSample.class);
+public class TestMqttSample {
+    private static final Logger LOG = LoggerFactory.getLogger(TestMqttSample.class);
 
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private static String mProductID = "PRODUCT_ID";
