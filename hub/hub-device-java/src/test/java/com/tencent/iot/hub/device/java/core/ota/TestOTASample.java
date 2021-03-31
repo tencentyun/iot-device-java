@@ -32,6 +32,7 @@ import java.util.Arrays;
 
 import hub.unit.test.BuildConfig;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 
 /**
@@ -391,4 +392,9 @@ public class TestOTASample {
         LOG.debug("after connect");
         assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
     }
+
+	@Test
+	public void testAssertFalse() {
+		assertFalse(true);
+	}
 }
