@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7bc2b773_bc25386b",
+        "filename": "hub/hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/dynreg/TestDynregDevSample.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-03-31T07:34:43Z",
+      "side": 1,
+      "message": "新增的文件用4个空格吧，存量代码的tab可以先放那",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 2
+      },
+      "revId": "eb66852e4f6bac8f5b68199d8538fbe1be188526",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
