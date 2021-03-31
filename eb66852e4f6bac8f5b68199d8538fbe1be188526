@@ -22,6 +22,30 @@
       "revId": "eb66852e4f6bac8f5b68199d8538fbe1be188526",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9000a00_b74fc39b",
+        "filename": "hub/hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/dynreg/TestDynregDevSample.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-03-31T09:07:33Z",
+      "side": 1,
+      "message": "已在Patchset10修改。",
+      "parentUuid": "7bc2b773_bc25386b",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 2
+      },
+      "revId": "eb66852e4f6bac8f5b68199d8538fbe1be188526",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
