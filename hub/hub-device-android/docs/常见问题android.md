@@ -70,4 +70,6 @@ options.setAutomaticReconnect(true);
 #### 动态注册时，返回code:1021,message: Device has been activated。
 此错误说明动态注册传入的设备信息对应的设备已经被激活过了，所以不能再动态注册已经激活过的设备了，可以在控制台中删掉该设备后，再重新通过动态注册获取设备密钥或证书的信息。
 
+#### MQTT连接时，报java.net.UnknownHostException
+此错误是由于客户使用的v3.2.0 SDK里的服务器域名(iotcloud-mqtt.gz.tencentdevices.com)是旧的，从SDK v3.2.1版本开始，使用了新的域名${ProductId}.iotcloud.tencentdevices.com。解决方法：更新[SDK版本](https://github.com/tencentyun/iot-device-java/releases)
 
