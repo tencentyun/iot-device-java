@@ -39,9 +39,11 @@ import javax.crypto.spec.SecretKeySpec;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
 public class TXMqttConnection implements MqttCallbackExtended {
 
@@ -140,12 +142,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	 */
 	public TXMqttConnection(String productID, String deviceName, String secretKey,
 			TXMqttActionCallBack callBack) {
-		this( productID, deviceName, secretKey, null, callBack);
+		this(productID, deviceName, secretKey, null, callBack);
 	}
 	
 	public TXMqttConnection(String productID, String deviceName,
 			TXMqttActionCallBack callBack) {
-		this( productID, deviceName, null, null, callBack);
+		this(productID, deviceName, null, null, callBack);
 	}
 
 	/**
@@ -206,7 +208,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 	public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 			TXMqttActionCallBack callBack) {
-
 		this.mSecretKey = secretKey;
 		if (serverURI == null) {
 			if (this.mSecretKey != null && this.mSecretKey.length() != 0) {
@@ -223,7 +224,6 @@ public class TXMqttConnection implements MqttCallbackExtended {
 		this.mUserName = mClientId + ";" + TXMqttConstants.APPID;
 		this.bufferOpts = bufferOpts;
 		this.mMqttPersist = clientPersistence;
-
 		this.mActionCallBack = callBack;
 	}
 
@@ -249,24 +249,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 							DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
 							TXMqttActionCallBack callBack, String logUrl) {
 
-		this.mSecretKey = secretKey;
-		if (serverURI == null) {
-			if (this.mSecretKey != null && this.mSecretKey.length() != 0) {
-				this.mServerURI = PSK_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_PSK;
-			} else {
-				this.mServerURI = CER_PREFIX + productID + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_CER;
-			}
-		} else {
-			this.mServerURI = serverURI;
-		}
-		this.mProductId = productID;
-		this.mClientId = productID + deviceName;
-		this.mDeviceName = deviceName;
-		this.mUserName = mClientId + ";" + TXMqttConstants.APPID;
-		this.bufferOpts = bufferOpts;
-		this.mMqttPersist = clientPersistence;
-
-		this.mActionCallBack = callBack;
+		this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
 		this.mLogUrl = logUrl;
 	}
 

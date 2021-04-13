@@ -1,6 +1,7 @@
 package com.tencent.iot.hub.device.android.core.mqtt;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -31,6 +32,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
 
 public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection implements MqttCallbackExtended {
@@ -40,11 +44,9 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     protected Context mContext;
     protected TXAlarmPingSender mPingSender = null;
 
-    private static int INVALID_MESSAGE_ID = -1;
-
-//    protected boolean mMqttLogFlag;
-//    public TXMqttLogCallBack mMqttLogCallBack = null;
-//    private TXMqttLog mMqttLog = null;
+    // tid://localhost:port
+    private String mTid;
+    private String mHid;
 
     /**
      * 断连状态下buffer缓冲区，当连接重新建立成功后自动将buffer中数据写出
@@ -155,6 +157,21 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         this.mContext = context;
         this.mMqttLogFlag = mqttLogFlag;
         this.mMqttLogCallBack = logCallBack;
+    }
+
+    /**
+     * 设置TrustID & HardwareID
+     *
+     * @param tid trust id
+     * @param hid hardware id
+     */
+    public void setTidAndHid(String tid, String hid) {
+        mTid = tid;
+        mHid = hid;
+        if (!TextUtils.isEmpty(mTid) && !TextUtils.isEmpty(mHid)) {
+            mClientId = String.format("%s;%s;%s", mClientId, mTid, mHid);
+            mServerURI = TID_PREFIX + mProductId + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TID;
+        }
     }
 
     /**
