@@ -41,6 +41,8 @@ jobs:
           export KEY_ID_OF_SIGN=$IOT_GPG_KEYNAME
           export PASSWORD_OF_SIGN=$IOT_GPG_PASSPHRASE
           sh .github/scripts/updateValuesForSign.sh
+      - name: Setup NDK
+        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish aar and jar to Maven

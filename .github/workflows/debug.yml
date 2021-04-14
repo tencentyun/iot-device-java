@@ -38,6 +38,8 @@ jobs:
           java-version: 1.8
       - name: install fir
         run: sudo gem install fir-cli
+      - name: Setup NDK
+        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish aar and jar to Maven
