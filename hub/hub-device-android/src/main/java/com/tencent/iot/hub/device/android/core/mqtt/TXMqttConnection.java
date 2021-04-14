@@ -161,18 +161,10 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * 设置TrustID & HardwareID
-     *
-     * @param tid trust id
-     * @param hid hardware id
+     * 使用Tid认证方式
      */
-    public void setTidAndHid(String tid, String hid) {
-        mTid = tid;
-        mHid = hid;
-        if (!TextUtils.isEmpty(mTid) && !TextUtils.isEmpty(mHid)) {
-            mClientId = String.format("%s;%s;%s", mClientId, mTid, mHid);
-            mServerURI = TID_PREFIX + mProductId + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TID;
-        }
+    public void useTidVerify() {
+        mServerURI = TID_PREFIX + mProductId + QCLOUD_IOT_MQTT_DIRECT_DOMAIN + MQTT_SERVER_PORT_TID;
     }
 
     /**
