@@ -54,4 +54,12 @@ public class TXGatewaySubdev extends TXDataTemplate {
         }
     }
 
+    public void onSubDevBind(int result) {
+        this.mActionCallBack.onSubDevBind(result);
+    }
+
+    public void onSubDevUnbind(int result) {
+        this.mActionCallBack.onSubDevUnbind(result);
+    }
+
 }
