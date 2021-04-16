@@ -182,6 +182,16 @@ public class ProductAirconditioner {
 
         }
 
+        @Override
+        public void onSubDevBind(int result) {
+            TXLog.d(TAG,"onSubDevBind:result:" + result);
+        }
+
+        @Override
+        public void onSubDevUnbind(int result) {
+            TXLog.d(TAG,"onSubDevUnbind:result:" + result);
+        }
+
         /**订阅属性下行主题成功则获取状态和上报信息，启动周期性上报属性线程*/
         @Override
         public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {

@@ -369,6 +369,12 @@ public class TXGatewayClient extends TXDataTemplateClient {
                     if (res.equals("0")) {
                         subdev.setSubdevStatus(Status.SUBDEV_STAT_OFFLINE);
                     }
+                } else if (type.equalsIgnoreCase("bind")) {
+                    int res = jsonNode.getInt("result");
+                    subdev.onSubDevBind(res);
+                } else if (type.equalsIgnoreCase("unbind")) {
+                    int res = jsonNode.getInt("result");
+                    subdev.onSubDevUnbind(res);
                 }
             }
         }catch (JSONException e) {

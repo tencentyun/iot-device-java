@@ -21,6 +21,18 @@ public abstract class TXGatewaySubdevActionCallBack {
     public abstract void onSubDevOffline();
 
     /**
+     * 网关子设备绑定回调
+     *
+     */
+    public abstract void onSubDevBind(int result);
+
+    /**
+     * 网关子设备解绑回调
+     *
+     */
+    public abstract void onSubDevUnbind(int result);
+
+    /**
      * 订阅主题完成回调
      *
      * @param status      Status.OK: 订阅成功； Status.ERROR: 订阅失败
