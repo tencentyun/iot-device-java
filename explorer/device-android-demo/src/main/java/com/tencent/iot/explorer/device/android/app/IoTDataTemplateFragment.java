@@ -213,6 +213,42 @@ public class IoTDataTemplateFragment extends Fragment {
                     structJson.put("par6", 1577871650);        // 时间戳类型
                     property.put("aaa", structJson);   // 自定义结构体属性
                     property.put("c1",1);  // 一般属性
+
+                    JSONArray arrInt = new JSONArray();  // 整数数组
+                    arrInt.put(1);
+                    arrInt.put(3);
+                    arrInt.put(5);
+                    arrInt.put(7);
+                    property.put("arrInt", arrInt);
+
+                    JSONArray arrStr = new JSONArray();  // 字符串数组
+                    arrStr.put("aaa");
+                    arrStr.put("bbb");
+                    arrStr.put("ccc");
+                    arrStr.put("");
+                    property.put("arrString", arrStr);
+
+                    JSONArray arrFloat = new JSONArray();  // 浮点数组
+                    arrFloat.put(5.001);
+                    arrFloat.put(0.003);
+                    arrFloat.put(0.004);
+                    arrFloat.put(0.007);
+                    property.put("arrFloat", arrFloat);
+
+                    JSONArray arrStruct = new JSONArray();  // 结构体数组
+                    for (int i = 0; i < 7; i++) {
+                        JSONObject structEleJson = new JSONObject();
+                        structEleJson.put("boolM", 0);      // 布尔型参数
+                        structEleJson.put("intM", 0);      // 整数型参数
+                        structEleJson.put("stringM", "string");  // 字符串参数
+                        structEleJson.put("floatM", 0.1); // 浮点型参数
+                        structEleJson.put("enumM", 0);      // 枚举型参数
+                        structEleJson.put("timeM", 1577871650);        // 时间型参数
+                        arrStruct.put(structEleJson);
+                    }
+
+                    property.put("arrStruct", arrStruct);
+
                 } catch (JSONException e) {
                     mParent.printLogInfo(TAG, "Construct property json failed!", mLogInfoText, TXLog.LEVEL_ERROR);
                     return;
@@ -473,6 +509,7 @@ public class IoTDataTemplateFragment extends Fragment {
         @Override
         public void onConnectionLost(Throwable cause) {
             String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
+            cause.printStackTrace();
             mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
         }
 
