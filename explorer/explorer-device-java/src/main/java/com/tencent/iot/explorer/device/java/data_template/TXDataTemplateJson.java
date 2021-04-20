@@ -29,6 +29,7 @@ class TXDataTemplateJson {
     final static public String TYPE_ENUM = "enum";
     final static public String TYPE_TIMESTAMP = "timestamp";
     final static public String TYPE_STRUCT = "struct";
+    final static public String TYPE_ARRAY = "array";
 
     TXDataTemplateJson( final String jsonFileName) {
         if (Status.OK != registerDataTemplateJson( jsonFileName)) {
@@ -141,6 +142,9 @@ class TXDataTemplateJson {
             } else if (type.equals(TYPE_STRUCT)) {
                 JSONArray valuesType = valueDescribeJson.getJSONArray("specs");
                 return StrcutCheckUtils.checkStructValues(valuesType, value);
+            } else if (type.equals(TYPE_ARRAY)) {
+                JSONObject arrayInfoJson = valueDescribeJson.getJSONObject("arrayInfo");
+                return ArrayCheckUtils.checkArrayValues(arrayInfoJson, value);
             } else {
                 LOG.error("Invalid Data Template Json, please check and replace it!");
             }
