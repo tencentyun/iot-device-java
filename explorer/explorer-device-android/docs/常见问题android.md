@@ -25,4 +25,8 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 如果选择了静默升级，创建了升级任务设备就会收到这个固件升级消息。
 如果选择用户确认升级，可以通过我们的小程序来提示客户设备有新的固件可以升级，从小程序上确认升级的话，设备就会收到这个固件升级消息了。
 
+#### 远程依赖 explorer-device-android sdk，抛出 Execution failed for task ':app:compileStagDebugJavaWithJavac'.  Could not resolve all files for configuration ':app:stagDebugCompileClasspath'. Failed to transform explorer-device-android-3.3.0.jar如何排查 ？
+
+工程依赖了 implementation 'com.tencent.iot.explorer:explorer-device-android:3.3.0' ，此处却抛出找不到explorer-device-android-3.3.0.jar文件，可能是开发的环境已经混乱，此时建议完全删除下android studio以及相关环境和gradle配置，重新下载android studio以及配置环境信息后，同步gradle添加依赖。
+
 
