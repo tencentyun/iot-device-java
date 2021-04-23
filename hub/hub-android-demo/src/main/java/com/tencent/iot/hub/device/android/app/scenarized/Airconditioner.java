@@ -60,6 +60,8 @@ public class Airconditioner {
         options.setAutomaticReconnect(true);
         if (TextUtils.isEmpty(SECRET_KEY)) {
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, DEVICE_CERT_NAME, DEVICE_KEY_NAME));
+        } else {
+//            options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-android sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置
         }
 
         mqttConnection.connect(options, null);

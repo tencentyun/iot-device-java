@@ -95,7 +95,7 @@ public class FaceKitSample {
 
         if (mDevPSK != null && mDevPSK.length() != 0){
             TXLog.i(TAG, "Using PSK");
-
+//            options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 explorer-device-face sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
         } else {
             TXLog.i(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, mDevCertName, mDevKeyName));

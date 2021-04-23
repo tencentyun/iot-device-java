@@ -279,7 +279,7 @@ public class TXMqttService extends Service {
             String secretKey = options.getSecretKey();
 
             if (secretKey != null) {
-
+//                connectOptions.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-android sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
             }else {
 
                 if (certFile.startsWith("/")) {

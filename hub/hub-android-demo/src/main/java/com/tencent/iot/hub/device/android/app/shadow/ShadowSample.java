@@ -114,7 +114,7 @@ public class ShadowSample {
         options.setAutomaticReconnect(true);
 
         if(SECRET_KEY != null && SECRET_KEY.length() != 0){
-
+//            options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-android sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置
         } else{
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByAssetsFile(mContext, DEVICE_CERT_NAME, DEVICE_KEY_NAME));
         }

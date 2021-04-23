@@ -91,7 +91,7 @@ public class DataTemplateSample {
 
         if (mDevPSK != null && mDevPSK.length() != 0){
             LOG.info(TAG, "Using PSK");
-
+//            options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 explorer-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
         } else {
             LOG.info(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));
