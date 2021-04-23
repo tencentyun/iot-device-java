@@ -34,6 +34,24 @@
       "revId": "46e2c348b52ff9fe6dfe2096eb69f6e066635493",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9554c294_cc2a55e4",
+        "filename": "hub/hub-device-java/docs/常见问题java.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-04-23T06:09:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a7f2342_9708ce15",
+      "revId": "46e2c348b52ff9fe6dfe2096eb69f6e066635493",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
