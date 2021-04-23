@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08f28f78_6d8357e4",
+        "filename": "hub/hub-device-java/docs/常见问题java.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-04-23T02:16:00Z",
+      "side": 1,
+      "message": "补充下这里抛的错误是  \u0027代理程序不可用 (3)\u0027",
+      "revId": "46e2c348b52ff9fe6dfe2096eb69f6e066635493",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
