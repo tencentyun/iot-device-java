@@ -40,3 +40,7 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 #### 如何设置服务器根证书
 
 如果是接入公有云的话，不需要单独设置CA证书，SDK内部会使用默认的CA证书；如果是接入私有云的话，可以参考[自建服务器接入](自建服务器接入.md)的自定义CA证书部分
+
+#### 填写了设备三元组信息，但是在连接的时候报'代理程序不可用'
+
+如果所创建的产品的认证方式是密钥认证，请检查设备三元组信息（productId/deviceName/devicePsk）是否填写正确，特别注意devicePsk一般均以'=='双等号结尾，复制的时候务必复制完整；若创建的产品是证书认证方式，在设备详情页下载设备证书和设备私钥，并在调用AsymcSslUtils.getSocketFactoryByFile()获取socketFactory时传入正确的证书和私钥路径，同时TXMqttConnection构造时设备psk务必传空值。
