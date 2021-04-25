@@ -1,9 +1,5 @@
 {
   "version": "1.0",
-  "profile": {
-    "ProductId": "LWVUL5SZ2L",
-    "CategoryId": "3"
-  },
   "properties": [
     {
       "id": "power_switch",
@@ -16,20 +12,6 @@
         "mapping": {
           "0": "关",
           "1": "开"
-        }
-      }
-    },
-    {
-      "id": "color",
-      "name": "颜色",
-      "desc": "灯光颜色",
-      "mode": "rw",
-      "define": {
-        "type": "enum",
-        "mapping": {
-          "0": "Red",
-          "1": "Green",
-          "2": "Blue"
         }
       }
     },
@@ -48,6 +30,34 @@
       }
     },
     {
+      "id": "color",
+      "name": "颜色",
+      "desc": "灯光颜色",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "Red",
+          "1": "Green",
+          "2": "Blue"
+        }
+      }
+    },
+    {
+      "id": "color_temp",
+      "name": "色温",
+      "desc": "灯光冷暖",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "100",
+        "start": "0",
+        "step": "10",
+        "unit": "%"
+      }
+    },
+    {
       "id": "name",
       "name": "灯位置名称",
       "desc": "灯位置名称：书房、客厅等",
@@ -60,8 +70,59 @@
       }
     },
     {
-      "id": "struct_param",
-      "name": "结构体参数",
+      "id": "arrInt",
+      "name": "整形数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "int",
+          "min": "0",
+          "max": "100",
+          "start": "0",
+          "step": "1",
+          "unit": ""
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "arrString",
+      "name": "字符串型数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "string",
+          "min": "0",
+          "max": "2048"
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "arrFloat",
+      "name": "浮点型数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "float",
+          "min": "0",
+          "max": "100",
+          "start": "0",
+          "step": "1",
+          "unit": ""
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "struct",
+      "name": "结构体",
       "desc": "",
       "mode": "rw",
       "define": {
@@ -69,7 +130,7 @@
         "specs": [
           {
             "id": "bool_param",
-            "name": "布尔型参数",
+            "name": "param01",
             "dataType": {
               "type": "bool",
               "mapping": {
@@ -80,7 +141,7 @@
           },
           {
             "id": "int_param",
-            "name": "整数型参数",
+            "name": "param02",
             "dataType": {
               "type": "int",
               "min": "0",
@@ -91,8 +152,8 @@
             }
           },
           {
-            "id": "string_param",
-            "name": "字符串参数",
+            "id": "str_param",
+            "name": "param03",
             "dataType": {
               "type": "string",
               "min": "0",
@@ -101,7 +162,7 @@
           },
           {
             "id": "float_param",
-            "name": "浮点型参数",
+            "name": "param04",
             "dataType": {
               "type": "float",
               "min": "0",
@@ -113,23 +174,100 @@
           },
           {
             "id": "enum_param",
-            "name": "枚举型参数",
+            "name": "param05",
             "dataType": {
               "type": "enum",
               "mapping": {
-                "0": "enum0",
-                "1": "enum1"
+                "0": "first",
+                "1": "second"
               }
             }
           },
           {
-            "id": "timestamp_param",
-            "name": "时间型参数",
+            "id": "time_param",
+            "name": "param06",
             "dataType": {
               "type": "timestamp"
             }
           }
         ]
+      },
+      "required": false
+    },
+    {
+      "id": "arrStruct",
+      "name": "结构体",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "struct",
+          "specs": [
+            {
+              "id": "boolM",
+              "name": "boolM",
+              "dataType": {
+                "type": "bool",
+                "mapping": {
+                  "0": "关",
+                  "1": "开"
+                }
+              }
+            },
+            {
+              "id": "intM",
+              "name": "intM",
+              "dataType": {
+                "type": "int",
+                "min": "0",
+                "max": "100",
+                "start": "0",
+                "step": "1",
+                "unit": ""
+              }
+            },
+            {
+              "id": "stringM",
+              "name": "stringM",
+              "dataType": {
+                "type": "string",
+                "min": "0",
+                "max": "2048"
+              }
+            },
+            {
+              "id": "floatM",
+              "name": "floatM",
+              "dataType": {
+                "type": "float",
+                "min": "0",
+                "max": "100",
+                "start": "0",
+                "step": "1",
+                "unit": ""
+              }
+            },
+            {
+              "id": "enumM",
+              "name": "enumM",
+              "dataType": {
+                "type": "bool",
+                "mapping": {
+                  "0": "关",
+                  "1": "开"
+                }
+              }
+            },
+            {
+              "id": "timeM",
+              "name": "timeM",
+              "dataType": {
+                "type": "timestamp"
+              }
+            }
+          ]
+        },
+        "type": "array"
       },
       "required": false
     }
@@ -221,5 +359,9 @@
       ]
     }
   ],
-  "actions": []
+  "actions": [],
+  "profile": {
+    "ProductId": "4ALW3EHQW3",
+    "CategoryId": "141"
+  }
 }
