@@ -205,14 +205,18 @@ public class IoTDataTemplateFragment extends Fragment {
                 JSONObject property = new JSONObject();
                 try {
                     JSONObject structJson = new JSONObject();
-                    structJson.put("par4", 2.1001); // 浮点类型
-                    structJson.put("par5", 1);      // 枚举类型
-                    structJson.put("par1", 1);      // 布尔类型
-                    structJson.put("par2", 10);      // 整数类型
-                    structJson.put("par3", "testStrAndroid");  // 字符串类型
-                    structJson.put("par6", 1577871650);        // 时间戳类型
-                    property.put("aaa", structJson);   // 自定义结构体属性
-                    property.put("c1",1);  // 一般属性
+                    structJson.put("bool_param", 1);                    // 布尔类型
+                    structJson.put("int_param", 10);                    // 整数类型
+                    structJson.put("str_param", "testStrAndroid");      // 字符串类型
+                    structJson.put("float_param", 2.1001);              // 浮点类型
+                    structJson.put("enum_param", 1);                    // 枚举类型
+                    structJson.put("time_param", 1577871650);           // 时间戳类型
+                    property.put("struct", structJson);   // 自定义结构体属性
+
+                    property.put("power_switch",0);     // 创建产品时，选择产品品类为智能城市-公共事业-路灯照明，数据模板中系统推荐的标准功能属性
+                    property.put("color",0);            // 创建产品时，选择产品品类为智能城市-公共事业-路灯照明，数据模板中系统推荐的标准功能属性
+                    property.put("brightness",0);       // 创建产品时，选择产品品类为智能城市-公共事业-路灯照明，数据模板中系统推荐的标准功能属性
+                    property.put("name","test");        // 创建产品时，选择产品品类为智能城市-公共事业-路灯照明，数据模板中系统推荐的标准功能属性
 
                     JSONArray arrInt = new JSONArray();  // 整数数组
                     arrInt.put(1);
