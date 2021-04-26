@@ -22,6 +22,30 @@
       "revId": "23d7c79121b4b5cc228cb11645e1356ca9cfc89e",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0551d0fe_7c3aaf4a",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/mqtt/TXMqttConnection.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-04-26T08:10:29Z",
+      "side": 1,
+      "message": "已在 Patchset2 中修改",
+      "parentUuid": "b4d3ec4f_04d6739e",
+      "range": {
+        "startLine": 113,
+        "startChar": 18,
+        "endLine": 113,
+        "endChar": 25
+      },
+      "revId": "23d7c79121b4b5cc228cb11645e1356ca9cfc89e",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
