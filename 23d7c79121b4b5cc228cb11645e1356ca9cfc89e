@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b4d3ec4f_04d6739e",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/mqtt/TXMqttConnection.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-04-26T07:44:41Z",
+      "side": 1,
+      "message": "general都改成generate吧",
+      "range": {
+        "startLine": 113,
+        "startChar": 18,
+        "endLine": 113,
+        "endChar": 25
+      },
+      "revId": "23d7c79121b4b5cc228cb11645e1356ca9cfc89e",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
