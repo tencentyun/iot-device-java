@@ -1,17 +1,20 @@
 package com.tencent.iot.explorer.device.android.app;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tencent.iot.explorer.device.android.app.gateway.GatewaySample;
 import com.tencent.iot.explorer.device.android.app.gateway.ProductAirconditioner;
 import com.tencent.iot.explorer.device.android.app.gateway.ProductLight;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.util.Map;
@@ -25,6 +28,8 @@ public class IoTGatewayFragment extends Fragment {
 
     private Button mConnectBtn;
     private Button mCloseConnectBtn;
+
+    private ImageView mQRCodeImgView;
 
     private Button maddSubDev1;
     private Button mdelSubDev1;
@@ -63,6 +68,7 @@ public class IoTGatewayFragment extends Fragment {
 
         mParent = (IoTMainActivity) this.getActivity();
 
+        mQRCodeImgView = view.findViewById(R.id.iv_qrcode);
         mConnectBtn = view.findViewById(R.id.connect);
         mCloseConnectBtn = view.findViewById(R.id.disconnect);
         maddSubDev1= view.findViewById(R.id.addSubDev1);
@@ -77,6 +83,19 @@ public class IoTGatewayFragment extends Fragment {
         mProperty =  view.findViewById(R.id.subDevProperty);
 
         mGatewaySample = new GatewaySample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mSubDev1ProductId, mSubDev2ProductId);
+        mGatewaySample.setFirstConnectCompletedCallback(new GatewaySample.FirstConnectCompletedCallback() {
+            @Override
+            public void firstConnectCompleted(final String deviceQRcontent) {
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 设置适配器，刷新展示用户列表
+                        mQRCodeImgView.setImageBitmap(ZXingUtils.createQRCodeBitmap(deviceQRcontent, 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE));
+                    }
+                });
+            }
+        });
 
         new IoTGatewayFragment.setPropertyText().start();
 
