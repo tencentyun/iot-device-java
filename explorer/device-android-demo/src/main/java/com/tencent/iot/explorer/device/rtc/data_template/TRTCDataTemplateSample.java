@@ -83,8 +83,12 @@ public class TRTCDataTemplateSample {
         mTrtcCallBack = trtcCallBack;
     }
 
-    public String generalDeviceQRCodeContent() {
-        return mMqttConnection.generalDeviceQRCodeContent();
+    /**
+     * 生成绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public String generateDeviceQRCodeContent() {
+        return mMqttConnection.generateDeviceQRCodeContent();
     }
 
     /**

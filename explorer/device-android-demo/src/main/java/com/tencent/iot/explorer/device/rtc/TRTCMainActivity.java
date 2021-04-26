@@ -71,7 +71,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private EditText mProductIdEditText;
     private EditText mDevNameEditText;
     private EditText mDevPSKEditText;
-    private Button mGeneralQRCodeBtn;
+    private Button mGenerateQRCodeBtn;
 
     private TextView mLogInfoText;
 
@@ -117,7 +117,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         mProductIdEditText = findViewById(R.id.et_productId);
         mDevNameEditText = findViewById(R.id.et_deviceName);
         mDevPSKEditText = findViewById(R.id.et_devicePsk);
-        mGeneralQRCodeBtn = findViewById(R.id.qrcode);
+        mGenerateQRCodeBtn = findViewById(R.id.qrcode);
 
         // 获取组件
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_user_list);
@@ -210,7 +210,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
             }
         });
-        mGeneralQRCodeBtn.setOnClickListener(new View.OnClickListener() {
+        mGenerateQRCodeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -440,7 +440,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             // 设置适配器，刷新展示用户列表
-                            mQRCodeImgView.setImageBitmap(ZXingUtils.createQRCodeBitmap(mDataTemplateSample.generalDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE));
+                            mQRCodeImgView.setImageBitmap(ZXingUtils.createQRCodeBitmap(mDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE));
                         }
                     });
                 }

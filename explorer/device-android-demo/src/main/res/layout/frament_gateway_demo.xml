@@ -85,6 +85,13 @@
             android:text="下线" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/iv_qrcode"
+        android:layout_margin="5dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="#f1f1f1"/>
+
     <TextView
         android:text="日志输出："
         android:textSize="16sp"

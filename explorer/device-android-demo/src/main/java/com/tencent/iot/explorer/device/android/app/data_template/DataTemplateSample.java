@@ -81,6 +81,14 @@ public class DataTemplateSample {
     }
 
     /**
+     * 生成绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public String generateDeviceQRCodeContent() {
+        return mMqttConnection.generateDeviceQRCodeContent();
+    }
+
+    /**
      * 建立MQTT连接
      */
     public void connect() {

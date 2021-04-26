@@ -30,8 +30,6 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     //属性下行topic
     public String mPropertyDownStreamTopic;
 
-    private static final String HMAC_SHA_256 = "HmacSHA256";
-
     public TXTRTCTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, TXTRTCCallBack trtcCallBack) {
@@ -45,46 +43,6 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
      */
     public boolean isConnected() {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
-    }
-
-
-    /**
-     * 生成绑定设备的二维码字符串
-     * @return 生成的绑定设备的二维码字符串;
-     */
-    public String generalDeviceQRCodeContent() {
-        // 格式为  ${product_id};${device_name};${random};${timestamp};hmacsha256;sign
-
-        int randNum = (int) (Math.random() * 999999);
-        long timestamp = System.currentTimeMillis() / 1000;
-        String text2Sgin = mProductId + mDeviceName + ";" + randNum + ";" + timestamp;
-        String signature = sign(text2Sgin, mSecretKey);
-        String content = mProductId + ";" + mDeviceName + ";" + randNum + ";" + timestamp + ";hmacsha256;" + signature;
-        return content;
-    }
-
-    private String sign(String src, String psk) {
-        Mac mac;
-
-        try {
-            mac = Mac.getInstance(HMAC_SHA_256);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        String hmacSign;
-        SecretKeySpec signKey = new SecretKeySpec(Base64.decode(psk, Base64.DEFAULT), HMAC_SHA_256);
-
-        try {
-            mac.init(signKey);
-            byte[] rawHmac = mac.doFinal(src.getBytes());
-            hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
-            return hmacSign;
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**

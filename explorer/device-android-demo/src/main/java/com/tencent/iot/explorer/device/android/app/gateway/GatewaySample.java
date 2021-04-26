@@ -40,6 +40,7 @@ public class GatewaySample {
 
     private TXGatewayClient mConnection;
     private static AtomicInteger requestID = new AtomicInteger(0);
+    private FirstConnectCompletedCallback mFirstConnectCompletedCallback;
 
     public GatewaySample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
         this.mContext = context;
@@ -50,6 +51,10 @@ public class GatewaySample {
         this.mDevKeyName = devKeyName;
         mConnection = new TXGatewayClient( context, brokerURL, productId, devName, devPSK,null,null,
                                 new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
+    }
+
+    public void setFirstConnectCompletedCallback(FirstConnectCompletedCallback firstConnectCompletedCallback) {
+        this.mFirstConnectCompletedCallback = firstConnectCompletedCallback;
     }
 
     public void online() {
@@ -172,6 +177,9 @@ public class GatewaySample {
                 if (Status.OK != mConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
                     TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
                 }
+                if (mFirstConnectCompletedCallback != null) {
+                    mFirstConnectCompletedCallback.firstConnectCompleted(mConnection.generateDeviceQRCodeContent());
+                }
             } else {
                 String userContextInfo = "";
                 if (userContext instanceof TXMqttRequest) {
@@ -256,5 +264,9 @@ public class GatewaySample {
         public void onMessageReceived(final String topic, final MqttMessage message) {
             //do nothing, message will be process in GatewaySampleDownStreamCallBack
         }
+    }
+
+    public interface FirstConnectCompletedCallback {
+        void firstConnectCompleted(String deviceQRcontent);
     }
 }

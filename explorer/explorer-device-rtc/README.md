@@ -100,7 +100,7 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
      * 生成绑定设备的二维码字符串
      * @return 生成的绑定设备的二维码字符串;
      */
-    public String generalDeviceQRCodeContent()
+    public String generateDeviceQRCodeContent()
 
     /**
      * 订阅数据模板相关主题
