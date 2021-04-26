@@ -37,7 +37,7 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
     在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，中间位+1
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-android::x.x.x-SNAPSHOT'
+        implementation 'com.tencent.iot.explorer:explorer-device-android:x.x.x-SNAPSHOT'
     }
     ```
  -  依赖本地sdk源码 构建
