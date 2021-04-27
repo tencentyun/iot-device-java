@@ -28,3 +28,7 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 #### 远程依赖 explorer-device-android sdk，抛出 Execution failed for task ':app:compileStagDebugJavaWithJavac'.  Could not resolve all files for configuration ':app:stagDebugCompileClasspath'. Failed to transform explorer-device-android-3.3.0.jar如何排查 ？
 
 工程依赖了 implementation 'com.tencent.iot.explorer:explorer-device-android:3.3.0' ，此处却抛出找不到explorer-device-android-3.3.0.jar文件，可能是开发的环境已经混乱，此时建议完全删除下android studio以及相关环境和gradle配置，重新下载android studio以及配置环境信息后，同步gradle添加依赖。
+
+#### 动态注册回调onFailedDynreg 错误信息为{"code":1010,"message":"Check signature failed"如何排查
+
+此问题很可能是填写了错误的ProductSecret，建议和云控制台上设备信息比对检查下调用动态注册时传入的三个参数，productId，deviceName，ProductSecret。
