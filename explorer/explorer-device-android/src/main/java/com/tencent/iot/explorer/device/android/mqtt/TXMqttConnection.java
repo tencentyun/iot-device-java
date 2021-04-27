@@ -128,13 +128,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
      */
     public String generateDeviceWechatScanQRCodeContent() {
         // https://iot.cloud.tencent.com/iotexplorer/device?page=adddevice&productId=XXXXXXXX&device_sign=xxxxxxx
-        // 格式为  ${product_id};${device_name};${random};${timestamp};hmacsha256;sign
-
-        int randNum = (int) (Math.random() * 999999);
-        long timestamp = System.currentTimeMillis() / 1000;
-        String text2Sgin = mProductId + mDeviceName + ";" + randNum + ";" + timestamp;
-        String signature = sign(text2Sgin, mSecretKey);
-        String content = mWechatScanQRCodeContentUrl + "?page=adddevice&productId=" + mProductId + "&device_sign=" + signature;
+        String content = mWechatScanQRCodeContentUrl + "?page=adddevice&productId=" + mProductId + "&device_sign=" + generateDeviceQRCodeContent();
         return content;
     }
 
