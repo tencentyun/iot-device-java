@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - run: |
           rm -rf hub/hub-android-demo/app-config.json explorer/device-android-demo/app-config.json hub/hub-device-java/src/test/unit_test_config.json explorer/explorer-device-java/src/test/unit_test_config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/hub-device-android/app-config.json.asc > hub/hub-android-demo/app-config.json
@@ -40,6 +42,8 @@ jobs:
         run: sudo gem install fir-cli
       - name: Setup NDK
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
+      - name: Update SDK Version
+        run: bash .github/scripts/updateVersionCodeForSnapshot.sh
       - name: Build with Gradle
         run: ./gradlew build
       - name: Publish aar and jar to Maven
