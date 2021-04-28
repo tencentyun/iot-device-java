@@ -1,4 +1,4 @@
-package samples.data_template;
+package com.tencent.iot.explorer.device.java.core.data_template;
 
 
 
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
@@ -104,6 +105,10 @@ public class DataTemplateSample {
         bufferOptions.setBufferSize(1024);
         bufferOptions.setDeleteOldestMessages(true);
         mMqttConnection.setBufferOpts(bufferOptions);
+    }
+
+    public TXMqttConstants.ConnectStatus getConnectStatus() {
+        return mMqttConnection.getConnectStatus();
     }
 
     /**
