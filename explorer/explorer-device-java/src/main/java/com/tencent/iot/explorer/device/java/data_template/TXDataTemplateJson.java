@@ -69,7 +69,7 @@ class TXDataTemplateJson {
      */
     private Status registerDataTemplateJson(final String jsonFileName){
 
-        File file = new File(System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/"+jsonFileName);
+        File file = new File(System.getProperty("user.dir") + "/src/test/resources/"+jsonFileName);
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             try {

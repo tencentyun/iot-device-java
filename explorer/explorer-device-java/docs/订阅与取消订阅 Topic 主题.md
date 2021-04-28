@@ -12,7 +12,7 @@
 
 ## 订阅 数据模板相关联 Topic 主题
 
-运行 [MqttSample.java](../src/test/java/MqttSample.java) 的main函数，设备成功上线后，调用subscribeTopic()，订阅数据模板相关联的属性、事件和行为类型的 Topic:
+运行 [TestMqttSample.java](../src/test/java/com/tencent/iot/explorer/device/java/core/mqtt/TestMqttSample.java) 的testMqttConnect函数，connect()回调onConnectCompleted后调用subscribeTopic()，订阅数据模板相关联的属性、事件和行为类型的 Topic:
 ```
 $thing/down/property/{ProductID}/{DeviceName}
 $thing/down/event/{ProductID}/{DeviceName}
@@ -21,28 +21,22 @@ $thing/down/action/{ProductID}/{DeviceName}
 示例代码如下：
 ```
 private static void subscribeTopic() {
-    try {
-        Thread.sleep(2000);
-        mDataTemplateSample.subscribeTopic();
-    } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
+    mDataTemplateSample.subscribeTopic();
 }
 ```
 
 观察Logcat日志。
 ```
-23/02/2021 19:39:50,660 [MQTT Call: LWVUL5SZ2Llight1] INFO  MqttSample onConnectCompleted 288  - onConnectCompleted, status[OK], reconnect[false], userContext[MQTTRequest{requestType='connect', requestId=0}], msg[connected to ssl://LWVUL5SZ2L.iotcloud.tencentdevices.com:8883]
-23/02/2021 19:39:52,686 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[subscribe success]
-23/02/2021 19:39:52,691 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[subscribe success]
-23/02/2021 19:39:52,691 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
+23/02/2021 19:39:50,660 [MQTT Call: LWVUL5SZ2Llight1] INFO  TestMqttSample onConnectCompleted 288  - onConnectCompleted, status[OK], reconnect[false], userContext[MQTTRequest{requestType='connect', requestId=0}], msg[connected to ssl://LWVUL5SZ2L.iotcloud.tencentdevices.com:8883]
+23/02/2021 19:39:52,686 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[subscribe success]
+23/02/2021 19:39:52,691 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[subscribe success]
+23/02/2021 19:39:52,691 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onSubscribeCompleted 330  - onSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[subscribe success]
 ```
 以上日志为 订阅 Topic 主题 成功。
 
 ## 取消订阅 Topic 主题
 
-运行 [MqttSample.java](../src/test/java/MqttSample.java) 的main函数，设备成功上线后，订阅过Topic后，调用unSubscribeTopic()，取消订阅属性、事件和行为类型的 Topic:
+运行 [TestMqttSample.java](../src/test/java/com/tencent/iot/explorer/device/java/core/mqtt/TestMqttSample.java) 的testMqttConnect函数，connect()回调onConnectCompleted后，成功订阅过Topic后，调用unSubscribeTopic()，取消订阅属性、事件和行为类型的 Topic:
 ```
 $thing/down/property/{ProductID}/{DeviceName}
 $thing/down/event/{ProductID}/{DeviceName}
@@ -51,20 +45,14 @@ $thing/down/action/{ProductID}/{DeviceName}
 示例代码如下：
 ```
 private static void unSubscribeTopic() {
-    try {
-        Thread.sleep(2000);
-        mDataTemplateSample.unSubscribeTopic();
-    } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
+    mDataTemplateSample.unSubscribeTopic();
 }
 ```
 
 观察Logcat日志。
 ```
-23/02/2021 19:44:28,232 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[unsubscribe success]
-23/02/2021 19:44:28,236 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[unsubscribe success]
-23/02/2021 19:44:28,236 [MQTT Call: LWVUL5SZ2Llight1] DEBUG MqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[unsubscribe success]
+23/02/2021 19:44:28,232 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/property/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=0}], errMsg[unsubscribe success]
+23/02/2021 19:44:28,236 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/action/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=2}], errMsg[unsubscribe success]
+23/02/2021 19:44:28,236 [MQTT Call: LWVUL5SZ2Llight1] DEBUG TestMqttSample onUnSubscribeCompleted 342  - onUnSubscribeCompleted, status[OK], topics[[$thing/down/event/LWVUL5SZ2L/light1]], userContext[MQTTRequest{requestType='subscribeTopic', requestId=1}], errMsg[unsubscribe success]
 ```
 以上日志为 取消订阅 Topic 主题 成功。
