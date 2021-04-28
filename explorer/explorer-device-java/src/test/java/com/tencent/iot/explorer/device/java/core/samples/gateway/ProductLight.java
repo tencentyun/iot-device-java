@@ -1,4 +1,4 @@
-package samples.gateway;
+package com.tencent.iot.explorer.device.java.core.samples.gateway;
 
 
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -27,7 +27,7 @@ public class ProductLight {
     private static final String TAG = "TXProductLight";
 
     public TXGatewaySubdev mGatewaySubdev;
-    private final static String mSubDev1JsonFileName = "gateway.json";
+    private final static String mSubDev1JsonFileName = "struct.json";
     private static final Logger LOG = LoggerFactory.getLogger(ProductLight.class);
 
     /**上报周期*/

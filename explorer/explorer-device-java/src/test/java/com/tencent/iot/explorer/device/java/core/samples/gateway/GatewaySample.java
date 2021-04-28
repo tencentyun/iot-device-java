@@ -1,4 +1,4 @@
-package samples.gateway;
+package com.tencent.iot.explorer.device.java.core.samples.gateway;
 
 
 
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 import java.util.Arrays;
@@ -52,6 +53,13 @@ public class GatewaySample {
         this.mDevKeyName = devKeyName;
         mConnection = new TXGatewayClient(brokerURL, productId, devName, devPSK,null,null,
                                 new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
+    }
+
+    /**
+     * @return 当前连接状态
+     */
+    public TXMqttConstants.ConnectStatus getConnectStatus() {
+        return mConnection.getConnectStatus();
     }
 
     public void online() {

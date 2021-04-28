@@ -10,7 +10,26 @@ apply from: "../../parse_json.gradle"
 
 buildConfig {
     packageName = 'explorer.unit.test'
-    buildConfigField 'String', 'TESTCLASSNAME_CONFIGNAME', "${getValueById('TESTCLASSNAME_CONFIGNAME')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_ID', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_DEVICE_NAME', "${getValueById('TESTDYNREGDEVSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_SECRET', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_SECRET')}"
+
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_NAME', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_PSK', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_DEV_NAME', "${getValueById('TESTGATEWAYSAMPLE_SUB1_DEV_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_DEV_PSK', "${getValueById('TESTGATEWAYSAMPLE_SUB1_DEV_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB2_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_SUB2_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB2_DEV_NAME', "${getValueById('TESTGATEWAYSAMPLE_SUB2_DEV_NAME')}"
+
+    buildConfigField 'String', 'TESTMQTTSAMPLE_PRODUCT_ID', "${getValueById('TESTMQTTSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PSK', "${getValueById('TESTMQTTSAMPLE_DEVICE_PSK')}"
+
+    buildConfigField 'String', 'TESTOTASAMPLE_PRODUCT_ID', "${getValueById('TESTOTASAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_NAME', "${getValueById('TESTOTASAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_PSK', "${getValueById('TESTOTASAMPLE_DEVICE_PSK')}"
 }
 
 jar {
@@ -123,6 +142,7 @@ dependencies {
     if (findProject(':hub:hub-device-java') != null) {
         api project(path: ':hub:hub-device-java')
     }
+    testImplementation 'junit:junit:4.13'
 }
 
 signing {

@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "properties": [
+    {
+      "id": "windspeed",
+      "name": "空调风速",
+      "desc": "空调的风速",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "自动",
+          "1": "静音档",
+          "2": "低档",
+          "3": "中档",
+          "4": "高档",
+          "5": "最高档"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "power_switch",
+      "name": "空调开关",
+      "desc": "控制开关",
+      "required": true,
+      "mode": "rw",
+      "define": {
+        "type": "bool",
+        "mapping": {
+          "0": "关",
+          "1": "开"
+        }
+      }
+    },
+    {
+      "id": "Temperature",
+      "name": "温度",
+      "desc": "温度",
+      "mode": "rw",
+      "required": false,
+      "define": {
+        "type": "float",
+        "unit": "oC",
+        "unitDesc": "摄氏度",
+        "step": "1",
+        "min": "16.0",
+        "max": "36.0",
+        "start": "16"
+      }
+    },
+    {
+      "id": "mode",
+      "name": "模式",
+      "desc": "运行模式",
+      "mode": "rw",
+      "required": false,
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "cold",
+          "1": "warm",
+          "2": "dry"
+        }
+      }
+    },
+    {
+      "id": "Wind",
+      "name": "摆风",
+      "desc": "摆风",
+      "mode": "rw",
+      "required": false,
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "没有摆风",
+          "1": "左右摆风",
+          "2": "左右上下摆风"
+        }
+      }
+    }
+  ],
+  "events": [],
+  "actions": [],
+  "profile": {
+    "ProductId": "WGSX953MPR",
+    "CategoryId": "124"
+  }
+}

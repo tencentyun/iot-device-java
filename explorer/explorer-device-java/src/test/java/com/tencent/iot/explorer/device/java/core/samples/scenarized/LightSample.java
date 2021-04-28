@@ -1,4 +1,4 @@
-package samples.scenarized;
+package com.tencent.iot.explorer.device.java.core.samples.scenarized;
 
 
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
@@ -14,7 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import samples.data_template.DataTemplateSample;
+import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;

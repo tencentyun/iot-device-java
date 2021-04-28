@@ -1,4 +1,4 @@
-package samples.gateway;
+package com.tencent.iot.explorer.device.java.core.samples.gateway;
 
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
