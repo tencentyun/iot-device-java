@@ -43,7 +43,7 @@
         }
     }
     ```
-    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，中间位+1
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，末位+1
     ``` gr
     dependencies {
         implementation 'com.tencent.iot.explorer:explorer-device-java:x.x.x-SNAPSHOT'
