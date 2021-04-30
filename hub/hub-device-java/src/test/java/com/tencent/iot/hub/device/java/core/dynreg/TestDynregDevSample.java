@@ -220,7 +220,7 @@ public class TestDynregDevSample {
         @Override
         public void onGetDevicePSK(String devicePsk) {
             mDevPSK = devicePsk;
-            String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK[%s]", devicePsk);
+            String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK");
             LOG.info(logInfo);
             connect();
         }
@@ -229,7 +229,7 @@ public class TestDynregDevSample {
         public void onGetDeviceCert(String deviceCert, String devicePriv) {
             mDevCert = deviceCert;   //这里获取的是证书内容字符串 创建对应ssl认证时可使用options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));方式，示例中使用的是读取本地文件路径的方式。
             mDevPriv = devicePriv;   //这里获取的是秘钥内容字符串
-            String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert[%s] devicePriv[%s]", deviceCert, devicePriv);
+            String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert devicePriv");
             LOG.info(logInfo);
             connect();
         }
