@@ -281,7 +281,14 @@ public class TestDynregDevSample {
         dynReg();
         lock();
         LOG.debug("after dynreg connect");
+
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
+
         mDataTemplateSample.disconnect();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

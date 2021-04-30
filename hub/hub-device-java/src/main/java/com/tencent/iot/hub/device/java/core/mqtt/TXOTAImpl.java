@@ -43,7 +43,7 @@ public class TXOTAImpl {
 	private final String OTA_SUB_DEV_REPORT_TOPIC;
 	private final String mStoragePath;
 
-	private static boolean mDownloadThreadRunning = false;
+	private volatile static boolean mDownloadThreadRunning = false;
 	private static Thread mDownloadThread = null;
 
 	private boolean mSubscribedState = false;
@@ -512,7 +512,7 @@ public class TXOTAImpl {
 						fos = new RandomAccessFile(outputFile, "rw");
 						LOG.debug("fileLength " + fos.length() + " bytes");
 
-						long downloadBytes = 0;
+						long downloadBytes = fos.length();
 						int lastPercent = 0;
 
 						if (downloadBytes > 0) {
@@ -528,7 +528,7 @@ public class TXOTAImpl {
 
 						conn.connect();
 
-						int totalLength = conn.getContentLength();
+						int totalLength = conn.getContentLength()+Long.valueOf(downloadBytes).intValue();
 						LOG.debug("totalLength " + totalLength + " bytes");
 
 						stream = conn.getInputStream();
