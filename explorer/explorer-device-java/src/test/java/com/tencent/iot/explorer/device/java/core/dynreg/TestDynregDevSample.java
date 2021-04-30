@@ -282,5 +282,6 @@ public class TestDynregDevSample {
         lock();
         LOG.debug("after dynreg connect");
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
+        mDataTemplateSample.disconnect();
     }
 }

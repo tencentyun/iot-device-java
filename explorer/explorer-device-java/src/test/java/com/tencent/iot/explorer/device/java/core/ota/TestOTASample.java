@@ -205,6 +205,13 @@ public class TestOTASample {
         connect();
         LOG.debug("after connect");
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
+
+        mDataTemplateSample.disconnect();
     }
 }
