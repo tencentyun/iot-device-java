@@ -456,7 +456,13 @@ public class TXGatewayConnection  extends TXMqttConnection {
             return Status.PARAMETER_INVALID;
         }
 
-        Long timestamp = System.currentTimeMillis()/1000 + 600;
+        Long timestamp;
+        if (options.isAutomaticReconnect()) {
+            timestamp = (long) Integer.MAX_VALUE;
+        } else {
+            timestamp = System.currentTimeMillis() / 1000 + 600;
+        }
+
         String userNameStr = mUserName + ";" + getConnectId() + ";" + timestamp;
 
         mConnOptions.setUserName(userNameStr);
