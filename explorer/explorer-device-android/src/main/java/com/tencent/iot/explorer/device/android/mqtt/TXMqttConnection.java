@@ -26,6 +26,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -128,7 +130,15 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
      */
     public String generateDeviceWechatScanQRCodeContent() {
         // https://iot.cloud.tencent.com/iotexplorer/device?page=adddevice&productId=XXXXXXXX&device_sign=xxxxxxx
-        String content = mWechatScanQRCodeContentUrl + "?page=adddevice&productId=" + mProductId + "&device_sign=" + generateDeviceQRCodeContent();
+        String deviceSign = "";
+        try {
+            deviceSign = URLEncoder.encode(generateDeviceQRCodeContent(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            TXLog.e(TAG, "toURLEncoded error:"+deviceSign+e.toString());
+            return "";
+        }
+        String content = mWechatScanQRCodeContentUrl + "?page=adddevice&productId=" + mProductId + "&device_sign=" + deviceSign;
         return content;
     }
 

@@ -178,7 +178,7 @@ public class GatewaySample {
                     TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
                 }
                 if (mFirstConnectCompletedCallback != null) {
-                    mFirstConnectCompletedCallback.firstConnectCompleted(mConnection.generateDeviceQRCodeContent());
+                    mFirstConnectCompletedCallback.firstConnectCompleted(mConnection.generateDeviceWechatScanQRCodeContent());
                 }
             } else {
                 String userContextInfo = "";
