@@ -5,7 +5,7 @@ apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-rootProject.ext.configPath = "./src/test/unit_test_config.json"
+rootProject.ext.configPath = "./src/test/resources/unit_test_config.json"
 apply from: "../../parse_json.gradle"
 
 buildConfig {
