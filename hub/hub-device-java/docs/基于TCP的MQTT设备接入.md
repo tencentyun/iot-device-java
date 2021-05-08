@@ -28,17 +28,18 @@ ${productId}/${deviceName}/event    // 发布
 [下载IoT Hub Android-SDK Demo示例代码](../README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
 
 #### 填写认证连接设备的参数
-示例中编辑 [MqttSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java) 文件中的参数配置信息
+示例中编辑 [unit_test_config.json](../src/test/resources/unit_test_config.json) 文件中的参数配置信息
 ```
 {
-  private static String mProductID = "";
-  private static String mDevName = "";
-  private static String mDevPSK  = ""; //若使用证书验证，设为null
+  "TESTMQTTSAMPLE_PRODUCT_ID":           "",
+  "TESTMQTTSAMPLE_DEVICE_NAME":          "",
+  "TESTMQTTSAMPLE_DEVICE_PSK":           "",
+  "TESTMQTTSAMPLE_TEST_TOPIC":           "",
 }
 ```
-如果在控制台创建设备时使用的是密钥认证方式，需要在 MqttSampleTest.java 填写 mProductID（产品ID）、mDevName（设备名称）、mDevPSK（设备密钥）；
+如果在控制台创建设备时使用的是密钥认证方式，需要在 unit_test_config.json 填写 TESTMQTTSAMPLE_PRODUCT_ID（产品ID）、TESTMQTTSAMPLE_DEVICE_NAME（设备名称）、TESTMQTTSAMPLE_DEVICE_PSK（设备密钥）；
 
-如果在控制台创建设备时使用的是证书认证方式，除了需要在 MqttSampleTest.java 填写 mProductID（产品ID）、mDevName（设备名称），mDevPSK（设备密钥）设置为null之外，还需将证书和私钥放到 [resources](../src/test/resources/)文件夹中，填写mCertFilePath (设备证书文件名称)、mPrivKeyFilePath(设备私钥文件名称)。
+如果在控制台创建设备时使用的是证书认证方式，除了需要在 unit_test_config.json 填写 TESTMQTTSAMPLE_PRODUCT_ID（产品ID）、TESTMQTTSAMPLE_DEVICE_NAME（设备名称），还需在 [MqttSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java) 将 mDevPSK（设备密钥）设置为null之外，还需将证书和私钥放到 [resources](../src/test/resources/)文件夹中，填写mCertFilePath (设备证书文件名称)、mPrivKeyFilePath(设备私钥文件名称)。
 
 ```
 private static String mCertFilePath = "";           // 填写 resources 文件夹下设备证书文件名称
