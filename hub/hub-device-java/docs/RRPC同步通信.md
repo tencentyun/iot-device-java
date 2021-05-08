@@ -24,7 +24,7 @@
 
 步骤一：在设备中订阅 RRPC 消息 Topic
 
-运行 [TestMqttSample.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/TestMqttSample.java) 的main函数，设备上线后调用subscribeRRPCTopic()，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
+运行 [MqttSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java) 的main函数，设备上线后调用subscribeRRPCTopic()，进行 [通信原理](#通信原理) 中的订阅消息Topic。示例代码如下：
 
 ```
 private static void subscribeRRPCTopic() {
@@ -44,7 +44,7 @@ private static void subscribeRRPCTopic() {
 以下是设备成功订阅 RRPC 消息 Topic 的日志
 ```
 17/03/2021 00:16:34,000 [main] INFO  TXMqttConnection subscribe 749  - Starting subscribe topic: $rrpc/rxd/XTV06F9MX4/test_111/+
-17/03/2021 00:16:34,032 [MQTT Call: XTV06F9MX4test_111] DEBUG TestMqttSample onSubscribeCompleted 263  - onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/XTV06F9MX4/test_111/+]], userContext[], errMsg[subscribe success]
+17/03/2021 00:16:34,032 [MQTT Call: XTV06F9MX4test_111] DEBUG MqttSampleTest onSubscribeCompleted 263  - onSubscribeCompleted, status[OK], topics[[$rrpc/rxd/XTV06F9MX4/test_111/+]], userContext[], errMsg[subscribe success]
 ```
 
 步骤二：调用云 API PublishRRPCMessage 发送 RRPC 请求消息。
@@ -82,5 +82,5 @@ public void messageArrived(String topic, MqttMessage message) throws Exception {
 以下是成功发送 RRPC 应答消息 Topic 的日志
 ```
 17/03/2021 00:22:19,770 [MQTT Call: XTV06F9MX4test_111] INFO  TXMqttConnection publish 567  - Starting publish topic: $rrpc/txd/XTV06F9MX4/test_111/27041 Message: {"test-key":"test-value"}
-17/03/2021 00:22:19,771 [MQTT Call: XTV06F9MX4test_111] DEBUG TestMqttSample onPublishCompleted 251  - onPublishCompleted, status[OK], topics[[$rrpc/txd/XTV06F9MX4/test_111/27041]],  userContext[], errMsg[publish success]
+17/03/2021 00:22:19,771 [MQTT Call: XTV06F9MX4test_111] DEBUG MqttSampleTest onPublishCompleted 251  - onPublishCompleted, status[OK], topics[[$rrpc/txd/XTV06F9MX4/test_111/27041]],  userContext[], errMsg[publish success]
 ```

@@ -2,7 +2,7 @@ package com.tencent.iot.hub.device.java.core.shadow;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.mqtt.TestMqttSample;
+import com.tencent.iot.hub.device.java.core.mqtt.MqttSampleTest;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 import main.mqtt.MQTTRequest;
 
@@ -32,8 +32,8 @@ import static org.junit.Assert.assertSame;
 /**
  * Device shadow sample
  */
-public class TestShadowSample {
-	private static final Logger LOG = LoggerFactory.getLogger(TestShadowSample.class);
+public class ShadowSampleTest {
+	private static final Logger LOG = LoggerFactory.getLogger(ShadowSampleTest.class);
 	private static TXShadowConnection mShadowConnection;
 
 	private static String mProductID = BuildConfig.TESTSHADOWSAMPLE_PRODUCT_ID;
@@ -399,7 +399,7 @@ public class TestShadowSample {
 		mUnitTest = true;
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
 		connect();
 		LOG.debug("after connect");

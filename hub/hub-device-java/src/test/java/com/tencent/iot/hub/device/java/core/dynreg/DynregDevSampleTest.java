@@ -7,7 +7,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.java.core.mqtt.TestMqttSample;
+import com.tencent.iot.hub.device.java.core.mqtt.MqttSampleTest;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 
 import org.apache.log4j.LogManager;
@@ -38,9 +38,9 @@ import static org.junit.Assert.assertSame;
 /**
  * Device Dynreg sample
  */
-public class TestDynregDevSample {
+public class DynregDevSampleTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestDynregDevSample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DynregDevSampleTest.class);
 
     private static final String TAG = "TXMQTT";
 
@@ -113,7 +113,7 @@ public class TestDynregDevSample {
     public static void main(String[] args) {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestDynregDevSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(DynregDevSampleTest.class.getResource("/log4j.properties"));
 
         dynReg();
     }
@@ -391,7 +391,7 @@ public class TestDynregDevSample {
         mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
         dynReg();
         lock();

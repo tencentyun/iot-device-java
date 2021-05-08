@@ -26,8 +26,8 @@ import explorer.unit.test.BuildConfig;
 
 import static org.junit.Assert.assertSame;
 
-public class TestMqttSample {
-    private static final Logger LOG = LoggerFactory.getLogger(TestMqttSample.class);
+public class MqttSampleTest {
+    private static final Logger LOG = LoggerFactory.getLogger(MqttSampleTest.class);
 
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private static String mProductID = BuildConfig.TESTMQTTSAMPLE_PRODUCT_ID;
@@ -427,7 +427,7 @@ public class TestMqttSample {
         mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestMqttSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
         connect();
         LOG.debug("after connect");

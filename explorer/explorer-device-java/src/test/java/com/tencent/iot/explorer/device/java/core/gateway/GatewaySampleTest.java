@@ -1,26 +1,19 @@
 package com.tencent.iot.explorer.device.java.core.gateway;
 
-import com.tencent.iot.explorer.device.java.gateway.TXGatewayClient;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.core.samples.gateway.GatewaySample;
-import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
-import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import explorer.unit.test.BuildConfig;
 
 import static org.junit.Assert.assertSame;
 
-public class TestGatewaySample {
-    private static final Logger LOG = LoggerFactory.getLogger(TestGatewaySample.class);
+public class GatewaySampleTest {
+    private static final Logger LOG = LoggerFactory.getLogger(GatewaySampleTest.class);
     private static final String TAG = "TXGatewaySample";
     private static GatewaySample mGatewaySample;
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546

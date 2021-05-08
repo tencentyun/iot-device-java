@@ -20,9 +20,9 @@ import static org.junit.Assert.assertSame;
 /**
  * Device Websocket Mqtt connect sample
  */
-public class TestWebsocketMqttSample {
+public class WebsocketMqttSampleTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestWebsocketMqttSample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebsocketMqttSampleTest.class);
 
     private static String mProductID = BuildConfig.TESTWEBSOCKETMQTTSAMPLE_PRODUCT_ID;
     private static String mDevName = BuildConfig.TESTWEBSOCKETMQTTSAMPLE_DEVICE_NAME;
@@ -35,7 +35,7 @@ public class TestWebsocketMqttSample {
     public static void main(String[] args) {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestWebsocketMqttSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(WebsocketMqttSampleTest.class.getResource("/log4j.properties"));
 
         websocketConnect();
 
@@ -141,7 +141,7 @@ public class TestWebsocketMqttSample {
         mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestWebsocketMqttSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(WebsocketMqttSampleTest.class.getResource("/log4j.properties"));
 
         websocketConnect();
         lock();

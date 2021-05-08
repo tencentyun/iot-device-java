@@ -37,9 +37,9 @@ import static org.junit.Assert.assertSame;
 /**
  * Device OTA sample
  */
-public class TestOTASample {
+public class OTASampleTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestOTASample.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OTASampleTest.class);
 
     private static final String TAG = "TXMQTT";
 
@@ -139,7 +139,7 @@ public class TestOTASample {
     public static void main(String[] args) {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestOTASample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(OTASampleTest.class.getResource("/log4j.properties"));
 
         connect();
     }
@@ -384,7 +384,7 @@ public class TestOTASample {
         mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestOTASample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(OTASampleTest.class.getResource("/log4j.properties"));
 
         connect();
         lock();

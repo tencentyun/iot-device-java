@@ -9,7 +9,7 @@ import hub.unit.test.BuildConfig;
 
 import static org.junit.Assert.*;
 
-public class TestBindTidDevice {
+public class BindTidDeviceTest {
     private TXMqttBindDevice mqttBindDevice;
     private String productId = BuildConfig.TESTBINDTIDDEVICE_PRODUCT_ID;
     private String deviceName = BuildConfig.TESTBINDTIDDEVICE_DEVICE_NAME;

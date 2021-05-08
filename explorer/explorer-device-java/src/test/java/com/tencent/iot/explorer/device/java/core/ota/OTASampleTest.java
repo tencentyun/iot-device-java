@@ -1,10 +1,8 @@
-package com.tencent.iot.explorer.device.java.core.dynreg;
+package com.tencent.iot.explorer.device.java.core.ota;
 
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
@@ -20,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import explorer.unit.test.BuildConfig;
 import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
@@ -27,27 +26,20 @@ import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSampl
 import static org.junit.Assert.assertSame;
 
 /**
- * Device Dynreg sample
+ * Device OTA sample
  */
-public class TestDynregDevSample {
+public class OTASampleTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TestDynregDevSample.class);
-
-    private static final String TAG = "TXMQTT";
-
-    private static String path2Store = System.getProperty("user.dir");
+    private static final Logger LOG = LoggerFactory.getLogger(OTASampleTest.class);
 
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+    private static String mProductID = BuildConfig.TESTOTASAMPLE_PRODUCT_ID;
+    private static String mDevName = BuildConfig.TESTOTASAMPLE_DEVICE_NAME;
+    private static String mDevPSK  = BuildConfig.TESTOTASAMPLE_DEVICE_PSK; //若使用证书验证，设为null
 
-    private static final String GW_OPERATION_RES_PREFIX = "$gateway/operation/result/";
-
-    private static String mProductID = BuildConfig.TESTDYNREGDEVSAMPLE_PRODUCT_ID;
-    private static String mDevName = BuildConfig.TESTDYNREGDEVSAMPLE_DEVICE_NAME;
-    private static String mDevPSK = "DEVICE_PSK";
-    private static String mProductSecret = BuildConfig.TESTDYNREGDEVSAMPLE_PRODUCT_SECRET;             // Used for dynamic register
     private static String mDevCert = "DEVICE_CERT_FILE_NAME";           // Device Cert File Name
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
-
+    private static AtomicInteger requestID = new AtomicInteger(0);
     private static String mJsonFileName = "struct.json";
 
     private static DataTemplateSample mDataTemplateSample;
@@ -59,14 +51,8 @@ public class TestDynregDevSample {
         mDataTemplateSample.connect();
     }
 
-    private static void dynReg() {
-        LOG.debug("Test Dynamic");
-        TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductSecret, mDevName, new SelfMqttDynregCallback());
-        if (dynreg.doDynamicRegister()) {
-            LOG.debug("Dynamic Register OK!");
-        } else {
-            LOG.error("Dynamic Register failed!");
-        }
+    private static void checkFirmware() {
+        mDataTemplateSample.checkFirmware();
     }
 
     public static class SelfMqttActionCallBack extends TXMqttActionCallBack {
@@ -80,7 +66,7 @@ public class TestDynregDevSample {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-            unlock();
+            checkFirmware();
         }
 
         @Override
@@ -208,83 +194,26 @@ public class TestDynregDevSample {
         }
     }
 
-    /**
-     * Callback for dynamic register
-     */
-    private static class SelfMqttDynregCallback extends TXMqttDynregCallback {
-
-        @Override
-        public void onGetDevicePSK(String devicePsk) {
-            mDevPSK = devicePsk;
-            String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK");
-            LOG.info(logInfo);
-            connect();
-        }
-
-        @Override
-        public void onGetDeviceCert(String deviceCert, String devicePriv) {
-//            mDevCert = deviceCert;   //这里获取的是证书内容字符串 创建对应ssl认证时可使用options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));方式，示例中使用的是读取本地文件路径的方式。
-//            mDevPriv = devicePriv;   //这里获取的是秘钥内容字符串
-            String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert devicePriv");
-            LOG.info(logInfo);
-            connect();
-        }
-
-        @Override
-        public void onFailedDynreg(Throwable cause, String errMsg) {
-            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString() + errMsg);
-            LOG.error(logInfo);
-        }
-
-        @Override
-        public void onFailedDynreg(Throwable cause) {
-            String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString());
-            LOG.error(logInfo);
-        }
-    }
-
     /** ============================================================================== Unit Test ============================================================================== **/
 
-    private static Object mLock = new Object(); // 同步锁
-    private static int mCount = 0; // 加解锁条件
-    private static boolean mUnitTest = false;
-
-    private static void lock() {
-        synchronized (mLock) {
-            mCount = 1;  // 设置锁条件
-            while (mCount > 0) {
-                try {
-                    mLock.wait(); // 等待唤醒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private static void unlock() {
-        if (mUnitTest) {
-            synchronized (mLock) {
-                mCount = 0;
-                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-            }
-        }
-    }
-
     @Test
-    public void testDynregDev() {
-        mUnitTest = true;
+    public void testOTA() {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
-        PropertyConfigurator.configure(TestDynregDevSample.class.getResource("/log4j.properties"));
+        PropertyConfigurator.configure(OTASampleTest.class.getResource("/log4j.properties"));
 
-        dynReg();
-        lock();
-        LOG.debug("after dynreg connect");
+        connect();
+        LOG.debug("after connect");
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 
         mDataTemplateSample.disconnect();
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
