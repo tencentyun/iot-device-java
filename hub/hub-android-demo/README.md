@@ -14,7 +14,7 @@
 ### 基础功能
 该页面从上至下包含三部分：`参数设置区`、`功能操作区`、`日志输出区`
 1. 参数设置区
-    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/app-config.json)中设置即可
+    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/src/main/assets/app-config.json)中设置即可
 2. 功能操作区
     * 包含连接MQTT、断开MQTT、动态注册、Topic相关(订阅主题/取消订阅主题/发布主题/订阅RRPC主题/订阅广播主题)、子设备上下线、检查固件更新、日志、绑定与解绑子设备、查询设备拓扑关系、Websocket相关等操作
     * 注意：在操作功能区其他功能的前提是点击`连接MQTT`且日志输出区打印出`onConnectComplete，status[ok]`字样

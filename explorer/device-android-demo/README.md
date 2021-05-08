@@ -14,7 +14,7 @@
 ### 数据模板
 该页面从上至下包含三部分：`参数设置区`、`功能操作区`、`日志输出区`
 1. 参数设置区
-    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/explorer/device-android-demo/app-config.json)中设置即可
+    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/explorer/device-android-demo/src/main/assets/app-config.json)中设置即可
 2. 功能操作区
     * 包含设备上下线、Topic相关(订阅主题/取消订阅主题)、属性上报、状态更新、设备信息上报、清除控制、事件上报、检查固件更新等操作
     * 注意：在操作功能区其他功能的前提是点击`设备上线`且日志输出区打印出`onConnectComplete，status[ok]`字样
