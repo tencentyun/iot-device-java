@@ -430,6 +430,7 @@ public class MqttSampleTest {
         PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
         connect();
+        lock();
         LOG.debug("after connect");
 
         subscribeTopic();
