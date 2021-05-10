@@ -44,7 +44,9 @@ jobs:
       - name: Setup NDK
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
       - name: Build with Gradle
-        run: ./gradlew build --info
+        run: ./gradlew build -x test
+      - name: Test with Gradle
+        run: ./gradlew test
       - name: Publish aar and jar to Maven
         run: ./gradlew publish
       - name: Archive the apks
