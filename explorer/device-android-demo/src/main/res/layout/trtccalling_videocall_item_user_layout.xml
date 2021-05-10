@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:orientation="vertical">
 
-            <com.tencent.iot.explorer.device.rtc.data_template.ui.videocall.videolayout.SquareImageView
+            <com.tencent.iot.explorer.device.rtc.ui.videocall.videolayout.SquareImageView
                 android:id="@+id/iv_avatar"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"

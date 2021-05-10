@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.rtc.data_template.ui.audiocall.audiolayout;
+package com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout;
 
 import android.content.Context;
 import android.widget.RelativeLayout;

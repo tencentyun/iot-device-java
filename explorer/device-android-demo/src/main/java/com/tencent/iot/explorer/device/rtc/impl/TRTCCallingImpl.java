@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.rtc.data_template.model.impl;
+package com.tencent.iot.explorer.device.rtc.impl;
 
 import android.content.Context;
 import android.os.Bundle;

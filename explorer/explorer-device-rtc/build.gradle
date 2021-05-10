@@ -46,9 +46,9 @@ dependencies {
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
 
     implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
-    implementation 'com.tencent.liteav:LiteAVSDK_TRTC:8.1.9717'
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.alibaba:fastjson:1.2.73'
+    api 'com.tencent.liteav:LiteAVSDK_TRTC:8.1.9717'
+    api 'com.squareup.picasso:picasso:2.71828'
+    api 'com.alibaba:fastjson:1.2.73'
 }
 
 task androidJavadocs(type: Javadoc) {

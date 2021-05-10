@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.rtc.data_template.ui.videocall.videolayout;
+package com.tencent.iot.explorer.device.rtc.ui.videocall.videolayout;
 
 import android.content.Context;
 import android.view.ViewGroup;

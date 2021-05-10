@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="20dp" />
-    <com.tencent.iot.explorer.device.rtc.data_template.ui.audiocall.audiolayout.TRTCAudioLayoutManager
+    <com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayoutManager
         android:id="@+id/trtc_layout_manager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
