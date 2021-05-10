@@ -83,6 +83,7 @@ public class OTASampleTest {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             LOG.info(logInfo);
+            unlock();
         }
 
         @Override
@@ -108,6 +109,9 @@ public class OTASampleTest {
                 LOG.error(logInfo);
             } else {
                 LOG.debug(logInfo);
+                if (Arrays.toString(asyncActionToken.getTopics()).contains("ota/update/")){   // 订阅ota相关的topic成功
+                    unlock();
+                }
             }
         }
 
@@ -196,28 +200,47 @@ public class OTASampleTest {
 
     /** ============================================================================== Unit Test ============================================================================== **/
 
+    private static Object mLock = new Object(); // 同步锁
+    private static int mCount = 0; // 加解锁条件
+    private static boolean mUnitTest = false;
+
+    private static void lock() {
+        synchronized (mLock) {
+            mCount = 1;  // 设置锁条件
+            while (mCount > 0) {
+                try {
+                    mLock.wait(); // 等待唤醒
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static void unlock() {
+        if (mUnitTest) {
+            synchronized (mLock) {
+                mCount = 0;
+                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
+            }
+        }
+    }
+
     @Test
     public void testOTA() {
+        mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(OTASampleTest.class.getResource("/log4j.properties"));
 
         connect();
+        lock();
         LOG.debug("after connect");
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 
         mDataTemplateSample.disconnect();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        lock();
+        LOG.debug("after disconnect");
     }
 }
