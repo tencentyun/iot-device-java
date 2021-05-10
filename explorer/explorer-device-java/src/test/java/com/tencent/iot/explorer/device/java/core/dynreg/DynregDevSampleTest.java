@@ -97,6 +97,7 @@ public class DynregDevSampleTest {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             LOG.info(logInfo);
+            unlock();
         }
 
         @Override
@@ -285,10 +286,7 @@ public class DynregDevSampleTest {
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 
         mDataTemplateSample.disconnect();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        lock();
+        LOG.debug("after disconnect");
     }
 }
