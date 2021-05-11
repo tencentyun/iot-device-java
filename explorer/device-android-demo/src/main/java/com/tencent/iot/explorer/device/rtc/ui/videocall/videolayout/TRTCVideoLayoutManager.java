@@ -132,7 +132,7 @@ public class TRTCVideoLayoutManager extends RelativeLayout {
         layoutEntity.userId = userId;
         layoutEntity.layout = new TRTCVideoLayout(mContext);
         layoutEntity.layout.setVisibility(VISIBLE);
-        initGestureListener(layoutEntity.layout);
+        initGestureListener(layoutEntity.layout, userId);
         mLayoutEntityList.add(layoutEntity);
         addView(layoutEntity.layout);
         mCount++;
@@ -158,13 +158,13 @@ public class TRTCVideoLayoutManager extends RelativeLayout {
 
     }
 
-
-    private void initGestureListener(final TRTCVideoLayout layout) {
+    private void initGestureListener(final TRTCVideoLayout layout, final String userid) {
         final GestureDetector detector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 layout.performClick();
-                return false;
+                makeFullVideoView(userid);
+                return super.onSingleTapUp(e);
             }
 
             @Override
