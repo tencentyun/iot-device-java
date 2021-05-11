@@ -33,19 +33,10 @@ android {
 
 dependencies {
 
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     if (findProject(':explorer:explorer-device-android') != null) {
         api project(':explorer:explorer-device-android')
     }
     testImplementation 'junit:junit:4.13'
-    implementation 'log4j:log4j:1.2.17'
-    implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
-
-    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
     api 'com.tencent.liteav:LiteAVSDK_TRTC:8.1.9717'
     api 'com.squareup.picasso:picasso:2.71828'
     api 'com.alibaba:fastjson:1.2.73'

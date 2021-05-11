@@ -129,12 +129,7 @@ publishing {
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.+'
-    implementation 'org.slf4j:slf4j-log4j12:1.8.0-alpha2'
-    implementation 'log4j:log4j:1.2.17'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'junit:junit:4.13'
     if (findProject(':explorer:explorer-device-android') != null) {
         api project(':explorer:explorer-device-android')
     }
