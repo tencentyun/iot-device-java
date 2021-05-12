@@ -61,6 +61,8 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private LinearLayout mHangupLl;
     private ImageView mHandsfreeImg;
     private LinearLayout mHandsfreeLl;
+    private ImageView mSwitchCameraImg;
+    private LinearLayout mSwitchCameraLl;
     private ImageView mDialingImg;
     private LinearLayout mDialingLl;
     private TRTCVideoLayoutManager mLayoutManagerTrtc;
@@ -88,6 +90,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private TRTCCallingImpl mTRTCCalling;
     private boolean               isHandsFree       = true;
     private boolean               isMuteMic         = false;
+    private boolean               mIsFrontCamera    = true;
 
     private TimerTask otherEnterRoomTask = null;
     private TimerTask enterRoomTask = null;
@@ -435,8 +438,17 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
 //                ToastUtils.showLong(isHandsFree ? R.string.trtccalling_toast_use_speaker : R.string.trtccalling_toast_use_handset);
             }
         });
+        mSwitchCameraLl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mIsFrontCamera = !mIsFrontCamera;
+                mTRTCCalling.switchCamera(mIsFrontCamera);
+                mSwitchCameraImg.setActivated(mIsFrontCamera);
+            }
+        });
         mMuteImg.setActivated(isMuteMic);
         mHandsfreeImg.setActivated(isHandsFree);
+        mSwitchCameraImg.setActivated(mIsFrontCamera);
     }
 
     private void initData() {
@@ -498,6 +510,8 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mHangupLl = (LinearLayout) findViewById(R.id.ll_hangup);
         mHandsfreeImg = (ImageView) findViewById(R.id.iv_handsfree);
         mHandsfreeLl = (LinearLayout) findViewById(R.id.ll_handsfree);
+        mSwitchCameraImg = (ImageView) findViewById(R.id.iv_switch_camera);
+        mSwitchCameraLl = (LinearLayout) findViewById(R.id.ll_switch_camera);
         mDialingImg = (ImageView) findViewById(R.id.iv_dialing);
         mDialingLl = (LinearLayout) findViewById(R.id.ll_dialing);
         mLayoutManagerTrtc = (TRTCVideoLayoutManager) findViewById(R.id.trtc_layout_manager);
@@ -522,7 +536,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
             return;
         }
         videoLayout.setVideoAvailable(true);
-        mTRTCCalling.openCamera(true, videoLayout.getVideoView());
+        mTRTCCalling.openCamera(mIsFrontCamera, videoLayout.getVideoView());
 
         //2. 展示对方的头像和蒙层
         mSponsorGroup.setVisibility(View.VISIBLE);
@@ -532,6 +546,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         //3. 展示电话对应界面
         mHangupLl.setVisibility(View.VISIBLE);
         mDialingLl.setVisibility(View.VISIBLE);
+        mSwitchCameraLl.setVisibility(View.GONE);
         mHandsfreeLl.setVisibility(View.GONE);
         mMuteLl.setVisibility(View.GONE);
         //3. 设置对应的listener
@@ -563,7 +578,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
             return;
         }
         videoLayout.setVideoAvailable(true);
-        mTRTCCalling.openCamera(true, videoLayout.getVideoView());
+        mTRTCCalling.openCamera(mIsFrontCamera, videoLayout.getVideoView());
         //        for (UserInfo userModel : mCallUserInfoList) {
         //            TRTCVideoLayout layout = addUserToManager(userModel);
         //            layout.getShadeImg().setVisibility(View.VISIBLE);
@@ -579,6 +594,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
             }
         });
         mDialingLl.setVisibility(View.GONE);
+        mSwitchCameraLl.setVisibility(View.VISIBLE);
         mHandsfreeLl.setVisibility(View.VISIBLE);
         mMuteLl.setVisibility(View.VISIBLE);
         //3. 隐藏中间他们也在界面
@@ -596,6 +612,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         //2. 底部状态栏
         mHangupLl.setVisibility(View.VISIBLE);
         mDialingLl.setVisibility(View.GONE);
+        mSwitchCameraLl.setVisibility(View.VISIBLE);
         mHandsfreeLl.setVisibility(View.VISIBLE);
         mMuteLl.setVisibility(View.VISIBLE);
 

@@ -112,10 +112,10 @@
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="10dp"
         android:textSize="@dimen/trtccalling_text_size_middle"
         android:textColor="@color/colorWhite"
-        app:layout_constraintBottom_toTopOf="@+id/ll_hangup"
+        app:layout_constraintBottom_toTopOf="@+id/ll_switch_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/trtccalling_call_time_default" />
@@ -172,6 +172,26 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/trtccalling_bg_handsfree" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/ll_hangup"
+        app:layout_constraintStart_toStartOf="@+id/ll_hangup"
+        app:layout_constraintEnd_toEndOf="@+id/ll_hangup"
+        app:layout_constraintHorizontal_bias="0.5">
+
+        <ImageView
+            android:id="@+id/iv_switch_camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/trtccalling_bg_switch_camera" />
 
     </LinearLayout>
 
