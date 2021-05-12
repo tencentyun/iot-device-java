@@ -23,8 +23,10 @@
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity"/>
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity"/>
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
