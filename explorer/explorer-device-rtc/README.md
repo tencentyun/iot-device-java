@@ -1,13 +1,14 @@
-* [IoT Explorer TRTC Android SDK开发指南](#IoT-Explorer-TRTC-Android-SDK开发指南)
+* [IoT Explorer RTC Android SDK开发指南](#IoT-Explorer-RTC-Android-SDK开发指南)
   * [引用方式](#引用方式)
   * [API说明](#API说明)
      *  [explorer-device-android SDK 设计说明](#explorer-device-android-SDK-设计说明)
-     *  [explorer-device-trtc SDK 设计说明](#explorer-device-trtc-SDK-设计说明)
-     *  [explorer-device-trtc SDK 回调callback 设计说明](#explorer-device-trtc-SDK-回调callback-设计说明)
+     *  [explorer-device-rtc SDK 设计说明](#explorer-device-rtc-SDK-设计说明)
+     *  [explorer-device-rtc SDK 回调callback 设计说明](#explorer-device-rtc-SDK-回调callback-设计说明)
+  * [通话流程梳理](#通话流程梳理)
 
-# IoT Explorer TRTC Android SDK开发指南
+# IoT Explorer RTC Android SDK开发指南
 
-本文主要描述物联网开发平台设备端IoT Explorer Android-SDK中接入实时音视频 TRTC Android-SDK 开发指南 。
+本文主要描述腾讯云物联网开发平台设备端IoT Explorer Android-SDK中接入腾讯云实时音视频 TRTC Android-SDK 开发指南 。
 
 ## 引用方式
 
@@ -50,7 +51,7 @@
     
      ```gr
     dependencies {
-        implementation project(':explorer:explorer-device-rtc') //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation project(':explorer:explorer-device-rtc') //IoT Explorer 与 实时音视频 TRTC 的依赖，注意添加相互依赖的其他sdk module
     }
      ```
 
@@ -62,7 +63,7 @@ Demo示例工程使用的是 依赖本地 explorer-device-android 和 explorer-d
 
 explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/SDK%20API及参数说明.md)
 
-### explorer-device-trtc SDK 设计说明
+### explorer-device-rtc SDK 设计说明
 
 | 类名                     | 功能                                         |
 | ----------------------- | -------------------------------------------- |
@@ -173,13 +174,13 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
     public Status eventsPost(JSONArray events)
 ```
 
-### explorer-device-trtc SDK 回调callback 设计说明
+### explorer-device-rtc SDK 回调callback 设计说明
 
 TXTRTCCallBack 授权回调callback说明如下：
 
 ```
     /**
-     * 获取TRTC属性呼叫状态
+     * 获取RTC属性呼叫状态
      *
      * @param callStatus            呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param userid                用户id
@@ -188,9 +189,79 @@ TXTRTCCallBack 授权回调callback说明如下：
     public abstract void onGetCallStatusCallBack(Integer callStatus, String userid, Integer callType);
 
     /**
-     * 获取trtc进入房间所需参数模型
+     * 获取rtc进入房间所需参数模型
      *
      * @param room
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
 ```
+
+## 通话流程梳理
+
+### 连连APP/小程序 视频呼叫 Android设备端
+
+1. 连连APP/小程序 在控制面板页面中点击 视频呼叫。
+
+2. 云服务通过mqtt转发 连连APP/小程序 的呼叫请求，触发设备端 TXTRTCCallBack 中 onGetCallStatusCallBack 回调，其中：
+> * 回调参数 callStatus 为1（进行呼叫）
+> * userid 为 连连APP/小程序 的发起呼叫的用户id
+> * callType为步骤1中传递的对应呼叫的类型
+
+接到此消息后需要调用
+```
+TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample)); //方便在页面中上报设备的状态
+TRTCAudioCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);//跳转到对应的视频被呼叫页面
+```
+
+3、当设备端点击了接听按钮时，需要调用
+``` 
+TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); 
+```
+告知 连连APP/小程序 的用户设备同意此次呼叫请求。
+
+4、云服务通过websocket转发 设备端同意当前 连连APP/小程序 用户的呼叫请求，连连APP/小程序 继续请求进入房间参数，并进入对应的视频房间。
+
+5、云服务通过mqtt转发 连连APP/小程序 进入房间行为，触发设备端 TXTRTCCallBack 中 trtcJoinRoomCallBack 回调，其中
+> * 回调参数 room 为对应的房间参数
+
+接到此消息后需要调用
+``` 
+TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
+``` 
+
+6、连连APP/小程序 和 设备端 进行视频通话。
+
+7、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
+``` 
+TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
+``` 
+
+**连连APP/小程序 音频呼叫 Android设备端 流程和视频呼叫类似，注意修改对应的呼叫类型**
+
+### Android设备端 视频呼叫 连连APP/小程序
+
+1、设备端点击视频呼叫，需要调用
+```
+mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, null); //更新视频呼叫属性为进行呼叫。
+TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample)); //方便在页面中上报设备的状态
+TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);//跳转到对应的视频呼叫页面  
+```
+
+2、云服务通过mqtt转发 设备端 的呼叫请求，连连APP/小程序 跳转到被呼叫页面，当用户点击了同意当前 设备端 呼叫请求时，连连APP/小程序 继续请求进入房间参数，并进入对应的视频房间。
+
+3、云服务通过mqtt转发 连连APP/小程序 进入房间行为，触发设备端 TXTRTCCallBack 中 trtcJoinRoomCallBack 回调，其中
+> * 回调参数 room 为对应的房间参数
+
+接到此消息后需要调用
+``` 
+TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
+``` 
+
+4、连连APP/小程序 和 设备端 进行视频通话。
+
+5、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
+``` 
+TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
+``` 
+
+**Android设备端 音频呼叫 连连APP/小程序 流程和视频呼叫类似，注意修改对应的呼叫类型**
