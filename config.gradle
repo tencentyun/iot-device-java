@@ -2,6 +2,7 @@ def version = "3.4.0-SNAPSHOT"
 ext {
     sdk = [
             version: version,
+            sdkdemoVersion: 'xxx'
     ]
 
     configPath = ""

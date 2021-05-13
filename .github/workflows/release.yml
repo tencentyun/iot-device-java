@@ -29,13 +29,17 @@ jobs:
           java-version: 1.8
       - name: install fir
         run: sudo gem install fir-cli
-
       - name: Fix SDKs Version
         run: |
           rtt=$(git describe --tags `git rev-list --tags --max-count=1`)
           rt=${rtt#*v}
           rc=$(git rev-parse --short HEAD)
           sed -i 's#def version.*#def version = \"'$rt'\"#g' config.gradle
+      - name: Update SdkDemo Version
+        run: |
+          rb=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          rc=$(git rev-parse --short HEAD)
+          sed -i "s#xxx#$rb+git.$rc#g" config.gradle
       - name: Update Values of Signing
         run: |
           export KEY_ID_OF_SIGN=$IOT_GPG_KEYNAME
@@ -60,7 +64,9 @@ jobs:
           expApk=$(ls explorer/device-android-demo/build/outputs/apk/release/*.apk)
           hubApk=$(ls hub/hub-android-demo/build/outputs/apk/release/*.apk)
 
-          fir publish $expApk -T $IOT_FIRIM_API_TOKEN --oversea_turbo --force_pin_history
-          fir publish $hubApk -T $IOT_FIRIM_API_TOKEN --oversea_turbo --force_pin_history
+          rc=$(git rev-parse --short HEAD)
+          rl=$(git log --pretty=format:"%s" $rc -1)
+          fir publish $expApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
+          fir publish $hubApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
         env:
           IOT_FIRIM_API_TOKEN: ${{ secrets.IOT_FIRIM_API_TOKEN }}
