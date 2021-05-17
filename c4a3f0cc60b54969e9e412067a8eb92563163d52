@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7ef37405_ea13279e",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/utils/Log.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-17T13:04:40Z",
+      "side": 1,
+      "message": "android包中的类叫Log，是否需要改个名字区分下自己的Log和系统的Log。",
+      "revId": "c4a3f0cc60b54969e9e412067a8eb92563163d52",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
