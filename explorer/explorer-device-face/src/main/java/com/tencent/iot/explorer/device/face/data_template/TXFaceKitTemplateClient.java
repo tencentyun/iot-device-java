@@ -29,6 +29,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+
 public class TXFaceKitTemplateClient extends TXMqttConnection {
 
     static {
@@ -387,7 +389,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         super.messageArrived(topic, message);
         mDataTemplate.onMessageArrived(topic, message);
-        if (topic.equals("$thing/down/service/" + mProductId + "/"  + mDeviceName)) {
+        if (topic.equals(TOPIC_SERVICE_DOWN_PREFIX + mProductId + "/"  + mDeviceName)) {
             onServiceMessageArrivedCallBack(message);
         }
     }

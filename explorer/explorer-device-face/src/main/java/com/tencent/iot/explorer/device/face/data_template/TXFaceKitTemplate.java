@@ -20,13 +20,11 @@ import org.json.JSONObject;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_EVENT_POST;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.EVENT_UP_STREAM_TOPIC;
 
 public class TXFaceKitTemplate extends TXDataTemplate {
-
-
-    String TOPIC_SERVICE_DOWN_PREFIX = "$thing/down/service/";
-    String TOPIC_SERVICE_UP_PREFIX = "$thing/up/service/";
 
     /**
      * service method

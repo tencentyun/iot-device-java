@@ -37,6 +37,9 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
+
 
 public class TXResourceImpl {
 
@@ -111,8 +114,8 @@ public class TXResourceImpl {
         this.mStoragePath = storagePath;
         this.mCallback = callback;
 
-        RESOURCE_DOWN_TOPIC = "$thing/down/service/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
-        RESOURCE_UP_TOPIC = "$thing/up/service/" + mConnection.mProductId + "/" + mConnection.mDeviceName;
+        RESOURCE_DOWN_TOPIC = TOPIC_SERVICE_DOWN_PREFIX + mConnection.mProductId + "/" + mConnection.mDeviceName;
+        RESOURCE_UP_TOPIC = TOPIC_SERVICE_UP_PREFIX + mConnection.mProductId + "/" + mConnection.mDeviceName;
 
         if (cosServerCaCrtList != null && cosServerCaCrtList.length > 0) {
             mCosServerCaCrtList = cosServerCaCrtList;
@@ -181,7 +184,7 @@ public class TXResourceImpl {
             if (topics != null) {
                 for (int i = 0; i < topics.length; i++) {
                     System.out.println("onSubscribeCompleted topic " + topics[i]);
-                    if (topics[i].startsWith("$thing/down/service/") || topics[i].startsWith("$thing/up/service/")) {
+                    if (topics[i].startsWith(TOPIC_SERVICE_DOWN_PREFIX) || topics[i].startsWith(TOPIC_SERVICE_UP_PREFIX)) {
                         mSubscribedState = true;
                     }
                 }
@@ -199,7 +202,7 @@ public class TXResourceImpl {
      * @return 返回true, 表示此消息已由Resource模块处理；返回false，表示些消息不是Resource消息；
      */
     public boolean processMessage(String topic, MqttMessage message) {
-        if (!(topic.startsWith("$thing/down/service/") || topic.startsWith("$thing/up/service/"))) {
+        if (!(topic.startsWith(TOPIC_SERVICE_DOWN_PREFIX) || topic.startsWith(TOPIC_SERVICE_UP_PREFIX))) {
             return false;
         }
 
