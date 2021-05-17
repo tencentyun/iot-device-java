@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'com.google.gms.google-services'
+
+apply plugin: 'com.google.firebase.crashlytics'
+
 rootProject.ext.configPath = "./src/main/assets/app-config.json"
 
 apply from: "../../parse_json.gradle"
@@ -83,6 +87,11 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.0.0'
     testImplementation 'junit:junit:4.13'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
+
+    // Add the Firebase Crashlytics SDK.
+    implementation 'com.google.firebase:firebase-crashlytics:18.0.0'
+    // Add the Firebase Analytics SDK.
+    implementation 'com.google.firebase:firebase-analytics:19.0.0'
 
     //依赖一个utils类
     implementation 'com.blankj:utilcode:1.25.9'

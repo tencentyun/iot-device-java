@@ -1,0 +1,191 @@
+{
+  "project_info": {
+    "project_number": "369055548986",
+    "firebase_url": "https://tencent-iot.firebaseio.com",
+    "project_id": "tencent-iot",
+    "storage_bucket": "tencent-iot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369055548986:android:b4c8f50c964083f0441703",
+        "android_client_info": {
+          "package_name": "com.tencent.iot.explorer.device.android.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANM497q4v3BSAr3mfImfXePn94HPDruCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369055548986-0enffnpla7m2kvbgjgpu5tifi71pn1uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tencent.qcloudsdk.privateasr"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369055548986:android:75847f2ede97cad3441703",
+        "android_client_info": {
+          "package_name": "com.tencent.iot.explorer.link"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANM497q4v3BSAr3mfImfXePn94HPDruCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369055548986-0enffnpla7m2kvbgjgpu5tifi71pn1uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tencent.qcloudsdk.privateasr"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369055548986:android:5a67a4fbd33a90a6441703",
+        "android_client_info": {
+          "package_name": "com.tencent.iot.explorer.link.opensource"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANM497q4v3BSAr3mfImfXePn94HPDruCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369055548986-0enffnpla7m2kvbgjgpu5tifi71pn1uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tencent.qcloudsdk.privateasr"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369055548986:android:a8d5d2712a327edc441703",
+        "android_client_info": {
+          "package_name": "com.tencent.iot.explorer.link.sdkdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANM497q4v3BSAr3mfImfXePn94HPDruCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369055548986-0enffnpla7m2kvbgjgpu5tifi71pn1uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tencent.qcloudsdk.privateasr"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369055548986:android:103245fe964378c2441703",
+        "android_client_info": {
+          "package_name": "com.tencent.streamasrtts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANM497q4v3BSAr3mfImfXePn94HPDruCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369055548986-rutdld43edvcm2s9m6i0imeb8mdh8f3o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369055548986-0enffnpla7m2kvbgjgpu5tifi71pn1uf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tencent.qcloudsdk.privateasr"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
