@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class GatewaySample {
     private static final String TAG = "TXGatewaySample";
@@ -92,6 +93,9 @@ public class GatewaySample {
         if (Status.OK != mConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)) {
             TXLog.e(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
         }
+        if (Status.OK != mConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)){
+            TXLog.e(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
+        }
         TXMqttRequest mqttRequest = new TXMqttRequest("disconnect", requestID.getAndIncrement());
         mConnection.disConnect(mqttRequest);
     }
@@ -158,6 +162,12 @@ public class GatewaySample {
             TXLog.d(TAG, "action [%s] received, input:" + params, actionId);
             return null;
         }
+
+        @Override
+        public void onUnbindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            Log.d(TAG, "unbind device received : " + msg);
+        }
     }
 
     /**
@@ -175,7 +185,10 @@ public class GatewaySample {
                     TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
                 }
                 if (Status.OK != mConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
-                    TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+                    TXLog.e(TAG, "subscribeTopic: subscribe action down stream topic failed!");
+                }
+                if (Status.OK != mConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)){
+                    TXLog.e(TAG, "subscribeTopic: subscribe service down stream topic failed!");
                 }
                 if (mFirstConnectCompletedCallback != null) {
                     mFirstConnectCompletedCallback.firstConnectCompleted(mConnection.generateDeviceWechatScanQRCodeContent());

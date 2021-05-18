@@ -38,6 +38,8 @@ public class TXDataTemplate {
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
 
+    private String mServiceDownStreamTopic;
+
     private static final Logger LOG = LoggerFactory.getLogger(TXDataTemplate.class);
 
 
@@ -69,6 +71,7 @@ public class TXDataTemplate {
         this.mEventUptreamTopic = TOPIC_EVENT_UP_PREFIX + productId + "/"  + deviceName;
         this.mActionDownStreamTopic = TOPIC_ACTION_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + productId + "/"  + deviceName;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mDataTemplateJson = new TXDataTemplateJson (jsonFileName);
         this.mDownStreamCallBack = downStreamCallBack;
         this.mDeviceName = deviceName;
@@ -104,6 +107,9 @@ public class TXDataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
+                break;
             default:
                 LOG.error("subscribeTemplateTopic: topic id [{}] invalid!", topicId );
                 return Status.PARAMETER_INVALID;
@@ -136,6 +142,9 @@ public class TXDataTemplate {
                 break;
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
+                break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
                 break;
             default:
                 LOG.error("subscribeTemplateTopic: topic id [{}] invalid!", topicId );
@@ -576,6 +585,31 @@ public class TXDataTemplate {
     }
 
     /**
+     * 服务下行消息 处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+        LOG.debug("service down stream message received : " + message);
+        // 查询列表中的action，然后调用相应的回调函数
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if(!method.equals(METHOD_UNBIND_DEVICE)) {
+                LOG.error("onServiceMessageArrivedCallBack: invalid method:" + method);
+                return;
+            }
+            //下发用户删除设备消息处理
+            if (method.equals(METHOD_UNBIND_DEVICE)) {
+                if(null != mDownStreamCallBack) {
+                    mDownStreamCallBack.onUnbindDeviceCallBack(new String(message.getPayload()));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("onServiceMessageArrivedCallBack: invalid message:" + message);
+        }
+    }
+
+    /**
      * 消息到达回调函数
      * @param topic   消息主题
      * @param message 消息内容
@@ -588,6 +622,8 @@ public class TXDataTemplate {
             onEventMessageArrivedCallBack(message);
         } else if (topic.equals(mActionDownStreamTopic)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageArrivedCallBack(message);
         }
     }
 }

@@ -131,7 +131,10 @@ public class DataTemplateSample {
            LOG.debug(TAG, "subscribeTopic: subscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)){
-            LOG.debug(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+            LOG.debug(TAG, "subscribeTopic: subscribe action down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)){
+            LOG.debug(TAG, "subscribeTopic: subscribe service down stream topic failed!");
         }
     }
 
@@ -147,7 +150,10 @@ public class DataTemplateSample {
             LOG.debug(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)){
-            LOG.debug(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+            LOG.debug(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)){
+            LOG.debug(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
         }
     }
 
