@@ -101,17 +101,11 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
-            android:id="@+id/log_info"
+            android:id="@+id/subDevProperty"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:text="TextView" />
     </ScrollView>
-
-    <TextView
-        android:id="@+id/subDevProperty"
-        android:layout_width="match_parent"
-        android:layout_height="394dp"
-        android:text="TextView" />
 
 </LinearLayout>
