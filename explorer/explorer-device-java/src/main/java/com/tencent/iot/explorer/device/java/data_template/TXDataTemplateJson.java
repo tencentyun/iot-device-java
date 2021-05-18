@@ -5,6 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tencent.iot.explorer.device.java.utils.CustomLog;
 import com.tencent.iot.explorer.device.java.utils.ILog;
 import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -15,7 +17,7 @@ import java.io.File;
 class TXDataTemplateJson extends DataTemplateJson {
 
     private static final Logger LOG = LoggerFactory.getLogger(TXDataTemplateJson.class);
-    private static final CustomLog CUSTOM_LOG = new CustomLog();
+    private static final CustomLog CUSTOM_LOG = new CustomLog(LOG);
 
     TXDataTemplateJson(final String jsonFileName) {
         super(CUSTOM_LOG);
@@ -52,29 +54,5 @@ class TXDataTemplateJson extends DataTemplateJson {
             return Status.ERROR;
         }
         return Status.OK;
-    }
-
-
-    private static class CustomLog implements ILog {
-
-        @Override
-        public void debug(String msg) {
-            LOG.debug(msg);
-        }
-
-        @Override
-        public void info(String msg) {
-            LOG.info(msg);
-        }
-
-        @Override
-        public void warn(String msg) {
-            LOG.warn(msg);
-        }
-
-        @Override
-        public void error(String msg) {
-            LOG.error(msg);
-        }
     }
 }

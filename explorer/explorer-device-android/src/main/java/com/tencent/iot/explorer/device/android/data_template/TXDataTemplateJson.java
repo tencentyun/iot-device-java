@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.android.data_template;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.tencent.iot.explorer.device.android.utils.CustomLog;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.DataTemplateJson;
 import com.tencent.iot.explorer.device.java.utils.ILog;
@@ -19,7 +20,7 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK
 class TXDataTemplateJson extends DataTemplateJson {
 
     private static final String TAG = "TX_TEMPLATE_JSON_" + MQTT_SDK_VER;
-    private static final CustomLog CUSTOM_LOG = new CustomLog();
+    private static final CustomLog CUSTOM_LOG = new CustomLog(TAG);
 
     TXDataTemplateJson(Context context, final String jsonFileName) {
         super(CUSTOM_LOG);
@@ -67,28 +68,5 @@ class TXDataTemplateJson extends DataTemplateJson {
             }
         }
         return Status.OK;
-    }
-
-    private static class CustomLog implements ILog {
-
-        @Override
-        public void debug(String msg) {
-            TXLog.d(TAG, msg);
-        }
-
-        @Override
-        public void info(String msg) {
-            TXLog.i(TAG, msg);
-        }
-
-        @Override
-        public void warn(String msg) {
-            TXLog.w(TAG, msg);
-        }
-
-        @Override
-        public void error(String msg) {
-            TXLog.e(TAG, msg);
-        }
     }
 }
