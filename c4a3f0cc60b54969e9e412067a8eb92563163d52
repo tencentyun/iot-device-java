@@ -16,6 +16,24 @@
       "revId": "c4a3f0cc60b54969e9e412067a8eb92563163d52",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a9c10400_4e8e56bb",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/utils/Log.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-05-18T01:25:32Z",
+      "side": 1,
+      "message": "已改名ILog",
+      "parentUuid": "7ef37405_ea13279e",
+      "revId": "c4a3f0cc60b54969e9e412067a8eb92563163d52",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
     }
   ]
 }
