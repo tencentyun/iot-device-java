@@ -238,7 +238,7 @@ public class IoTGatewayFragment extends Fragment {
                 }
 
                 final String text = textInfo.toString();
-                getActivity().runOnUiThread(new Runnable() {
+                mParent.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mProperty.setText(text);
