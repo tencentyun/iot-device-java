@@ -97,6 +97,9 @@ public class GatewaySample {
         if (Status.OK != mConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)) {
             LOG.error("subscribeTopic: unSubscribe action down stream topic failed!");
         }
+        if (Status.OK != mConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)){
+            LOG.error("subscribeTopic: unSubscribe service down stream topic failed!");
+        }
         TXMqttRequest mqttRequest = new TXMqttRequest("disconnect", requestID.getAndIncrement());
         mConnection.disConnect(mqttRequest);
     }
@@ -196,7 +199,10 @@ public class GatewaySample {
                     LOG.error("subscribeTopic: subscribe event down stream topic failed!");
                 }
                 if (Status.OK != mConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
-                    LOG.error("subscribeTopic: subscribe event down stream topic failed!");
+                    LOG.error("subscribeTopic: subscribe action down stream topic failed!");
+                }
+                if(Status.OK != mConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)){
+                    LOG.debug("subscribeTopic: subscribe service down stream topic failed!");
                 }
             } else {
                 String userContextInfo = "";
