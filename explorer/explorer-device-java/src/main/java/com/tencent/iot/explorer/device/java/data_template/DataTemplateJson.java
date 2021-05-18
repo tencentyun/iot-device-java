@@ -32,7 +32,7 @@ public class DataTemplateJson {
     public static final String TYPE_ARRAY = "array";
     private final ILog log;
 
-    public DataTemplateJson(ILog log) {
+    protected DataTemplateJson(ILog log) {
         this.log = log;
     }
 
