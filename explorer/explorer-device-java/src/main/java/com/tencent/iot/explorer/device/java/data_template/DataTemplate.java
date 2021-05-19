@@ -57,8 +57,9 @@ public class DataTemplate {
     /**
      * @param productId          产品名
      * @param deviceName         设备名，唯一
-     * @param jsonFileName       数据模板描述文件
+     * @param dataTemplateJson   数据模板描述文件
      * @param downStreamCallBack 下行数据接收回调函数
+     * @param log                上层ILog实现
      */
     protected DataTemplate(TXMqttConnection connection, String productId, String deviceName,
                         DataTemplateJson dataTemplateJson, TXDataTemplateDownStreamCallBack downStreamCallBack, ILog log) {
@@ -518,11 +519,11 @@ public class DataTemplate {
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
-            if (!method.equals(METHOD_PROPERTY_REPORT_REPLY) &&
+            if (method == null || (!method.equals(METHOD_PROPERTY_REPORT_REPLY) &&
                     !method.equals(METHOD_PROPERTY_CONTROL) &&
                     !method.equals(METHOD_PROPERTY_GET_STATUS_REPLY) &&
                     !method.equals(METHOD_PROPERTY_CLEAR_CONTROL_REPLY) &&
-                    !method.equals(METHOD_PROPERTY_REPORT_INFO_REPLY)) {
+                    !method.equals(METHOD_PROPERTY_REPORT_INFO_REPLY))) {
                 log.error("onPropertyCallBack: invalid method:" + method);
                 return;
             }
@@ -559,7 +560,7 @@ public class DataTemplate {
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
-            if (!method.equals(METHOD_EVENT_REPLY) && !method.equals(METHOD_EVENTS_REPLY)) {
+            if (method == null || (!method.equals(METHOD_EVENT_REPLY) && !method.equals(METHOD_EVENTS_REPLY))) {
                 log.error("onEventMessageArrivedCallBack: invalid method:" + method);
                 return;
             }
@@ -580,7 +581,7 @@ public class DataTemplate {
         try {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
-            if (!method.equals(METHOD_ACTION)) {
+            if (method == null || !method.equals(METHOD_ACTION)) {
                 log.error("onActionMessageArrivedCallBack: invalid method:" + method);
                 return;
             }
@@ -619,7 +620,7 @@ public class DataTemplate {
             JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
             String method = jsonObj.getString("method");
             //下发用户删除设备消息处理
-            if (method.equals(METHOD_UNBIND_DEVICE)) {
+            if (method != null && method.equals(METHOD_UNBIND_DEVICE)) {
                 if(null != mDownStreamCallBack) {
                     mDownStreamCallBack.onUnbindDeviceCallBack(new String(message.getPayload()));
                 }
