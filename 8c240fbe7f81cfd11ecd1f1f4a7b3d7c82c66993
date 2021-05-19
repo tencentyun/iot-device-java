@@ -22,6 +22,30 @@
       "revId": "8c240fbe7f81cfd11ecd1f1f4a7b3d7c82c66993",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "44f939bc_97390aaf",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/DataTemplate.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 622,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-19T03:24:45Z",
+      "side": 1,
+      "message": "好的，再另提交一个changeId去修改，防止method为null的情况。",
+      "parentUuid": "bd5061f2_029b9851",
+      "range": {
+        "startLine": 622,
+        "startChar": 16,
+        "endLine": 622,
+        "endChar": 51
+      },
+      "revId": "8c240fbe7f81cfd11ecd1f1f4a7b3d7c82c66993",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
