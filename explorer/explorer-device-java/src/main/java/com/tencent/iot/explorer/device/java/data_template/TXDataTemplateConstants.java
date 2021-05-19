@@ -16,7 +16,8 @@ public interface TXDataTemplateConstants {
     enum TemplateSubTopic{
         PROPERTY_DOWN_STREAM_TOPIC,
         EVENT_DOWN_STREAM_TOPIC,
-        ACTION_DOWN_STREAM_TOPIC
+        ACTION_DOWN_STREAM_TOPIC,
+        SERVICE_DOWN_STREAM_TOPIC
     }
 
     enum TemplatePubTopic{
@@ -56,5 +57,10 @@ public interface TXDataTemplateConstants {
      */
     String METHOD_ACTION = "action";
     String METHOD_ACTION_REPLY = "action_reply";
+
+    /**
+     * service method
+     */
+    String METHOD_UNBIND_DEVICE = "unbind_device";
 
 }

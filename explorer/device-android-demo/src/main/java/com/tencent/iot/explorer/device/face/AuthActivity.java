@@ -298,6 +298,12 @@ public class AuthActivity extends AppCompatActivity {
             }
             return null;
         }
+
+        @Override
+        public void onUnbindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            Log.d(TAG, "unbind device received : " + msg);
+        }
     }
 
     /**

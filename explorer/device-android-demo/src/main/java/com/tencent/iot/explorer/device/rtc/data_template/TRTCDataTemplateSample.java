@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class TRTCDataTemplateSample {
     private static final String TAG = "TXDataTemplate";
@@ -148,7 +149,10 @@ public class TRTCDataTemplateSample {
             TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)){
-            TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+            TXLog.e(TAG, "subscribeTopic: subscribe action down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)){
+            TXLog.e(TAG, "subscribeTopic: subscribe service down stream topic failed!");
         }
     }
 
@@ -164,7 +168,10 @@ public class TRTCDataTemplateSample {
             TXLog.e(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)){
-            TXLog.e(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+            TXLog.e(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
+        }
+        if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)){
+            TXLog.e(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
         }
     }
 

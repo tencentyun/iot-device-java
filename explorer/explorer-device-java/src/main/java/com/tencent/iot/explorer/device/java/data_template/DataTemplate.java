@@ -36,6 +36,8 @@ public class DataTemplate {
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
 
+    private String mServiceDownStreamTopic;
+
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
 
@@ -66,6 +68,7 @@ public class DataTemplate {
         this.mEventUptreamTopic = TOPIC_EVENT_UP_PREFIX + productId + "/" + deviceName;
         this.mActionDownStreamTopic = TOPIC_ACTION_DOWN_PREFIX + productId + "/" + deviceName;
         this.mActionUptreamTopic = TOPIC_ACTION_UP_PREFIX + productId + "/" + deviceName;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/"  + deviceName;
         this.mDataTemplateJson = dataTemplateJson;
         this.mDownStreamCallBack = downStreamCallBack;
         this.mDeviceName = deviceName;
@@ -103,6 +106,9 @@ public class DataTemplate {
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
                 break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
+                break;
             default:
                 log.error("subscribeTemplateTopic: topic id [" + topicId + "] invalid!");
                 return Status.PARAMETER_INVALID;
@@ -136,6 +142,9 @@ public class DataTemplate {
                 break;
             case ACTION_DOWN_STREAM_TOPIC:
                 topic = mActionDownStreamTopic;
+                break;
+            case SERVICE_DOWN_STREAM_TOPIC:
+                topic = mServiceDownStreamTopic;
                 break;
             default:
                 log.error("subscribeTemplateTopic: topic id [" + topicId + "] invalid!");
@@ -601,6 +610,26 @@ public class DataTemplate {
     }
 
     /**
+     * 服务下行消息 处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+        log.debug("service down stream message received : " + message);
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            //下发用户删除设备消息处理
+            if (method.equals(METHOD_UNBIND_DEVICE)) {
+                if(null != mDownStreamCallBack) {
+                    mDownStreamCallBack.onUnbindDeviceCallBack(new String(message.getPayload()));
+                }
+            }
+        } catch (Exception e) {
+            log.error( "onServiceMessageArrivedCallBack: invalid message:" + message);
+        }
+    }
+
+    /**
      * 消息到达回调函数
      *
      * @param topic   消息主题
@@ -614,6 +643,8 @@ public class DataTemplate {
             onEventMessageArrivedCallBack(message);
         } else if (topic.equals(mActionDownStreamTopic)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageArrivedCallBack(message);
         }
     }
 }

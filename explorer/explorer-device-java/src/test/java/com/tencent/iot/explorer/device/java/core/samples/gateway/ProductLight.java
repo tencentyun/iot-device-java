@@ -209,6 +209,9 @@ public class ProductLight {
             if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
                 LOG.error(TAG, "subscribeTopic: subscribe event down stream topic failed!");
             }
+            if (Status.OK != mGatewaySubdev.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)) {
+                LOG.error(TAG, "subscribeTopic: subscribe service down stream topic failed!");
+            }
         }
 
         @Override
@@ -343,6 +346,12 @@ public class ProductLight {
                 }
             }
             return null;
+        }
+
+        @Override
+        public void onUnbindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            LOG.debug("unbind device received : " + msg);
         }
     }
 }
