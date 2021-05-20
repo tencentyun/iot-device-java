@@ -44,7 +44,7 @@ public class StrcutCheckUtils {
                     String str = json.getString(key);
                     int min = dataTypeJson.getInt("min");
                     int max = dataTypeJson.getInt("max");
-                    if (str != null && str.length() >= min && str.length() <= max) {
+                    if (json.get(key) instanceof String && str != null && str.length() >= min && str.length() <= max) {
                         return valueTypeInfo;
                     }
 
@@ -52,24 +52,25 @@ public class StrcutCheckUtils {
                     double doubleNum = json.getDouble(key);
                     double min = dataTypeJson.getDouble("min");
                     double max = dataTypeJson.getDouble("max");
-                    if (doubleNum >= min && doubleNum <= max) {
+                    if (json.get(key) instanceof Float && doubleNum >= min && doubleNum <= max) {
                         return valueTypeInfo;
                     }
 
                 } else if (type.equals(TXDataTemplateJson.TYPE_ENUM) || type.equals(TXDataTemplateJson.TYPE_BOOL)) {
                     int index = json.getInt(key);
-                    JSONObject mapping = dataTypeJson.getJSONObject("mapping");
-                    Iterator<String> it = mapping.keys();
-                    while(it.hasNext()){
-                        if (index == Integer.parseInt(it.next())) {
-                            return valueTypeInfo;
+                    if (json.get(key) instanceof Integer || (type.equals(TXDataTemplateJson.TYPE_BOOL) && (index == 0 || index == 1))) {
+                        JSONObject mapping = dataTypeJson.getJSONObject("mapping");
+                        Iterator<String> it = mapping.keys();
+                        while(it.hasNext()){
+                            if (index == Integer.parseInt(it.next())) {
+                                return valueTypeInfo;
+                            }
                         }
                     }
-
                 } else if (type.equals(TXDataTemplateJson.TYPE_TIMESTAMP)) {
-                    json.getLong(key); // 尝试获取 long 类型的内容，获取异常即跳出循环，规避包含有非数字的情况
-                    return valueTypeInfo;
-
+                    if (json.get(key) instanceof Integer || json.get(key) instanceof Long) {
+                        return valueTypeInfo;
+                    }
                 } else if (type.equals(TXDataTemplateJson.TYPE_INT)) {
                     Object obj = json.get(key);
                     if (obj instanceof Integer || obj instanceof Long) {
