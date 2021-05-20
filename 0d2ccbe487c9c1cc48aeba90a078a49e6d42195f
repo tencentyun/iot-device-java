@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "00fa5f1b_e858eecf",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/ArrayCheckUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-20T07:39:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7636add3_21e31b83",
+      "range": {
+        "startLine": 33,
+        "startChar": 24,
+        "endLine": 33,
+        "endChar": 56
+      },
+      "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d414eef2_d1a955f5",
         "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/StrcutCheckUtils.java",
         "patchSetId": 2
@@ -45,6 +69,30 @@
       "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "afc7e269_f96df597",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/StrcutCheckUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-20T07:39:43Z",
+      "side": 1,
+      "message": "假如json中对应key的value为1，json.getString(key)得到的值为\"1\"，可以通过此处的判断，但属性上报的结构体中对应的类型与数据模板中设置期望的类型不相符，故此处加上了类型的判断。",
+      "parentUuid": "d414eef2_d1a955f5",
+      "range": {
+        "startLine": 47,
+        "startChar": 24,
+        "endLine": 47,
+        "endChar": 55
+      },
+      "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "f911895d_276c424e",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/StrcutCheckUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-20T07:39:43Z",
+      "side": 1,
+      "message": "假如json中对应key的value为\"0.1\"，json.getDouble(key)得到的值为0.1，可以通过此处的判断，但属性上报的结构体中对应的类型与数据模板中设置期望的类型不相符，故此处加上了类型的判断。",
+      "parentUuid": "f9405f8c_755db838",
+      "range": {
+        "startLine": 55,
+        "startChar": 24,
+        "endLine": 55,
+        "endChar": 55
+      },
+      "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6755eea_bd1b0581",
         "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/StrcutCheckUtils.java",
         "patchSetId": 2
@@ -91,6 +163,30 @@
       "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca1eafe5_28fd2178",
+        "filename": "explorer/explorer-device-java/src/main/java/com/tencent/iot/explorer/device/java/data_template/StrcutCheckUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-20T07:39:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6755eea_bd1b0581",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 56
+      },
+      "revId": "0d2ccbe487c9c1cc48aeba90a078a49e6d42195f",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
