@@ -23,6 +23,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.DEVICE_USER_AGENT;
 
 public class TXTRTCDataTemplate extends TXDataTemplate {
 
@@ -66,8 +67,12 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID)) {
                             userid = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
+                        String userAgent = "";
+                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
+                            userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
+                        }
                         if (!mIsBusy || callStatus != 1) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_VIDEO_CALL);
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
                         }
                         if (callStatus == 0) {
                             mIsBusy = false;
@@ -80,8 +85,12 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID)) {
                             userid = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
+                        String userAgent = "";
+                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
+                            userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
+                        }
                         if (!mIsBusy || callStatus != 1) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, TRTCCalling.TYPE_AUDIO_CALL);
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
                         }
                         if (callStatus == 0) {
                             mIsBusy = false;
@@ -146,9 +155,10 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
      * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param callType 邀请类型 1-语音通话，2-视频通话
      * @param userId 被呼叫用户id json字符串
+     * @param agent 代理方
      * @return 结果
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params) {
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params) {
         JSONObject property = new JSONObject();
 
         if (userId.equals("null") && params != null && params.length() != 0) {
@@ -166,10 +176,16 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                 if (!userId.equals("")) {
                     property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,userId);
                 }
+                if (!agent.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,agent);
+                }
             } else if (callType == TRTCCalling.TYPE_AUDIO_CALL) { //audio
                 property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
                     property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                }
+                if (!agent.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,agent);
                 }
             } else {
                 return Status.ERR_JSON_CONSTRUCT;

@@ -33,16 +33,16 @@ public class TRTCUIManager {
         this.callingParamsCallback = null;
     }
 
-    public void didAcceptJoinRoom(Integer callingType, String deviceId) {
-        sessionManager.joinRoom(callingType, deviceId);
+    public void didAcceptJoinRoom(Integer callingType, String deviceId, String agent) {
+        sessionManager.joinRoom(callingType, deviceId, agent);
     }
 
     public void didExitRoom(Integer callingType, String deviceId) {
         sessionManager.didExitRoom(callingType, deviceId);
     }
 
-    public void startOnThePhone(Integer callingType, String deviceId) {
-        sessionManager.startOnThePhone(callingType, deviceId);
+    public void startOnThePhone(Integer callingType, String deviceId, String agent) {
+        sessionManager.startOnThePhone(callingType, deviceId, agent);
     }
 
     public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
