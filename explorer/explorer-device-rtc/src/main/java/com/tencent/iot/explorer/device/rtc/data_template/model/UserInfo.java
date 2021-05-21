@@ -10,6 +10,7 @@ public class UserInfo implements Serializable {
     private String userId;
     public String userAvatar;
     public String userName;
+    public String agent;
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -19,5 +20,13 @@ public class UserInfo implements Serializable {
 
     public String getUserId() {
         return userId;
+    }
+
+    public void setAgent(String agent) {
+        this.agent = agent;
+    }
+
+    public String getAgent() {
+        return agent;
     }
 }
