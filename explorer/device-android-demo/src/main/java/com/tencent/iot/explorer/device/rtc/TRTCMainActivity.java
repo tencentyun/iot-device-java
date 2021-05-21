@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -191,10 +192,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, null);//后续要从_sys_call_userlist选取传递userid
+                String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, agent, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
+                TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, agent, userId);
             }
         });
         mAudioCallBtn.setOnClickListener(new View.OnClickListener() {
@@ -204,10 +206,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
-                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL,userId, null);//后续要从_sys_call_userlist选取传递userid
+                String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
+                mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL, userId, agent, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                 TRTCUIManager.getInstance().isCalling = true;
-                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);
+                TRTCAudioCallActivity.startCallSomeone(TRTCMainActivity.this, agent, userId);
             }
         });
         mGenerateQRCodeBtn.setOnClickListener(new View.OnClickListener() {
@@ -520,7 +523,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private class TRTCCallBack extends TXTRTCCallBack {
 
         @Override
-        public void onGetCallStatusCallBack(Integer callStatus, final String userid, Integer callType) {
+        public void onGetCallStatusCallBack(Integer callStatus, final String userid, final String agent, Integer callType) {
             if (callStatus == 1) { //表示被呼叫了
                 mCallMobileNumber = 0;
                 mCallType = callType;
@@ -531,10 +534,10 @@ public class TRTCMainActivity extends AppCompatActivity {
                             TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
                             if (mCallType == TRTCCalling.TYPE_AUDIO_CALL) {
                                 TRTCUIManager.getInstance().isCalling = true;
-                                TRTCAudioCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);
+                                TRTCAudioCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid, agent);
                             } else if (mCallType == TRTCCalling.TYPE_VIDEO_CALL) {
                                 TRTCUIManager.getInstance().isCalling = true;
-                                TRTCVideoCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);
+                                TRTCVideoCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid, agent);
                             }
                         }
                     }

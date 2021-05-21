@@ -52,6 +52,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     public static final String PARAM_SELF_INFO           = "self_info";
     public static final String PARAM_USER                = "user_model";
     public static final String PARAM_BEINGCALL_USER      = "beingcall_user_model";
+    public static final String PARAM_AGENT               = "agent";
     public static final String PARAM_OTHER_INVITING_USER = "other_inviting_user_model";
     private static final int    MAX_SHOW_INVITING_USER    = 4;
 
@@ -102,7 +103,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         @Override
         public void onError(int code, String msg) {
             //发生了错误，报错并退出该页面
-//            ToastUtils.showLong(getString(R.string.trtccalling_toast_call_error_msg, code, msg));
             stopCameraAndFinish();
         }
 
@@ -121,7 +121,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
                     //1.先造一个虚拟的用户添加到屏幕上
                     UserInfo model = new UserInfo();
                     model.setUserId(userId);
@@ -170,7 +170,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                         UserInfo userInfo = mCallUserModelMap.remove(userId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
-//                            ToastUtils.showLong(getString(R.string.trtccalling_toast_user_reject_call, userInfo.userName));
                         }
                         stopCameraAndFinish();
                     }
@@ -191,7 +190,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                         UserInfo userInfo = mCallUserModelMap.remove(userId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
-//                            ToastUtils.showLong(getString(R.string.trtccalling_toast_user_not_response, userInfo.userName));
                         }
                         stopCameraAndFinish();
                     }
@@ -209,7 +207,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 UserInfo userInfo = mCallUserModelMap.remove(userId);
                 if (userInfo != null) {
                     mCallUserInfoList.remove(userInfo);
-//                    ToastUtils.showLong(getString(R.string.trtccalling_toast_user_busy, userInfo.userName));
                 }
                 stopCameraAndFinish();
             }
@@ -217,25 +214,16 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
 
         @Override
         public void onCallingCancel() {
-            if (mSponsorUserInfo != null) {
-//                ToastUtils.showLong(getString(R.string.trtccalling_toast_user_cancel_call, mSponsorUserInfo.userName));
-            }
             stopCameraAndFinish();
         }
 
         @Override
         public void onCallingTimeout() {
-            if (mSponsorUserInfo != null) {
-//                ToastUtils.showLong(getString(R.string.trtccalling_toast_user_timeout, mSponsorUserInfo.userName));
-            }
             stopCameraAndFinish();
         }
 
         @Override
         public void onCallEnd() {
-            if (mSponsorUserInfo != null) {
-//                ToastUtils.showLong(getString(R.string.trtccalling_toast_user_end, mSponsorUserInfo.userName));
-            }
             stopCameraAndFinish();
         }
 
@@ -276,15 +264,16 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
      * 主动拨打给某个用户
      *
      * @param context
-     * @param roomKey
+     * @param agent
      */
-    public static void startCallSomeone(Context context, RoomKey roomKey, String beingCallUserId) {
+    public static void startCallSomeone(Context context, String agent, String beingCallUserId) {
         Intent starter = new Intent(context, TRTCVideoCallActivity.class);
         starter.putExtra(PARAM_TYPE, TYPE_CALL);
-        starter.putExtra(PARAM_SELF_INFO, JSON.toJSONString(roomKey));
+        starter.putExtra(PARAM_SELF_INFO, JSON.toJSONString(new RoomKey()));
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, agent);
         context.startActivity(starter);
     }
 
@@ -294,13 +283,14 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
      * @param context
      * @param beingCallUserId
      */
-    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId) {
+    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId, String agent) {
         Intent starter = new Intent(context, TRTCVideoCallActivity.class);
         starter.putExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         starter.putExtra(PARAM_SELF_INFO, JSON.toJSONString(roomKey));
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, agent);
         starter.putExtra(PARAM_OTHER_INVITING_USER, new IntentParams(new ArrayList<UserInfo>()));
         starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(starter);
@@ -367,8 +357,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
             @Override
             public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
                 //2.接听电话
-//                mTRTCCalling.accept();
-//                mTRTCCalling.enterTRTCRoom();
                 TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 startInviting(roomKey);
                 if (roomKey != null) {
@@ -392,7 +380,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        mTRTCCalling.hangup();
         mTRTCCalling.exitRoom();
         stopCameraAndFinish();
         super.onBackPressed();
@@ -401,7 +388,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private void stopCameraAndFinish() {
         mTRTCCalling.exitRoom();
         mTRTCCalling.closeCamera();
-//        mTRTCCalling.removeDelegate(mTRTCCallingDelegate);
         TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
         finish();
         TRTCUIManager.getInstance().isCalling = false;
@@ -426,7 +412,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 isMuteMic = !isMuteMic;
                 mTRTCCalling.setMicMute(isMuteMic);
                 mMuteImg.setActivated(isMuteMic);
-//                ToastUtils.showLong(isMuteMic ? R.string.trtccalling_toast_enable_mute : R.string.trtccalling_toast_disable_mute);
             }
         });
         mHandsfreeLl.setOnClickListener(new View.OnClickListener() {
@@ -435,7 +420,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 isHandsFree = !isHandsFree;
                 mTRTCCalling.setHandsFree(isHandsFree);
                 mHandsfreeImg.setActivated(isHandsFree);
-//                ToastUtils.showLong(isHandsFree ? R.string.trtccalling_toast_use_speaker : R.string.trtccalling_toast_use_handset);
             }
         });
         mSwitchCameraLl.setOnClickListener(new View.OnClickListener() {
@@ -467,9 +451,9 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mSelfModel = new UserInfo();
         mSelfModel.setUserId(roomKey.getUserId());
         //自己的资料
-//        mSelfModel = (UserInfo) intent.getSerializableExtra(PARAM_SELF_INFO);
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
+        mSponsorUserInfo.agent = intent.getStringExtra(PARAM_AGENT);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
             IntentParams params = (IntentParams) intent.getSerializableExtra(PARAM_OTHER_INVITING_USER);
@@ -480,14 +464,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         } else {
             // 主叫方
             if (roomKey != null) {
-//                mCallUserInfoList.clear();
-//                UserInfo me = new UserInfo();
-//                me.userName = roomKey.getUserId();
-//                mCallUserInfoList.add(me);
-//                for (UserInfo userInfo : mCallUserInfoList) {
-//                    mCallUserModelMap.put(userInfo.userId, userInfo);
-//                }
-//                startInviting(roomKey);
                 showInvitingView();
             }
         }
@@ -495,11 +471,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     }
 
     private void startInviting(RoomKey roomKey) {
-//        List<String> list = new ArrayList<>();
-//        for (UserInfo userInfo : mCallUserInfoList) {
-//            list.add(userInfo.userId);
-//        }
-//        mTRTCCalling.groupCall(list, TRTCCalling.TYPE_VIDEO_CALL, "");
         mTRTCCalling.enterTRTCRoom(roomKey);
     }
 
@@ -540,7 +511,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
 
         //2. 展示对方的头像和蒙层
         mSponsorGroup.setVisibility(View.VISIBLE);
-//        Picasso.get().load(mSponsorUserInfo.userAvatar).into(mSponsorAvatarImg);
         mSponsorUserNameTv.setText(mSponsorUserInfo.userName);
 
         //3. 展示电话对应界面
@@ -553,14 +523,13 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.reject();
                 stopCameraAndFinish();
             }
         });
         mDialingLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
+                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
             }
         });
         //4. 展示其他用户界面
@@ -579,16 +548,11 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
         videoLayout.setVideoAvailable(true);
         mTRTCCalling.openCamera(mIsFrontCamera, videoLayout.getVideoView());
-        //        for (UserInfo userModel : mCallUserInfoList) {
-        //            TRTCVideoLayout layout = addUserToManager(userModel);
-        //            layout.getShadeImg().setVisibility(View.VISIBLE);
-        //        }
         //2. 设置底部栏
         mHangupLl.setVisibility(View.VISIBLE);
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 stopCameraAndFinish();
             }
@@ -619,7 +583,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mHangupLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 stopCameraAndFinish();
             }
@@ -694,7 +657,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
         layout.getUserNameTv().setText(userInfo.userName);
         if (!TextUtils.isEmpty(userInfo.userAvatar)) {
-//            Picasso.with(TRTCVideoCallActivity.this).load(userInfo.userAvatar).into(layout.getHeadImg());
             Picasso.get().load(userInfo.userAvatar).into(layout.getHeadImg());
         }
         return layout;

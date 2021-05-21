@@ -79,10 +79,11 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
      * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param callType 邀请类型 1-语音通话，2-视频通话
      * @param userId 被呼叫用户id json字符串
+     * @param agent 代理方
      * @return 结果
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params) {
-        return mDataTemplate.reportCallStatusProperty(callStatus, callType, userId, params);
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params) {
+        return mDataTemplate.reportCallStatusProperty(callStatus, callType, userId, agent, params);
     }
 
     /**
@@ -151,8 +152,8 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
         if (!TRTCUIManager.getInstance().isCalling) {
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL, "", null);
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL, "", null);
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL, "", "", null);
+            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL, "", "", null);
         }
     }
 }

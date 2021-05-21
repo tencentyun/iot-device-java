@@ -80,10 +80,11 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
      * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param callType 邀请类型 1-语音通话，2-视频通话
      * @param userId 被呼叫用户id 多个用户id用";"分割，      也可以为空字符串""，表示群呼，      也可以为字符串"null"，传入params，请做数据转发到您的后台服务，请参考: https://cloud.tencent.com/document/product/1081/40298
+     * @param agent 代理方  标识哪一方发起的呼叫，可以传空字符串，则不会上报agent。
      * @param params 用户的物模型属性json
      * @return 发送请求成功时返回Status.OK;。 OK 成功， ERROR 发生错误， ERR_JSON_CONSTRUCT json构造失败， PARAMETER_INVALID Topic无效， MQTT_NO_CONN MQTT未连接
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params)
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params)
 ```
 
 
@@ -131,10 +132,11 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
      * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param callType 邀请类型 1-语音通话，2-视频通话
      * @param userId 被呼叫用户id 多个用户id用";"分割，      也可以为空字符串""，表示群呼，      也可以为字符串"null"，传入params，请做数据转发到您的后台服务，请参考: https://cloud.tencent.com/document/product/1081/40298
+     * @param agent 代理方  标识哪一方发起的呼叫，可以传空字符串，则不会上报agent。
      * @param params 用户的物模型属性json
      * @return 发送请求成功时返回Status.OK;
      */
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params)
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params)
 
     /**
      * 获取状态
@@ -184,9 +186,10 @@ TXTRTCCallBack 授权回调callback说明如下：
      *
      * @param callStatus            呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param userid                用户id
+     * @param agent                 代理方  标识哪一方发起的呼叫。
      * @param callType              邀请类型 1-语音通话，2-视频通话
      */
-    public abstract void onGetCallStatusCallBack(Integer callStatus, String userid, Integer callType);
+    public abstract void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType);
 
     /**
      * 获取rtc进入房间所需参数模型
@@ -205,17 +208,18 @@ TXTRTCCallBack 授权回调callback说明如下：
 2. 云服务通过mqtt转发 连连APP/小程序 的呼叫请求，触发设备端 TXTRTCCallBack 中 onGetCallStatusCallBack 回调，其中：
 > * 回调参数 callStatus 为1（进行呼叫）
 > * userid 为 连连APP/小程序 的发起呼叫的用户id
+> * agent为代理方，标识哪一方发起的呼叫。
 > * callType为步骤1中传递的对应呼叫的类型
 
 接到此消息后需要调用
 ```
 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample)); //方便在页面中上报设备的状态
-TRTCAudioCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid);//跳转到对应的视频被呼叫页面
+TRTCVideoCallActivity.startBeingCall(TRTCMainActivity.this, new RoomKey(), userid, agent);//跳转到对应的视频被呼叫页面
 ```
 
 3、当设备端点击了接听按钮时，需要调用
 ``` 
-TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); 
+TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
 ```
 告知 连连APP/小程序 的用户设备同意此次呼叫请求。
 
@@ -242,9 +246,9 @@ TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUse
 
 1、设备端点击视频呼叫，需要调用
 ```
-mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, null); //更新视频呼叫属性为进行呼叫。
+mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, agent, null); //更新视频呼叫属性为进行呼叫。
 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample)); //方便在页面中上报设备的状态
-TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, new RoomKey(), userId);//跳转到对应的视频呼叫页面  
+TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, agent, userId);//跳转到对应的视频呼叫页面  
 ```
 
 2、云服务通过mqtt转发 设备端 的呼叫请求，连连APP/小程序 跳转到被呼叫页面，当用户点击了同意当前 设备端 呼叫请求时，连连APP/小程序 继续请求进入房间参数，并进入对应的视频房间。

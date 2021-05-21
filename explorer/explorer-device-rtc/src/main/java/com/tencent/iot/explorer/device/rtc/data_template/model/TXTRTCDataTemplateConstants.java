@@ -9,6 +9,8 @@ public interface TXTRTCDataTemplateConstants {
     String PROPERTY_SYS_AUDIO_CALL_STATUS = "_sys_audio_call_status";
     String PROPERTY_SYS_USERID = "_sys_userid";
     String PROPERTY_SYS_CALL_USERLIST = "_sys_call_userlist";
+    String PROPERTY_SYS_AGENT = "_sys_user_agent";
+    String PROPERTY_SYS_EXTRA_INFO = "_sys_extra_info";
 
 
     /**
