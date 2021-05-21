@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.DEVICE_USER_AGENT;
+
 /**
  * 用于展示视频通话的主界面，通话的接听和拒绝就是在这个界面中完成的。
  *
@@ -52,6 +54,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     public static final String PARAM_SELF_INFO           = "self_info";
     public static final String PARAM_USER                = "user_model";
     public static final String PARAM_BEINGCALL_USER      = "beingcall_user_model";
+    public static final String PARAM_AGENT               = "agent";
     public static final String PARAM_OTHER_INVITING_USER = "other_inviting_user_model";
     private static final int    MAX_SHOW_INVITING_USER    = 4;
 
@@ -121,7 +124,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
                     //1.先造一个虚拟的用户添加到屏幕上
                     UserInfo model = new UserInfo();
                     model.setUserId(userId);
@@ -285,6 +288,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, DEVICE_USER_AGENT);
         context.startActivity(starter);
     }
 
@@ -294,13 +298,14 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
      * @param context
      * @param beingCallUserId
      */
-    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId) {
+    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId, String agent) {
         Intent starter = new Intent(context, TRTCVideoCallActivity.class);
         starter.putExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         starter.putExtra(PARAM_SELF_INFO, JSON.toJSONString(roomKey));
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, agent);
         starter.putExtra(PARAM_OTHER_INVITING_USER, new IntentParams(new ArrayList<UserInfo>()));
         starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(starter);
@@ -470,6 +475,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
 //        mSelfModel = (UserInfo) intent.getSerializableExtra(PARAM_SELF_INFO);
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
+        mSponsorUserInfo.agent = intent.getStringExtra(PARAM_AGENT);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
             IntentParams params = (IntentParams) intent.getSerializableExtra(PARAM_OTHER_INVITING_USER);
@@ -560,7 +566,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mDialingLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
+                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
             }
         });
         //4. 展示其他用户界面

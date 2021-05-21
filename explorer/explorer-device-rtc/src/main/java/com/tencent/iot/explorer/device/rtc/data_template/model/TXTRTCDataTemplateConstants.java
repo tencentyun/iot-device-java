@@ -9,6 +9,7 @@ public interface TXTRTCDataTemplateConstants {
     String PROPERTY_SYS_AUDIO_CALL_STATUS = "_sys_audio_call_status";
     String PROPERTY_SYS_USERID = "_sys_userid";
     String PROPERTY_SYS_CALL_USERLIST = "_sys_call_userlist";
+    String PROPERTY_SYS_AGENT = "_sys_agent";
 
 
     /**
@@ -21,4 +22,9 @@ public interface TXTRTCDataTemplateConstants {
      * sys action
      */
     String ACTION_SYS_TRTC_JOIN_ROOM = "_sys_trtc_join_room";
+
+    /**
+     * device useragent
+     */
+    String DEVICE_USER_AGENT = "rtc_device_android/3.3.1";
 }

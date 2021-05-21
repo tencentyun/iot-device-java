@@ -38,6 +38,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.DEVICE_USER_AGENT;
+
 //import com.blankj.utilcode.util.CollectionUtils;
 //import com.blankj.utilcode.util.ToastUtils;
 
@@ -51,6 +53,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     public static final String PARAM_USER                = "user_model";
     public static final String PARAM_SELF_INFO           = "self_info";
     public static final String PARAM_BEINGCALL_USER      = "beingcall_user_model";
+    public static final String PARAM_AGENT               = "agent";
     public static final String PARAM_OTHER_INVITING_USER = "other_inviting_user_model";
     public static final  int    TYPE_BEING_CALLED         = 1;
     public static final  int    TYPE_CALL                 = 2;
@@ -114,7 +117,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
                     TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(userId);
                     if (layout != null) {
                         layout.stopLoading();
@@ -265,18 +268,20 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, DEVICE_USER_AGENT);
         context.startActivity(starter);
     }
 
     /**
      * 作为用户被叫
      */
-    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId) {
+    public static void startBeingCall(Context context, RoomKey roomKey, String beingCallUserId, String agent) {
         Intent starter = new Intent(context, TRTCAudioCallActivity.class);
         starter.putExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         UserInfo beingCallUserInfo = new UserInfo();
         beingCallUserInfo.setUserId(beingCallUserId);
         starter.putExtra(PARAM_BEINGCALL_USER, beingCallUserInfo);
+        starter.putExtra(PARAM_AGENT, agent);
         starter.putExtra(PARAM_SELF_INFO, JSON.toJSONString(roomKey));
         starter.putExtra(PARAM_OTHER_INVITING_USER, new IntentParams(new ArrayList<UserInfo>()));
         starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -452,6 +457,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
+        mSponsorUserInfo.agent = intent.getStringExtra(PARAM_AGENT);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
             IntentParams params = (IntentParams) intent.getSerializableExtra(PARAM_OTHER_INVITING_USER);
@@ -521,7 +527,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutDialing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
+                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
             }
         });
         //4. 展示其他用户界面

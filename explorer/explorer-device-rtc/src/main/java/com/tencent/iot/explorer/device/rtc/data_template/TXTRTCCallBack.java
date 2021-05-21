@@ -9,9 +9,10 @@ public abstract class TXTRTCCallBack {
      *
      * @param callStatus            呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
      * @param userid                用户id
+     * @param agent                 代理方
      * @param callType              邀请类型 1-语音通话，2-视频通话
      */
-    public abstract void onGetCallStatusCallBack(Integer callStatus, String userid, Integer callType);
+    public abstract void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType);
 
     /**
      * 获取trtc进入房间所需参数模型
