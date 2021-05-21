@@ -179,8 +179,8 @@ public class TRTCDataTemplateSample {
         return mMqttConnection.propertyReport(property, metadata);
     }
 
-    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, JSONObject params) {
-        return mMqttConnection.reportCallStatusProperty(callStatus, callType, userId, params);
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params) {
+        return mMqttConnection.reportCallStatusProperty(callStatus, callType, userId, agent, params);
     }
 
     public Status propertyGetStatus(String type, boolean showmeta) {
