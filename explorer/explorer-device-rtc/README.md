@@ -18,10 +18,10 @@
 
  -  gradle 工程 正式版SDK 远程构建
 
-    在应用模块的build.gradle中配置
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本 
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-rtc:3.2.1' //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation 'com.tencent.iot.explorer:explorer-device-rtc:x.x.x' //IoT Explorer 与 实时音视频 TRTC 的依赖
     }
     ```
  -  gradle 工程 snapshot版SDK 远程构建
@@ -40,10 +40,10 @@
         }
     }
     ```
-    在应用模块的build.gradle中配置
+    在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，末位+1
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.explorer:explorer-device-rtc:3.2.1-SNAPSHOT' //IoT Explorer 与 实时音视频 TRTC 的依赖
+        implementation 'com.tencent.iot.explorer:explorer-device-rtc:x.x.x-SNAPSHOT' //IoT Explorer 与 实时音视频 TRTC 的依赖
     }
     ```
  -  依赖本地sdk源码 构建
