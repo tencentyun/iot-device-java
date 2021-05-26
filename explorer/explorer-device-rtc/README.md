@@ -90,6 +90,7 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
 
 #### TXTRTCTemplateClient
 
+TXTRTCTemplateClient 继承自 TXMqttConnection 类
 
 ```
     /**
@@ -97,12 +98,6 @@ TXTRTCDataTemplate 继承自 TXDataTemplate类
      * @return 是 、 否
      */
     public boolean isConnected()
-
-    /**
-     * 生成绑定设备的二维码字符串
-     * @return 生成的绑定设备的二维码字符串;
-     */
-    public String generateDeviceQRCodeContent()
 
     /**
      * 订阅数据模板相关主题
@@ -197,6 +192,27 @@ TXTRTCCallBack 授权回调callback说明如下：
      * @param room
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
+```
+
+## 设备与用户绑定说明
+
+android设备通常为具备丰富人机界面包括屏幕/键盘的设备，可以直接输入 SSID/PSW 进行连接入网。
+
+绑定设备与用户之间的关系，可以调用以下接口内容生成二维码，再使用 连连APP/小程序 扫描该二维码进行绑定设备。
+
+```
+explorer-device-android TXMqttConnection 类 的接口
+    /**
+     * 生成绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public String generateDeviceQRCodeContent()
+
+    /**
+     * 生成支持微信扫一扫跳转连连小程序的绑定设备的二维码字符串
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public String generateDeviceWechatScanQRCodeContent()
 ```
 
 ## 通话流程梳理
