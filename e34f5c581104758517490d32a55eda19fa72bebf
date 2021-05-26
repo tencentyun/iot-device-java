@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b462fecf_6360433d",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/BottomFragment.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-26T13:51:26Z",
+      "side": 1,
+      "message": "device-android-demo的build.gradle未改动，还引用的support v7的包。",
+      "revId": "e34f5c581104758517490d32a55eda19fa72bebf",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
