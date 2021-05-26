@@ -62,13 +62,13 @@ public class WebsocketMqttSampleTest {
 
             if (mDevPSK != null && mDevPSK.length() != 0) {
                 LOG.info("Using PSK");
-                conOptions.setSocketFactory(AsymcSslUtils.getSocketFactory());
+//                conOptions.setSocketFactory(AsymcSslUtils.getSocketFactory());
             } else if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
                 LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
                 conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
             } else {
                 LOG.info("Using cert file");
-                String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
+                String workDir = System.getProperty("user.dir") + "/src/test/resources/";
                 conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
             }
 

@@ -11,11 +11,15 @@ public class TXWebSocketManager {
 
     private static TXWebSocketManager instance;
 
-    private String defaultUriStr = ".iotcloud.tencentdevices.com:443";
+    private String defaultUriStr = ".ap-guangzhou.iothub.tencentdevices.com";
 
     private String WSS_PREFIX = "wss://";
 
     private String WS_PREFIX = "ws://";
+
+    private String WSS_PORT = ":443";
+
+    private String WS_PORT = ":80";
 
     private static Map<String, TXWebSocketClient> clients = new ConcurrentHashMap<>();
 
@@ -41,11 +45,11 @@ public class TXWebSocketManager {
         } else {    // 集合内不存在连接对象，新创建一个连接对象
             try {
                 if (wsUrl == null || wsUrl.length() == 0) {
-//                    if (secretKey != null && secretKey.length() != 0) {
-//                        wsUrl = WS_PREFIX + productId + defaultUriStr;
-//                    } else {
-                        wsUrl = WSS_PREFIX + productId + defaultUriStr;
-//                    }
+                    if (secretKey != null && secretKey.length() != 0) {
+                        wsUrl = WS_PREFIX + productId + defaultUriStr + WS_PORT;
+                    } else {
+                        wsUrl = WSS_PREFIX + productId + defaultUriStr + WSS_PORT;
+                    }
                 }
                 TXWebSocketClient client = new TXWebSocketClient(wsUrl, clientId, secretKey);
                 clients.put(clientId, client);
