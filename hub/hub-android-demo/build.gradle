@@ -5,12 +5,12 @@ rootProject.ext.configPath = "./src/main/assets/app-config.json"
 apply from: "../../parse_json.gradle"
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 29
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.tencent.iot.hub.device.android.app"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 29
         versionCode 1
         versionName rootProject.ext.sdk.sdkdemoVersion
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -72,6 +72,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':hub:hub-device-android')
 
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.13'
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
