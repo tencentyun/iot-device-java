@@ -22,6 +22,30 @@
       "revId": "7950af01c0ede5be1340f8735666de5daa86bd96",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "cb6a009b_124679fb",
+        "filename": "explorer/explorer-device-rtc/README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-05-26T13:45:16Z",
+      "side": 1,
+      "message": "Done，已改为这样更顺口的语句，下次书写时注意^-^",
+      "parentUuid": "4a945a53_11ab7025",
+      "range": {
+        "startLine": 198,
+        "startChar": 0,
+        "endLine": 201,
+        "endChar": 56
+      },
+      "revId": "7950af01c0ede5be1340f8735666de5daa86bd96",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
