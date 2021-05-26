@@ -41,11 +41,11 @@ Android Studio 可在 [Android developers官网](https://developer.android.com/s
     }
     ```
  -  依赖本地sdk源码 构建
-    修改应用模块的 **[build.gradle](../../device-android-demo/build.gradle)**，使应用模块依赖 [iot_explorer](../../explorer-device-android/iot_explorer)源码，示例如下：
+    修改应用模块的 **[build.gradle](../../device-android-demo/build.gradle)**，使应用模块依赖 [explorer-device-android](../../explorer-device-android)源码，示例如下：
     
      ```gr
     dependencies {
-        implementation project(':explorer-device-android:iot_explorer')
+        implementation project(':explorer:explorer-device-android')
     }
      ```
 
