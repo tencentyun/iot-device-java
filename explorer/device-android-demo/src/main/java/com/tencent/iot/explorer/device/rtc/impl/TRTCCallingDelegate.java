@@ -1,5 +1,8 @@
-package com.tencent.iot.explorer.device.rtc.data_template.model;
+package com.tencent.iot.explorer.device.rtc.impl;
 
+import com.tencent.trtc.TRTCCloudDef;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -100,5 +103,8 @@ public interface TRTCCallingDelegate {
      * @param volumeMap 音量表，根据每个userid可以获取对应的音量大小，音量最小值0，音量最大值100
      */
     void onUserVoiceVolume(Map<String, Integer> volumeMap);
+
+
+    void onNetworkQuality(TRTCCloudDef.TRTCQuality trtcQuality, ArrayList<TRTCCloudDef.TRTCQuality> arrayList);
 
 }

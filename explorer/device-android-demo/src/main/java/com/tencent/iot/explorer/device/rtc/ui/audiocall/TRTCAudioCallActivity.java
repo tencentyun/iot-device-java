@@ -25,13 +25,14 @@ import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.rtc.data_template.model.IntentParams;
 import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
-import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCallingDelegate;
+import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingDelegate;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCallingParamsCallback;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.rtc.data_template.model.UserInfo;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingImpl;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayout;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayoutManager;
+import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -228,6 +229,11 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 
         @Override
         public void onUserVoiceVolume(Map<String, Integer> volumeMap) {
+
+        }
+
+        @Override
+        public void onNetworkQuality(TRTCCloudDef.TRTCQuality trtcQuality, ArrayList<TRTCCloudDef.TRTCQuality> arrayList) {
 
         }
     };
