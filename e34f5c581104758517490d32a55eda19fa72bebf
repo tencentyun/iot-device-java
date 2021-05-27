@@ -16,6 +16,24 @@
       "revId": "e34f5c581104758517490d32a55eda19fa72bebf",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6dc6f7c9_0449ad43",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/BottomFragment.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-05-27T00:59:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b462fecf_6360433d",
+      "revId": "e34f5c581104758517490d32a55eda19fa72bebf",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
