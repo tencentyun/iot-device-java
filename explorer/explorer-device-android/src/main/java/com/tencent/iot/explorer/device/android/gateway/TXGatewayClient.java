@@ -129,37 +129,8 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return the result of operation
      */
     public Status subdevOffline(String subProductID, String subDeviceName) {
-        Log.d(TAG, "Try to find " + subProductID + " & " + subDeviceName);
-        TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
-        if (subdev == null) {
-            Log.e(TAG, "Cant find the subdev");
-            return Status.SUBDEV_STAT_NOT_EXIST;
-        } else if (subdev.getSubdevStatus() == Status.SUBDEV_STAT_OFFLINE) {
-            Log.e(TAG, "subdev has already offline!");
-            return  Status.SUBDEV_STAT_OFFLINE;
-        }
-
-        String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to offline");
-
-        // format the payload
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put("type", "offline");
-            JSONObject plObj = new JSONObject();
-            String strDev = "[{'product_id':'" + subProductID +"','device_name':'" + subDeviceName + "'}]";
-            JSONArray devs = new JSONArray(strDev);
-            plObj.put("devices", devs);
-            obj.put("payload", plObj);
-        } catch (JSONException e) {
-            return Status.ERROR;
-        }
-        MqttMessage message = new MqttMessage();
-        message.setQos(0);
-        message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
-        return super.publish(topic, message, null);
-}
+        return setSubdevStatus(subProductID, subDeviceName, "offline");
+    }
 
     /**
      * publish the online message for the subdev
@@ -168,21 +139,35 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return the result of operation
      */
     public Status subdevOnline(String subProductID, String subDeviceName) {
+        return setSubdevStatus(subProductID, subDeviceName, "online");
+    }
+
+    private Status setSubdevStatus(String subProductID, String subDeviceName, String status) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
             Log.e(TAG, "Cant find the subdev");
             return Status.SUBDEV_STAT_NOT_EXIST;
-        } else if(subdev.getSubdevStatus() == Status.SUBDEV_STAT_ONLINE) {
-            Log.e(TAG, "subdev has already online!");
-            return  Status.SUBDEV_STAT_ONLINE;
+        } else  {
+            if (status.equals("online")) {
+                if(subdev.getSubdevStatus() == Status.SUBDEV_STAT_ONLINE) {
+                    Log.e(TAG, "subdev has already online!");
+                    return  Status.SUBDEV_STAT_ONLINE;
+                }
+            } else if (status.equals("offline")) {
+                if (subdev.getSubdevStatus() == Status.SUBDEV_STAT_OFFLINE) {
+                    Log.e(TAG, "subdev has already offline!");
+                    return  Status.SUBDEV_STAT_OFFLINE;
+                }
+            }
         }
+
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to Online");
+        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to " + status);
 
         // format the payload
         JSONObject obj = new JSONObject();
         try {
-            obj.put("type", "online");
+            obj.put("type", status);
             JSONObject plObj = new JSONObject();
             String strDev = "[{'product_id':'" + subProductID +"','device_name':'" + subDeviceName + "'}]";
             JSONArray devs = new JSONArray(strDev);
