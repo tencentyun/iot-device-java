@@ -59,4 +59,44 @@ public class TXMqttToken {
                 ", mSessionPresent=" + mSessionPresent +
                 '}';
     }
+
+    public String[] getTopics() {
+        return mTopics;
+    }
+
+    public void setTopics(String[] topics) {
+        this.mTopics = topics;
+    }
+
+    public boolean isCompleted() {
+        return mCompleted;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.mCompleted = completed;
+    }
+
+    public int getMessageID() {
+        return mMessageID;
+    }
+
+    public void setMessageID(int messageID) {
+        this.mMessageID = messageID;
+    }
+
+    public int[] getGrantedQos() {
+        return mGrantedQos;
+    }
+
+    public void setGrantedQos(int[] grantedQos) {
+        this.mGrantedQos = grantedQos;
+    }
+
+    public boolean isSessionPresent() {
+        return mSessionPresent;
+    }
+
+    public void setSessionPresent(boolean sessionPresent) {
+        this.mSessionPresent = sessionPresent;
+    }
 }
