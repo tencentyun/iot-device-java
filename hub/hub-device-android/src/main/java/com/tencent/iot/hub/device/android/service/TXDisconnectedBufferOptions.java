@@ -3,27 +3,22 @@ package com.tencent.iot.hub.device.android.service;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 
 /**
  * 该类负责序列化DisconnectedBufferOptions相关信息
  */
 
-public class TXDisconnectedBufferOptions extends DisconnectedBufferOptions implements Parcelable {
-    private int bufferSize = DISCONNECTED_BUFFER_SIZE_DEFAULT;
-    private boolean bufferEnabled = DISCONNECTED_BUFFER_ENABLED_DEFAULT;
-    private boolean persistBuffer = PERSIST_DISCONNECTED_BUFFER_DEFAULT;
-    private boolean deleteOldestMessages = DELETE_OLDEST_MESSAGES_DEFAULT;
+public class TXDisconnectedBufferOptions extends com.tencent.iot.hub.device.java.service.TXDisconnectedBufferOptions implements Parcelable {
 
     public TXDisconnectedBufferOptions() {
         super();
     }
 
     protected TXDisconnectedBufferOptions(Parcel in) {
-        bufferSize = in.readInt();
-        bufferEnabled = in.readByte() != 0;
-        persistBuffer = in.readByte() != 0;
-        deleteOldestMessages = in.readByte() != 0;
+        setBufferSize(in.readInt());
+        setBufferEnabled(in.readByte() != 0);
+        setPersistBuffer(in.readByte() != 0);
+        setDeleteOldestMessages(in.readByte() != 0);
     }
 
 
@@ -34,11 +29,10 @@ public class TXDisconnectedBufferOptions extends DisconnectedBufferOptions imple
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(bufferSize);
-        parcel.writeByte((byte) (bufferEnabled ? 1 : 0));
-        parcel.writeByte((byte) (persistBuffer ? 1 : 0));
-        parcel.writeByte((byte) (deleteOldestMessages ? 1 : 0));
-
+        parcel.writeInt(getBufferSize());
+        parcel.writeByte((byte) (isBufferEnabled() ? 1 : 0));
+        parcel.writeByte((byte) (isPersistBuffer() ? 1 : 0));
+        parcel.writeByte((byte) (isDeleteOldestMessages() ? 1 : 0));
     }
 
     public static final Creator<TXDisconnectedBufferOptions> CREATOR = new Creator<TXDisconnectedBufferOptions>() {
@@ -52,63 +46,4 @@ public class TXDisconnectedBufferOptions extends DisconnectedBufferOptions imple
             return new TXDisconnectedBufferOptions[size];
         }
     };
-
-    /**
-     * 转换为DisconnectedBufferOptions
-     *
-     * @return
-     */
-    public DisconnectedBufferOptions transToDisconnectedBufferOptions() {
-        DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
-        disconnectedBufferOptions.setBufferSize(bufferSize);
-        disconnectedBufferOptions.setBufferEnabled(bufferEnabled);
-        disconnectedBufferOptions.setPersistBuffer(persistBuffer);
-        disconnectedBufferOptions.setDeleteOldestMessages(deleteOldestMessages);
-        return disconnectedBufferOptions;
-    }
-
-    public int getBufferSize() {
-        return bufferSize;
-    }
-
-    public void setBufferSize(int bufferSize) {
-        if (bufferSize < 1) {
-            throw new IllegalArgumentException();
-        }
-        this.bufferSize = bufferSize;
-    }
-
-    public boolean isBufferEnabled() {
-        return bufferEnabled;
-    }
-
-    public void setBufferEnabled(boolean bufferEnabled) {
-        this.bufferEnabled = bufferEnabled;
-    }
-
-    public boolean isPersistBuffer() {
-        return persistBuffer;
-    }
-
-    public void setPersistBuffer(boolean persistBuffer) {
-        this.persistBuffer = persistBuffer;
-    }
-
-    public boolean isDeleteOldestMessages() {
-        return deleteOldestMessages;
-    }
-
-    public void setDeleteOldestMessages(boolean deleteOldestMessages) {
-        this.deleteOldestMessages = deleteOldestMessages;
-    }
-
-    @Override
-    public String toString() {
-        return "TXDisconnectedBufferOptions{" +
-                "bufferSize=" + bufferSize +
-                ", bufferEnabled=" + bufferEnabled +
-                ", persistBuffer=" + persistBuffer +
-                ", deleteOldestMessages=" + deleteOldestMessages +
-                '}';
-    }
 }

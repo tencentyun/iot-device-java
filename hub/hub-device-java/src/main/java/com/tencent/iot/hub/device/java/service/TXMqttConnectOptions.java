@@ -129,7 +129,7 @@ public class TXMqttConnectOptions {
         return mUseShadow;
     }
 
-    protected TXMqttConnectOptions setUseShadow(boolean mUseShadow) {
+    public TXMqttConnectOptions setUseShadow(boolean mUseShadow) {
         this.mUseShadow = mUseShadow;
         return this;
     }
