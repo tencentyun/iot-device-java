@@ -80,6 +80,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private List<UserInfo> mCallUserInfoList = new ArrayList<>(); // 呼叫方
     private Map<String, UserInfo> mCallUserModelMap = new HashMap<>();
     private UserInfo              mSponsorUserInfo;                      // 被叫方
+    private String                mUserId;                               // 被叫Id
     private List<UserInfo> mOtherInvitingUserInfoList;
     private int                   mCallType;
     private TRTCCallingImpl mTRTCCalling;
@@ -100,28 +101,28 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onInvited(String sponsor, List<String> userIdList, boolean isFromGroup, int callType) {
+        public void onInvited(String sponsor, List<String> trtc_uidList, boolean isFromGroup, int callType) {
         }
 
         @Override
-        public void onGroupCallInviteeListUpdate(List<String> userIdList) {
+        public void onGroupCallInviteeListUpdate(List<String> trtc_uidList) {
         }
 
         @Override
-        public void onUserEnter(final String userId) {
+        public void onUserEnter(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
-                    TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(userId);
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                    TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(mUserId);
                     if (layout != null) {
                         layout.stopLoading();
                     } else {
                         UserInfo model = new UserInfo();
-                        model.setUserId(userId);
-                        model.userName = userId;
+                        model.setUserId(mUserId);
+                        model.userName = mUserId;
                         mCallUserInfoList.add(model);
                         mCallUserModelMap.put(model.getUserId(), model);
                         addUserToManager(model);
@@ -131,14 +132,14 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserLeave(final String userId) {
+        public void onUserLeave(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     //1. 回收界面元素
-                    mLayoutManagerTRTC.recyclerAudioCallLayout(userId);
+                    mLayoutManagerTRTC.recyclerAudioCallLayout(mUserId);
                     //2. 删除用户model
-                    UserInfo userInfo = mCallUserModelMap.remove(userId);
+                    UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                     if (userInfo != null) {
                         mCallUserInfoList.remove(userInfo);
                     }
@@ -149,16 +150,16 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onReject(final String userId) {
+        public void onReject(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCallUserModelMap.containsKey(userId)) {
+                    if (mCallUserModelMap.containsKey(mUserId)) {
                         // 进入拒绝环节
                         //1. 回收界面元素
-                        mLayoutManagerTRTC.recyclerAudioCallLayout(userId);
+                        mLayoutManagerTRTC.recyclerAudioCallLayout(mUserId);
                         //2. 删除用户model
-                        UserInfo userInfo = mCallUserModelMap.remove(userId);
+                        UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
                         }
@@ -169,16 +170,16 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onNoResp(final String userId) {
+        public void onNoResp(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCallUserModelMap.containsKey(userId)) {
+                    if (mCallUserModelMap.containsKey(mUserId)) {
                         // 进入无响应环节
                         //1. 回收界面元素
-                        mLayoutManagerTRTC.recyclerAudioCallLayout(userId);
+                        mLayoutManagerTRTC.recyclerAudioCallLayout(mUserId);
                         //2. 删除用户model
-                        UserInfo userInfo = mCallUserModelMap.remove(userId);
+                        UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
                         }
@@ -189,13 +190,13 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onLineBusy(String userId) {
-            if (mCallUserModelMap.containsKey(userId)) {
+        public void onLineBusy(String trtc_uid) {
+            if (mCallUserModelMap.containsKey(mUserId)) {
                 // 进入无响应环节
                 //1. 回收界面元素
-                mLayoutManagerTRTC.recyclerAudioCallLayout(userId);
+                mLayoutManagerTRTC.recyclerAudioCallLayout(mUserId);
                 //2. 删除用户model
-                UserInfo userInfo = mCallUserModelMap.remove(userId);
+                UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                 if (userInfo != null) {
                     mCallUserInfoList.remove(userInfo);
                 }
@@ -219,11 +220,11 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserVideoAvailable(String userId, boolean isVideoAvailable) {
+        public void onUserVideoAvailable(String trtc_uid, boolean isVideoAvailable) {
         }
 
         @Override
-        public void onUserAudioAvailable(String userId, boolean isVideoAvailable) {
+        public void onUserAudioAvailable(String trtc_uid, boolean isVideoAvailable) {
 
         }
 
@@ -365,7 +366,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 
     private void removeCallbackAndFinish() {
         mTRTCCalling.exitRoom();
-        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId());
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, mUserId);
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().callMobile = false;
@@ -421,6 +422,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
+        mUserId = mSponsorUserInfo.getUserId();
         mSponsorUserInfo.agent = intent.getStringExtra(PARAM_AGENT);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
@@ -429,7 +431,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 mOtherInvitingUserInfoList = params.mUserInfos;
             }
             showWaitingResponseView();
-            mStatusView.setText(mSponsorUserInfo.getUserId()+"邀请您进行语音通话");
+            mStatusView.setText(mUserId+"邀请您进行语音通话");
         } else {
             // 主叫方
             if (roomKey != null) {
@@ -464,8 +466,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
      */
     public void showWaitingResponseView() {
         //1. 展示对方的画面
-        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mSponsorUserInfo.getUserId());
-        layout.setUserId(mSponsorUserInfo.getUserId());
+        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mUserId);
+        layout.setUserId(mUserId);
 //        Picasso.get().load(mSponsorUserInfo.userAvatar).into(layout.getImageView());
         //2. 展示电话对应界面
         mLayoutHangup.setVisibility(View.VISIBLE);
@@ -483,7 +485,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutDialing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_AUDIO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
+                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
             }
         });
         //4. 展示其他用户界面
