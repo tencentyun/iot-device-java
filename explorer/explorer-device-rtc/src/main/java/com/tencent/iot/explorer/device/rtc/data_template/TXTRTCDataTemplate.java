@@ -73,6 +73,10 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
                         }
+                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                            reportExtraInfoRejectUserId(userid);
+                            return;
+                        }
                         if (callStatus == 0) {
                             mIsBusy = false;
                         } else {
@@ -90,6 +94,10 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         }
                         if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
+                        }
+                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                            reportExtraInfoRejectUserId(userid);
+                            return;
                         }
                         if (callStatus == 0) {
                             mIsBusy = false;
@@ -109,6 +117,31 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         } catch (Exception e) {
             TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
+    }
+
+    private Status reportExtraInfoRejectUserId(String rejectUserId) {
+        JSONObject property = new JSONObject();
+
+        if (rejectUserId == null && rejectUserId.length() == 0) {
+            TXLog.e(TAG, "reportExtraInfoRejectUserId rejectUserId empty");
+            return Status.PARAMETER_INVALID;
+        }
+
+        JSONObject extraInfo = new JSONObject();
+        try {
+            extraInfo.put(TXTRTCDataTemplateConstants.PROPERTY_REJECT_USERID, rejectUserId);
+            String extraInfoString = extraInfo.toString();
+
+            property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO, extraInfoString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Status status = sysPropertyReport(property, null);
+        if(Status.OK != status) {
+            TXLog.e(TAG, "property report failed!");
+        }
+        return status;
     }
 
     /**
