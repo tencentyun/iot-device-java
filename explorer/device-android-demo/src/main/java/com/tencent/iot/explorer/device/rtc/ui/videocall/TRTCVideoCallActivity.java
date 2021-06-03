@@ -88,6 +88,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private List<UserInfo> mCallUserInfoList = new ArrayList<>(); // 呼叫方
     private Map<String, UserInfo> mCallUserModelMap = new HashMap<>();
     private UserInfo              mSponsorUserInfo;                      // 被叫方
+    private String                mUserId;                               // 被叫Id
     private List<UserInfo> mOtherInvitingUserInfoList;
     private int                   mCallType;
     private TRTCCallingImpl mTRTCCalling;
@@ -109,25 +110,25 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onInvited(String sponsor, List<String> userIdList, boolean isFromGroup, int callType) {
+        public void onInvited(String sponsor, List<String> trtc_uidList, boolean isFromGroup, int callType) {
         }
 
         @Override
-        public void onGroupCallInviteeListUpdate(List<String> userIdList) {
+        public void onGroupCallInviteeListUpdate(List<String> trtc_uidList) {
         }
 
         @Override
-        public void onUserEnter(final String userId) {
+        public void onUserEnter(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     showCallingView();
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
+                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mUserId, mSponsorUserInfo.getAgent());
                     //1.先造一个虚拟的用户添加到屏幕上
                     UserInfo model = new UserInfo();
-                    model.setUserId(userId);
-                    model.userName = userId;
+                    model.setUserId(mUserId);
+                    model.userName = mUserId;
                     model.userAvatar = "";
                     mCallUserInfoList.add(model);
                     mCallUserModelMap.put(model.getUserId(), model);
@@ -142,14 +143,14 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserLeave(final String userId) {
+        public void onUserLeave(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     //1. 回收界面元素
-                    mLayoutManagerTrtc.recyclerCloudViewView(userId);
+                    mLayoutManagerTrtc.recyclerCloudViewView(mUserId);
                     //2. 删除用户model
-                    UserInfo userInfo = mCallUserModelMap.remove(userId);
+                    UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                     if (userInfo != null) {
                         mCallUserInfoList.remove(userInfo);
                     }
@@ -160,16 +161,16 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onReject(final String userId) {
+        public void onReject(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCallUserModelMap.containsKey(userId)) {
+                    if (mCallUserModelMap.containsKey(mUserId)) {
                         // 进入拒绝环节
                         //1. 回收界面元素
-                        mLayoutManagerTrtc.recyclerCloudViewView(userId);
+                        mLayoutManagerTrtc.recyclerCloudViewView(mUserId);
                         //2. 删除用户model
-                        UserInfo userInfo = mCallUserModelMap.remove(userId);
+                        UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
                         }
@@ -180,16 +181,16 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onNoResp(final String userId) {
+        public void onNoResp(final String trtc_uid) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (mCallUserModelMap.containsKey(userId)) {
+                    if (mCallUserModelMap.containsKey(mUserId)) {
                         // 进入无响应环节
                         //1. 回收界面元素
-                        mLayoutManagerTrtc.recyclerCloudViewView(userId);
+                        mLayoutManagerTrtc.recyclerCloudViewView(mUserId);
                         //2. 删除用户model
-                        UserInfo userInfo = mCallUserModelMap.remove(userId);
+                        UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                         if (userInfo != null) {
                             mCallUserInfoList.remove(userInfo);
                         }
@@ -200,13 +201,13 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onLineBusy(String userId) {
-            if (mCallUserModelMap.containsKey(userId)) {
+        public void onLineBusy(String trtc_uid) {
+            if (mCallUserModelMap.containsKey(mUserId)) {
                 // 进入无响应环节
                 //1. 回收界面元素
-                mLayoutManagerTrtc.recyclerCloudViewView(userId);
+                mLayoutManagerTrtc.recyclerCloudViewView(mUserId);
                 //2. 删除用户model
-                UserInfo userInfo = mCallUserModelMap.remove(userId);
+                UserInfo userInfo = mCallUserModelMap.remove(mUserId);
                 if (userInfo != null) {
                     mCallUserInfoList.remove(userInfo);
                 }
@@ -230,15 +231,15 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserVideoAvailable(final String userId, final boolean isVideoAvailable) {
+        public void onUserVideoAvailable(final String trtc_uid, final boolean isVideoAvailable) {
             //有用户的视频开启了
-            TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(userId);
+            TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(mUserId);
             if (layout != null) {
                 layout.setVideoAvailable(isVideoAvailable);
                 if (isVideoAvailable) {
-                    mTRTCCalling.startRemoteView(userId, layout.getVideoView());
+                    mTRTCCalling.startRemoteView(trtc_uid, layout.getVideoView());
                 } else {
-                    mTRTCCalling.stopRemoteView(userId);
+                    mTRTCCalling.stopRemoteView(trtc_uid);
                 }
             } else {
 
@@ -246,7 +247,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUserAudioAvailable(String userId, boolean isVideoAvailable) {
+        public void onUserAudioAvailable(String trtc_uid, boolean isVideoAvailable) {
 
         }
 
@@ -395,7 +396,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private void stopCameraAndFinish() {
         mTRTCCalling.exitRoom();
         mTRTCCalling.closeCamera();
-        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId());
+        TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mUserId);
         finish();
         TRTCUIManager.getInstance().isCalling = false;
         TRTCUIManager.getInstance().callMobile = false;
@@ -460,6 +461,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         //自己的资料
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
         mSponsorUserInfo = (UserInfo) intent.getSerializableExtra(PARAM_BEINGCALL_USER);
+        mUserId = mSponsorUserInfo.getUserId();
         mSponsorUserInfo.agent = intent.getStringExtra(PARAM_AGENT);
         if (mCallType == TYPE_BEING_CALLED) {
             // 作为被叫
@@ -536,7 +538,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         mDialingLl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId(), mSponsorUserInfo.getAgent());
+                TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mUserId, mSponsorUserInfo.getAgent());
             }
         });
         //4. 展示其他用户界面
