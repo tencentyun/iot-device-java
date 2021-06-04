@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ef0a0d21_eedfdddd",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-04T01:53:53Z",
+      "side": 1,
+      "message": "已修改。",
+      "parentUuid": "83ff120f_68a4f76a",
+      "range": {
+        "startLine": 125,
+        "startChar": 12,
+        "endLine": 125,
+        "endChar": 62
+      },
+      "revId": "643be8ea72a68c0d8d3b9f23563e0b6fc9240f9b",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b4622145_9ee307f6",
         "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "643be8ea72a68c0d8d3b9f23563e0b6fc9240f9b",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "30dadd39_956f98a2",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-04T01:53:53Z",
+      "side": 1,
+      "message": "已去掉",
+      "parentUuid": "b4622145_9ee307f6",
+      "range": {
+        "startLine": 133,
+        "startChar": 12,
+        "endLine": 133,
+        "endChar": 34
+      },
+      "revId": "643be8ea72a68c0d8d3b9f23563e0b6fc9240f9b",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
