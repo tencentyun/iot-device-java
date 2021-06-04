@@ -1,6 +1,7 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
@@ -32,6 +33,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
     private TXTRTCCallBack mTrtcCallBack = null;
     private static AtomicInteger requestID = new AtomicInteger(0);
     private boolean mIsBusy = false; //trtc设备是否空闲
+    private String mCurrentCallingUserid = ""; //当前呼叫trtc设备的userId
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
@@ -70,13 +72,22 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
+                        if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
+                            return;
+                        }
                         if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
                         }
+                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                            reportExtraInfoRejectUserId(userid);
+                            return;
+                        }
                         if (callStatus == 0) {
                             mIsBusy = false;
+                            mCurrentCallingUserid = "";
                         } else {
                             mIsBusy = true;
+                            mCurrentCallingUserid = userid;
                         }
                     } else if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
@@ -88,13 +99,22 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
+                        if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
+                            return;
+                        }
                         if (!mIsBusy || callStatus != 1) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
                         }
+                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                            reportExtraInfoRejectUserId(userid);
+                            return;
+                        }
                         if (callStatus == 0) {
                             mIsBusy = false;
+                            mCurrentCallingUserid = "";
                         } else {
                             mIsBusy = true;
+                            mCurrentCallingUserid = userid;
                         }
                     } else if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST)) {
                         //上报下接收到的userlist
@@ -109,6 +129,30 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         } catch (Exception e) {
             TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
+    }
+
+    private Status reportExtraInfoRejectUserId(String rejectUserId) {
+        JSONObject property = new JSONObject();
+
+        if (TextUtils.isEmpty(rejectUserId)) {
+            TXLog.e(TAG, "reportExtraInfoRejectUserId rejectUserId empty");
+            return Status.PARAMETER_INVALID;
+        }
+
+        JSONObject extraInfo = new JSONObject();
+        try {
+            extraInfo.put(TXTRTCDataTemplateConstants.PROPERTY_REJECT_USERID, rejectUserId);
+
+            property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO, extraInfo.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Status status = sysPropertyReport(property, null);
+        if(Status.OK != status) {
+            TXLog.e(TAG, "property report failed!");
+        }
+        return status;
     }
 
     /**
@@ -170,6 +214,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         }
         try {
             mIsBusy = callStatus != 0;
+            mCurrentCallingUserid = mIsBusy ? userId : "";
             if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
                 property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
