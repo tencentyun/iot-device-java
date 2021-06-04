@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfa6743e_de10a82a",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/ui/audiocall/TRTCAudioCallActivity.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-04T01:11:34Z",
+      "side": 1,
+      "message": "看着没用到",
+      "range": {
+        "startLine": 112,
+        "startChar": 45,
+        "endLine": 112,
+        "endChar": 53
+      },
+      "revId": "7e3365842c6d082036b509afc55b97507df7e5df",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4481e0f3_20f2db71",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/ui/audiocall/TRTCAudioCallActivity.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-04T01:11:34Z",
+      "side": 1,
+      "message": "同上",
+      "range": {
+        "startLine": 135,
+        "startChar": 45,
+        "endLine": 135,
+        "endChar": 53
+      },
+      "revId": "7e3365842c6d082036b509afc55b97507df7e5df",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
