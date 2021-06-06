@@ -95,6 +95,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private boolean               isHandsFree       = true;
     private boolean               isMuteMic         = false;
     private boolean               mIsFrontCamera    = true;
+    private volatile boolean      mIsExitRoom       = false;
 
     private TimerTask otherEnterRoomTask = null;
     private TimerTask enterRoomTask = null;
@@ -123,8 +124,9 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     showCallingView();
-                    removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                    if (!mIsExitRoom) {
+                        TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_VIDEO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                    }
                     //1.先造一个虚拟的用户添加到屏幕上
                     UserInfo model = new UserInfo();
                     model.setUserId(mUserId);
@@ -233,6 +235,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         @Override
         public void onUserVideoAvailable(final String trtc_uid, final boolean isVideoAvailable) {
             //有用户的视频开启了
+            removeOtherIsEnterRoom15secondsTask();
             TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(mUserId);
             if (layout != null) {
                 layout.setVideoAvailable(isVideoAvailable);
@@ -371,7 +374,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                     removeIsEnterRoom60secondsTask();
                 }
                 showCallingView();
-                checkoutOtherIsEnterRoom15seconds();
             }
 
             @Override
@@ -396,6 +398,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private void stopCameraAndFinish() {
         mTRTCCalling.exitRoom();
         mTRTCCalling.closeCamera();
+        mIsExitRoom = true;
         TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mUserId);
         finish();
         TRTCUIManager.getInstance().isCalling = false;

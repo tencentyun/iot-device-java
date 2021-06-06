@@ -1,15 +1,19 @@
 package com.tencent.iot.explorer.device.rtc;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.multidex.MultiDex;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -46,12 +50,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
@@ -102,10 +109,33 @@ public class TRTCMainActivity extends AppCompatActivity {
     private final static String DEVICE_NAME = "dev_name";
     private final static String DEVICE_PSK = "dev_psk";
 
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trtc_main);
+
+        //日志功能开启写权限
+        try {
+            for (String ele: PERMISSIONS_STORAGE) {
+                int granted = ActivityCompat.checkSelfPermission(this, ele);
+                if (granted != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+                    break;
+                } else {
+                    initLogConfigurator();
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         MultiDex.install(this);
 
         mQRCodeImgView = findViewById(R.id.iv_qrcode);
@@ -222,6 +252,30 @@ public class TRTCMainActivity extends AppCompatActivity {
         });
 
         initPermission();
+    }
+
+    private void initLogConfigurator() {
+        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-rtc-demo.log");
+        logConfigurator.configure();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG, "必要权限申请失败");
+                    finish();
+                } else {
+                    initLogConfigurator();
+                    break;
+                }
+            }
+        }
     }
 
     private String selectedUserIds() {
