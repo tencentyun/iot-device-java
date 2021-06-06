@@ -132,6 +132,7 @@ public class TXMqttDynreg {
                 os.writeBytes(postData);
                 os.flush();
                 os.close();
+                LOG.info("TXMqttDynreg postData "+ postData);
 
                 int rc = conn.getResponseCode();
                 String line;
