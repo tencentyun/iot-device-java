@@ -17,10 +17,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
@@ -49,6 +52,10 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         this.mTrtcCallBack = trtcCallBack;
     }
 
+    private void checkStatusIsNotIdleReportResetStatus() {
+        propertyGetStatus("report", false);
+    }
+
     /**
      * TRTC属性下行消息处理
      * @param message 消息内容
@@ -75,14 +82,14 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
                             return;
                         }
-                        if (!mIsBusy || callStatus != 1) {
+                        if (!mIsBusy || callStatus != TRTCCallStatus.TYPE_CALLING) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
                         }
-                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                        if (mIsBusy && callStatus == TRTCCallStatus.TYPE_CALLING) { //接收到其他用户呼叫请求
                             reportExtraInfoRejectUserId(userid);
                             return;
                         }
-                        if (callStatus == 0) {
+                        if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {
                             mIsBusy = false;
                             mCurrentCallingUserid = "";
                         } else {
@@ -102,14 +109,14 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
                             return;
                         }
-                        if (!mIsBusy || callStatus != 1) {
+                        if (!mIsBusy || callStatus != TRTCCallStatus.TYPE_CALLING) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
                         }
-                        if (mIsBusy && callStatus == 1) { //接收到其他用户呼叫请求
+                        if (mIsBusy && callStatus == TRTCCallStatus.TYPE_CALLING) { //接收到其他用户呼叫请求
                             reportExtraInfoRejectUserId(userid);
                             return;
                         }
-                        if (callStatus == 0) {
+                        if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {
                             mIsBusy = false;
                             mCurrentCallingUserid = "";
                         } else {
@@ -122,6 +129,16 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if(Status.OK != status) {
                             TXLog.e(TAG, "property report failed!");
                         }
+                    }
+                }
+            } else if (method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
+                JSONObject data = jsonObj.getJSONObject("data").getJSONObject("reported");
+                if (data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS) && data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
+                    Integer videoCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
+                    Integer audioCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
+                    if (!mIsBusy &&(videoCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE || audioCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE)) {
+                        // 不在通话中，并且status状态不对  重置video和audio的status状态为0
+                        reportResetCallStatusProperty();
                     }
                 }
             }
@@ -213,7 +230,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
             property = params;
         }
         try {
-            mIsBusy = callStatus != 0;
+            mIsBusy = callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE;
             mCurrentCallingUserid = mIsBusy ? userId : "";
             if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
                 property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
@@ -242,6 +259,36 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }
+        } catch (JSONException e) {
+            TXLog.e(TAG, "Construct property json failed!");
+            return Status.ERROR;
+        }
+
+        Status status = sysPropertyReport(property, null);
+        if(Status.OK != status) {
+            TXLog.e(TAG, "property report failed!");
+        }
+        if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) { //上报呼叫状态0时，防止上报不成功，延迟1秒后查询设备状态，不为0则再次上报状态
+            TimerTask task = new TimerTask(){
+                public void run(){
+                    checkStatusIsNotIdleReportResetStatus();
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 1000);
+        }
+        return status;
+    }
+
+    /**
+     * 上报重置设备呼叫属性 为空闲
+     * @return 结果
+     */
+    public Status reportResetCallStatusProperty() {
+        JSONObject property = new JSONObject();
+        try {
+            property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS, TRTCCallStatus.TYPE_IDLE_OR_REFUSE);
+            property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS, TRTCCallStatus.TYPE_IDLE_OR_REFUSE);
         } catch (JSONException e) {
             TXLog.e(TAG, "Construct property json failed!");
             return Status.ERROR;

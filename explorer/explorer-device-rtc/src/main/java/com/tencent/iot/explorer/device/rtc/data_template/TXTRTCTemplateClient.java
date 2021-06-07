@@ -87,6 +87,14 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     }
 
     /**
+     * 上报重置设备呼叫属性 为空闲
+     * @return 结果
+     */
+    private Status reportResetCallStatusProperty() {
+        return mDataTemplate.reportResetCallStatusProperty();
+    }
+
+    /**
      * 获取状态
      * @param type 类型
      * @param showmeta 是否携带showmeta
@@ -152,8 +160,7 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
         if (!TRTCUIManager.getInstance().isCalling) {
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_VIDEO_CALL, "", "", null);
-            reportCallStatusProperty(TRTCCallStatus.TYPE_IDLE_OR_REFUSE, TRTCCalling.TYPE_AUDIO_CALL, "", "", null);
+            reportResetCallStatusProperty();
         }
     }
 }
