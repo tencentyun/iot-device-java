@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4a9276bb_bd50ef95",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-07T01:08:29Z",
+      "side": 1,
+      "message": "0 --\u003e TRTCCallStatus.TYPE_IDLE_OR_REFUSE",
+      "range": {
+        "startLine": 271,
+        "startChar": 26,
+        "endLine": 271,
+        "endChar": 27
+      },
+      "revId": "f756322502cc34fe1db6b007920e7c3f4248c00c",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
