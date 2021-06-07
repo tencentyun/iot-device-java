@@ -235,12 +235,12 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         @Override
         public void onUserVideoAvailable(final String trtc_uid, final boolean isVideoAvailable) {
             //有用户的视频开启了
-            removeOtherIsEnterRoom15secondsTask();
             TRTCVideoLayout layout = mLayoutManagerTrtc.findCloudViewView(mUserId);
             if (layout != null) {
                 layout.setVideoAvailable(isVideoAvailable);
                 if (isVideoAvailable) {
                     mTRTCCalling.startRemoteView(trtc_uid, layout.getVideoView());
+                    removeOtherIsEnterRoom15secondsTask();
                 } else {
                     mTRTCCalling.stopRemoteView(trtc_uid);
                 }
@@ -374,6 +374,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                     removeIsEnterRoom60secondsTask();
                 }
                 showCallingView();
+                checkoutOtherIsEnterRoom15seconds();
             }
 
             @Override
