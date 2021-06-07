@@ -86,6 +86,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private TRTCCallingImpl mTRTCCalling;
     private boolean               isHandsFree       = true;
     private boolean               isMuteMic         = false;
+    private volatile boolean      mIsExitRoom       = false;
 
     private TimerTask otherEnterRoomTask = null;
     private TimerTask enterRoomTask = null;
@@ -114,8 +115,10 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     showCallingView();
+                    if (!mIsExitRoom) {
+                        TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                    }
                     removeOtherIsEnterRoom15secondsTask();
-                    TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
                     TRTCAudioLayout layout = mLayoutManagerTRTC.findAudioCallLayout(mUserId);
                     if (layout != null) {
                         layout.stopLoading();
@@ -366,6 +369,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
 
     private void removeCallbackAndFinish() {
         mTRTCCalling.exitRoom();
+        mIsExitRoom = true;
         TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_AUDIO_CALL, mUserId);
         finish();
         TRTCUIManager.getInstance().isCalling = false;
