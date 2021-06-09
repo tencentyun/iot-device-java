@@ -80,14 +80,11 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                             userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
                         if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
+                            if (callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
                             return;
                         }
                         if (!mIsBusy || callStatus != TRTCCallStatus.TYPE_CALLING) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
-                        }
-                        if (mIsBusy && callStatus == TRTCCallStatus.TYPE_CALLING) { //接收到其他用户呼叫请求
-                            reportExtraInfoRejectUserId(userid);
-                            return;
                         }
                         if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {
                             mIsBusy = false;
@@ -107,14 +104,11 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                             userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
                         if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
+                            if (callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
                             return;
                         }
                         if (!mIsBusy || callStatus != TRTCCallStatus.TYPE_CALLING) {
                             mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
-                        }
-                        if (mIsBusy && callStatus == TRTCCallStatus.TYPE_CALLING) { //接收到其他用户呼叫请求
-                            reportExtraInfoRejectUserId(userid);
-                            return;
                         }
                         if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {
                             mIsBusy = false;
