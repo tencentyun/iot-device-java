@@ -20,11 +20,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import explorer.unit.test.BuildConfig;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class MqttSampleTest {
     private static final Logger LOG = LoggerFactory.getLogger(MqttSampleTest.class);
@@ -293,6 +297,7 @@ public class MqttSampleTest {
                 LOG.debug(logInfo);
             }
             if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
+                subscribeTopicSuccess = true;
                 unlock();
             }
         }
@@ -307,6 +312,7 @@ public class MqttSampleTest {
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             LOG.debug(logInfo);
             if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
+                unSubscribeTopicSuccess = true;
                 unlock();
             }
         }
@@ -315,8 +321,11 @@ public class MqttSampleTest {
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
             LOG.debug(logInfo);
-            if (topic.contains("thing/down/property") && message.toString().contains("report_reply") && message.toString().contains("success") ||  //上报属性成功消息
-                    topic.contains("thing/down/property") && message.toString().contains("get_status_reply") && message.toString().contains("success") && message.toString().contains("report")){   //获取report状态成功消息
+            if (topic.contains("thing/down/property") && message.toString().contains("report_reply") && message.toString().contains("success")) {//上报属性成功消息
+                propertyReportSuccess = true;
+                unlock();
+            }  else if (topic.contains("thing/down/property") && message.toString().contains("get_status_reply") && message.toString().contains("success") && message.toString().contains("report")) { //获取report状态成功消息
+                propertyGetStatusSuccess = true;
                 unlock();
             }
         }
@@ -331,10 +340,17 @@ public class MqttSampleTest {
             //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
             LOG.debug("reply received : " + replyMsg);
 
-            if (replyMsg.contains("report_info_reply") &&  replyMsg.contains("success") ||   //获取report_info状态成功消息
-                    replyMsg.contains("clear_control_reply") &&  replyMsg.contains("success") ||   //获取clear_control状态成功消息
-                    replyMsg.contains("event_reply") &&  replyMsg.contains("\"code\":0") ||  //获取event状态成功消息
-                    replyMsg.contains("events_reply") &&  replyMsg.contains("\"code\":0")) {   //获取event状态成功消息
+            if (replyMsg.contains("report_info_reply") &&  replyMsg.contains("success")) { //获取report_info状态成功消息
+                propertyReportInfoSuccess = true;
+                unlock();
+            } else if (replyMsg.contains("clear_control_reply") &&  replyMsg.contains("success")) { //获取clear_control状态成功消息
+                propertyClearControlSuccess = true;
+                unlock();
+            } else if (replyMsg.contains("event_reply") &&  replyMsg.contains("\"code\":0")) { //获取event状态成功消息
+                eventSinglePostSuccess = true;
+                unlock();
+            } else if (replyMsg.contains("events_reply") &&  replyMsg.contains("\"code\":0")) { //获取event状态成功消息
+                eventsPostSuccess = true;
                 unlock();
             }
         }
@@ -402,73 +418,82 @@ public class MqttSampleTest {
 
     /** ============================================================================== Unit Test ============================================================================== **/
 
-    private static Object mLock = new Object(); // 同步锁
-    private static int mCount = 0; // 加解锁条件
-    private static boolean mUnitTest = false;
+    private static final int COUNT = 1;
+    private static final int TIMEOUT = 3000;
+    private static CountDownLatch latch;
+
+    private static boolean subscribeTopicSuccess = false;
+    private static boolean propertyReportSuccess = false;
+    private static boolean propertyGetStatusSuccess = false;
+    private static boolean propertyReportInfoSuccess = false;
+    private static boolean propertyClearControlSuccess = false;
+    private static boolean eventSinglePostSuccess = false;
+    private static boolean eventsPostSuccess = false;
+    private static boolean unSubscribeTopicSuccess = false;
 
     private static void lock() {
-        synchronized (mLock) {
-            mCount = 1;  // 设置锁条件
-            while (mCount > 0) {
-                try {
-                    mLock.wait(); // 等待唤醒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        latch = new CountDownLatch(COUNT);
+        try {
+            latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private static void unlock() {
-        if (mUnitTest) {
-            synchronized (mLock) {
-                mCount = 0;
-                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-            }
-        }
+        latch.countDown();// 回调执行完毕，唤醒主线程
     }
 
     @Test
     public void testMqttConnect() {
-        mUnitTest = true;
+
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
         connect();
         lock();
+        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
         LOG.debug("after connect");
 
         subscribeTopic();
         lock();
+        assertTrue(subscribeTopicSuccess);
         LOG.debug("after subscribe");
 
         propertyReport();
         lock();
+        assertTrue(propertyReportSuccess);
         LOG.debug("after propertyReport");
 
         propertyGetStatus();
         lock();
+        assertTrue(propertyGetStatusSuccess);
         LOG.debug("after propertyGetStatus");
 
         propertyReportInfo();
         lock();
+        assertTrue(propertyReportInfoSuccess);
         LOG.debug("after propertyReportInfo");
 
         propertyClearControl();
         lock();
+        assertTrue(propertyClearControlSuccess);
         LOG.debug("after propertyClearControl");
 
         eventSinglePost();
         lock();
+        assertTrue(eventSinglePostSuccess);
         LOG.debug("after eventSinglePost");
 
         eventsPost();
         lock();
+        assertTrue(eventsPostSuccess);
         LOG.debug("after eventsPost");
 
         unSubscribeTopic();
         lock();
+        assertTrue(unSubscribeTopicSuccess);
         LOG.debug("after unSubscribe");
 
         disconnect();

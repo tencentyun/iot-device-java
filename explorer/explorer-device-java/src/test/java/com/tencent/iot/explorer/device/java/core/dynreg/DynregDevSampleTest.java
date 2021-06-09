@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import explorer.unit.test.BuildConfig;
 import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
@@ -252,47 +254,37 @@ public class DynregDevSampleTest {
 
     /** ============================================================================== Unit Test ============================================================================== **/
 
-    private static Object mLock = new Object(); // 同步锁
-    private static int mCount = 0; // 加解锁条件
-    private static boolean mUnitTest = false;
+    private static final int COUNT = 1;
+    private static final int TIMEOUT = 3000;
+    private static CountDownLatch latch;
 
     private static void lock() {
-        synchronized (mLock) {
-            mCount = 1;  // 设置锁条件
-            while (mCount > 0) {
-                try {
-                    mLock.wait(); // 等待唤醒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        latch = new CountDownLatch(COUNT);
+        try {
+            latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private static void unlock() {
-        if (mUnitTest) {
-            synchronized (mLock) {
-                mCount = 0;
-                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-            }
-        }
+        latch.countDown();// 回调执行完毕，唤醒主线程
     }
 
     @Test
     public void testDynregDev() {
-        mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(DynregDevSampleTest.class.getResource("/log4j.properties"));
 
         dynReg();
         lock();
-        LOG.debug("after dynreg connect");
-
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
+        LOG.debug("after dynreg connect");
 
         mDataTemplateSample.disconnect();
         lock();
+        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
         LOG.debug("after disconnect");
     }
 }
