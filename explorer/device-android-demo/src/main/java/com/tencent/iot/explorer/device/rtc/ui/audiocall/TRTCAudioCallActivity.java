@@ -146,7 +146,9 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                     if (userInfo != null) {
                         mCallUserInfoList.remove(userInfo);
                     }
-                    Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
+                    if (mIsExitRoom) {
+                        Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
+                    }
                     removeCallbackAndFinish();
                 }
             });
