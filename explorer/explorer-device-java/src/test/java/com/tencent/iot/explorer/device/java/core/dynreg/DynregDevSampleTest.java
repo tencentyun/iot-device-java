@@ -6,7 +6,6 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
 import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
@@ -15,18 +14,25 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import explorer.unit.test.BuildConfig;
 import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 /**
  * Device Dynreg sample
@@ -82,7 +88,6 @@ public class DynregDevSampleTest {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-            unlock();
         }
 
         @Override
@@ -99,7 +104,6 @@ public class DynregDevSampleTest {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             LOG.info(logInfo);
-            unlock();
         }
 
         @Override
@@ -253,38 +257,34 @@ public class DynregDevSampleTest {
     }
 
     /** ============================================================================== Unit Test ============================================================================== **/
-
-    private static final int COUNT = 1;
-    private static final int TIMEOUT = 3000;
-    private static CountDownLatch latch;
-
-    private static void lock() {
-        latch = new CountDownLatch(COUNT);
-        try {
-            latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void unlock() {
-        latch.countDown();// 回调执行完毕，唤醒主线程
-    }
-
     @Test
     public void testDynregDev() {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(DynregDevSampleTest.class.getResource("/log4j.properties"));
 
-        dynReg();
-        lock();
-        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-        LOG.debug("after dynreg connect");
+        // 动态注册
+        SelfMqttDynregCallback dynregCallback = mock(SelfMqttDynregCallback.class);
+        TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductSecret, mDevName, dynregCallback);
+        LOG.debug("Test Dynamic");
+        if (dynreg.doDynamicRegister()) {
+            LOG.debug("Dynamic Register OK!");
+        } else {
+            LOG.error("Dynamic Register failed!");
+        }
+        verify(dynregCallback, timeout(2000).times(1)).onGetDevicePSK(Mockito.endsWith("=="));
 
-        mDataTemplateSample.disconnect();
-        lock();
-        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
-        LOG.debug("after disconnect");
+        // 验证动态注册获取的psk是否可用
+        SelfMqttActionCallBack actionCallBack = mock(SelfMqttActionCallBack.class);
+        SelfDownStreamCallBack downStreamCallBack = mock(SelfDownStreamCallBack.class);
+        mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, actionCallBack,
+                mJsonFileName, downStreamCallBack);
+        mDataTemplateSample.connect();
+        verify(actionCallBack, timeout(2000).times(1))
+                .onConnectCompleted(Status.OK, false, Mockito.any(TXMqttRequest.class),Mockito.contains("connected to"));
+    }
+
+    public static void main(String[] args) {
+        dynReg();
     }
 }
