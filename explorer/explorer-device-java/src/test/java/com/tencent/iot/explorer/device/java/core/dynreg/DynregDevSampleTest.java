@@ -256,7 +256,7 @@ public class DynregDevSampleTest {
 
     private static final int COUNT = 1;
     private static final int TIMEOUT = 3000;
-    private static CountDownLatch latch;
+    private static CountDownLatch latch = new CountDownLatch(COUNT);
 
     private static void lock() {
         latch = new CountDownLatch(COUNT);

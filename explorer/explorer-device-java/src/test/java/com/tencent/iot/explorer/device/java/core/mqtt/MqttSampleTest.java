@@ -252,7 +252,7 @@ public class MqttSampleTest {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-            unlock();
+            if (!reconnect){unlock();}
         }
 
         @Override
@@ -420,7 +420,7 @@ public class MqttSampleTest {
 
     private static final int COUNT = 1;
     private static final int TIMEOUT = 3000;
-    private static CountDownLatch latch;
+    private static CountDownLatch latch = new CountDownLatch(COUNT);
 
     private static boolean subscribeTopicSuccess = false;
     private static boolean propertyReportSuccess = false;

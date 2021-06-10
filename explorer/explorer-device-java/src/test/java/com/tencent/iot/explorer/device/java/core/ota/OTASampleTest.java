@@ -26,6 +26,7 @@ import explorer.unit.test.BuildConfig;
 import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Device OTA sample
@@ -68,7 +69,7 @@ public class OTASampleTest {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-            checkFirmware();
+            unlock();
         }
 
         @Override
@@ -112,6 +113,7 @@ public class OTASampleTest {
             } else {
                 LOG.debug(logInfo);
                 if (Arrays.toString(asyncActionToken.getTopics()).contains("ota/update/")){   // 订阅ota相关的topic成功
+                    otaSubscribeTopicSuccess = true;
                     unlock();
                 }
             }
@@ -210,7 +212,8 @@ public class OTASampleTest {
 
     private static final int COUNT = 1;
     private static final int TIMEOUT = 3000;
-    private static CountDownLatch latch;
+    private static CountDownLatch latch = new CountDownLatch(COUNT);
+    private static boolean otaSubscribeTopicSuccess = false;
 
     private static void lock() {
         latch = new CountDownLatch(COUNT);
@@ -236,9 +239,15 @@ public class OTASampleTest {
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
         LOG.debug("after connect");
 
+        checkFirmware();
+        lock();
+        assertTrue(otaSubscribeTopicSuccess);
+        LOG.debug("checkFirmware subscribe ota");
+
         mDataTemplateSample.disconnect();
         lock();
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
         LOG.debug("after disconnect");
+
     }
 }
