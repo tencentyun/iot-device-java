@@ -86,7 +86,6 @@ public class OTASampleTest {
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
             LOG.info(logInfo);
-            unlock();
         }
 
         @Override
@@ -243,11 +242,6 @@ public class OTASampleTest {
         lock();
         assertTrue(otaSubscribeTopicSuccess);
         LOG.debug("checkFirmware subscribe ota");
-
-        mDataTemplateSample.disconnect();
-        lock();
-        assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
-        LOG.debug("after disconnect");
 
     }
 }
