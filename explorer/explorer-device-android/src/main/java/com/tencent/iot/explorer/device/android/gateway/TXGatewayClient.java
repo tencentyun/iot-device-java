@@ -48,8 +48,8 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return null if not existed otherwise the subdev
      */
     public TXGatewaySubdev findSubdev(String productId, String devName) {
-        Log.d(TAG, "input product id is " + productId + ", input device name is " + devName);
-        Log.d(TAG, "The hashed information is " + mSubdevs);
+        TXLog.d(TAG, "input product id is " + productId + ", input device name is " + devName);
+        TXLog.d(TAG, "The hashed information is " + mSubdevs);
         return mSubdevs.get(productId + devName);
     }
 
@@ -145,24 +145,24 @@ public class TXGatewayClient extends TXDataTemplateClient {
     private Status setSubdevStatus(String subProductID, String subDeviceName, String status) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
-            Log.e(TAG, "Cant find the subdev");
+            TXLog.e(TAG, "Cant find the subdev");
             return Status.SUBDEV_STAT_NOT_EXIST;
         } else  {
             if (status.equals("online")) {
                 if(subdev.getSubdevStatus() == Status.SUBDEV_STAT_ONLINE) {
-                    Log.e(TAG, "subdev has already online!");
+                    TXLog.e(TAG, "subdev has already online!");
                     return  Status.SUBDEV_STAT_ONLINE;
                 }
             } else if (status.equals("offline")) {
                 if (subdev.getSubdevStatus() == Status.SUBDEV_STAT_OFFLINE) {
-                    Log.e(TAG, "subdev has already offline!");
+                    TXLog.e(TAG, "subdev has already offline!");
                     return  Status.SUBDEV_STAT_OFFLINE;
                 }
             }
         }
 
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to " + status);
+        TXLog.d(TAG, "set " + subProductID + " & " + subDeviceName + " to " + status);
 
         // format the payload
         JSONObject obj = new JSONObject();
@@ -180,7 +180,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
         return super.publish(topic, message, null);
     }
 
@@ -328,7 +328,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
         if (!topic.startsWith(GW_OPERATION_RES_PREFIX)) {
             return false;
         }
-        Log.d(TAG, "got gate operation messga " + topic + message);
+        TXLog.d(TAG, "got gate operation messga " + topic + message);
 
         try {
             byte[] payload = message.getPayload();
@@ -369,7 +369,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        Log.d(TAG, "message received " + topic);
+        TXLog.d(TAG, "message received " + topic);
         if (!consumeGwOperationMsg(topic, message)) {
             String [] productInfo = topic.split("/");
             String productId = productInfo[3];
@@ -382,7 +382,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 if(null != subdev) {
                     subdev.onMessageArrived(topic, message);
                 } else {
-                    Log.e(TAG, "Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
+                    TXLog.e(TAG, "Sub dev should be added! Product id:" + productId + ", Device Name:" + devName);
                 }
             }
         }
@@ -422,7 +422,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 mConnOptions.setPassword(passWordStr.toCharArray());
             }
             catch (IllegalArgumentException e) {
-                Log.d(TAG, "Failed to set password");
+                TXLog.d(TAG, "Failed to set password");
             }
         }
 
@@ -438,7 +438,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
                 String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
                 int qos = TXMqttConstants.QOS1;
                 subscribe(gwTopic, qos, "Subscribe GATEWAY result topic");
-                Log.d(TAG, "Connected, then subscribe the gateway result topic");
+                TXLog.d(TAG, "Connected, then subscribe the gateway result topic");
             }
 
             @Override
