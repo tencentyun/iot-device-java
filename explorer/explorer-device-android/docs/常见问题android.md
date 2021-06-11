@@ -32,3 +32,17 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 #### 动态注册回调onFailedDynreg 错误信息为{"code":1010,"message":"Check signature failed"如何排查
 
 此问题很可能是填写了错误的ProductSecret，建议和云控制台上设备信息比对检查下调用动态注册时传入的三个参数，productId，deviceName，ProductSecret。
+
+#### 如何保存SDK的日志以及SDK日志的存放路径是什么？
+
+在使用我们的SDK功能API之前调用`TXLogImpl.init(context)`方法即可将SDK的日志保存至/sdcard/tencent/包名(context对应的包名)/iot_${日期}.log文件中。
+
+假设应用包名为：com.tencent.iot.explorer.demo，在调用SDK功能API前添加`TXLogImpl.init(this)`，那么SDK日志将会保存在/sdcard/tencent/com/tencent/iot/explorer/demo/iot_${日期}.log文件中
+```
+protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trtc_main);
+        TXLogImpl.init(this);
+        ... //业务代码
+}
+```
