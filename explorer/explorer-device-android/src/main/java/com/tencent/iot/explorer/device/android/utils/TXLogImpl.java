@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -32,7 +33,9 @@ public class TXLogImpl implements TXLog.LogImp {
 
     private static String logTime = "";
 
-    private static String logPath = "";
+    private static volatile String logPath = "";
+
+    private static int logDuration = 7;
 
     static String nowUsedFile = "";
 
@@ -56,7 +59,16 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志
      */
     public static void init(Context context) {
+        init(context, logDuration);
+    }
+
+    /**
+     * 初始化日志
+     * @param duration 保存近${duration}天的日志
+     */
+    public static void init(Context context, int duration) {
         sContext = context;
+        logDuration = duration;
         initRunnable.run();
     }
 
@@ -190,7 +202,8 @@ public class TXLogImpl implements TXLog.LogImp {
         if (!tmpeFile.exists()) {
             tmpeFile.mkdirs();
         }
-        nowUsedFile = logPath + getLogFileName(getDateStr(nowCurrentTimeMillis));
+
+        nowUsedFile = logPath + "/" + getLogFileName(getDateStr(nowCurrentTimeMillis));
         try {
             tmpeFile = new File(nowUsedFile);
             if (!tmpeFile.exists()) {
@@ -216,7 +229,7 @@ public class TXLogImpl implements TXLog.LogImp {
         long day = (long) 1 * 24 * 60 * 60 * 1000;
         File tmpeFile;
         //删除前一个月的
-        for (long i = (today - 7 * day); i > today - 37 * day; i = i - day) {
+        for (long i = (today - logDuration * day); i > today - (logDuration + 30) * day; i = i - day) {
             String date = getDateStr(i);
             nowUsedFile = logPath + getLogFileName(date);
             try {
