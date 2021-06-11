@@ -360,7 +360,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
         IMqttActionListener mActionListener = new IMqttActionListener() {
             @Override
             public void onSuccess(IMqttToken token) {
-                LOG.info("onSuccess!");
+                LOG.info("onSuccess! hashcode: " + System.identityHashCode(this));
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
                 mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
                         "connected to " + mServerURI);
