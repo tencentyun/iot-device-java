@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -34,6 +35,8 @@ public class TXLogImpl implements TXLog.LogImp {
 
     private static String logPath = "";
 
+    private static int logDuration = 7;
+
     static String nowUsedFile = "";
 
     static final ReentrantLock lock = new ReentrantLock();
@@ -56,7 +59,18 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志
      */
     public static void init(Context context) {
+        init(context, logDuration, logPath);
+    }
+
+    /**
+     * 初始化日志
+     * @param duration 保存近${duration}天的日志
+     * @param path     日志保存路径
+     */
+    public static void init(Context context, int duration, String path) {
         sContext = context;
+        logPath = path;
+        logDuration = duration;
         initRunnable.run();
     }
 
@@ -184,8 +198,10 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志文件
      */
     static synchronized void initLogFile(long nowCurrentTimeMillis) throws IOException {
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
-                + "/";
+        if (TextUtils.isEmpty(logPath)) {
+            logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
+                    + "/";
+        }
         File tmpeFile = new File(logPath);
         if (!tmpeFile.exists()) {
             tmpeFile.mkdirs();
@@ -216,7 +232,7 @@ public class TXLogImpl implements TXLog.LogImp {
         long day = (long) 1 * 24 * 60 * 60 * 1000;
         File tmpeFile;
         //删除前一个月的
-        for (long i = (today - 7 * day); i > today - 37 * day; i = i - day) {
+        for (long i = (today - logDuration * day); i > today - (logDuration + 30) * day; i = i - day) {
             String date = getDateStr(i);
             nowUsedFile = logPath + getLogFileName(date);
             try {
