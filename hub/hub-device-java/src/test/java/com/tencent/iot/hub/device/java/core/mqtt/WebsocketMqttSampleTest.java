@@ -36,7 +36,7 @@ public class WebsocketMqttSampleTest {
 
     private static void websocketdisconnect() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
             TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).disconnect();
         } catch (MqttException | InterruptedException e) {
             e.printStackTrace();
@@ -89,10 +89,12 @@ public class WebsocketMqttSampleTest {
                 @Override
                 public void onDisconnected() {
                     LOG.debug("onDisconnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
+                    unlock();
                 }
             });
             TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).connect();
-        } catch (MqttException e) {
+            Thread.sleep(2000);
+        } catch (MqttException | InterruptedException e) {
             e.printStackTrace();
             LOG.error("MqttException " + e.toString());
         }
@@ -129,6 +131,7 @@ public class WebsocketMqttSampleTest {
         LOG.debug("after websocketConnect");
 
         websocketdisconnect();
+        lock();
         assertSame(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState(), ConnectionState.DISCONNECTED);
         LOG.debug("after websocketdisconnect");
     }
