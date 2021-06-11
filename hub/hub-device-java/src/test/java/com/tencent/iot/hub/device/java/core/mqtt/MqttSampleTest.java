@@ -30,11 +30,14 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import hub.unit.test.BuildConfig;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Device Mqtt connect sample
@@ -67,174 +70,96 @@ public class MqttSampleTest {
 	private static AtomicInteger requestID = new AtomicInteger(0);
 
 	private static void connect() {
-		try {
-			Thread.sleep(2000);
-			String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
+		String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
 
-			// init connection
-			options = new MqttConnectOptions();
-			options.setConnectionTimeout(8);
-			options.setKeepAliveInterval(60);
-			options.setAutomaticReconnect(true);
-			//客户端证书文件名  mDevPSK是设备秘钥
+		// init connection
+		options = new MqttConnectOptions();
+		options.setConnectionTimeout(8);
+		options.setKeepAliveInterval(60);
+		options.setAutomaticReconnect(true);
+		//客户端证书文件名  mDevPSK是设备秘钥
 
-			if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
-				LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
-				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
-			} else if (mDevPSK != null && mDevPSK.length() != 0){
-				LOG.info("Using PSK");
+		if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
+			LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
+		} else if (mDevPSK != null && mDevPSK.length() != 0){
+			LOG.info("Using PSK");
 //				options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
-			} else {
-				LOG.info("Using cert file");
-				options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
-			}
-			mqttconnection = new TXMqttConnection(mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,true, new SelfMqttLogCallBack(), new callBack());
-			mqttconnection.connect(options, null);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} else {
+			LOG.info("Using cert file");
+			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
+		mqttconnection = new TXMqttConnection(mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,true, new SelfMqttLogCallBack(), new callBack());
+		mqttconnection.connect(options, null);
 	}
 
 	private static void disconnect() {
-		try {
-			Thread.sleep(2000);
-			mqttconnection.disConnect(null);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mqttconnection.disConnect(null);
 	}
 
 	private static void subscribeTopic() {
-		try {
-			Thread.sleep(2000);
-			mqttconnection.subscribe(mTestTopic, 1, null);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mqttconnection.subscribe(mTestTopic, 1, null);
 	}
 
 	private static void unSubscribeTopic() {
-		try {
-			Thread.sleep(2000);
-			mqttconnection.unSubscribe(mTestTopic, null);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mqttconnection.unSubscribe(mTestTopic, null);
 	}
 
 	private static void publishTopic() {
+		// 要发布的数据
+		Map<String, String> data = new HashMap<String, String>();
+		// 车辆类型
+		data.put("car_type", "suv");
+		// 车辆油耗
+		data.put("oil_consumption", "6.6");
+		// 车辆最高速度
+		data.put("maximum_speed", "205");
+		// 温度信息
+		data.put("temperature", "25");
+		// MQTT消息
+		MqttMessage message = new MqttMessage();
+
+		JSONObject jsonObject = new JSONObject();
 		try {
-			Thread.sleep(2000);
-			// 要发布的数据
-			Map<String, String> data = new HashMap<String, String>();
-			// 车辆类型
-			data.put("car_type", "suv");
-			// 车辆油耗
-			data.put("oil_consumption", "6.6");
-			// 车辆最高速度
-			data.put("maximum_speed", "205");
-			// 温度信息
-			data.put("temperature", "25");
-			// MQTT消息
-			MqttMessage message = new MqttMessage();
-
-			JSONObject jsonObject = new JSONObject();
-			try {
-				for (Map.Entry<String, String> entrys : data.entrySet()) {
-					jsonObject.put(entrys.getKey(), entrys.getValue());
-				}
-			} catch (JSONException e) {
-				LOG.error(e.getMessage()+"pack json data failed!");
+			for (Map.Entry<String, String> entrys : data.entrySet()) {
+				jsonObject.put(entrys.getKey(), entrys.getValue());
 			}
-			message.setQos(TXMqttConstants.QOS1);
-			message.setPayload(jsonObject.toString().getBytes());
-
-			// 用户上下文（请求实例）
-
-			LOG.debug("pub topic " + mTestTopic + message);
-			// 发布主题
-			mqttconnection.publish(mTestTopic, message, null);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (JSONException e) {
+			LOG.error(e.getMessage()+"pack json data failed!");
 		}
+		message.setQos(TXMqttConstants.QOS1);
+		message.setPayload(jsonObject.toString().getBytes());
+
+		// 用户上下文（请求实例）
+
+		LOG.debug("pub topic " + mTestTopic + message);
+		// 发布主题
+		mqttconnection.publish(mTestTopic, message, null);
 	}
 
 	private static void subscribeRRPCTopic() {
-		try {
-			Thread.sleep(2000);
-			// 用户上下文（请求实例）
-			MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
-			// 订阅主题
-			mqttconnection.subscribeRRPCTopic(TXMqttConstants.QOS0, mqttRequest);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// 用户上下文（请求实例）
+		MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
+		// 订阅主题
+		mqttconnection.subscribeRRPCTopic(TXMqttConstants.QOS0, mqttRequest);
 	}
 
 	private static void subscribeBroadCastTopic() {
-		try {
-			Thread.sleep(2000);
-			// 用户上下文（请求实例）
-			MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
-			// 订阅广播主题 Topic
-			mqttconnection.subscribeBroadcastTopic(TXMqttConstants.QOS1, mqttRequest);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// 用户上下文（请求实例）
+		MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
+		// 订阅广播主题 Topic
+		mqttconnection.subscribeBroadcastTopic(TXMqttConstants.QOS1, mqttRequest);
 	}
 
 	private static void deviceLog() {
-		try {
-			Thread.sleep(2000);
-			mqttconnection.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
-			mqttconnection.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
-			mqttconnection.mLog(TXMqttLogConstants.LEVEL_INFO,TAG,"Info level log for test!!!");
-			mqttconnection.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		mqttconnection.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
+		mqttconnection.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
+		mqttconnection.mLog(TXMqttLogConstants.LEVEL_INFO,TAG,"Info level log for test!!!");
+		mqttconnection.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
 	}
 
 	private static void uploadLog() {
-		try {
-			Thread.sleep(2000);
-			mqttconnection.uploadLog();//上传设备日志
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public static void main(String[] args) {
-		LogManager.resetConfiguration();
-		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
-		connect();
-
-//		deviceLog();
-//
-//		uploadLog();
-
-		subscribeBroadCastTopic();
-
-		subscribeRRPCTopic();
-
-        subscribeTopic();
-
-        publishTopic();
-
-        unSubscribeTopic();
-
-//        disconnect();
+		mqttconnection.uploadLog();//上传设备日志
 	}
 
 	public static class callBack extends TXMqttActionCallBack {
@@ -248,39 +173,6 @@ public class MqttSampleTest {
 			LOG.info(logInfo);
 			unlock();
 		}
-
-		private TXOTACallBack oTACallBack = new TXOTACallBack() {
-
-			@Override
-			public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
-				LOG.error("onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
-			}
-
-			@Override
-			public boolean onLastestFirmwareReady(String url, String md5, String version) {
-				LOG.error("onLastestFirmwareReady url=" + url + " version " + version);
-				return false; // false 自动触发下载升级文件  true 需要手动触发下载升级文件
-			}
-
-			@Override
-			public void onDownloadProgress(int percent, String version) {
-				LOG.error("onDownloadProgress:" + percent);
-			}
-
-			@Override
-			public void onDownloadCompleted(String outputFile, String version) {
-				LOG.error("onDownloadCompleted:" + outputFile + ", version:" + version);
-
-				mqttconnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
-			}
-
-			@Override
-			public void onDownloadFailure(int errCode, String version) {
-				LOG.error("onDownloadFailure:" + errCode);
-
-				mqttconnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
-			}
-		};
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
@@ -306,6 +198,7 @@ public class MqttSampleTest {
 					status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
 			LOG.debug(logInfo);
 			if (status == Status.OK && Arrays.toString(token.getTopics()).contains(mTestTopic)) {
+				publishTopicSuccess = true;
 				unlock();
 			}
 		}
@@ -320,7 +213,14 @@ public class MqttSampleTest {
 				LOG.error(logInfo);
 			} else {
 				LOG.debug(logInfo);
-				if (Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic) || Arrays.toString(asyncActionToken.getTopics()).contains("rrpc/rxd") || Arrays.toString(asyncActionToken.getTopics()).contains("broadcast/rxd")) {
+				if (Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)){ // 订阅mTestTopic成功
+					subscribeTopicSuccess = true;
+					unlock();
+				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("rrpc/rxd")) { // 订阅rrpc Topic成功
+					subscribeRRPCTopicSuccess = true;
+					unlock();
+				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("broadcast/rxd")) { // broadcast Topic成功
+					subscribeBroadCastTopicSuccess = true;
 					unlock();
 				}
 			}
@@ -334,6 +234,7 @@ public class MqttSampleTest {
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			LOG.debug(logInfo);
 			if (status == Status.OK && Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
+				unSubscribeTopicSuccess = true;
 				unlock();
 			}
 		}
@@ -458,66 +359,69 @@ public class MqttSampleTest {
 
 	/** ============================================================================== Unit Test ============================================================================== **/
 
-	private static Object mLock = new Object(); // 同步锁
-	private static int mCount = 0; // 加解锁条件
-	private static boolean mUnitTest = false;
+	private static final int COUNT = 1;
+	private static final int TIMEOUT = 3000;
+	private static CountDownLatch latch = new CountDownLatch(COUNT);
+
+	private static boolean subscribeTopicSuccess = false;
+	private static boolean publishTopicSuccess = false;
+	private static boolean unSubscribeTopicSuccess = false;
+	private static boolean subscribeRRPCTopicSuccess = false;
+	private static boolean subscribeBroadCastTopicSuccess = false;
 
 	private static void lock() {
-		synchronized (mLock) {
-			mCount = 1;  // 设置锁条件
-			while (mCount > 0) {
-				try {
-					mLock.wait(); // 等待唤醒
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+		latch = new CountDownLatch(COUNT);
+		try {
+			latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 	}
 
 	private static void unlock() {
-		if (mUnitTest) {
-			synchronized (mLock) {
-				mCount = 0;
-				mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-			}
-		}
+		latch.countDown();// 回调执行完毕，唤醒主线程
 	}
 
 	@Test
 	public void testMqttConnect() {
-		mUnitTest = true;
+
 		LogManager.resetConfiguration();
 		LOG.isDebugEnabled();
 		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
 
 		connect();
 		lock();
+		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
 		LOG.debug("after connect");
 
 		subscribeTopic();
 		lock();
+		assertTrue(subscribeTopicSuccess);
 		LOG.debug("after subscribe");
 
 		publishTopic();
 		lock();
+		assertTrue(publishTopicSuccess);
 		LOG.debug("after publish");
 
 		unSubscribeTopic();
 		lock();
+		assertTrue(unSubscribeTopicSuccess);
 		LOG.debug("after unSubscribe");
 
 		subscribeRRPCTopic();
 		lock();
+		assertTrue(subscribeRRPCTopicSuccess);
 		LOG.debug("after subscribeRRPCTopic");
 
 		subscribeBroadCastTopic();
 		lock();
+		assertTrue(subscribeBroadCastTopicSuccess);
 		LOG.debug("after subscribeBroadCastTopic");
 
 		disconnect();
 		lock();
-		LOG.debug("after disconnect");
 		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
+		LOG.debug("after disconnect");
 	}
 }

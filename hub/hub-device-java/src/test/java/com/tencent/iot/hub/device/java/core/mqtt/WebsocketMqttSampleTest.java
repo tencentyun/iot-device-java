@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import hub.unit.test.BuildConfig;
 
@@ -31,18 +33,6 @@ public class WebsocketMqttSampleTest {
     private static String mPrivKeyFilePath = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static String mDevCert = "DEVICE_CERT_CONTENT_STRING";           // Cert String
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_CONTENT_STRING";           // Priv String
-
-    public static void main(String[] args) {
-        LogManager.resetConfiguration();
-        LOG.isDebugEnabled();
-        PropertyConfigurator.configure(WebsocketMqttSampleTest.class.getResource("/log4j.properties"));
-
-        websocketConnect();
-
-//        websocketdisconnect();
-    }
-
-
 
     private static void websocketdisconnect() {
         try {
@@ -110,45 +100,36 @@ public class WebsocketMqttSampleTest {
 
     /** ============================================================================== Unit Test ============================================================================== **/
 
-    private static Object mLock = new Object(); // 同步锁
-    private static int mCount = 0; // 加解锁条件
-    private static boolean mUnitTest = false;
+    private static final int COUNT = 1;
+    private static final int TIMEOUT = 3000;
+    private static CountDownLatch latch = new CountDownLatch(COUNT);
 
     private static void lock() {
-        synchronized (mLock) {
-            mCount = 1;  // 设置锁条件
-            while (mCount > 0) {
-                try {
-                    mLock.wait(); // 等待唤醒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        latch = new CountDownLatch(COUNT);
+        try {
+            latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private static void unlock() {
-        if (mUnitTest) {
-            synchronized (mLock) {
-                mCount = 0;
-                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-            }
-        }
+        latch.countDown();// 回调执行完毕，唤醒主线程
     }
 
     @Test
     public void testWebsocketMqttConnect() {
-        mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(WebsocketMqttSampleTest.class.getResource("/log4j.properties"));
 
         websocketConnect();
         lock();
+        assertSame(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState(), ConnectionState.CONNECTING);
         LOG.debug("after websocketConnect");
 
         websocketdisconnect();
-        LOG.debug("after websocketdisconnect");
         assertSame(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState(), ConnectionState.DISCONNECTED);
+        LOG.debug("after websocketdisconnect");
     }
 }

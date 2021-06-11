@@ -29,10 +29,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import hub.unit.test.BuildConfig;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Device OTA sample
@@ -152,7 +155,7 @@ public class OTASampleTest {
 
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]", status.name(), reconnect, userContextInfo, msg);
             LOG.info(logInfo);
-            checkFirmware();
+            unlock();
         }
 
         private TXOTACallBack oTACallBack = new TXOTACallBack() {
@@ -221,6 +224,10 @@ public class OTASampleTest {
                 LOG.error(logInfo);
             } else {
                 LOG.debug(logInfo);
+                if (Arrays.toString(asyncActionToken.getTopics()).contains("ota/update/")){   // 订阅ota相关的topic成功
+                    otaSubscribeTopicSuccess = true;
+                    unlock();
+                }
             }
         }
 
@@ -353,35 +360,26 @@ public class OTASampleTest {
 
     /** ============================================================================== Unit Test ============================================================================== **/
 
-    private static Object mLock = new Object(); // 同步锁
-    private static int mCount = 0; // 加解锁条件
-    private static boolean mUnitTest = false;
+    private static final int COUNT = 1;
+    private static final int TIMEOUT = 3000;
+    private static CountDownLatch latch = new CountDownLatch(COUNT);
+    private static boolean otaSubscribeTopicSuccess = false;
 
     private static void lock() {
-        synchronized (mLock) {
-            mCount = 1;  // 设置锁条件
-            while (mCount > 0) {
-                try {
-                    mLock.wait(); // 等待唤醒
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        latch = new CountDownLatch(COUNT);
+        try {
+            latch.await(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     private static void unlock() {
-        if (mUnitTest) {
-            synchronized (mLock) {
-                mCount = 0;
-                mLock.notifyAll(); // 回调执行完毕，唤醒主线程
-            }
-        }
+        latch.countDown();// 回调执行完毕，唤醒主线程
     }
 
     @Test
     public void testOTA() {
-        mUnitTest = true;
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
         PropertyConfigurator.configure(OTASampleTest.class.getResource("/log4j.properties"));
@@ -390,5 +388,10 @@ public class OTASampleTest {
         lock();
         LOG.debug("after connect");
         assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
+
+        checkFirmware();
+        lock();
+        assertTrue(otaSubscribeTopicSuccess);
+        LOG.debug("checkFirmware subscribe ota");
     }
 }
