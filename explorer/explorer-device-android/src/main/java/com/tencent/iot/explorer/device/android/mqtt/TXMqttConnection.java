@@ -206,7 +206,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
                 mConnOptions.setPassword(passWordStr.toCharArray());
             }
             catch (IllegalArgumentException e) {
-                Log.d(TAG, "Failed to set password");
+                TXLog.d(TAG, "Failed to set password");
             }
         }
 

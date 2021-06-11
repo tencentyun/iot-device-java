@@ -129,7 +129,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
      * @return null if not existed otherwise the subdev
      */
     private TXGatewaySubdev findSubdev(String productId, String devName) {
-        Log.d(TAG, "The hashed information is " + mSubdevs);
+        TXLog.d(TAG, "The hashed information is " + mSubdevs);
         return mSubdevs.get(productId + devName);
     }
 
@@ -197,15 +197,15 @@ public class TXGatewayConnection  extends TXMqttConnection {
      * @return the result of operation
      */
     public Status gatewaySubdevOffline(String subProductID, String subDeviceName) {
-        Log.d(TAG, "Try to find " + subProductID + " & " + subDeviceName);
+        TXLog.d(TAG, "Try to find " + subProductID + " & " + subDeviceName);
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
-            Log.d(TAG, "Cant find the subdev");
+            TXLog.d(TAG, "Cant find the subdev");
             subdev = new TXGatewaySubdev(subProductID, subDeviceName);
         }
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
 
-        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to offline");
+        TXLog.d(TAG, "set " + subProductID + " & " + subDeviceName + " to offline");
 
         // format the payload
         JSONObject obj = new JSONObject();
@@ -222,7 +222,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
     }
@@ -282,7 +282,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
     }
@@ -310,7 +310,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
     }
@@ -328,7 +328,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
     }
@@ -358,11 +358,11 @@ public class TXGatewayConnection  extends TXMqttConnection {
     public Status gatewaySubdevOnline(String subProductID, String subDeviceName) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if (subdev == null) {
-            Log.d(TAG, "Cant find the subdev");
+            TXLog.d(TAG, "Cant find the subdev");
             subdev = new TXGatewaySubdev(subProductID, subDeviceName);
         }
         String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
-        Log.d(TAG, "set " + subProductID + " & " + subDeviceName + " to Online");
+        TXLog.d(TAG, "set " + subProductID + " & " + subDeviceName + " to Online");
 
         // format the payload
         JSONObject obj = new JSONObject();
@@ -381,7 +381,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         MqttMessage message = new MqttMessage();
         message.setQos(0);
         message.setPayload(obj.toString().getBytes());
-        Log.d(TAG, "publish message " + message);
+        TXLog.d(TAG, "publish message " + message);
 
         return super.publish(topic, message, null);
     }
@@ -390,7 +390,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
         if (!topic.startsWith(GW_OPERATION_RES_PREFIX)) {
             return false;
         }
-        Log.d(TAG, "got gate operation messga " + topic + message);
+        TXLog.d(TAG, "got gate operation messga " + topic + message);
         String productInfo = topic.substring(GW_OPERATION_RES_PREFIX.length());
         int splitIdx = productInfo.indexOf('/');
         String productId = productInfo.substring(0, splitIdx);
@@ -432,7 +432,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        Log.d(TAG, "message received " + topic);
+        TXLog.d(TAG, "message received " + topic);
         if (!consumeGwOperationMsg(topic, message)) {
             super.messageArrived(topic, message);
         }
@@ -473,7 +473,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
                 mConnOptions.setPassword(passWordStr.toCharArray());
             }
             catch (IllegalArgumentException e) {
-                Log.d(TAG, "Failed to set password");
+                TXLog.d(TAG, "Failed to set password");
             }
         }
 
@@ -490,7 +490,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
                 int qos = TXMqttConstants.QOS1;
 
                 subscribe(gwTopic, qos, "Subscribe GATEWAY result topic");
-                Log.d(TAG, "Connected, then subscribe the gateway result topic");
+                TXLog.d(TAG, "Connected, then subscribe the gateway result topic");
 
                 if (mMqttLogFlag) {
                     initMqttLog(TAG);
