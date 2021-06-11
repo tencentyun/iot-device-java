@@ -204,7 +204,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      */
     public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim, int timestamp){
         if (mDataTemplate == null) {
-            Log.d(TAG, "mDataTemplate is null!");
+            TXLog.d(TAG, "mDataTemplate is null!");
             return Status.ERROR;
         }
         String eventId = "_sys_retrieval_result";
@@ -217,7 +217,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
             } else {
                 String [] splitStr = feature_id.split("\\.");
                 if (splitStr.length <= 0) {
-                    Log.d(TAG,"wrong feature_id:" + feature_id);
+                    TXLog.d(TAG,"wrong feature_id:" + feature_id);
                     return Status.ERROR;
                 }
                 params.put("feature_id",splitStr[0]);//特征id
@@ -231,7 +231,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
                 params.put("timestamp", timestamp);//图像时间戳
             }
         } catch (JSONException e) {
-            Log.d(TAG, "Construct params failed!");
+            TXLog.d(TAG, "Construct params failed!");
             return Status.ERROR;
         }
 
@@ -407,7 +407,7 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
                 }
             }
             isAuthoried = authResult.isSucceeded();
-            Log.d(TAG, "authWithLicence code = " + code + msg);
+            TXLog.d(TAG, "authWithLicence code = " + code + msg);
         } else {
             isAuthoried = false;
             if (mAuthCallBack != null) {
