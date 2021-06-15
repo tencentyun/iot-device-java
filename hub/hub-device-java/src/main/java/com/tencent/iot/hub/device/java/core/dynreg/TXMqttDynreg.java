@@ -1,6 +1,7 @@
 package com.tencent.iot.hub.device.java.core.dynreg;
 
 import com.tencent.iot.hub.device.java.core.util.Base64;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,8 +16,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.BadPaddingException;
@@ -34,7 +37,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class TXMqttDynreg {
     private static final String TAG = "TXMQTT";
     private static final Logger LOG = LoggerFactory.getLogger(TXMqttDynreg.class);
-    private static final String HMAC_ALGO = "HmacSHA1";
+    private static final String HMAC_ALGO = "hmacsha256";
     private static final String DECRYPT_MODE = "AES/CBC/NoPadding";
 
     private String mProductKey;
@@ -45,7 +48,7 @@ public class TXMqttDynreg {
     private TXMqttDynregCallback mCallback;
 
     // 默认的动态注册URL，文档链接：https://cloud.tencent.com/document/product/634/47225
-    private final String mDefaultDynRegUrl ="http://ap-guangzhou.gateway.tencentdevices.com/register/dev";
+    private final String mDefaultDynRegUrl ="https://ap-guangzhou.gateway.tencentdevices.com/device/register";
 
 
     /**
@@ -104,18 +107,28 @@ public class TXMqttDynreg {
     private class HttpPostThread extends Thread {
         private String postData;
         private String url;
+        private String timestamp;
+        private String nonce;
+        private String signature;
 
         /**
          * Instantiates a new Http post thread.
          *
-         * @param upStr the up str
-         * @param upUrl the up url
+         * @param upStr 请求body
+         * @param upUrl 请求url
+         * @param timestamp 时间戳
+         * @param nonce 随机数
+         * @param signature 签名
          */
-        HttpPostThread(String upStr, String upUrl) {
+        HttpPostThread(String upStr, String upUrl, String timestamp, String nonce, String signature) {
             this.postData = upStr;
             this.url = upUrl;
+            this.timestamp = timestamp;
+            this.nonce = nonce;
+            this.signature = signature;
         }
 
+        @Override
         public void run() {
             StringBuffer serverRsp = new StringBuffer();
             try {
@@ -124,6 +137,10 @@ public class TXMqttDynreg {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 conn.setRequestProperty("Accept","application/json");
+                conn.setRequestProperty("X-TC-Algorithm", "hmacsha256");
+                conn.setRequestProperty("X-TC-Timestamp", timestamp);
+                conn.setRequestProperty("X-TC-Nonce", nonce);
+                conn.setRequestProperty("X-TC-Signature", signature);
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 conn.setConnectTimeout(2000);
@@ -160,8 +177,9 @@ public class TXMqttDynreg {
             LOG.info("Get response string " + serverRsp);
             try {
                 JSONObject rspObj = new JSONObject(serverRsp.toString());
-                plStr = rspObj.getString("payload");
-                actLen = rspObj.getInt("len");
+                rspObj = rspObj.getJSONObject("Response");
+                plStr = rspObj.getString("Payload");
+                actLen = rspObj.getInt("Len");
             } catch (JSONException e) {
                 LOG.error(e.toString());
                 e.printStackTrace();
@@ -225,36 +243,49 @@ public class TXMqttDynreg {
         int timestamp = (int)(System.currentTimeMillis() / 1000);
         SecretKeySpec signKey = new SecretKeySpec(mProductKey.getBytes(), HMAC_ALGO);
 
-        String signSourceStr = String.format("deviceName=%s&nonce=%d&productId=%s&timestamp=%d", mDeviceName, randNum, mProductId, timestamp);
+        final JSONObject obj = new JSONObject();
+        try {
+            obj.put("ProductId", mProductId);
+            obj.put("DeviceName", mDeviceName);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+        String originRequest = obj.toString();
+        String hashedRequest = "";
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            @SuppressWarnings("NewApi")
+            byte[] encodedhash = digest.digest(originRequest.getBytes(StandardCharsets.UTF_8));
+            hashedRequest = HmacSha256.bytesToHexString(encodedhash);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        @SuppressWarnings("DefaultLocale")
+        String signSourceStr = String.format("%s\n%s\n%s\n%s\n%s\n%d\n%d\n%s",
+                "POST",
+                "ap-guangzhou.gateway.tencentdevices.com",
+                "/device/register",
+                "",
+                "hmacsha256",
+                timestamp,
+                randNum,
+                hashedRequest
+                );
 
         try {
             mac.init(signKey);
             byte[] rawHmac = mac.doFinal(signSourceStr.getBytes());
-            StringBuffer sBuffer = new StringBuffer();
-            for (int i = 0; i < rawHmac.length; i++) {
-                sBuffer.append(String.format("%02x", rawHmac[i] & 0xff));
-            }
-
-            hmacSign = Base64.encodeToString(sBuffer.toString().getBytes(), Base64.NO_WRAP);
+            hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
         } catch (InvalidKeyException e) {
             e.printStackTrace();
             return false;
         }
 
-        final JSONObject obj = new JSONObject();
-        try {
-            obj.put("deviceName", mDeviceName);
-            obj.put("nonce", randNum);
-            obj.put("productId", mProductId);
-            obj.put("timestamp", timestamp);
-            obj.put("signature", hmacSign);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-
         LOG.info("Register request " + obj);
-        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl);
+        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl,
+                String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
         httpThread.start();
 
         return true;
