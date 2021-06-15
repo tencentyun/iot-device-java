@@ -1,5 +1,6 @@
 package com.tencent.iot.explorer.device.android.utils;
 
+import java.util.HashSet;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import android.content.Context;
@@ -59,16 +60,28 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志
      */
     public static void init(Context context) {
-        init(context, logDuration);
+        init(context, logDuration, logPath);
     }
 
     /**
      * 初始化日志
+     * @param context 上下文
      * @param duration 保存近${duration}天的日志
      */
     public static void init(Context context, int duration) {
+        init(context, duration, logPath);
+    }
+
+    /**
+     * 初始化日志
+     * @param context 上下文
+     * @param duration 保存近${duration}天的日志
+     * @param _logPath 保存路径
+     */
+    public static void init(Context context, int duration, String _logPath) {
         sContext = context;
         logDuration = duration;
+        logPath = _logPath;
         initRunnable.run();
     }
 
@@ -133,6 +146,7 @@ public class TXLogImpl implements TXLog.LogImp {
      * 写日志线程
      */
     static Thread takeThread = new Thread() {
+        @Override
         public void run() {
             while (true) {
                 synchronized (this) {
@@ -196,13 +210,10 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志文件
      */
     static synchronized void initLogFile(long nowCurrentTimeMillis) throws IOException {
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
-                + "/";
         File tmpeFile = new File(logPath);
         if (!tmpeFile.exists()) {
             tmpeFile.mkdirs();
         }
-
         nowUsedFile = logPath + getLogFileName(getDateStr(nowCurrentTimeMillis));
         try {
             tmpeFile = new File(nowUsedFile);
@@ -225,20 +236,31 @@ public class TXLogImpl implements TXLog.LogImp {
     }
 
     static void deleteExpiredLogs(long today) {
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/") + "/";
+        if (TextUtils.isEmpty(logPath)) {
+            logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
+                    + "/";
+        } else {
+            logPath = Environment.getExternalStorageDirectory().getPath() + "/" + logPath;
+        }
         long day = (long) 1 * 24 * 60 * 60 * 1000;
-        File tmpeFile;
-        //删除前一个月的
-        for (long i = (today - logDuration * day); i > today - (logDuration + 30) * day; i = i - day) {
+        HashSet<String> logNames = new HashSet<>(); // 保存需要保留的日志名字
+        for (long i = today; i > today - logDuration* day; i = i - day) {
             String date = getDateStr(i);
-            nowUsedFile = logPath + getLogFileName(date);
-            try {
-                tmpeFile = new File(nowUsedFile);
-                if (tmpeFile.exists()) {
-                    tmpeFile.delete();
+            logNames.add(logPath + getLogFileName(date));
+        }
+
+        // 删除有效期外的所有日志文件
+        File path = new File(logPath);
+        File[] files = path.listFiles();
+        if (files != null) {
+            for (File log : files) {
+                if (!logNames.contains(log.getAbsolutePath())) {
+                    try {
+                        log.delete();
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
                 }
-            } catch (Throwable e) {
-                e.printStackTrace();
             }
         }
     }
