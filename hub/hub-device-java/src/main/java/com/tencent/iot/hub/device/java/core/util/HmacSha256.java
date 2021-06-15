@@ -41,7 +41,7 @@ public class HmacSha256 {
      * @param bytes 要转换的字节数组
      * @return 转换后的结果
      */
-    private static String bytesToHexString(byte[] bytes) {
+    public static String bytesToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {
             String hex = Integer.toHexString(0xFF & bytes[i]);
