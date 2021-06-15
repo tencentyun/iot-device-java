@@ -1,5 +1,6 @@
 package com.tencent.iot.explorer.device.android.utils;
 
+import java.nio.file.Paths;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import android.content.Context;
@@ -35,6 +36,8 @@ public class TXLogImpl implements TXLog.LogImp {
 
     private static String logPath = "";
 
+    private static boolean isLogPathInit = false;
+
     private static int logDuration = 7;
 
     static String nowUsedFile = "";
@@ -59,16 +62,17 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志
      */
     public static void init(Context context) {
-        init(context, logDuration);
+        init(context, logDuration, logPath);
     }
 
     /**
      * 初始化日志
      * @param duration 保存近${duration}天的日志
      */
-    public static void init(Context context, int duration) {
+    public static void init(Context context, int duration, String _logPath) {
         sContext = context;
         logDuration = duration;
+        logPath = _logPath;
         initRunnable.run();
     }
 
@@ -133,6 +137,7 @@ public class TXLogImpl implements TXLog.LogImp {
      * 写日志线程
      */
     static Thread takeThread = new Thread() {
+        @Override
         public void run() {
             while (true) {
                 synchronized (this) {
@@ -196,8 +201,15 @@ public class TXLogImpl implements TXLog.LogImp {
      * 初始化日志文件
      */
     static synchronized void initLogFile(long nowCurrentTimeMillis) throws IOException {
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
-                + "/";
+        if (!isLogPathInit) {
+            if (TextUtils.isEmpty(logPath)) {
+                logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
+                        + "/";
+            } else {
+                logPath = Environment.getExternalStorageDirectory().getPath() + "/" + logPath;
+            }
+            isLogPathInit = true;
+        }
         File tmpeFile = new File(logPath);
         if (!tmpeFile.exists()) {
             tmpeFile.mkdirs();
@@ -225,7 +237,15 @@ public class TXLogImpl implements TXLog.LogImp {
     }
 
     static void deleteExpiredLogs(long today) {
-        logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/") + "/";
+        if (!isLogPathInit) {
+            if (TextUtils.isEmpty(logPath)) {
+                logPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/" + packageName.replace(".", "/")
+                        + "/";
+            } else {
+                logPath = Environment.getExternalStorageDirectory().getPath() + "/" + logPath;
+            }
+            isLogPathInit = true;
+        }
         long day = (long) 1 * 24 * 60 * 60 * 1000;
         File tmpeFile;
         //删除前一个月的
