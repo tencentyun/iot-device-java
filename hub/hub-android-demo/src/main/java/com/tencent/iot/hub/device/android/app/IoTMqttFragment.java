@@ -604,40 +604,42 @@ public class IoTMqttFragment extends Fragment {
                 secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
                 return secertKey;
             } else {
-                BufferedReader cert;
-
-                if (mDevCert != null && mDevCert.length() != 0) { //动态注册,从DevCert中读取
-                     cert = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mDevCert.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
-
+                StringBuilder builder = new StringBuilder();
+                if (mDevPriv != null && mDevPriv.length() != 0) { //动态注册, 从DevPriv中读取
+                    builder.append(mDevPriv);
                 } else { //证书认证，从证书文件中读取
                     AssetManager assetManager = mParent.getAssets();
                     if (assetManager == null) {
                         return null;
                     }
+                    BufferedReader reader = null;
                     try {
-                        cert=new BufferedReader(new InputStreamReader(assetManager.open(mDevCertName)));
+                        reader = new BufferedReader(new InputStreamReader(assetManager.open(mDevKeyName)));
+                        String str;
+                        while((str = reader.readLine()) != null){
+                            builder.append(str);
+                        }
                     } catch (IOException e) {
-                        mParent.printLogInfo(TAG, "getSecertKey failed, cannot open CRT Files.",mLogInfoText);
+                        mParent.printLogInfo(TAG, "Get Private Key failed, cannot open Private Key Files.",mLogInfoText);
                         return null;
+                    } finally {
+                        if (reader != null) {
+                            try {
+                                reader.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
-                //获取密钥
-                try {
-                    if (cert.readLine().contains("-----BEGIN")) {
-                        secertKey = cert.readLine();
-                        secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
-                    } else {
-                        secertKey = null;
-                        mParent.printLogInfo(TAG,"Invaild CRT Files.", mLogInfoText);
-                    }
-                    cert.close();
-                } catch (IOException e) {
-                    TXLog.e(TAG, "getSecertKey failed.", e);
-                    mParent.printLogInfo(TAG,"getSecertKey failed.", mLogInfoText);
-                    return null;
+                String privateKey = builder.toString();
+                if (privateKey.contains("-----BEGIN PRIVATE KEY-----")) {
+                    secertKey = privateKey;
+                } else {
+                    secertKey = null;
+                    mParent.printLogInfo(TAG,"Invaild Private Key File.", mLogInfoText);
                 }
             }
-
             return secertKey;
         }
 
