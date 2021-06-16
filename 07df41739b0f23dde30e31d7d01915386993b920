@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eba14ee2_3c91b975",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T01:31:25Z",
+      "side": 1,
+      "message": "对应常见问题那里的文档也记得更新下。",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a2bd49d_87fff1b7",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/utils/TXLogImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T01:31:25Z",
+      "side": 1,
+      "message": "可以保留 public static void init(Context context, int duration) 其中路径为默认的路径",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9479247b_b4e046df",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/util/TXLogImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T01:31:25Z",
+      "side": 1,
+      "message": "同上",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
