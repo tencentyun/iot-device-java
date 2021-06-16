@@ -35,7 +35,15 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 
 #### 如何保存SDK的日志以及SDK日志的存放路径是什么？
 
-在使用我们的SDK功能API之前调用`TXLogImpl.init(Context context)`方法或者`TXLogImpl.init(Context context, int duration)`方法，其中`TXLogImpl.init(Context context)`方法可将SDK的日志保存至/sdcard/tencent/包名(context对应的包名)/iot_${yyyyMMdd}.log文件中，默认保存近7天的日志文件；`TXLogImpl.init(Context context, int duration)`方法支持自定义保存近${duration}天的日志。
+在使用我们的SDK功能API前调用以下方法即可保存SDK日志：
+1. TXLogImpl.init(Context context)
+> 将SDK的日志保存至/sdcard/tencent/包名(context对应的包名)/iot_${yyyyMMdd}.log文件中，默认保存近7天的日志文件
+2. TXLogImpl.init(Context context, int duration)
+> 将SDK的日志保存至/sdcard/tencent/包名(context对应的包名)/iot_${yyyyMMdd}.log文件中，保存近${duration}天的日志文件
+3. TXLogImpl.init(Context context, int duration, String _logPath)
+> 将SDK的日志保存至/sdcard/${_logPath}/iot_${yyyyMMdd}.log文件中，保存近${duration}天的日志文件，注：_logPath参数形如 `test/log/`，末尾要带上'/'
+
+示例：
 
 假设应用包名为：com.tencent.iot.explorer.demo，在调用SDK功能API前添加`TXLogImpl.init(this)`，那么SDK日志将会保存在/sdcard/tencent/com/tencent/iot/explorer/demo/iot_${yyyyMMdd}.log文件中
 ```
