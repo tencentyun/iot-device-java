@@ -2,15 +2,25 @@ package com.tencent.iot.hub.device.java.core.log;
 
 
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha1;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -23,6 +33,9 @@ public class TXMqttLogImpl {
 
     public static final String TAG = TXMqttLogImpl.class.getName();
 
+    private static final String HMAC_ALGO = "hmacsha256";
+
+
     /**
      * 定时上传时间：单位ms，30S一次
      */
@@ -33,18 +46,22 @@ public class TXMqttLogImpl {
      */
     private LinkedBlockingDeque<String> logDeque;
     private static int dequeSize = 10000; //最大容量10000条日志
-    private static int dequeThreshold = dequeSize/4; //剩余容量预警阈值
+    private static int dequeThreshold = dequeSize / 4; //剩余容量预警阈值
 
     /**
      * http客户端，用于上传日志到服务器
      */
     private OkHttpClient mOkHttpClient;
 
-    /**http 服务器 URL*/
-    private static final String MQTT_LOG_UPLOAD_SERVER_URL =  "http://devicelog.iot.cloud.tencent.com:80/cgi-bin/report-log";
+    /**
+     * http 服务器 URL
+     */
+    private static final String MQTT_LOG_UPLOAD_SERVER_URL = "https://ap-guangzhou.gateway.tencentdevices.com/device/reportlog";
 
-    /**Content Type*/
-    private static final MediaType MEDIA_TYPE_LOG = MediaType.parse("text/plain;charset=utf-8");
+    /**
+     * Content Type
+     */
+    private static final MediaType MEDIA_TYPE_LOG = MediaType.parse("application/json;charset=utf-8");
 
     /**
      * 固定头部
@@ -73,40 +90,49 @@ public class TXMqttLogImpl {
     private String mLogUrl;
 
     TXMqttLogImpl(TXMqttConnection mqttConnection) {
-        this.mOkHttpClient =  new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
+        this.mOkHttpClient = new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
         this.logDeque = new LinkedBlockingDeque<String>(dequeSize);
         //固定头部格式：[鉴权类型（1字符，C代表证书方式，P代表PSK方式）][预留（3字符，填充#）][产品ID（10字符，不足后面补#）][设备ID（48字符，不足后面补#）]
         this.mFixedHead = String.format("%c###%s%s",
                 mqttConnection.mSecretKey == null ? 'C' : 'P',
-                String.format("%-10s",mqttConnection.mProductId).replace(" ","#"),
-                String.format("%-48s", mqttConnection.mDeviceName).replace(" ","#")
+                String.format("%-10s", mqttConnection.mProductId).replace(" ", "#"),
+                String.format("%-48s", mqttConnection.mDeviceName).replace(" ", "#")
         );
         this.mUploadFlag = false;
         this.mMqttLogCallBack = mqttConnection.mMqttLogCallBack;
         this.mSecretKey = mMqttLogCallBack.setSecretKey();
-        new UploaderToServer().start();
+        new UploaderToServer(mqttConnection.mProductId, mqttConnection.mDeviceName).start();
     }
 
     TXMqttLogImpl(TXMqttConnection mqttConnection, String logUrl) {
         this.mLogUrl = logUrl;
-        this.mOkHttpClient =  new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
+        this.mOkHttpClient = new OkHttpClient().newBuilder().connectTimeout(1, TimeUnit.SECONDS).build();
         this.logDeque = new LinkedBlockingDeque<String>(dequeSize);
         //固定头部格式：[鉴权类型（1字符，C代表证书方式，P代表PSK方式）][预留（3字符，填充#）][产品ID（10字符，不足后面补#）][设备ID（48字符，不足后面补#）]
         this.mFixedHead = String.format("%c###%s%s",
                 mqttConnection.mSecretKey == null ? 'C' : 'P',
-                String.format("%-10s",mqttConnection.mProductId).replace(" ","#"),
-                String.format("%-48s", mqttConnection.mDeviceName).replace(" ","#")
+                String.format("%-10s", mqttConnection.mProductId).replace(" ", "#"),
+                String.format("%-48s", mqttConnection.mDeviceName).replace(" ", "#")
         );
         this.mUploadFlag = false;
         this.mMqttLogCallBack = mqttConnection.mMqttLogCallBack;
         this.mSecretKey = mMqttLogCallBack.setSecretKey();
-        new UploaderToServer().start();
+        new UploaderToServer(mqttConnection.mProductId, mqttConnection.mDeviceName).start();
     }
 
     /**
      * 完成日志上传的操作
      */
     class UploaderToServer extends Thread {
+
+        private final String productId;
+        private final String deviceName;
+
+        public UploaderToServer(String productId, String deviceName) {
+            this.productId = productId;
+            this.deviceName = deviceName;
+        }
+
         @Override
         public void run() {
 
@@ -114,7 +140,7 @@ public class TXMqttLogImpl {
 
             while (true) {
                 if (mUploadFlag || (logDeque.size() > dequeSize - dequeThreshold)
-                    || (nowCurrentMillis < System.currentTimeMillis()- timeInterval)) {
+                        || (nowCurrentMillis < System.currentTimeMillis() - timeInterval)) {
 
                     if (logDeque.size() == 0) {
                         nowCurrentMillis = System.currentTimeMillis();
@@ -123,45 +149,81 @@ public class TXMqttLogImpl {
                     }
 
                     StringBuffer log = new StringBuffer();
-
                     //获取所有的log
                     try {
-                        while (logDeque.size() > 0)
+                        while (logDeque.size() > 0) {
                             log.append(logDeque.take());
+                        }
                     } catch (Exception e) {
-                        mMqttLogCallBack.printDebug( "Take log from deque failed");
+                        mMqttLogCallBack.printDebug("Take log from deque failed");
+                    }
+                    int randNum = (int) (Math.random() * ((1 << 31) - 1));
+                    int timestamp = (int) (System.currentTimeMillis() / 1000);
+
+                    final JSONObject obj = new JSONObject();
+                    final JSONArray array = new JSONArray();
+                    array.put(log.toString());
+                    obj.put("ProductId", productId);
+                    obj.put("DeviceName", deviceName);
+                    obj.put("Message", array);
+
+                    String payload = obj.toString();
+                    String hashedPayload = "";
+                    try {
+                        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+                        byte[] encodedhash = digest.digest(payload.getBytes(Charset.forName("UTF-8")));
+                        hashedPayload = HmacSha256.bytesToHexString(encodedhash);
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    @SuppressWarnings("DefaultLocale")
+                    String signSourceStr = String.format("%s\n%s\n%s\n%s\n%s\n%d\n%d\n%s",
+                            "POST",
+                            "ap-guangzhou.gateway.tencentdevices.com",
+                            "/device/reportlog",
+                            "",
+                            HMAC_ALGO,
+                            timestamp,
+                            randNum,
+                            hashedPayload
+                    );
+
+                    String hmacSign = "";
+                    try {
+                        SecretKeySpec signKey = new SecretKeySpec(mSecretKey.getBytes(), HMAC_ALGO);
+                        Mac mac = Mac.getInstance(HMAC_ALGO);
+                        mac.init(signKey);
+                        byte[] rawHmac = mac.doFinal(signSourceStr.getBytes());
+                        hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
+                    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+                        e.printStackTrace();
                     }
 
-                    //格式为[签名][固定头部][时间戳（10位）][日志]
-                    String payLoad = String.format("%s%s%s", mFixedHead, String.valueOf(System.currentTimeMillis()).substring(0, 10), log.toString());
-                    payLoad = HmacSha1.getSignature(payLoad.getBytes(), mSecretKey.getBytes()) + payLoad;
-
                     String url = MQTT_LOG_UPLOAD_SERVER_URL;
-                    if (mLogUrl != null) {
+                    if (mLogUrl != null && mLogUrl.length() > 0) {
                         url = mLogUrl;
                     }
 
                     Request request = new Request.Builder()
+                            .addHeader("X-TC-Algorithm", HMAC_ALGO)
+                            .addHeader("X-TC-Timestamp", String.valueOf(timestamp))
+                            .addHeader("X-TC-Nonce", String.valueOf(randNum))
+                            .addHeader("X-TC-Signature", hmacSign)
                             .url(url)
-                            .post(RequestBody.create(MEDIA_TYPE_LOG, payLoad))
+                            .post(RequestBody.create(MEDIA_TYPE_LOG, payload))
                             .build();
 
                     //发送请求
                     try {
                         Response response = mOkHttpClient.newCall(request).execute();
-                        if(!response.isSuccessful()) {
-                            mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
+                        if (!response.isSuccessful()) {
+                            mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]", url, response.body().string()));
                         } else {
                             JSONObject jsonObj = new JSONObject(response.body().string());
-                            if (jsonObj.has("Retcode")) {
-                                int retcode = jsonObj.getInt("Retcode");
-                                if (retcode == 0) { // 上传成功
-                                    mMqttLogCallBack.printDebug(String.format("Upload log to %s success!",url));
-                                } else {
-                                    mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
-                                }
+                            if (!jsonObj.has("Error")) {
+                                mMqttLogCallBack.printDebug(String.format("Upload log to %s success!", url));
                             } else {
-                                mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]",url,response.body().string()));
+                                mMqttLogCallBack.printDebug(String.format("Upload log to %s failed! Response:[%s]", url, response.body().string()));
                             }
                         }
                     } catch (IOException e) {
@@ -171,8 +233,6 @@ public class TXMqttLogImpl {
 
                     nowCurrentMillis = System.currentTimeMillis();
                     mUploadFlag = false;
-
-                    //TXLog.i(TAG, "log upload :%s", log);
                 }
 
                 try {
@@ -186,16 +246,17 @@ public class TXMqttLogImpl {
 
     /**
      * 添加日志到队列中，如果队列空间不足则上传
+     *
      * @param log 日志
      * @return 添加成功，返回true，添加失败，返回false
      */
     boolean appendToLogDeque(String log) {
         try {
             logDeque.add(log);
-            mMqttLogCallBack.printDebug(String.format("Add log to log Deque! %s",log).replace("\n\f",""));
+            mMqttLogCallBack.printDebug(String.format("Add log to log Deque! %s", log).replace("\n\f", ""));
             return true;
         } catch (Exception e) {
-            mMqttLogCallBack.printDebug(String.format("Add log to log Deque failed! %s" ,log).replace("\n\f",""));
+            mMqttLogCallBack.printDebug(String.format("Add log to log Deque failed! %s", log).replace("\n\f", ""));
             return false;
         }
     }
