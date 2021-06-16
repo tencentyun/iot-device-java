@@ -604,36 +604,33 @@ public class IoTMqttFragment extends Fragment {
                 secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
                 return secertKey;
             } else {
-                BufferedReader cert;
-
-                if (mDevCert != null && mDevCert.length() != 0) { //动态注册,从DevCert中读取
-                     cert = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mDevCert.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
-
+                BufferedReader privateKeyReader;
+                if (mDevPriv != null && mDevPriv.length() != 0) { //动态注册, 从DevPriv中读取
+                    privateKeyReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mDevPriv.getBytes(Charset.forName("utf8"))), Charset.forName("utf8")));
                 } else { //证书认证，从证书文件中读取
                     AssetManager assetManager = mParent.getAssets();
                     if (assetManager == null) {
                         return null;
                     }
                     try {
-                        cert=new BufferedReader(new InputStreamReader(assetManager.open(mDevCertName)));
+                        privateKeyReader = new BufferedReader(new InputStreamReader(assetManager.open(mDevKeyName)));
                     } catch (IOException e) {
-                        mParent.printLogInfo(TAG, "getSecertKey failed, cannot open CRT Files.",mLogInfoText);
+                        mParent.printLogInfo(TAG, "Get Private Key failed, cannot open Private Key Files.",mLogInfoText);
                         return null;
                     }
                 }
                 //获取密钥
                 try {
-                    if (cert.readLine().contains("-----BEGIN")) {
-                        secertKey = cert.readLine();
-                        secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
+                    if (mDevPriv.contains("-----BEGIN PRIVATE KEY-----")) {
+                        secertKey = mDevPriv;
                     } else {
                         secertKey = null;
-                        mParent.printLogInfo(TAG,"Invaild CRT Files.", mLogInfoText);
+                        mParent.printLogInfo(TAG,"Invaild Private Key File.", mLogInfoText);
                     }
-                    cert.close();
+                    privateKeyReader.close();
                 } catch (IOException e) {
-                    TXLog.e(TAG, "getSecertKey failed.", e);
-                    mParent.printLogInfo(TAG,"getSecertKey failed.", mLogInfoText);
+                    TXLog.e(TAG, "Get Private Key failed.", e);
+                    mParent.printLogInfo(TAG,"Get Private Key failed.", mLogInfoText);
                     return null;
                 }
             }
