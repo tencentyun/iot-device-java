@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26aaa9a7_fa204a21",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T02:06:25Z",
+      "side": 1,
+      "message": "”hmacsha256“ 可以用上面的  HMAC_ALGO  代替",
+      "revId": "3f5696cb14fc8b6a0984bd5231feee7eac8a01d1",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45179c37_3c2ea9c6",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T02:06:25Z",
+      "side": 1,
+      "message": "低于 API 19  StandardCharsets.UTF_8 ---\u003e Charset.forName(\"UTF-8\")",
+      "revId": "3f5696cb14fc8b6a0984bd5231feee7eac8a01d1",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6fbfc464_05c03405",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-16T02:06:25Z",
+      "side": 1,
+      "message": "”hmacsha256“ 可以用上面的  HMAC_ALGO  代替",
+      "revId": "3f5696cb14fc8b6a0984bd5231feee7eac8a01d1",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
