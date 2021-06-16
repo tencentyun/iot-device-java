@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "220a3c29_3883bdb1",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-16T01:37:47Z",
+      "side": 1,
+      "message": "我另提个change改文档",
+      "parentUuid": "eba14ee2_3c91b975",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "3a2bd49d_87fff1b7",
         "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/utils/TXLogImpl.java",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "b9f7c6d4_f2150da4",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/utils/TXLogImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-16T01:37:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a2bd49d_87fff1b7",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9479247b_b4e046df",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/util/TXLogImpl.java",
         "patchSetId": 5
@@ -50,6 +86,24 @@
       "revId": "07df41739b0f23dde30e31d7d01915386993b920",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51f277f8_3a341207",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/util/TXLogImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-16T01:37:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9479247b_b4e046df",
+      "revId": "07df41739b0f23dde30e31d7d01915386993b920",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
