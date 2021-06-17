@@ -114,7 +114,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showCallingView();
                     if (!mIsExitRoom) {
                         TRTCUIManager.getInstance().startOnThePhone(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
                     }
@@ -130,6 +129,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                         mCallUserModelMap.put(model.getUserId(), model);
                         addUserToManager(model);
                     }
+                    showTimeCount();
+                    mStatusView.setText(R.string.trtccalling_dialed_is_busy);
                 }
             });
         }
@@ -346,7 +347,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 if (roomKey != null) {
                     removeIsEnterRoom60secondsTask();
                 }
-                showCallingView();
                 checkoutOtherIsEnterRoom15seconds();
             }
 
@@ -492,6 +492,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_AUDIO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                showCallingView();
             }
         });
         //4. 展示其他用户界面
@@ -544,9 +545,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 removeCallbackAndFinish();
             }
         });
-        showTimeCount();
         hideOtherInvitingUserView();
-        mStatusView.setText(R.string.trtccalling_dialed_is_busy);
+        mStatusView.setText(R.string.trtccalling_waiting_to_hear);
     }
 
     private void showTimeCount() {

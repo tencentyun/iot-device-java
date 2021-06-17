@@ -138,7 +138,10 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                     if (videoLayout == null) {
                         return;
                     }
+                    removeIsEnterRoom60secondsTask();
                     videoLayout.setVideoAvailable(false);
+
+                    showTimeCount();
                     mStatusView.setText(R.string.trtccalling_dialed_is_busy);
                 }
             });
@@ -372,10 +375,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 //2.接听电话
                 TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 startInviting(roomKey);
-                if (roomKey != null) {
-                    removeIsEnterRoom60secondsTask();
-                }
-                showCallingView();
                 checkoutOtherIsEnterRoom15seconds();
             }
 
@@ -545,6 +544,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mUserId, mSponsorUserInfo.getAgent());
+                showCallingView();
             }
         });
         //4. 展示其他用户界面
@@ -602,7 +602,6 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                 stopCameraAndFinish();
             }
         });
-        showTimeCount();
         hideOtherInvitingUserView();
     }
 
