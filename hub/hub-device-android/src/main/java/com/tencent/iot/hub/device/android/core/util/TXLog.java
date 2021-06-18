@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
+import com.tencent.iot.hub.device.java.utils.LogCallBack;
+
 
 public class TXLog {
     private static final String TAG = "mars.xlog.log";
@@ -18,7 +20,7 @@ public class TXLog {
 
     public static Context toastSupportContext = null;
 
-    public interface LogImp {
+    public interface LogImp extends LogCallBack {
 
         void logV(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log);
 
@@ -36,6 +38,17 @@ public class TXLog {
 
         void setLogLevel(final int level);
 
+        @Override
+        void debug(String tag, String msg);
+
+        @Override
+        void info(String tag, String msg);
+
+        @Override
+        void warn(String tag, String msg);
+
+        @Override
+        void error(String tag, String msg);
     }
 
     private static LogImp logImp = new TXLogImpl();

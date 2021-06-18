@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -434,6 +435,26 @@ public class TXLogImpl implements TXLog.LogImp {
     @Override
     public void setLogLevel(int level) {
         logLevel = level;
+    }
+
+    @Override
+    public void debug(String tag, String msg) {
+        logD(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+    }
+
+    @Override
+    public void info(String tag, String msg) {
+        logI(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+    }
+
+    @Override
+    public void warn(String tag, String msg) {
+        logW(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+    }
+
+    @Override
+    public void error(String tag, String msg) {
+        logE(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
     }
 }
 
