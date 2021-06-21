@@ -29,10 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.device.CA;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 public class TXOTAImpl {
 	private static final String TAG = TXOTAImpl.class.getName();
-	private static final Logger LOG = LoggerFactory.getLogger(TXOTAImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TXOTAImpl.class);
+
+	static { Loggor.setLogger(logger); }
 	
 	private TXMqttConnection mConnection;
 	private TXOTACallBack mCallback;
@@ -70,7 +73,7 @@ public class TXOTAImpl {
 						serverCertList.add(certificate);
 					}
 				} catch (Exception e) {
-					LOG.error("{}", "prepareOTAServerCA error:", e);
+					Loggor.error(TAG, "prepareOTAServerCA error:" + e);
 				} finally {
 					if (caInput != null) {
 						try {
@@ -412,7 +415,7 @@ public class TXOTAImpl {
 						throws CertificateException {
 					// Do nothing. We only want to check server side
 					// certificate.
-					LOG.warn("checkClientTrusted");
+					Loggor.warn(TAG,  "checkClientTrusted");
 				}
 
 				@Override
@@ -443,7 +446,7 @@ public class TXOTAImpl {
 					}
 
 					if (match > 0 && match == mCosServerCaCrtList.length) {
-						LOG.info("checkServerTrusted OK!!!");
+						Loggor.info(TAG,  "checkServerTrusted OK!!!");
 						return;
 					}
 
@@ -510,7 +513,7 @@ public class TXOTAImpl {
 						tryTimes++;
 
 						fos = new RandomAccessFile(outputFile, "rw");
-						LOG.debug("fileLength " + fos.length() + " bytes");
+						Loggor.debug(TAG,  "fileLength " + fos.length() + " bytes");
 
 						long downloadBytes = fos.length();
 						int lastPercent = 0;
@@ -519,7 +522,7 @@ public class TXOTAImpl {
 							fos.seek(downloadBytes);
 						}
 
-						LOG.debug("connect: " + firmwareURL);
+						Loggor.debug(TAG,  "connect: " + firmwareURL);
 						HttpURLConnection conn = createURLConnection(firmwareURL);
 
 						conn.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
@@ -529,7 +532,7 @@ public class TXOTAImpl {
 						conn.connect();
 
 						int totalLength = conn.getContentLength()+Long.valueOf(downloadBytes).intValue();
-						LOG.debug("totalLength " + totalLength + " bytes");
+						Loggor.debug(TAG,  "totalLength " + totalLength + " bytes");
 
 						stream = conn.getInputStream();
 						byte buffer[] = new byte[1024 * 1024];
@@ -552,7 +555,7 @@ public class TXOTAImpl {
 									mCallback.onDownloadProgress(percent, version);
 								}
 
-								LOG.debug("download " + downloadBytes + " bytes. percent:" + percent);
+								Loggor.debug(TAG,  "download " + downloadBytes + " bytes. percent:" + percent);
 								reportProgressMessage(OTA_REPORT_TOPIC, percent, version);
 							}
 						}
@@ -567,7 +570,7 @@ public class TXOTAImpl {
 						String calcMD5 = fileToMD5(outputFile);
 
 						if (!calcMD5.equalsIgnoreCase(md5Sum)) {
-							LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
+							Loggor.error(TAG,  "md5 checksum not match!!! calculated md5:" + calcMD5);
 
 							if (mCallback != null) {
 								mCallback.onDownloadFailure(-4, version); // 校验失败

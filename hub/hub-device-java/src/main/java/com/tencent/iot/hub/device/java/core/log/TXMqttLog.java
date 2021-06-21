@@ -3,6 +3,7 @@ package com.tencent.iot.hub.device.java.core.log;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -14,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TXMqttLog {
-    private static final Logger LOG = LoggerFactory.getLogger(TXMqttLog.class);
+    private static final Logger logger = LoggerFactory.getLogger(TXMqttLog.class);
 
     public static final String TAG = TXMqttLog.class.getName();
 
@@ -30,6 +31,8 @@ public class TXMqttLog {
 
     private static final String CLIENT_TOKEN = "%s-%d";
     private AtomicInteger mClientTokenNum = new AtomicInteger(0);
+
+    static { Loggor.setLogger(logger); }
 
     public TXMqttLog(TXMqttConnection mqttConnection) {
         this.mMqttConnection = mqttConnection;
@@ -134,7 +137,7 @@ public class TXMqttLog {
             documentJSONObj.put(TXMqttLogConstants.TYPE, TXMqttLogConstants.GET_LOG_LEVEL);
             documentJSONObj.put(TXMqttLogConstants.CLIENT_TOKEN, clientToken);
         } catch (JSONException e) {
-            LOG.error(e.getMessage() + "build report info failed");
+            Loggor.error(TAG, e.getMessage() + "build report info failed");
             return "";
         }
 

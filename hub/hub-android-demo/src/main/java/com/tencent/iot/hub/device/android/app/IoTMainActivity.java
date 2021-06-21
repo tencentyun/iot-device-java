@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+
 import java.io.File;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;

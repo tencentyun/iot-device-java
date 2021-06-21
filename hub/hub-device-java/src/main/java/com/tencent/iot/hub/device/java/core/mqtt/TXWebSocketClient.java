@@ -2,6 +2,7 @@ package com.tencent.iot.hub.device.java.core.mqtt;
 
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -22,7 +23,10 @@ import javax.net.SocketFactory;
 
 public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackExtended {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TXWebSocketClient.class);
+    private static final String TAG = TXWebSocketClient.class.getName();
+    private static final Logger logger = LoggerFactory.getLogger(TXWebSocketClient.class);
+    static { Loggor.setLogger(logger); }
+
     private volatile TXWebSocketActionCallback connectListener;
     private boolean automicReconnect = true;
     private String clientId;
@@ -66,7 +70,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
             try {
                 conOptions.setPassword(generatePwd(userName).toCharArray());
             } catch (IllegalArgumentException e) {
-                LOG.debug("Failed to set password");
+                Loggor.debug(TAG, "Failed to set password");
             }
         }
         conOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
