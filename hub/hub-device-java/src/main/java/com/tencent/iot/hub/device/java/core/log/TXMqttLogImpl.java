@@ -2,19 +2,17 @@ package com.tencent.iot.hub.device.java.core.log;
 
 
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.java.core.util.Base64;
-import com.tencent.iot.hub.device.java.core.util.HmacSha1;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -38,11 +36,15 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 public class TXMqttLogImpl {
-    private static final Logger LOG = LoggerFactory.getLogger(TXMqttLogImpl.class);
+    private static final String TAG = TXMqttLogImpl.class.getName();
+
+    private static final Logger logger = LoggerFactory.getLogger(TXMqttLogImpl.class);
 
     private static final String HMAC_SHA256_ALGO = "hmacsha256";
 
     private static final String RSA_SHA256_ALGO = "rsa-sha256";
+
+    static { Loggor.setLogger(logger); }
 
     /**
      * 定时上传时间：单位ms，30S一次
@@ -185,7 +187,7 @@ public class TXMqttLogImpl {
                         } else {
                             ResponseBody responseBody = response.body();
                             if (responseBody == null) {
-                                LOG.error("Response body is null.");
+                                Loggor.error(TAG, "Response body is null.");
                                 return;
                             }
                             String respStr = responseBody.string();
@@ -208,7 +210,7 @@ public class TXMqttLogImpl {
                 try {
                     Thread.sleep(10); //休眠10ms
                 } catch (InterruptedException e) {
-                    LOG.warn("The thread has been interrupted");
+                    Loggor.warn(TAG, "The thread has been interrupted");
                 }
             }
         }
