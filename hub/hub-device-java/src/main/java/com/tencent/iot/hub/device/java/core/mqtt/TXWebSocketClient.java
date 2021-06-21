@@ -2,6 +2,7 @@ package com.tencent.iot.hub.device.java.core.mqtt;
 
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -22,7 +23,10 @@ import javax.net.SocketFactory;
 
 public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackExtended {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TXWebSocketClient.class);
+    private static final String TAG = TXWebSocketClient.class.getName();
+    private static final Logger logger = LoggerFactory.getLogger(TXWebSocketClient.class);
+    static { Loggor.setLogger(logger); }
+
     private volatile TXWebSocketActionCallback connectListener;
     private boolean automicReconnect = true;
     private String clientId;
@@ -41,7 +45,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     // 连接接口
     public IMqttToken connect() throws MqttException {
         if (state.get() == ConnectionState.CONNECTED) { // 已经连接过
-            System.out.println("already connect");
+            Loggor.debug(TAG, "already connect");
             throw new MqttException(MqttException.REASON_CODE_CLIENT_CONNECTED);
         }
 
@@ -66,7 +70,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
             try {
                 conOptions.setPassword(generatePwd(userName).toCharArray());
             } catch (IllegalArgumentException e) {
-                LOG.debug("Failed to set password");
+                Loggor.debug(TAG, "Failed to set password");
             }
         }
         conOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
@@ -106,13 +110,13 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     IMqttActionListener mActionListener = new IMqttActionListener() {
         @Override
         public void onSuccess(IMqttToken asyncActionToken) {
-            System.out.println("disconnect onSuccess");
+            Loggor.debug(TAG, "disconnect onSuccess");
             onDisconnected();
         }
 
         @Override
         public void onFailure(IMqttToken asyncActionToken, Throwable cause) {
-            System.out.println("disconnect onFailure");
+            Loggor.error(TAG, "disconnect onFailure");
             onDisconnected();
         }
     };
@@ -123,14 +127,13 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     }
 
     private String generatePwd(String userName) {
-        System.out.println("secretKey=" + secretKey);
         if (secretKey != null) {
             try {
                 String passWordStr = HmacSha256.getSignature(userName.getBytes(),
                         Base64.decode(secretKey, Base64.DEFAULT)) + ";hmacsha256";
                 return passWordStr;
             } catch (IllegalArgumentException e) {
-                System.out.println("Failed to set password");
+                Loggor.error(TAG, "Failed to set password");
             }
         }
         return null;
@@ -171,7 +174,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         state.set(ConnectionState.CONNECTED);
-        System.out.println("connectComplete");
+        Loggor.debug(TAG, "connectComplete");
         if (connectListener != null) {
             connectListener.onConnected();
         }
@@ -185,7 +188,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         MqttMessage msg = new MqttMessage();
         msg.setPayload("str".getBytes());
         msg.setQos(0);  // 最多发送一次，不做必达性保证
-        System.out.println("start send");
+        Loggor.debug(TAG, "start send");
         try {
             this.publish("/", msg);
         } catch (MqttException e) {
@@ -195,17 +198,17 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
 
     @Override
     public void connectionLost(Throwable cause) {
-        System.out.println("connectionLost");
+        Loggor.error(TAG, "connectionLost");
         state.set(ConnectionState.CONNECTION_LOST);
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        System.out.println("messageArrived");
+        Loggor.debug(TAG, "messageArrived");
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
-        System.out.println("deliveryComplete");
+        Loggor.debug(TAG, "deliveryComplete");
     }
 }

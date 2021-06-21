@@ -11,6 +11,8 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -83,6 +85,7 @@ public class TXLogImpl implements TXLog.LogImp {
         sContext = context;
         logDuration = duration;
         logPath = _logPath;
+        Loggor.setLogCallback(TXLog.getImpl());
         initRunnable.run();
     }
 
