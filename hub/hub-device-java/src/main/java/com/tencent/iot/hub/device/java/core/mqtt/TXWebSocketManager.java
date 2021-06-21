@@ -1,13 +1,20 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
 
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TXWebSocketManager {
 
     private String TAG = TXWebSocketManager.class.getSimpleName();
+    private static final Logger logger = LoggerFactory.getLogger(TXWebSocketManager.class);
+    static { Loggor.setLogger(logger); }
 
     private static TXWebSocketManager instance;
 
@@ -34,7 +41,7 @@ public class TXWebSocketManager {
 
     public synchronized TXWebSocketClient getClient(String wsUrl, String productId, String devicename, String secretKey) {
         if (isEmpty(productId) || isEmpty(devicename)) {
-            System.out.println("productId or devicename empty");
+            Loggor.error(TAG, "productId or devicename empty");
             return null;
         }
 
@@ -55,7 +62,7 @@ public class TXWebSocketManager {
                 clients.put(clientId, client);
             } catch (MqttException e) {
                 e.printStackTrace();
-                System.out.println("e=" + e.toString());
+                Loggor.error(TAG, "e=" + e.toString());
             }
 
         }
