@@ -7,6 +7,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.java.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import java.util.List;
 
@@ -19,7 +20,8 @@ import org.slf4j.LoggerFactory;
 public class TXShadowClient {
 
     private static final String TAG = TXShadowClient.class.getSimpleName();
-    private static final Logger LOG = LoggerFactory.getLogger(TXShadowClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(TXShadowClient.class);
+    static { Loggor.setLogger(logger); }
     
     /**
      * mqtt客户端，ShadowClient所有功能均通过该成员变量进行
@@ -118,7 +120,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.getConnectStatus();
             status = Status.valueOf(TXMqttConstants.ConnectStatus.class, statusStr);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[getConnectStatus] failed!", e);
+            Loggor.error(TAG, "invoke remote service[getConnectStatus] failed! " + e);
         }
         return status;
     }
@@ -133,7 +135,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.getShadow(requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[getShadow] failed!", e);
+            Loggor.error(TAG, "invoke remote service[getShadow] failed! " + e);
         }
         return status;
     }
@@ -152,7 +154,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.updateShadow(devicePropertyList, requestId);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[updateShadow] failed!", e);
+            Loggor.error(TAG, "invoke remote service[updateShadow] failed! " + e);
         }
         return status;
     }
@@ -166,7 +168,7 @@ public class TXShadowClient {
         try {
             mMqttClient.mRemoteServer.registerDeviceProperty(deviceProperty);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[registerDeviceProperty] failed!", e);
+            Loggor.error(TAG, "invoke remote service[registerDeviceProperty] failed! " + e);
         }
     }
 
@@ -179,7 +181,7 @@ public class TXShadowClient {
         try {
             mMqttClient.mRemoteServer.unRegisterDeviceProperty(deviceProperty);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[unRegisterDeviceProperty] failed!", e);
+            Loggor.error(TAG, "invoke remote service[unRegisterDeviceProperty] failed! " + e);
         }
     }
 
@@ -204,7 +206,7 @@ public class TXShadowClient {
             String statusStr = mMqttClient.mRemoteServer.reportNullDesiredInfo(reportJsonDoc);
             status = Status.valueOf(Status.class, statusStr);
         } catch (Exception e) {
-            LOG.error("{}", "invoke remote service[reportNullDesiredInfo] failed!", e);
+            Loggor.error(TAG, "invoke remote service[reportNullDesiredInfo] failed! " + e);
         }
         return status;
     }
@@ -257,50 +259,56 @@ public class TXShadowClient {
      */
     private void initListener() {
         mShadowActionListener = new ITXShadowActionListener() {
+            @Override
             public void onRequestCallback(String type, int result, String document)  {
-                LOG.debug("onRequestCallback, type[{}], result[{}], document[{}]", type, result, document);
+                Loggor.debug(TAG, String.format("onRequestCallback, type[%s], result[%d], document[%s]", type, result, document));
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onRequestCallback(type, result, document);
                 }
             }
 
+            @Override
             public void onDevicePropertyCallback(String propertyJSONDocument, List<DeviceProperty> devicePropertyList) {
-                LOG.debug("onDevicePropertyCallback, propertyJSONDocument[{}], devicePropertyList size[{}]",
-                        propertyJSONDocument, devicePropertyList.size());
+                Loggor.debug(TAG, String.format("onDevicePropertyCallback, propertyJSONDocument[%s], devicePropertyList size[%d]",
+                        propertyJSONDocument, devicePropertyList.size()));
                 for (DeviceProperty deviceProperty : devicePropertyList) {
-                    LOG.debug(deviceProperty.toString());
+                    Loggor.debug(TAG, deviceProperty.toString());
                 }
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onDevicePropertyCallback(propertyJSONDocument, devicePropertyList);
                 }
             }
 
+            @Override
             public void onPublishCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
-                LOG.debug("onPublishCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
+                Loggor.debug(TAG, String.format("onPublishCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(),
                             mMqttClient.getUserContext(Long.valueOf(userContextId)), errMsg);
                 }
             }
 
+            @Override
             public void onSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg)  {
-                LOG.debug("onSubscribeCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
+                Loggor.debug(TAG, String.format("onSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(),
                             mMqttClient.getUserContext(Long.valueOf(userContextId)), errMsg);
                 }
             }
 
+            @Override
             public void onUnSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg)  {
-                LOG.debug("onUnSubscribeCompleted, status[{}], token[{}], errMsg[{}]", status, token, errMsg);
+                Loggor.debug(TAG, String.format("onUnSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(),
                             mMqttClient.getUserContext(Long.valueOf(userContextId)), errMsg);
                 }
             }
 
+            @Override
             public void onMessageReceived(String topic, TXMqttMessage message)  {
-            	LOG.debug("onMessageReceived, topic[{}], message[{}]", topic, message);
+            	Loggor.debug(TAG, String.format("onMessageReceived, topic[%s], message[%s]", topic, message));
                 if (null != mShadowActionCallBack) {
                     mShadowActionCallBack.onMessageReceived(topic, message.transToMqttMessage());
                 }

@@ -22,11 +22,14 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 public class TXShadowConnection {
 
 	public static final String TAG = TXShadowConnection.class.getName();
-	 private static final Logger LOG = LoggerFactory.getLogger(TXShadowConnection.class);
+	private static final Logger logger = LoggerFactory.getLogger(TXShadowConnection.class);
+	static { Loggor.setLogger(logger); }
+
 	/**
 	 * clientToken formatter
 	 */
@@ -204,7 +207,7 @@ public class TXShadowConnection {
 
 			if (System.currentTimeMillis() - startTimeMills > 20000) { // 20
 																		// seconds
-				LOG.error("Subscribe topic [{}] timeout!!!", OPERATION_RESULT_TOPIC);
+				Loggor.error(TAG, String.format("Subscribe topic [%s] timeout!!!", OPERATION_RESULT_TOPIC));
 				return Status.ERROR;
 			}
 		}
@@ -265,7 +268,7 @@ public class TXShadowConnection {
 		}
 
 		if (!mIsOperationResultSubscribeSuccess) {
-			LOG.debug("******subscribe topic:" + OPERATION_RESULT_TOPIC);
+			Loggor.debug(TAG,  "******subscribe topic:" + OPERATION_RESULT_TOPIC);
 			mMqttConnection.subscribe(OPERATION_RESULT_TOPIC, mQos, "subscribe context");
 			return Status.ERROR_TOPIC_UNSUBSCRIBED;
 		}
@@ -290,7 +293,7 @@ public class TXShadowConnection {
 		String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
 		String jsonDocument = buildReportNullJsonDocument(clientToken);
 
-		LOG.debug("reportNullReportedInfo, document: {}", jsonDocument);
+		Loggor.debug(TAG, "reportNullReportedInfo, document: " + jsonDocument);
 
 		return publish(OPERATION_TOPIC, jsonDocument, null);
 	}
@@ -309,7 +312,7 @@ public class TXShadowConnection {
 		String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
 		String jsonDocument = buildDesiredNullJsonDocument(null, clientToken);
 
-		LOG.debug("reportNullDesiredInfo, document: {}", jsonDocument);
+		Loggor.debug(TAG, "reportNullDesiredInfo, document: " + jsonDocument);
 
 		return publish(OPERATION_TOPIC, jsonDocument, null);
 	}
@@ -330,7 +333,7 @@ public class TXShadowConnection {
 		String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
 		String jsonDocument = buildDesiredNullJsonDocument(reportJsonDoc, clientToken);
 
-		LOG.debug("reportNullDesiredInfo, document: {}", jsonDocument);
+		Loggor.debug(TAG, "reportNullDesiredInfo, document: " + jsonDocument);
 
 		return publish(OPERATION_TOPIC, jsonDocument, null);
 	}
@@ -349,7 +352,7 @@ public class TXShadowConnection {
 		}
 
 		if (!mIsOperationResultSubscribeSuccess) {
-			LOG.debug("***subscribe topic:" + OPERATION_RESULT_TOPIC);
+			Loggor.debug(TAG,  "***subscribe topic:" + OPERATION_RESULT_TOPIC);
 			mMqttConnection.subscribe(OPERATION_RESULT_TOPIC, mQos, "subscribe context");
 
 			return Status.ERROR_TOPIC_UNSUBSCRIBED;
@@ -358,7 +361,7 @@ public class TXShadowConnection {
 		String clientToken = String.format(CLIENT_TOKEN, mMqttConnection.mClientId, mClientTokenNum.getAndIncrement());
 		String jsonDocument = buildGetJsonDocument(clientToken);
 
-		LOG.debug("get document: {}", jsonDocument);
+		Loggor.debug(TAG, "get document: " + jsonDocument);
 
 		return publish(OPERATION_TOPIC, jsonDocument, userContext);
 	}
@@ -406,7 +409,7 @@ public class TXShadowConnection {
 			mqttMessage.setPayload(document.getBytes());
 		}
 		mqttMessage.setQos(TXMqttConstants.QOS0);
-		LOG.debug("******publish message id:" + mqttMessage.getId());
+		Loggor.debug(TAG,  "******publish message id:" + mqttMessage.getId());
 
 		status = mMqttConnection.publish(topic, mqttMessage, userContext);
 		if (status != Status.OK) {
@@ -423,7 +426,7 @@ public class TXShadowConnection {
 	 */
 	private Status checkMqttStatus() {
 		if (null == mMqttConnection || mMqttConnection.getConnectStatus() != TXMqttConstants.ConnectStatus.kConnected) {
-			LOG.error("mqtt is disconnected!");
+			Loggor.error(TAG,  "mqtt is disconnected!");
 			return Status.MQTT_NO_CONN;
 		}
 
@@ -472,7 +475,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.VERSION, 0); //防止多次触发update导致version冲突5005的错误。
 
 		} catch (JSONException e) {
-			LOG.error("{}", "build report info failed", e);
+			Loggor.error(TAG,  "build report info failed " + e);
 			return "";
 		}
 
@@ -493,7 +496,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.VERSION, 0);
 
 		} catch (JSONException e) {
-			LOG.error("{}", "build report info failed", e);
+			Loggor.error(TAG, "build report info failed " + e);
 			return "";
 		}
 
@@ -518,7 +521,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.VERSION, 0);
 
 		} catch (JSONException e) {
-			LOG.error("{}", "build report info failed", e);
+			Loggor.error(TAG, "build report info failed " + e);
 			return "";
 		}
 
@@ -532,7 +535,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.GET);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
 		} catch (JSONException e) {
-			LOG.error("{}", "build report info failed", e);
+			Loggor.error(TAG, "build report info failed " + e);
 			return "";
 		}
 
@@ -546,7 +549,7 @@ public class TXShadowConnection {
 			documentJSONObj.put(TXShadowConstants.TYPE, TXShadowConstants.DELETE);
 			documentJSONObj.put(TXShadowConstants.CLIENT_TOKEN, clientToken);
 		} catch (JSONException e) {
-			LOG.error("{}", "build report info failed", e);
+			Loggor.error(TAG, "build report info failed " + e);
 			return "";
 		}
 
@@ -572,7 +575,7 @@ public class TXShadowConnection {
 	 */
 	private void processShadowMessageReceived(String topic, MqttMessage message) {
 		if (null == message || null == message.getPayload()) {
-			LOG.error("handle mqtt message failed, reason[{}]!", "message or payload is empty");
+			Loggor.error(TAG, "handle mqtt message failed, reason[message or payload is empty]!");
 			return;
 		}
 
@@ -609,15 +612,15 @@ public class TXShadowConnection {
 				int versionNum = jsonObj.getInt(TXShadowConstants.VERSION);
 				if (versionNum > mDocumentVersion) {
 					mDocumentVersion = versionNum;
-					LOG.debug("New Version number : {}", mDocumentVersion);
+					Loggor.debug(TAG,  "New Version number : " + mDocumentVersion);
 				} else {
-					LOG.warn("Old Delta Message received - Ignoring rx : {} local : {}", versionNum,
-							mDocumentVersion);
+					Loggor.warn(TAG, String.format("Old Delta Message received - Ignoring rx : %d local : %d", versionNum,
+							mDocumentVersion));
 					return;
 				}
 			}
 		} catch (JSONException e) {
-			LOG.error("{}", "Received JSON is not valid!", e);
+			Loggor.error(TAG, "Received JSON is not valid!" + e);
 			return;
 		}
 
@@ -663,7 +666,7 @@ public class TXShadowConnection {
 					}
 					// edited by v_vweisun 2020/09/22 end
 					propertyList.add(property);
-					LOG.debug("******{}, {}", property.mKey, value);
+					Loggor.debug(TAG,  String.format("******%s, %s", property.mKey, value));
 				}
 			}
 		} catch (Exception e) {
@@ -678,9 +681,9 @@ public class TXShadowConnection {
 	private class ShadowUponMqttCallBack extends TXMqttActionCallBack {
 		@Override
 		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
-			LOG.debug("onConnectCompleted, status[{}], reconnect[{}], msg[{}]", status, reconnect, msg);
+			Loggor.debug(TAG, String.format("onConnectCompleted, status[%s], reconnect[%b], msg[%s]", status, reconnect, msg));
 			if (Status.OK == status) {
-				LOG.debug("******subscribe topic:" + OPERATION_RESULT_TOPIC);
+				Loggor.debug(TAG,  "******subscribe topic:" + OPERATION_RESULT_TOPIC);
 				mMqttConnection.subscribe(OPERATION_RESULT_TOPIC, mQos, "subscribe context");
 			}
 			mShadowActionCallback.onConnectCompleted(status, reconnect, userContext, msg);
@@ -688,14 +691,14 @@ public class TXShadowConnection {
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
-			LOG.error("{}", "mqtt connection lost!", cause);
+			Loggor.error(TAG,  "mqtt connection lost! " + cause);
 			mIsOperationResultSubscribeSuccess = false;
 			mShadowActionCallback.onConnectionLost(cause);
 		}
 
 		@Override
 		public void onDisconnectCompleted(Status status, Object userContext, String msg) {
-			LOG.debug("onDisconnectCompleted, status[{}], msg[{}]", status.name(), msg);
+			Loggor.debug(TAG, String.format("onDisconnectCompleted, status[%s], msg[%s]", status.name(), msg));
 
 			mIsOperationResultSubscribeSuccess = false;
 		}
@@ -705,8 +708,8 @@ public class TXShadowConnection {
 			super.onPublishCompleted(status, token, userContext, errMsg);
 
 			String[] topics = token.getTopics();
-			LOG.debug("onPublishCompleted, status[{}], errMsg[{}], topics[{}]", status.name(), errMsg,
-					Arrays.toString(topics));
+			Loggor.debug(TAG, String.format("onPublishCompleted, status[%s], errMsg[%s], topics[%s]", status.name(), errMsg,
+					Arrays.toString(topics)));
 			for (String topic : topics) {
 				if (topic.startsWith("$" + TXShadowConstants.SHADOW)) {
 				} else {
@@ -720,12 +723,12 @@ public class TXShadowConnection {
 			super.onSubscribeCompleted(status, token, userContext, errMsg);
 
 			String[] topics = token.getTopics();
-			LOG.debug("onSubscribeCompleted, status[{}], errMsg[{}], topics[{}]", status.name(), errMsg,
-					Arrays.toString(topics));
+			Loggor.debug(TAG, String.format("onSubscribeCompleted, status[%s], errMsg[%s], topics[%s]", status.name(), errMsg,
+					Arrays.toString(topics)));
 			for (String topic : topics) {
 				if (topic.startsWith("$" + TXShadowConstants.SHADOW)) {
 					if (status == Status.OK) {
-						LOG.debug("***subscribe topic:" + OPERATION_RESULT_TOPIC + " success!!!!");
+						Loggor.debug(TAG,  "***subscribe topic:" + OPERATION_RESULT_TOPIC + " success!!!!");
 						mIsOperationResultSubscribeSuccess = true;
 					}
 				} else {
@@ -739,8 +742,8 @@ public class TXShadowConnection {
 			super.onUnSubscribeCompleted(status, token, userContext, errMsg);
 
 			String[] topics = token.getTopics();
-			LOG.debug("onUnSubscribeCompleted, status[{}], errMsg[{}], topics[{}]", status.name(), errMsg,
-					Arrays.toString(topics));
+			Loggor.debug(TAG, String.format("onUnSubscribeCompleted, status[%s], errMsg[%s], topics[%s]", status.name(), errMsg,
+					Arrays.toString(topics)));
 			for (String topic : topics) {
 				if (topic.startsWith("$" + TXShadowConstants.SHADOW)) {
 					if (status == Status.OK) {
@@ -756,11 +759,11 @@ public class TXShadowConnection {
 		public void onMessageReceived(String topic, MqttMessage message) {
 			super.onMessageReceived(topic, message);
 
-			LOG.debug("onMessageReceived,  topics[{}]", topic);
+			Loggor.debug(TAG, String.format("onMessageReceived,  topics[%s]", topic));
 
 			if (topic.startsWith("$" + TXShadowConstants.SHADOW)) {
 				if (null == message || null == message.getPayload()) {
-					LOG.error("handle mqtt message failed, reason[{}]!", "message or payload is empty");
+					Loggor.error(TAG, String.format("handle mqtt message failed, reason[%s]!", "message or payload is empty"));
 					return;
 				}
 
@@ -785,7 +788,7 @@ public class TXShadowConnection {
 									JSONObject payloadJsonObj = new JSONObject(payloadStr);
 									if (payloadJsonObj.has(TXShadowConstants.VERSION)) {
 										mDocumentVersion = payloadJsonObj.getInt(TXShadowConstants.VERSION);
-										LOG.debug("******update local mDocumentVersion to " + mDocumentVersion);
+										Loggor.debug(TAG,  "******update local mDocumentVersion to " + mDocumentVersion);
 									}
 								}
 							}
