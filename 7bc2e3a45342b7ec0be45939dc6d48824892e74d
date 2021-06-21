@@ -16,6 +16,24 @@
       "revId": "7bc2e3a45342b7ec0be45939dc6d48824892e74d",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "84c44dcc_894f1c89",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXAlarmPingSender.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-21T05:50:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e385838_fb057822",
+      "revId": "7bc2e3a45342b7ec0be45939dc6d48824892e74d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
