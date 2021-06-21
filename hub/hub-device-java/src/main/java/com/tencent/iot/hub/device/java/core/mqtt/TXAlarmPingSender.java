@@ -1,13 +1,19 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import org.eclipse.paho.client.mqttv3.MqttPingSender;
 import org.eclipse.paho.client.mqttv3.internal.ClientComms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Target;
+
 public class TXAlarmPingSender implements MqttPingSender {
-	private static final Logger LOG = LoggerFactory.getLogger(TXMqttConnection.class);
-	public static final String TAG = "iot.TXAlarmPingSender";
+	private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
+	public static final String TAG = TXAlarmPingSender.class.getSimpleName();
+
+	static { Loggor.setLogger(logger); }
 
 	private ClientComms mComms;
 
@@ -26,14 +32,14 @@ public class TXAlarmPingSender implements MqttPingSender {
 	@Override
 	public void start() {
 		String action = TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
-		System.out.println(TAG + "Register alarmreceiver to Context " + action);
+		Loggor.debug(TAG, "Register alarmreceiver to Context " + action);
 		schedule(mComms.getKeepAlive());
 		hasStarted = true;
 	}
 
 	@Override
 	public void stop() {
-		System.out.println(TAG + "Unregister alarmreceiver to Context " + mComms.getClient().getClientId());
+		Loggor.debug(TAG, "Unregister alarmreceiver to Context " + mComms.getClient().getClientId());
 		if (hasStarted) {
 			hasStarted = false;
 			try {
@@ -46,7 +52,7 @@ public class TXAlarmPingSender implements MqttPingSender {
 	@Override
 	public void schedule(long delayInMilliseconds) {
 		long nextAlarmInMilliseconds = System.currentTimeMillis() + delayInMilliseconds;
-		System.out.println(TAG + "Schedule next alarm at " + nextAlarmInMilliseconds);
+		Loggor.debug(TAG, "Schedule next alarm at " + nextAlarmInMilliseconds);
 	}
 
 }

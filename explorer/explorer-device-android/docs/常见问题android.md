@@ -42,6 +42,8 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 > 将SDK的日志保存至/sdcard/tencent/包名(context对应的包名)/iot_${yyyyMMdd}.log文件中，保存近${duration}天的日志文件
 3. TXLogImpl.init(Context context, int duration, String logPath)
 > 将SDK的日志保存至/sdcard/${logPath}/iot_${yyyyMMdd}.log文件中，保存近${duration}天的日志文件，注：logPath参数形如 `test/log/`，末尾要带上'/'
+4. Loggor.setLogCallback(TXLog.getImpl())
+> 该方法配合上面任意一个方法使用，可参考如下示例
 
 示例：
 
@@ -51,6 +53,7 @@ protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trtc_main);
         TXLogImpl.init(this);
+        Loggor.setLogCallback(TXLog.getImpl());
         ... //业务代码
 }
 ```
