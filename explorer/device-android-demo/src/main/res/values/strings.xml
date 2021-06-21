@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">explorer-app-demo</string>
+    <string name="app_name">Explorer Device Demo</string>
     <string name="trtccalling_title_video_call">"视频通话"</string>
     <string name="trtccalling_tips_start_call">"点击上方按钮发起呼叫"</string>
     <string name="trtccalling_dialed_is_busy">"正在通话中..."</string>
