@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import hub.unit.test.BuildConfig;
 
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Device Websocket Mqtt connect sample
@@ -127,7 +128,7 @@ public class WebsocketMqttSampleTest {
 
         websocketConnect();
         lock();
-        assertSame(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState(), ConnectionState.CONNECTING);
+        assertTrue(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).isConnected());
         LOG.debug("after websocketConnect");
 
         websocketdisconnect();

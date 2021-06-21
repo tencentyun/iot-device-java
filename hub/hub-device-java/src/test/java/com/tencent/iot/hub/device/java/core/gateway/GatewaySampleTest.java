@@ -275,11 +275,11 @@ public class GatewaySampleTest {
 	private static final int TIMEOUT = 3000;
 	private static CountDownLatch latch = new CountDownLatch(COUNT);
 
-	private static boolean subDevUnbindedSuccess = false;
-	private static boolean subDevBindedSuccess = false;
-	private static boolean subdevOnlineSuccess = false;
-	private static boolean checkSubdevRelationSuccess = false;
-	private static boolean subdevOfflineSuccess = false;
+	private static volatile boolean subDevUnbindedSuccess = false;
+	private static volatile boolean subDevBindedSuccess = false;
+	private static volatile boolean subdevOnlineSuccess = false;
+	private static volatile boolean checkSubdevRelationSuccess = false;
+	private static volatile boolean subdevOfflineSuccess = false;
 
 	private static void lock() {
 		latch = new CountDownLatch(COUNT);
