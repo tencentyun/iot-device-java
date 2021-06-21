@@ -1,7 +1,7 @@
 package com.tencent.iot.hub.device.java.core.util;
 
 import com.tencent.iot.hub.device.java.core.device.CA;
-import com.tencent.iot.hub.device.java.core.mqtt.TXOTAImpl;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -29,8 +29,9 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class SymcSslUtils {
 
-    public static final String TAG = "iot.SymcSslUtils";
-    private static final Logger LOG = LoggerFactory.getLogger(SymcSslUtils.class);
+    public static final String TAG = SymcSslUtils.class.getName();
+    private static final Logger logger = LoggerFactory.getLogger(SymcSslUtils.class);
+    static { Loggor.setLogger(logger); }
 
     private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
 
@@ -40,7 +41,7 @@ public class SymcSslUtils {
         try {
             certFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {
-            LOG.error("{}", "getSocketFactory failed, create CertificateFactory error.", e);
+            Loggor.error(TAG, "getSocketFactory failed, create CertificateFactory error. " + e);
         }
 
         PEMParser parser = null;
@@ -54,12 +55,12 @@ public class SymcSslUtils {
             try {
                 object = parser.readObject();
             } catch (IOException e) {
-                LOG.error("{}", "parse CA failed.", e);
+                Loggor.error(TAG, "parse CA failed." + e);
                 return null;
             }
 
             if (!(object instanceof X509CertificateHolder)) {
-                LOG.error("{}", "CA file not X509CertificateHolder.");
+                Loggor.error(TAG, "CA file not X509CertificateHolder.");
                 return null;
             }
 
@@ -70,7 +71,7 @@ public class SymcSslUtils {
                 caIn.close();
                 parser.close();
             } catch (Exception e) {
-                LOG.error("{}", "generate CA certtificate failed.", e);
+                Loggor.error(TAG, "generate CA certtificate failed. " + e);
                 return null;
             }
         }
@@ -94,7 +95,7 @@ public class SymcSslUtils {
             return context.getSocketFactory();
 
         } catch (Exception e) {
-            LOG.error("{}", "construct SSLSocketFactory failed.", e);
+            Loggor.error(TAG, "construct SSLSocketFactory failed. " + e);
             return null;
         }
     }

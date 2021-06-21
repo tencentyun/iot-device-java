@@ -2,6 +2,8 @@ package com.tencent.iot.hub.device.java.core.dynreg;
 
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.java.core.util.Base64;
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -18,7 +20,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class TXMqttBindDevice {
-    private static final Logger LOG = LoggerFactory.getLogger(TXMqttDynreg.class);
+    private static final String TAG = TXMqttBindDevice.class.getSimpleName();
+    private static final Logger logger = LoggerFactory.getLogger(TXMqttDynreg.class);
     private static final String HMAC_ALGO = "HmacSHA1";
     private static final String mDefaultUrl ="http://ap-guangzhou.gateway.tencentdevices.com/register/tiddevice";
 
@@ -29,6 +32,8 @@ public class TXMqttBindDevice {
     private final String mBindDeviceUrl;
     private final String mPEMPubKey;
     private final TXMqttBindDeviceCallback mCallback;
+
+    static { Loggor.setLogger(logger); }
 
     /**
      *
@@ -98,14 +103,14 @@ public class TXMqttBindDevice {
                     if (mCallback != null) mCallback.onBindSuccess(serverRsp.toString());
                     conn.disconnect();
                 } else {
-                    LOG.error("Get error return code "+ rc);
+                    Loggor.error(TAG, "Get error return code "+ rc);
                     conn.disconnect();
                     if (mCallback != null) {
                         mCallback.onBindFailed(new Throwable("Failed to get response from server, rc is " + rc));
                     }
                 }
             } catch (IOException e) {
-                LOG.error(e.toString());
+                Loggor.error(TAG, e.toString());
                 e.printStackTrace();
                 if (mCallback != null) mCallback.onBindFailed(e);
             }
@@ -143,7 +148,7 @@ public class TXMqttBindDevice {
             e.printStackTrace();
         }
 
-        LOG.info("Register request " + obj);
+        Loggor.info(TAG, "Register request " + obj);
         HttpPostThread httpThread = new HttpPostThread(obj.toString(), mBindDeviceUrl);
         httpThread.start();
     }
