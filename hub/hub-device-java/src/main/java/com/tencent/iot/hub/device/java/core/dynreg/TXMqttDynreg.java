@@ -2,6 +2,7 @@ package com.tencent.iot.hub.device.java.core.dynreg;
 
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +18,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -36,8 +36,8 @@ import javax.crypto.spec.SecretKeySpec;
  * The type Tx iothub dynreg.
  */
 public class TXMqttDynreg {
-    private static final String TAG = "TXMQTT";
-    private static final Logger LOG = LoggerFactory.getLogger(TXMqttDynreg.class);
+    private static final String TAG = TXMqttDynreg.class.getSimpleName();
+    private static final Logger logger = LoggerFactory.getLogger(TXMqttDynreg.class);
     private static final String HMAC_ALGO = "hmacsha256";
     private static final String DECRYPT_MODE = "AES/CBC/NoPadding";
 
@@ -51,6 +51,7 @@ public class TXMqttDynreg {
     // 默认的动态注册URL，文档链接：https://cloud.tencent.com/document/product/634/47225
     private final String mDefaultDynRegUrl ="https://ap-guangzhou.gateway.tencentdevices.com/device/register";
 
+    static { Loggor.setLogger(logger); }
 
     /**
      * Instantiates a new Tx iothub dynreg.
@@ -150,7 +151,7 @@ public class TXMqttDynreg {
                 os.writeBytes(postData);
                 os.flush();
                 os.close();
-                LOG.info("TXMqttDynreg postData "+ postData);
+                Loggor.info(TAG, "TXMqttDynreg postData "+ postData);
 
                 int rc = conn.getResponseCode();
                 String line;
@@ -161,13 +162,13 @@ public class TXMqttDynreg {
                     }
                     conn.disconnect();
                 } else {
-                    LOG.error("Get error rc "+ rc);
+                    Loggor.error(TAG, "Get error rc "+ rc);
                     conn.disconnect();
                     mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
                     return;
                 }
             } catch (IOException e) {
-                LOG.error(e.toString());
+                Loggor.error(TAG, e.toString());
                 e.printStackTrace();
                 mCallback.onFailedDynreg(e);
                 return;
@@ -175,14 +176,14 @@ public class TXMqttDynreg {
 
             String plStr;
             int actLen;
-            LOG.info("Get response string " + serverRsp);
+            Loggor.info(TAG, "Get response string " + serverRsp);
             try {
                 JSONObject rspObj = new JSONObject(serverRsp.toString());
                 rspObj = rspObj.getJSONObject("Response");
                 plStr = rspObj.getString("Payload");
                 actLen = rspObj.getInt("Len");
             } catch (JSONException e) {
-                LOG.error(e.toString());
+                Loggor.error(TAG, e.toString());
                 e.printStackTrace();
                 mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
                 return ;
@@ -283,7 +284,7 @@ public class TXMqttDynreg {
             return false;
         }
 
-        LOG.info("Register request " + obj);
+        Loggor.info(TAG, "Register request " + obj);
         HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl,
                 String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
         httpThread.start();
