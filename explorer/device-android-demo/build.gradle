@@ -94,4 +94,8 @@ dependencies {
     //依赖一个utils类
     implementation 'com.blankj:utilcode:1.25.9'
     implementation 'com.google.zxing:core:3.3.0'
+
+    if (findProject(':explorer:explorer-device-tme') != null) {
+        api project(':explorer:explorer-device-tme')
+    }
 }
