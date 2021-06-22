@@ -2,16 +2,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tencent.iot.explorer.device.android.app">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 绑定设备的授权方式需要读取机器序列号 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name=".App"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.tencent.iot.explorer.device.tme.TmeMainActivity" />
         <activity android:name=".IoTDemoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,28 +31,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IoTMainActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity"/>
-        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
-        <activity android:name="com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".IoTMainActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
+        <activity
+            android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!-- 绑定设备的授权方式需要读取机器序列号 -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-<!--    <uses-permission android:name="android.permission.READ_LOGS"/>-->
 
 </manifest>
