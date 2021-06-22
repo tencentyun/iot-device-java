@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e3c2b10e_6d0210fd",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/tme/TmeMainActivity.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-22T12:49:11Z",
+      "side": 1,
+      "message": "这个后面会换成这种方式",
+      "parentUuid": "f96ee80a_805e832c",
+      "revId": "093079ec75a30aa7c47df94fb64764dbc69cdd36",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "5332a272_d472eafd",
         "filename": "explorer/explorer-device-tme/build.gradle",
         "patchSetId": 5
@@ -33,6 +51,24 @@
       "revId": "093079ec75a30aa7c47df94fb64764dbc69cdd36",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "097e1b39_e7989665",
+        "filename": "explorer/explorer-device-tme/build.gradle",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-06-22T12:49:11Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5332a272_d472eafd",
+      "revId": "093079ec75a30aa7c47df94fb64764dbc69cdd36",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
