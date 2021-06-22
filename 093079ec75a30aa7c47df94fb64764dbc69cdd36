@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f96ee80a_805e832c",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/tme/TmeMainActivity.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-22T12:01:48Z",
+      "side": 1,
+      "message": "这里是不是也需要从app-config.json里面去配置",
+      "revId": "093079ec75a30aa7c47df94fb64764dbc69cdd36",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5332a272_d472eafd",
+        "filename": "explorer/explorer-device-tme/build.gradle",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-22T12:01:48Z",
+      "side": 1,
+      "message": "如果sdk中没有用到这个引用要去掉哈，啥前儿用啥前儿加上。",
+      "revId": "093079ec75a30aa7c47df94fb64764dbc69cdd36",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
