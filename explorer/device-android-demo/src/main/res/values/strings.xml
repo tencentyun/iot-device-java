@@ -18,7 +18,7 @@
     <string name="trtccalling_toast_user_not_response" formatted="false">"%1$s无响应"</string>
     <string name="trtccalling_toast_user_busy" formatted="false">"%1$s忙线"</string>
     <string name="trtccalling_toast_user_cancel_call" formatted="false">"%1$s取消了通话"</string>
-    <string name="trtccalling_toast_user_timeout" formatted="false" >"%1$s通话超时"</string>
+    <string name="trtccalling_toast_user_timeout" formatted="false">"%1$s通话超时"</string>
     <string name="trtccalling_toast_enable_mute">"开启静音"</string>
     <string name="trtccalling_toast_disable_mute">"关闭静音"</string>
     <string name="trtccalling_toast_use_speaker">"使用扬声器"</string>
