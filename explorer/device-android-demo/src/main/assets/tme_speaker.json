@@ -1,0 +1,99 @@
+{
+  "version": "1.0",
+  "properties": [
+    {
+      "id": "pause_play",
+      "name": "播放暂停",
+      "desc": "属性 暂停播放 pause_play\t布尔\t读写\t0-暂停 1-播放",
+      "mode": "rw",
+      "define": {
+        "type": "bool",
+        "mapping": {
+          "0": "暂停",
+          "1": "播放"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "pre_next",
+      "name": "pre_next",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "不变",
+          "1": "上一首",
+          "2": "下一首"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "play_mode",
+      "name": "play_mode",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "顺序播放",
+          "1": "列表循环",
+          "2": "随机播放",
+          "3": "单曲循环"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "song_id",
+      "name": "当前曲目",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "cur_play_list",
+      "name": "当前播放列表",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "id": "set_song_list",
+      "name": "下发歌单",
+      "desc": "下发歌单,  song_list 是个字符串 里面包了 JSON数组",
+      "input": [
+        {
+          "id": "song_list",
+          "name": "song_list",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "2048"
+          }
+        }
+      ],
+      "output": [],
+      "required": false
+    }
+  ],
+  "profile": {
+    "ProductId": "958GL6GI6A",
+    "CategoryId": "1"
+  }
+}
