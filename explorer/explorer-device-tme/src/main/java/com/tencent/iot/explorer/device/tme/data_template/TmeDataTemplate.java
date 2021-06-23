@@ -4,16 +4,33 @@ import android.content.Context;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.hub.device.java.core.common.Status;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 
 public class TmeDataTemplate extends TXDataTemplate {
 
     private static final AtomicInteger REQUEST_ID = new AtomicInteger(0);
 
+    public static final String METHOD_KUGOU_QUERY_PID = "kugou_query_pid";
+    public static final String METHOD_KUGOU_QUERY_SONG = "kugou_query_song";
+    public static final String METHOD_KUGOU_QUERY_PID_REPLY = "kugou_query_pid_reply";
+    public static final String METHOD_KUGOU_QUERY_SONG_REPLY = "kugou_query_song_reply";
+
     private TXMqttConnection mConnection;
 
+    private String mServiceDownStreamTopic;
+
+    private String mServiceUptreamTopic;
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
@@ -26,5 +43,30 @@ public class TmeDataTemplate extends TXDataTemplate {
     public TmeDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack);
         this.mConnection = connection;
+        this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/" + deviceName;
+        this.mServiceUptreamTopic = TOPIC_SERVICE_UP_PREFIX + productId + "/" + deviceName;
+    }
+
+    public void requestUserInfo() {
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        String clientToken =  mProductId + mDeviceName + REQUEST_ID.getAndIncrement();
+        try {
+            object.put("method", METHOD_KUGOU_QUERY_PID);
+            object.put("clientToken", clientToken);
+            object.put("timestamp", System.currentTimeMillis());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MqttMessage message = new MqttMessage();
+        message.setQos(1);
+        message.setPayload(object.toString().getBytes());
+        mConnection.publish(mServiceUptreamTopic, message, null);
+    }
+
+    @Override
+    public void onMessageArrived(String topic, MqttMessage message) throws Exception {
+        super.onMessageArrived(topic, message);
+        TXLog.d(TAG, message.toString());
     }
 }
