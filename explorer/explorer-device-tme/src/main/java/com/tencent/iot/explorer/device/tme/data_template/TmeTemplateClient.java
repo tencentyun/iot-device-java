@@ -16,18 +16,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
+
 public class TmeTemplateClient extends TXMqttConnection {
-    //数据模板
+
+    private static final String TAG = TmeTemplateClient.class.getSimpleName();
+
     private TmeDataTemplate mDataTemplate;
-    //属性下行topic
-    public String mPropertyDownStreamTopic;
 
     public TmeTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         this.mDataTemplate = new TmeDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack);
-        this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
     /**
@@ -101,7 +101,7 @@ public class TmeTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
-        return  mDataTemplate.eventSinglePost(eventId, type, params);
+        return mDataTemplate.eventSinglePost(eventId, type, params);
     }
 
     /**
@@ -131,5 +131,9 @@ public class TmeTemplateClient extends TXMqttConnection {
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
+    }
+
+    public Status requestUserInfo() {
+        return mDataTemplate.requestUserInfo();
     }
 }
