@@ -1,14 +1,24 @@
 package com.tencent.iot.explorer.device.android.app;
 
+import android.Manifest;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.face.AuthActivity;
 import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
+
+import java.io.File;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 public class IoTDemoActivity extends AppCompatActivity {
 
@@ -17,10 +27,36 @@ public class IoTDemoActivity extends AppCompatActivity {
     private Button mIoTTrtcBtn;
     private Button mIoTTmeBtn;
 
+    private static final String TAG = IoTDemoActivity.class.getSimpleName();
+
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.READ_PHONE_STATE
+    };
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_iot_demo);
+
+        //日志功能开启写权限
+        try {
+            for (String ele: PERMISSIONS_STORAGE) {
+                int granted = ActivityCompat.checkSelfPermission(this, ele);
+                if (granted != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+                    break;
+                } else {
+                    initLogConfigurator();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         mIoTDemoBtn = findViewById(R.id.iot_demo);
         mIoTAiFaceBtn = findViewById(R.id.iot_ai_face);
@@ -60,5 +96,30 @@ public class IoTDemoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initLogConfigurator() {
+        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
+        LogConfigurator logConfigurator = new LogConfigurator();
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "explorer-demo.log");
+        logConfigurator.configure();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.e(TAG, "必要权限申请失败");
+                    finish();
+                } else {
+                    initLogConfigurator();
+                    break;
+                }
+            }
+        }
     }
 }

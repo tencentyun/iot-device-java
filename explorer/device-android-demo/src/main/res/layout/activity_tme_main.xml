@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/request_ll">
         <Button
             android:id="@+id/online"
             android:layout_width="wrap_content"
@@ -24,5 +24,25 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="设备下线" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/request_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <Button
+            android:id="@+id/request_pid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="请求pid" />
+
+        <Button
+            android:id="@+id/request_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="请求歌曲" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
