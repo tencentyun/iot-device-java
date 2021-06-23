@@ -1,8 +1,12 @@
 package com.tencent.iot.explorer.device.tme;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +21,11 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
+
+import java.io.File;
 import java.util.Arrays;
+
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 
 public class TmeMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -28,13 +36,15 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private String mBrokerURL = null;
     private String mProductID = "";
     private String mDevName = "";
-    private String mDevPSK = ""; //若使用证书验证，设为null
+    private String mDevPSK = "";
 
     private String mDevCert = ""; // Cert String
     private String mDevPriv = ""; // Priv String
 
     private Button mOnlineBtn;
     private Button mOfflineBtn;
+    private Button mGetPidBtn;
+    private Button mGetSongBtn;
 
     private final static String JSON_FILE_NAME = "tme_speaker.json";
 
@@ -51,8 +61,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private void initView() {
         mOnlineBtn = findViewById(R.id.online);
         mOfflineBtn = findViewById(R.id.offline);
+        mGetPidBtn = findViewById(R.id.request_pid);
+        mGetSongBtn = findViewById(R.id.request_song);
         mOnlineBtn.setOnClickListener(this);
         mOfflineBtn.setOnClickListener(this);
+        mGetPidBtn.setOnClickListener(this);
+        mGetSongBtn.setOnClickListener(this);
     }
 
     @Override
@@ -70,6 +84,16 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 if (mDataTemplateSample == null) return;
                 mDataTemplateSample.disconnect();
                 mDataTemplateSample = null;
+            }
+            break;
+            case R.id.request_pid: {
+                if (mDataTemplateSample == null) return;
+                mDataTemplateSample.requestPidAndPkey();
+            }
+            break;
+            case R.id.request_song: {
+                if (mDataTemplateSample == null) return;
+                mDataTemplateSample.disconnect();
             }
             break;
             default:

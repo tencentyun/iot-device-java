@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.tme.data_template;
 import android.content.Context;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -15,19 +16,20 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+
 
 public class TmeTemplateClient extends TXMqttConnection {
-    //数据模板
+
+    private static final String TAG = TmeTemplateClient.class.getSimpleName();
+
     private TmeDataTemplate mDataTemplate;
-    //属性下行topic
-    public String mPropertyDownStreamTopic;
 
     public TmeTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         this.mDataTemplate = new TmeDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack);
-        this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
     /**
@@ -101,7 +103,7 @@ public class TmeTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
-        return  mDataTemplate.eventSinglePost(eventId, type, params);
+        return mDataTemplate.eventSinglePost(eventId, type, params);
     }
 
     /**
@@ -123,6 +125,9 @@ public class TmeTemplateClient extends TXMqttConnection {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         super.messageArrived(topic, message);
         mDataTemplate.onMessageArrived(topic, message);
+        if (topic.equals(TOPIC_SERVICE_DOWN_PREFIX + mProductId + "/"  + mDeviceName)) {
+            TXLog.d(TAG, message.toString());
+        }
     }
 
     /**
@@ -131,5 +136,9 @@ public class TmeTemplateClient extends TXMqttConnection {
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
+    }
+
+    public void requestPidAndPkey() {
+        mDataTemplate.requestPidAndPkey();
     }
 }

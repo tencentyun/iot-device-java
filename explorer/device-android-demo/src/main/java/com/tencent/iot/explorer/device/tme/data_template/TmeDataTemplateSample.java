@@ -75,6 +75,10 @@ public class TmeDataTemplateSample {
         mDownStreamCallBack = downStreamCallBack;
     }
 
+    public void requestPidAndPkey() {
+        mMqttConnection.requestPidAndPkey();
+    }
+
     /**
      * 生成绑定设备的二维码字符串
      *
