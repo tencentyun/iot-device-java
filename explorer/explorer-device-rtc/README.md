@@ -219,6 +219,10 @@ explorer-device-android TXMqttConnection 类 的接口
 
 ### 连连APP/小程序 视频呼叫 Android设备端
 
+时序图：
+
+![UserCallDeviceUML](media/UserCallDeviceUML.png)
+
 1. 连连APP/小程序 在控制面板页面中点击 视频呼叫。
 
 2. 云服务通过mqtt转发 连连APP/小程序 的呼叫请求，触发设备端 TXTRTCCallBack 中 onGetCallStatusCallBack 回调，其中：
