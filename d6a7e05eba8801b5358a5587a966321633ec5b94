@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "70862942_cf1d5e77",
+        "filename": "explorer/explorer-device-tme/src/main/java/com/tencent/iot/explorer/device/tme/data_template/TmeDataTemplate.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-06-24T01:32:04Z",
+      "side": 1,
+      "message": "需要return publish的Status不？",
+      "revId": "d6a7e05eba8801b5358a5587a966321633ec5b94",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
