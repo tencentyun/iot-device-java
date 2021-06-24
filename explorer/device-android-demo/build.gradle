@@ -112,4 +112,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
+
+    //刷新
+    api 'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
+    api 'com.scwang.smart:refresh-header-classics:2.0.0-alpha-1'
+    api 'com.scwang.smart:refresh-footer-classics:2.0.0-alpha-1'
 }
