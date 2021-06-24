@@ -16,3 +16,7 @@ sed -i 's#//-##g' settings.gradle
 # sdkdemo 启用tme
 sed -i 's#com/tencent/iot/explorer/device/tme/##g' explorer/device-android-demo/build.gradle
 
+# 替换App.java
+rm explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/App.java
+cp .github/device-android-demo/App.java explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/
+
