@@ -1,22 +1,35 @@
 package com.tencent.iot.explorer.device.tme;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.kugou.ultimatetv.UltimateSongPlayer;
 import com.kugou.ultimatetv.UltimateTv;
+import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.constant.ErrorCode;
+import com.kugou.ultimatetv.entity.Playlist;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.UserAuth;
+import com.kugou.ultimatetv.util.ToastUtil;
+import com.scwang.smart.refresh.footer.ClassicsFooter;
+import com.scwang.smart.refresh.layout.SmartRefreshLayout;
+import com.scwang.smart.refresh.layout.api.RefreshLayout;
+import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
 import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
@@ -29,10 +42,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplate.METHOD_KUGOU_QUERY_PID_REPLY;
@@ -42,6 +60,7 @@ import static com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplate.
 public class TmeMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = TmeMainActivity.class.getSimpleName();
+    private final static String JSON_FILE_NAME = "tme_speaker.json";
 
     //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mBrokerURL = null;
@@ -56,10 +75,18 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private Button mOfflineBtn;
     private Button mGetPidBtn;
     private Button mGetSongBtn;
+    private Button mSearchBtn;
+    private EditText mInputEt;
+    private RecyclerView mPlayList;
+    private SmartRefreshLayout mSmartRefreshLayout;
 
-    private final static String JSON_FILE_NAME = "tme_speaker.json";
 
     private TmeDataTemplateSample mDataTemplateSample;
+    private SongListAdapter mAdapter;
+    private List<Song> mSongList = new ArrayList<>();
+
+    private int page = 1;
+    private int pageSize = 10;
 
 
     @Override
@@ -75,10 +102,37 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mOfflineBtn = findViewById(R.id.offline);
         mGetPidBtn = findViewById(R.id.request_pid);
         mGetSongBtn = findViewById(R.id.request_song);
+        mSearchBtn = findViewById(R.id.search);
+        mInputEt = findViewById(R.id.input);
+        mPlayList = findViewById(R.id.play_list);
+        mSmartRefreshLayout = findViewById(R.id.smart_refreshLayout);
+        mSmartRefreshLayout.setEnableLoadMore(true);
+        mSmartRefreshLayout.setRefreshFooter(new ClassicsFooter(this));
         mOnlineBtn.setOnClickListener(this);
         mOfflineBtn.setOnClickListener(this);
         mGetPidBtn.setOnClickListener(this);
         mGetSongBtn.setOnClickListener(this);
+        mSearchBtn.setOnClickListener(this);
+        mPlayList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mPlayList.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        mAdapter = new SongListAdapter(this, mSongList);
+        mAdapter.setOnItemClickListener(new SongListAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(TmeMainActivity.this, mSongList.get(position).songName, Toast.LENGTH_SHORT).show();
+                playSong(mSongList.get(position).songId);
+            }
+        });
+        mPlayList.setAdapter(mAdapter);
+
+        mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMore();
+                page++;
+                getSongListById("");
+            }
+        });
     }
 
     @Override
@@ -99,9 +153,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             }
             break;
             case R.id.request_pid: {
+                initKugouSDK("", "");
             }
             break;
             case R.id.request_song: {
+                getSongListById("");
             }
             break;
             default:
@@ -137,7 +193,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             if (mDataTemplateSample != null) {
                 if (!reconnect) {
                     mDataTemplateSample.subscribeTopic();
-                    mDataTemplateSample.requestUserInfo();
                 }
             }
         }
@@ -323,6 +378,30 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
         }
+    }
+
+    private void getSongListById(String id) {
+        UltimateSongApi.getSongList(id, page, pageSize)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                            if (response.isSuccess() && response.getData() != null) {
+                                mSongList.addAll(response.getData().getList());
+                                if (mAdapter != null) mAdapter.notifyDataSetChanged();
+                            } else {
+                                if (page>1) {
+                                    page--;
+                                }
+                                ToastUtil.showS("加载出错");
+                            }
+                        },
+                        throwable -> {
+                            if (page>1) {
+                                page--;
+                            }
+                            throwable.printStackTrace();
+                            ToastUtil.showS("加载出错");
+                        });
     }
 
     @Override
