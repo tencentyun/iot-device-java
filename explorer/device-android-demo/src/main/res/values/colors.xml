@@ -35,4 +35,6 @@
     <color name="login_color_text_login_success">#FF42BC56</color>
     <color name="login_color_text_login_fail">#FFE84B40</color>
     <color name="login_transparent">#00000000</color>
+
+    <color name="gray_E7E8EB">#E7E8EB</color>
 </resources>

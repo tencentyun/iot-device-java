@@ -11,12 +11,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
 import com.kugou.ultimatetv.UltimateTv;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.constant.ErrorCode;
+import com.kugou.ultimatetv.constant.PlayerErrorCode;
 import com.kugou.ultimatetv.entity.Playlist;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
@@ -81,8 +85,13 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private Button mOfflineBtn;
     private Button mGetPidBtn;
     private Button mGetSongBtn;
-    private Button mSearchBtn;
+    private ImageView mSearchIv;
+    private ImageView mPreIv;
+    private ImageView mNextIv;
+    private ImageView mPlayIv;
+    private ImageView mPlayModeIv;
     private EditText mInputEt;
+    private TextView mCurrentSongTv;
     private RecyclerView mPlayList;
     private SmartRefreshLayout mSmartRefreshLayout;
 
@@ -99,6 +108,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private int operationType = -1;
     private String keyword = "";
+    private int playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+
 
 
     @Override
@@ -107,6 +118,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_tme_main);
         initView();
         UltimateSongPlayer.getInstance().init();
+        UltimateSongPlayer.getInstance().addSongPlayStateListener(mSongPlayStateListener);
     }
 
     private void initView() {
@@ -114,8 +126,13 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mOfflineBtn = findViewById(R.id.offline);
         mGetPidBtn = findViewById(R.id.request_pid);
         mGetSongBtn = findViewById(R.id.request_song);
-        mSearchBtn = findViewById(R.id.search);
+        mSearchIv = findViewById(R.id.search);
+        mPreIv = findViewById(R.id.iv_pre);
+        mNextIv = findViewById(R.id.iv_next);
+        mPlayIv = findViewById(R.id.iv_play);
+        mPlayModeIv = findViewById(R.id.iv_play_mode);
         mInputEt = findViewById(R.id.input);
+        mCurrentSongTv = findViewById(R.id.tv_current_song);
         mPlayList = findViewById(R.id.play_list);
         mSmartRefreshLayout = findViewById(R.id.smart_refreshLayout);
         mSmartRefreshLayout.setEnableLoadMore(true);
@@ -124,15 +141,20 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mOfflineBtn.setOnClickListener(this);
         mGetPidBtn.setOnClickListener(this);
         mGetSongBtn.setOnClickListener(this);
-        mSearchBtn.setOnClickListener(this);
+        mSearchIv.setOnClickListener(this);
+        mPreIv.setOnClickListener(this);
+        mNextIv.setOnClickListener(this);
+        mPlayIv.setOnClickListener(this);
+        mPlayModeIv.setOnClickListener(this);
         mPlayList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mPlayList.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         mAdapter = new SongListAdapter(this, mSongList);
         mAdapter.setOnItemClickListener(new SongListAdapter.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(TmeMainActivity.this, mSongList.get(position).songName, Toast.LENGTH_SHORT).show();
-                playSong(mSongList.get(position).songId);
+                Song song = mSongList.get(position);
+                mCurrentSongTv.setText(song.songName + "-" + song.singerName);
+                playSong(song.songId);
             }
         });
         mPlayList.setAdapter(mAdapter);
@@ -188,6 +210,25 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 } else {
                     ToastUtil.showS("请输入有效关键词");
                 }
+            }
+            break;
+            case R.id.iv_pre: {
+                ToastUtil.showS("pre");
+                UltimateSongPlayer.getInstance().previous();
+            }
+            break;
+            case R.id.iv_next: {
+                ToastUtil.showS("next");
+                UltimateSongPlayer.getInstance().next();
+            }
+            break;
+            case R.id.iv_play: {
+                UltimateSongPlayer.getInstance().toggle();
+                TXLog.d(TAG, UltimateSongPlayer.getInstance().getPlayMode() + "");
+            }
+            break;
+            case R.id.iv_play_mode: {
+                switchPlayMode();
             }
             break;
             default:
@@ -316,9 +357,115 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onUnbindDeviceCallBack(String msg) {
-            Log.d(TAG, "unbind device received : " + msg);
+            TXLog.d(TAG, "unbind device received : " + msg);
         }
     }
+
+    private final SongPlayStateListener mSongPlayStateListener = new SongPlayStateListener() {
+
+        @Override
+        public void onPrepared() {
+            TXLog.d(TAG, "======onPrepared");
+        }
+
+        @Override
+        public void onBufferingStart() {
+            TXLog.d(TAG, "======onBufferingStart");
+        }
+
+        @Override
+        public void onBufferingUpdate(int percent) {
+            TXLog.d(TAG, "======onBufferingUpdate");
+        }
+
+        @Override
+        public void onBufferingEnd() {
+            TXLog.d(TAG, "======onBufferingEnd");
+        }
+
+        @Override
+        public void onPlay() {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayIv.setImageResource(R.drawable.icon_pause));
+            TXLog.d(TAG, "======onPlay");
+        }
+
+        @Override
+        public void onPause() {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayIv.setImageResource(R.drawable.icon_play));
+            TXLog.d(TAG, "======onPause");
+        }
+
+        @Override
+        public void onSeekComplete() {
+            TXLog.d(TAG, "======onSeekComplete");
+        }
+
+        @Override
+        public void onCompletion() {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayIv.setImageResource(R.drawable.icon_play));
+            TXLog.d(TAG, "======onCompletion");
+        }
+
+        @Override
+        public void onError(int what, String msg) {
+            //根据错误码自定义提示信息
+            String tip = "播放出错，error: " + what;
+            TXLog.d(TAG, "======" + tip);
+            switch (what) {
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_OVERSEAS:
+                    tip = "海外地区不能播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_NO_COPYRIGHT:
+                    tip = "歌曲无版权不能播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_NEED_VIP:
+                    tip = "会员歌曲，非会员不能播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_NEED_PAY:
+                    tip = "付费内容，须购买才可播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_NIU_NEED_VIP:
+                    tip = "牛方案策略，非会员不能播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_PLATFORM_NO_COPYRIGHT:
+                    tip = "因定向版权下架不能播放（针对APP有权但设备端无权的情况）";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_UNKNOWN:
+                    tip = "未知原因,无权播放";
+                    break;
+                case PlayerErrorCode.KPLAYER_ERROR_SONG_NETWORK_ERROR:
+                    tip = "网络错误，请检查网络后重试";
+                    break;
+                case PlayerErrorCode.PLAY_NET_MUSIC_ERR:
+                    tip = "播放网络音乐错误";
+                    break;
+                case PlayerErrorCode.NO_AVALID_NET:
+                    tip = "未找到可用的网络连接";
+                    break;
+                case PlayerErrorCode.INAVALID_AREA:
+                    tip = "该地区无法播放";
+                    break;
+                case PlayerErrorCode.TRACKER_URL_ERROR:
+                    tip = "播放链接错误";
+                    break;
+                case PlayerErrorCode.NO_SDCARD:
+                    tip = "已经拨出SD卡,暂时无法使用";
+                    break;
+                case PlayerErrorCode.NO_ENOUGH_SPACE:
+                    tip = "SD卡未插入或SD卡空间不足";
+                    break;
+                case PlayerErrorCode.MAKE_STREAM_FAIL:
+                    tip = "流转换失败";
+                    break;
+                case PlayerErrorCode.NO_SUCH_FILE:
+                    tip = "文件不存在";
+                    break;
+                default:
+                    break;
+            }
+            ToastUtil.showS("播放出错, " + tip);
+        }
+    };
 
     private void onControlMsgReceived(final JSONObject msg) {
         int value = -1;
@@ -327,20 +474,26 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 value = msg.getInt(Common.PAUSE_PLAY);
                 TXLog.d(TAG, "pause_play = " + value);
                 if (UltimateSongPlayer.getInstance().isPlaying()) {
-                    if (value == 0) {  //暂停
+                    if (value == 0) { //暂停
                         UltimateSongPlayer.getInstance().pause();
                     }
                 } else {
-                    if (value == 1) {  //播放
+                    if (value == 1) { //播放
                         UltimateSongPlayer.getInstance().play();
                     }
                 }
             } else if (msg.has(Common.PRE_NEXT)) {
                 value = msg.getInt(Common.PRE_NEXT);
                 TXLog.d(TAG, "pre_next = " + value);
+                if (value == 1) { //上一首
+                    UltimateSongPlayer.getInstance().previous();
+                } else if (value == 2) { //下一首
+                    UltimateSongPlayer.getInstance().next();
+                }
             } else if (msg.has(Common.PLAY_MODE)) {
                 value = msg.getInt(Common.PLAY_MODE);
                 TXLog.d(TAG, "play_mode = " + value);
+                updatePlayMode(value, false);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -413,7 +566,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                                 mSongList.addAll(response.getData().getList());
                                 if (mAdapter != null) mAdapter.notifyDataSetChanged();
                             } else {
-                                if (page>1) {
+                                if (page > 1) {
                                     page--;
                                 }
                                 ToastUtil.showS("加载出错");
@@ -448,12 +601,41 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private void playSong(String songId) {
         Song song = new Song();
         song.setSongId(songId);
-        UltimateSongPlayer.getInstance().insertPlay(song, true);
+        UltimateSongPlayer.getInstance().play(song);
     }
 
     private void resetState() {
         page = 1;
         mSongList.clear();
+    }
+
+    private void updatePlayMode(int value, boolean reportCurrentMode) {
+        if (value == 0) { //顺序播放
+            playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+        } else if (value == 1) { //列表循环
+            playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+        } else if (value == 2) { //随机播放
+            playMode = UltimateSongPlayer.PLAY_MODE_RANDOM;
+        } else if (value == 3) { //单曲循环
+            playMode = UltimateSongPlayer.PLAY_MODE_SINGLE;
+        }
+        UltimateSongPlayer.getInstance().setPlayMode(playMode);
+        if (reportCurrentMode) {
+            // 通过mqtt上报最新播放模式给后台
+        }
+    }
+
+    private void switchPlayMode() {
+        if (++playMode > 3) {
+            playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+        }
+        if (playMode == UltimateSongPlayer.PLAY_MODE_CYCLE) {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_repeat));
+        } else if (playMode == UltimateSongPlayer.PLAY_MODE_SINGLE) {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_repeat_one));
+        } else if (playMode == UltimateSongPlayer.PLAY_MODE_RANDOM) {
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_shuffle));
+        }
     }
 
     @Override
