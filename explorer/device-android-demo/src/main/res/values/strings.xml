@@ -6,6 +6,7 @@
     <string name="trtccalling_waiting_to_hear">"等待接听中..."</string>
     <string name="trtccalling_call_time_default">"00:01"</string>
     <string name="trtccalling_contact_default_name">"测试123"</string>
+    <string name="trtccalling_invite_audio_call">"邀请您进行语音通话..."</string>
     <string name="trtccalling_invite_video_call">"邀请您进行视频通话..."</string>
     <string name="trtccalling_search_call_hint">搜索手机号</string>
     <string name="trtccalling_start_call">"呼叫"</string>

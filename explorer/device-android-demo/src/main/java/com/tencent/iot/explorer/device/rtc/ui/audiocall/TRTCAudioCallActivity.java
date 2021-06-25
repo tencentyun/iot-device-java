@@ -70,6 +70,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private LinearLayout mLayoutImgContainer;
     private TextView mTextTime;
     private TextView mStatusView;
+    private TextView mSponsorUserNameTv;
+    private TextView mSponsorAudioTagTv;
 
     private Runnable mTimeRunnable;
     private int           mTimeCount;
@@ -340,7 +342,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
             public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
                 //1.分配自己的画面
                 mLayoutManagerTRTC.setMySelfUserId(mSelfModel.getUserId());
-                addUserToManager(mSelfModel);
                 //2.接听电话
                 TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 mTRTCCalling.enterTRTCRoom(roomKey);
@@ -437,7 +438,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 mOtherInvitingUserInfoList = params.mUserInfos;
             }
             showWaitingResponseView();
-            mStatusView.setText(mUserId+"邀请您进行语音通话");
         } else {
             // 主叫方
             if (roomKey != null) {
@@ -464,6 +464,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutImgContainer = (LinearLayout) findViewById(R.id.ll_img_container);
         mTextTime = (TextView) findViewById(R.id.tv_time);
         mStatusView = (TextView) findViewById(R.id.tv_status);
+        mSponsorUserNameTv = (TextView) findViewById(R.id.tv_sponsor_user_name);
+        mSponsorAudioTagTv = (TextView) findViewById(R.id.tv_sponsor_audio_tag);
     }
 
 
@@ -472,9 +474,10 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
      */
     public void showWaitingResponseView() {
         //1. 展示对方的画面
-        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mUserId);
-        layout.setUserId(mUserId);
-//        Picasso.get().load(mSponsorUserInfo.userAvatar).into(layout.getImageView());
+        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mSelfModel.getUserId());
+        layout.setUserId(mSelfModel.getUserId());
+        mSponsorUserNameTv.setText(mSponsorUserInfo.userName);
+
         //2. 展示电话对应界面
         mLayoutHangup.setVisibility(View.VISIBLE);
         mLayoutDialing.setVisibility(View.VISIBLE);
@@ -484,7 +487,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.reject();
                 removeCallbackAndFinish();
             }
         });
@@ -516,14 +518,15 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 removeCallbackAndFinish();
             }
         });
         mLayoutDialing.setVisibility(View.GONE);
-        mLayoutHandsFree.setVisibility(View.GONE);
-        mLayoutMute.setVisibility(View.GONE);
+        mLayoutHandsFree.setVisibility(View.VISIBLE);
+        mLayoutMute.setVisibility(View.VISIBLE);
+        mSponsorUserNameTv.setVisibility(View.GONE);
+        mSponsorAudioTagTv.setVisibility(View.GONE);
         //4. 隐藏中间他们也在界面
         hideOtherInvitingUserView();
     }
@@ -536,11 +539,12 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutDialing.setVisibility(View.GONE);
         mLayoutHandsFree.setVisibility(View.VISIBLE);
         mLayoutMute.setVisibility(View.VISIBLE);
+        mSponsorUserNameTv.setVisibility(View.GONE);
+        mSponsorAudioTagTv.setVisibility(View.GONE);
 
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 removeCallbackAndFinish();
             }
