@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
@@ -21,7 +19,6 @@ import com.kugou.ultimatetv.UltimateTv;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
-import com.kugou.ultimatetv.entity.Playlist;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.UserAuth;
@@ -192,6 +189,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             break;
             case R.id.request_pid: {
                 initKugouSDK("", "");
+                mDataTemplateSample.requestUserInfo();
             }
             break;
             case R.id.request_song: {
@@ -215,16 +213,19 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.iv_pre: {
                 ToastUtil.showS("pre");
                 UltimateSongPlayer.getInstance().previous();
+                // 通过mqtt上报切歌动作
+                reportProperty(Common.PRE_NEXT, 1);
             }
             break;
             case R.id.iv_next: {
                 ToastUtil.showS("next");
                 UltimateSongPlayer.getInstance().next();
+                // 通过mqtt上报切歌动作
+                reportProperty(Common.PRE_NEXT, 2);
             }
             break;
             case R.id.iv_play: {
                 UltimateSongPlayer.getInstance().toggle();
-                TXLog.d(TAG, UltimateSongPlayer.getInstance().getPlayMode() + "");
             }
             break;
             case R.id.iv_play_mode: {
@@ -387,12 +388,16 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         public void onPlay() {
             TmeMainActivity.this.runOnUiThread(() -> mPlayIv.setImageResource(R.drawable.icon_pause));
             TXLog.d(TAG, "======onPlay");
+            // 通过mqtt上报播放
+            reportProperty(Common.PAUSE_PLAY, 1);
         }
 
         @Override
         public void onPause() {
             TmeMainActivity.this.runOnUiThread(() -> mPlayIv.setImageResource(R.drawable.icon_play));
             TXLog.d(TAG, "======onPause");
+            // 通过mqtt上报暂停
+            reportProperty(Common.PAUSE_PLAY, 0);
         }
 
         @Override
@@ -493,7 +498,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PLAY_MODE)) {
                 value = msg.getInt(Common.PLAY_MODE);
                 TXLog.d(TAG, "play_mode = " + value);
-                updatePlayMode(value, false);
+                updatePlayMode(value);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -609,20 +614,18 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mSongList.clear();
     }
 
-    private void updatePlayMode(int value, boolean reportCurrentMode) {
+    private void updatePlayMode(int value) {
         if (value == 0) { //顺序播放
             playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
-        } else if (value == 1) { //列表循环
-            playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_repeat));
+        } else if (value == 1) { //单曲循环
+            playMode = UltimateSongPlayer.PLAY_MODE_SINGLE;
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_repeat_one));
         } else if (value == 2) { //随机播放
             playMode = UltimateSongPlayer.PLAY_MODE_RANDOM;
-        } else if (value == 3) { //单曲循环
-            playMode = UltimateSongPlayer.PLAY_MODE_SINGLE;
+            TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_shuffle));
         }
         UltimateSongPlayer.getInstance().setPlayMode(playMode);
-        if (reportCurrentMode) {
-            // 通过mqtt上报最新播放模式给后台
-        }
     }
 
     private void switchPlayMode() {
@@ -636,12 +639,33 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         } else if (playMode == UltimateSongPlayer.PLAY_MODE_RANDOM) {
             TmeMainActivity.this.runOnUiThread(() -> mPlayModeIv.setImageResource(R.drawable.icon_shuffle));
         }
+        UltimateSongPlayer.getInstance().setPlayMode(playMode);
+        // 通过mqtt上报最新播放模式给后台
+        reportProperty(Common.PLAY_MODE, playMode - 1);
+    }
+
+    private void reportProperty(String key, int value) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mDataTemplateSample != null) {
+            mDataTemplateSample.propertyReport(params, null);
+            if (Status.OK != mDataTemplateSample.propertyReport(params, null)) {
+                TXLog.e(TAG, key + " property report failed!");
+            }
+        } else {
+            TXLog.e(TAG, "mDataTemplateSample is null!");
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //彻底不需要使用歌曲播放了，释放资源
+        UltimateSongPlayer.getInstance().removeSongPlayStateListener(mSongPlayStateListener);
         UltimateSongPlayer.getInstance().release();
     }
 }

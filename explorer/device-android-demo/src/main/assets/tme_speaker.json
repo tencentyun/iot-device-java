@@ -31,22 +31,6 @@
       "required": false
     },
     {
-      "id": "play_mode",
-      "name": "play_mode",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "enum",
-        "mapping": {
-          "0": "顺序播放",
-          "1": "列表循环",
-          "2": "随机播放",
-          "3": "单曲循环"
-        }
-      },
-      "required": false
-    },
-    {
       "id": "song_id",
       "name": "当前曲目",
       "desc": "",
@@ -67,6 +51,21 @@
         "type": "string",
         "min": "0",
         "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "play_mode",
+      "name": "play_mode",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "顺序播放",
+          "1": "单曲循环",
+          "2": "随机播放"
+        }
       },
       "required": false
     }
@@ -93,7 +92,7 @@
     }
   ],
   "profile": {
-    "ProductId": "958GL6GI6A",
+    "ProductId": "CJTPB68RMZ",
     "CategoryId": "1"
   }
 }

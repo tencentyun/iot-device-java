@@ -39,7 +39,7 @@ public class TmeDataTemplateSample {
     private String mJsonFileName = "JSON_FILE_NAME";
 
     private TXMqttActionCallBack mMqttActionCallBack;
-    private TmeTemplateClient mMqttConnection;
+    private TmeTemplateClient mClient;
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
 
     private Context mContext;
@@ -76,7 +76,7 @@ public class TmeDataTemplateSample {
     }
 
     public Status requestUserInfo() {
-        return mMqttConnection.requestUserInfo();
+        return mClient.requestUserInfo();
     }
 
     /**
@@ -85,14 +85,14 @@ public class TmeDataTemplateSample {
      * @return 生成的绑定设备的二维码字符串;
      */
     public String generateDeviceQRCodeContent() {
-        return mMqttConnection.generateDeviceQRCodeContent();
+        return mClient.generateDeviceQRCodeContent();
     }
 
     /**
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TmeTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, null, null, mMqttActionCallBack,
+        mClient = new TmeTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, null, null, mMqttActionCallBack,
                 mJsonFileName, mDownStreamCallBack);
 
         MqttConnectOptions options = new MqttConnectOptions();
@@ -108,20 +108,20 @@ public class TmeDataTemplateSample {
         }
 
         TXMqttRequest mqttRequest = new TXMqttRequest("connect", REQUEST_ID.getAndIncrement());
-        mMqttConnection.connect(options, mqttRequest);
+        mClient.connect(options, mqttRequest);
 
         DisconnectedBufferOptions bufferOptions = new DisconnectedBufferOptions();
         bufferOptions.setBufferEnabled(true);
         bufferOptions.setBufferSize(1024);
         bufferOptions.setDeleteOldestMessages(true);
-        mMqttConnection.setBufferOpts(bufferOptions);
+        mClient.setBufferOpts(bufferOptions);
     }
 
     /**
      * 是否已经连接物联网开发平台
      */
     public boolean isConnected() {
-        return mMqttConnection.isConnected();
+        return mClient.isConnected();
     }
 
     /**
@@ -129,23 +129,23 @@ public class TmeDataTemplateSample {
      */
     public void disconnect() {
         TXMqttRequest mqttRequest = new TXMqttRequest("disconnect", REQUEST_ID.getAndIncrement());
-        mMqttConnection.disConnect(mqttRequest);
+        mClient.disConnect(mqttRequest);
     }
 
     /**
      * 订阅主题
      */
     public void subscribeTopic() {
-        if (Status.OK != mMqttConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
+        if (Status.OK != mClient.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
             TXLog.e(TAG, "subscribeTopic: subscribe property down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)) {
+        if (Status.OK != mClient.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)) {
             TXLog.e(TAG, "subscribeTopic: subscribe event down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
+        if (Status.OK != mClient.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)) {
             TXLog.e(TAG, "subscribeTopic: subscribe action down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)) {
+        if (Status.OK != mClient.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)) {
             TXLog.e(TAG, "subscribeTopic: subscribe service down stream topic failed!");
         }
     }
@@ -154,46 +154,46 @@ public class TmeDataTemplateSample {
      * 取消订阅主题
      */
     public void unSubscribeTopic() {
-        if (Status.OK != mMqttConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC)) {
+        if (Status.OK != mClient.unSubscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC)) {
             TXLog.e(TAG, "subscribeTopic: unSubscribe property down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.unSubscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC)) {
+        if (Status.OK != mClient.unSubscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC)) {
             TXLog.e(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)) {
+        if (Status.OK != mClient.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)) {
             TXLog.e(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
         }
-        if (Status.OK != mMqttConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)) {
+        if (Status.OK != mClient.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)) {
             TXLog.e(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
         }
     }
 
     public Status propertyReport(JSONObject property, JSONObject metadata) {
-        return mMqttConnection.propertyReport(property, metadata);
+        return mClient.propertyReport(property, metadata);
     }
 
     public Status propertyGetStatus(String type, boolean showmeta) {
-        return mMqttConnection.propertyGetStatus(type, showmeta);
+        return mClient.propertyGetStatus(type, showmeta);
     }
 
     public Status propertyReportInfo(JSONObject params) {
-        return mMqttConnection.propertyReportInfo(params);
+        return mClient.propertyReportInfo(params);
     }
 
     public Status propertyClearControl() {
-        return mMqttConnection.propertyClearControl();
+        return mClient.propertyClearControl();
     }
 
     public Status eventsPost(JSONArray events) {
-        return mMqttConnection.eventsPost(events);
+        return mClient.eventsPost(events);
     }
 
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
-        return mMqttConnection.eventSinglePost(eventId, type, params);
+        return mClient.eventSinglePost(eventId, type, params);
     }
 
     public void checkFirmware() {
-        mMqttConnection.initOTA(Environment.getExternalStorageDirectory().getAbsolutePath(), new TXOTACallBack() {
+        mClient.initOTA(Environment.getExternalStorageDirectory().getAbsolutePath(), new TXOTACallBack() {
             @Override
             public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
                 TXLog.e(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
@@ -213,16 +213,16 @@ public class TmeDataTemplateSample {
             public void onDownloadCompleted(String outputFile, String version) {
                 TXLog.e(TAG, "onDownloadCompleted:" + outputFile + ", version:" + version);
 
-                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
+                mClient.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
             }
 
             @Override
             public void onDownloadFailure(int errCode, String version) {
                 TXLog.e(TAG, "onDownloadFailure:" + errCode);
 
-                mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
+                mClient.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
             }
         });
-        mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
+        mClient.reportCurrentFirmwareVersion("0.0.1");
     }
 }
