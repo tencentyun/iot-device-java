@@ -2,9 +2,11 @@ package com.tencent.iot.explorer.device.rtc;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +42,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -114,6 +117,8 @@ public class TRTCMainActivity extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
+    NetWorkStateReceiver netWorkStateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,6 +257,27 @@ public class TRTCMainActivity extends AppCompatActivity {
         });
 
         initPermission();
+    }
+
+    //在onResume()方法注册
+    @Override
+    protected void onResume() {
+        if (netWorkStateReceiver == null) {
+            netWorkStateReceiver = new NetWorkStateReceiver();
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkStateReceiver, filter);
+        Log.e(TAG, "注册netWorkStateReceiver");
+        super.onResume();
+    }
+
+    //onPause()方法注销
+    @Override
+    protected void onPause() {
+        unregisterReceiver(netWorkStateReceiver);
+        Log.e(TAG, "注销netWorkStateReceiver");
+        super.onPause();
     }
 
     private void initLogConfigurator() {
