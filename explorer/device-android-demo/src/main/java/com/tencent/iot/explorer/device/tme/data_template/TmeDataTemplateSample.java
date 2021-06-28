@@ -79,6 +79,10 @@ public class TmeDataTemplateSample {
         return mClient.requestUserInfo();
     }
 
+    public Status requestSongInfoById(String id) {
+        return mClient.requestSongInfoById(id);
+    }
+
     /**
      * 生成绑定设备的二维码字符串
      *

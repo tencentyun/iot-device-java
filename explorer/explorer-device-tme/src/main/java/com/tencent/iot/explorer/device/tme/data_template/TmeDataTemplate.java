@@ -12,14 +12,13 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 
 public class TmeDataTemplate extends TXDataTemplate {
-
-    private static final AtomicInteger REQUEST_ID = new AtomicInteger(0);
 
     public static final String METHOD_KUGOU_QUERY_PID = "kugou_query_pid";
     public static final String METHOD_KUGOU_QUERY_SONG = "kugou_query_song";
@@ -50,9 +49,29 @@ public class TmeDataTemplate extends TXDataTemplate {
     public Status requestUserInfo() {
         //构造发布信息
         JSONObject object = new JSONObject();
-        String clientToken =  mProductId + mDeviceName + REQUEST_ID.getAndIncrement();
+        String clientToken = UUID.randomUUID().toString();
         try {
             object.put("method", METHOD_KUGOU_QUERY_PID);
+            object.put("clientToken", clientToken);
+            object.put("timestamp", System.currentTimeMillis());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MqttMessage message = new MqttMessage();
+        message.setQos(1);
+        message.setPayload(object.toString().getBytes());
+        return mConnection.publish(mServiceUptreamTopic, message, null);
+    }
+
+    public Status requestSongInfoById(String id) {
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        JSONObject param = new JSONObject();
+        String clientToken = UUID.randomUUID().toString();
+        try {
+            param.put("song_id", id);
+            object.put("params", param);
+            object.put("method", METHOD_KUGOU_QUERY_SONG);
             object.put("clientToken", clientToken);
             object.put("timestamp", System.currentTimeMillis());
         } catch (JSONException e) {

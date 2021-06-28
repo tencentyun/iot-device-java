@@ -5,9 +5,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +24,7 @@ import com.kugou.ultimatetv.UltimateTv;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
+import com.kugou.ultimatetv.data.entity.User;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.UserAuth;
@@ -107,6 +113,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private String keyword = "";
     private int playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
 
+    private Dialog dialog;
+
 
 
     @Override
@@ -188,8 +196,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             }
             break;
             case R.id.request_pid: {
-                initKugouSDK("", "");
-                mDataTemplateSample.requestUserInfo();
+                initKugouSDK("", "", "", "");
             }
             break;
             case R.id.request_song: {
@@ -255,6 +262,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             }
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
+            TXLog.d(TAG, logInfo);
             if (mDataTemplateSample != null) {
                 if (!reconnect) {
                     mDataTemplateSample.subscribeTopic();
@@ -298,12 +306,16 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
             }
+            String topics = Arrays.toString(asyncActionToken.getTopics());
             String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
-                    status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
+                    status.name(), topics, userContextInfo, errMsg);
             if (Status.ERROR == status) {
                 TXLog.e(TAG, logInfo);
             } else {
                 TXLog.d(TAG, logInfo);
+                if (topics.contains(TOPIC_SERVICE_DOWN_PREFIX)) {
+                    mDataTemplateSample.requestUserInfo();
+                }
             }
             if (Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
                 TXLog.e(TAG, "property get status failed!");
@@ -513,13 +525,17 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             if (METHOD_KUGOU_QUERY_PID_REPLY.equals(method)) {
                 // user info reply
                 int code = jsonObj.getInt("code");
-                String pid, pkey;
+                String pid, pkey, userId, token;
                 if (code == 0) {
                     JSONObject response = jsonObj.getJSONObject("data");
                     pid = response.getString("pid");
                     pkey = response.getString("pkey");
+                    userId = response.getString("user_id");
+                    token = response.getString("access_token");
                     // init kugou sdk
-                    initKugouSDK(pid, pkey);
+                    initKugouSDK(pid, pkey, userId, token);
+                } else {
+                    ToastUtil.showS(String.format("kugou query user info error, code=%d", code));
                 }
             } else if (METHOD_KUGOU_QUERY_SONG_REPLY.equals(method)) {
                 // kugou music reply
@@ -529,7 +545,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void initKugouSDK(String pid, String pkey) {
+    private void initKugouSDK(String pid, String pkey, String userId, String token) {
         UltimateTv.Callback callback = new UltimateTv.Callback() {
             @Override
             public void onInitResult(int code, String msg) {
@@ -555,7 +571,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 .baseUrlProxyMap(baseUrlProxyMap);
         UltimateTv.getInstance().setConfig(config);
         try {
-            UltimateTv.getInstance().init(TmeMainActivity.this, pid, pkey, callback);
+            String deviceId = mProductID+"/"+mDevName;
+            User user = new User();
+            user.userId = userId;
+            user.token = token;
+            user.expireTime = 1639282332; // 2020/12/12 12:12:12
+            UltimateTv.getInstance().init(this, pid, pkey, deviceId, user, callback);
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
         }
@@ -661,10 +682,26 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    private void showDialog(Context context, Bitmap bitmap){
+        dialog = new Dialog(context, R.style.iOSDialog);
+        dialog.setContentView(R.layout.qrcode_dialog);
+        ImageView imageView = dialog.findViewById(R.id.iv_qrcode);
+        imageView.setImageBitmap(bitmap);
+        dialog.show();
+        //选择true的话点击其他地方可以使dialog消失，为false的话不会消失
+        dialog.setCanceledOnTouchOutside(false);
+        Window w = dialog.getWindow();
+        WindowManager.LayoutParams lp = w.getAttributes();
+        lp.x = 0;
+        lp.y = 40;
+        dialog.onWindowAttributesChanged(lp);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //彻底不需要使用歌曲播放了，释放资源
+        mDataTemplateSample.disconnect();
         UltimateSongPlayer.getInstance().removeSongPlayStateListener(mSongPlayStateListener);
         UltimateSongPlayer.getInstance().release();
     }

@@ -136,4 +136,8 @@ public class TmeTemplateClient extends TXMqttConnection {
     public Status requestUserInfo() {
         return mDataTemplate.requestUserInfo();
     }
+
+    public Status requestSongInfoById(String id) {
+        return mDataTemplate.requestSongInfoById(id);
+    }
 }

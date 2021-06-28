@@ -16,8 +16,20 @@
       "required": false
     },
     {
+      "id": "cur_play_list",
+      "name": "当前播放列表",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
       "id": "pre_next",
-      "name": "pre_next",
+      "name": "前一首后一首",
       "desc": "",
       "mode": "rw",
       "define": {
@@ -31,32 +43,8 @@
       "required": false
     },
     {
-      "id": "song_id",
-      "name": "当前曲目",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "string",
-        "min": "0",
-        "max": "2048"
-      },
-      "required": false
-    },
-    {
-      "id": "cur_play_list",
-      "name": "当前播放列表",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "string",
-        "min": "0",
-        "max": "2048"
-      },
-      "required": false
-    },
-    {
       "id": "play_mode",
-      "name": "play_mode",
+      "name": "播放模式",
       "desc": "",
       "mode": "rw",
       "define": {
@@ -68,29 +56,95 @@
         }
       },
       "required": false
-    }
-  ],
-  "events": [],
-  "actions": [
+    },
     {
-      "id": "set_song_list",
-      "name": "下发歌单",
-      "desc": "下发歌单,  song_list 是个字符串 里面包了 JSON数组",
-      "input": [
-        {
-          "id": "song_list",
-          "name": "song_list",
-          "define": {
-            "type": "string",
-            "min": "0",
-            "max": "2048"
-          }
+      "id": "song_list",
+      "name": "播放的歌曲列表",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "volume",
+      "name": "音量",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "100",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "play_position",
+      "name": "播放进度",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "7200",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "cur_song_id",
+      "name": "当前曲目",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "control_seq",
+      "name": "下发标志",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "100000",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "recommend_quality",
+      "name": "推荐播放质量",
+      "desc": "\"SQ,HQ,LQ\"",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "标准",
+          "1": "流畅",
+          "2": "高清",
+          "3": "无损"
         }
-      ],
-      "output": [],
+      },
       "required": false
     }
   ],
+  "events": [],
+  "actions": [],
   "profile": {
     "ProductId": "CJTPB68RMZ",
     "CategoryId": "1"
