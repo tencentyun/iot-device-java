@@ -73,3 +73,9 @@ options.setAutomaticReconnect(true);
 #### MQTT连接时，报java.net.UnknownHostException
 此错误是由于客户使用的v3.2.0 SDK里的服务器域名(iotcloud-mqtt.gz.tencentdevices.com)是旧的，从SDK v3.2.1版本开始，使用了新的域名${ProductId}.iotcloud.tencentdevices.com。解决方法：更新[SDK版本](https://github.com/tencentyun/iot-device-java/releases)；注：从产品经理处获取到"老版本SDK是仍可使用旧域名，对外提供新的域名"，所以该问题也有可能是本地DNS出问题导致host不能被正确解析。
 
+#### SDK需要配置的哪些混淆规则？
+在proguard-rules.pro文件里添加如下规则，将SDK相关类加入不混淆名单
+```
+-keep class com.tencent.iot.** { *; }
+```
+
