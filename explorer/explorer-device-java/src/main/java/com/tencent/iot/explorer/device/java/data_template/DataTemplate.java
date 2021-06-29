@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -224,7 +225,7 @@ public class DataTemplate {
 
         //构造发布信息
         JSONObject object = new JSONObject();
-        String clientToken = mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
+        String clientToken = mProductId + mDeviceName + UUID.randomUUID().toString();
         try {
             object.put("method", METHOD_PROPERTY_REPORT);
             object.put("clientToken", clientToken);
