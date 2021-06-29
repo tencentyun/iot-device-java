@@ -2,9 +2,11 @@ package com.tencent.iot.explorer.device.rtc;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,6 +42,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -64,7 +67,7 @@ import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCData
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
-public class TRTCMainActivity extends AppCompatActivity {
+public class TRTCMainActivity extends AppCompatActivity implements NetWorkStateReceiver.NetworkStateReceiverListener  {
 
     private static final String TAG = "TRTCMainActivity";
 
@@ -115,10 +118,15 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
+    private NetWorkStateReceiver netWorkStateReceiver;
+
+    private boolean networkAvailable = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trtc_main);
+        startNetworkBroadcastReceiver(this);
 
         //日志功能开启写权限
         try {
@@ -254,6 +262,53 @@ public class TRTCMainActivity extends AppCompatActivity {
         initPermission();
     }
 
+    //在onResume()方法注册
+    @Override
+    protected void onResume() {
+//        if (netWorkStateReceiver == null) {
+//            netWorkStateReceiver = new NetWorkStateReceiver();
+//        }
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+//        registerReceiver(netWorkStateReceiver, filter);
+        registerNetworkBroadcastReceiver(this);
+        Log.e(TAG, "注册netWorkStateReceiver");
+        super.onResume();
+    }
+
+    //onPause()方法注销
+    @Override
+    protected void onPause() {
+//        unregisterReceiver(netWorkStateReceiver);
+        unregisterNetworkBroadcastReceiver(this);
+        Log.e(TAG, "注销netWorkStateReceiver");
+        super.onPause();
+    }
+
+    public void startNetworkBroadcastReceiver(Context currentContext) {
+        netWorkStateReceiver = new NetWorkStateReceiver();
+        netWorkStateReceiver.addListener((NetWorkStateReceiver.NetworkStateReceiverListener) currentContext);
+        registerNetworkBroadcastReceiver(currentContext);
+    }
+
+    /**
+     * Register the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void registerNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.registerReceiver(netWorkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    /**
+     * Unregister the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void unregisterNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.unregisterReceiver(netWorkStateReceiver);
+    }
+
     private void initLogConfigurator() {
         // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
         LogConfigurator logConfigurator = new LogConfigurator();
@@ -340,6 +395,16 @@ public class TRTCMainActivity extends AppCompatActivity {
             PermissionUtils.permission(PermissionConstants.STORAGE, PermissionConstants.MICROPHONE, PermissionConstants.CAMERA)
                     .request();
         }
+    }
+
+    @Override
+    public void networkAvailable() {
+        Log.e(TAG, "networkAvailable");
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Log.e(TAG, "networkUnavailable");
     }
 
     /**
