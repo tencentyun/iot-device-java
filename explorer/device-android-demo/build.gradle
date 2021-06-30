@@ -106,7 +106,7 @@ dependencies {
     if (findProject(':explorer:explorer-device-tme') != null) {
         api project(':explorer:explorer-device-tme')
     }
-    implementation 'org.greenrobot:eventbus:3.1.1'
+
     implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
