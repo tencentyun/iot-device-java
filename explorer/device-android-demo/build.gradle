@@ -35,7 +35,10 @@ android {
         buildConfigField 'String', 'SUB_DEV_PSK', "\"${getValueById('SUB_DEV_PSK')}\""
         buildConfigField 'String', 'SUB_PRODUCT_ID2', "\"${getValueById('SUB_PRODUCT_ID2')}\""
         buildConfigField 'String', 'SUB_DEV_NAME2', "\"${getValueById('SUB_DEV_NAME2')}\""
-        buildConfigField 'String', 'SUB_DEV_PSK2', "\"${getValueById('SUB//_DEV_PSK2')}\""
+        buildConfigField 'String', 'SUB_DEV_PSK2', "\"${getValueById('SUB_DEV_PSK2')}\""
+        buildConfigField 'String', 'TME_PRODUCT_ID', "\"${getValueById('TME_PRODUCT_ID')}\""
+        buildConfigField 'String', 'TME_DEVICE_NAME', "\"${getValueById('TME_DEVICE_NAME')}\""
+        buildConfigField 'String', 'TME_DEVICE_PSK', "\"${getValueById('TME_DEVICE_PSK')}\""
     }
     buildTypes {
         release {

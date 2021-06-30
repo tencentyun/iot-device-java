@@ -136,6 +136,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private int operationType = -1;
     private String keyword = "";
     private int playMode = UltimateSongPlayer.PLAY_MODE_CYCLE;
+    private String songListId = "";
+    private String songListType = "";
 
     private Dialog dialog;
 
@@ -161,7 +163,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 default:
                     break;
             }
-
         }
     };
 
@@ -228,7 +229,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 if (operationType == TYPE_SEARCH) {
                     doSearch(keyword);
                 } else if (operationType == TYPE_SONG_LIST) {
-                    getSongListById("", "");
+                    getSongListById(songListId, songListType);
                 }
             }
         });
@@ -296,7 +297,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.request_song: {
                 operationType = TYPE_SONG_LIST;
                 resetState();
-                getSongListById("", Common.PLAY_TYPE_ALBUM);
+                getSongListById(songListId, songListType);
             }
             break;
             case R.id.search: {
@@ -459,6 +460,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onGetStatusReplyCallBack(JSONObject data) {
             TXLog.d(TAG, "======onGetStatusReplyCallBack : " + data.toString());
+            updateControlState(data);
         }
 
         @Override
@@ -636,9 +638,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PROPERTY_VOLUME)) { //播放音量
                 value = msg.getInt(Common.PROPERTY_VOLUME);
                 TXLog.d(TAG, "volume = " + value);
-                int volume = (int) (maxVolume * (value/(Common.TOTOAL_VOLUME_DURATION * 1.000)));
-                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_PLAY_SOUND);
-                mVolumeSeekBar.setProgress(volume);
+                updateVolume(value);
             } else if (msg.has(Common.PROPERTY_PLAY_POSITION)) { //播放进度
                 value = msg.getInt(Common.PROPERTY_PLAY_POSITION);
                 TXLog.d(TAG, "play_position = " + value);
@@ -761,12 +761,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private void doSearch(String word) {
         RxUtil.d(mSearchSongDisposable);
-        mSearchSongDisposable = UltimateSongApi.getSearchSongList( page, pageSize, word)
+        mSearchSongDisposable = UltimateSongApi.getSearchSongList(page, pageSize, word)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(songListResponse -> {
                             if (songListResponse.isSuccess() && songListResponse.getData() != null) {
-                                mSongList.addAll(songListResponse.getData().getList().subList(0,pageSize));
+                                mSongList.addAll(songListResponse.getData().getList().subList(0, pageSize));
                                 if (mAdapter != null) mAdapter.notifyDataSetChanged();
                                 KGLog.i(TAG, "搜索歌曲：" + mSongList.get(0).toString());
                             } else {
@@ -802,17 +802,49 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         UltimateSongPlayer.getInstance().setPlayMode(playMode);
     }
 
+    private void updateControlState(JSONObject data) {
+        if (data.has("reported")) {
+            try {
+                int volume = 0;
+                int playMode = 0;
+                String currentPlayList = "";
+                JSONObject obj = data.getJSONObject("reported");
+                if (obj.has(Common.PROPERTY_VOLUME)) {
+                    volume = obj.getInt(Common.PROPERTY_VOLUME);
+                }
+                if (obj.has(Common.PROPERTY_PLAY_MODE)) {
+                    playMode = obj.getInt(Common.PROPERTY_PLAY_MODE);
+                }
+                if (obj.has(Common.PROPERTY_CUR_PLAY_LIST)) {
+                    currentPlayList = obj.getString(Common.PROPERTY_CUR_PLAY_LIST);
+                }
+                updateVolume(volume);
+                updatePlayMode(playMode);
+                updatePlayList(currentPlayList);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void updateVolume(int val) {
+        int volume = (int) (maxVolume * (val/(Common.TOTOAL_VOLUME_DURATION * 1.000)));
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_PLAY_SOUND);
+        mVolumeSeekBar.setProgress(volume);
+    }
+
     private void updatePlayList(String msg) {
-        String type = "";
-        String id = "";
+        operationType = TYPE_SONG_LIST;
+        UltimateSongPlayer.getInstance().pause();
+        resetState();
         try {
             JSONObject obj = new JSONObject(msg);
-            type = obj.getString(Common.PLAY_TYPE);
-            id = obj.getString(Common.PLAY_ID);
+            songListType = obj.getString(Common.PLAY_TYPE);
+            songListId = obj.getString(Common.PLAY_ID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        getSongListById(id, type);
+        getSongListById(songListId, songListType);
     }
 
     private void switchPlayMode() {
