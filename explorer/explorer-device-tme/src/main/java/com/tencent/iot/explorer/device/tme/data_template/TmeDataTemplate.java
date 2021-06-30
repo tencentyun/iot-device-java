@@ -2,17 +2,28 @@ package com.tencent.iot.explorer.device.tme.data_template;
 
 import android.content.Context;
 
+import com.kugou.ultimatetv.UltimateTv;
+import com.kugou.ultimatetv.constant.ErrorCode;
+import com.kugou.ultimatetv.data.entity.User;
+import com.kugou.ultimatetv.entity.SongInfo;
+import com.kugou.ultimatetv.entity.UserAuth;
+import com.kugou.ultimatetv.util.ToastUtil;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.tme.entity.UserInfo;
+import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
@@ -31,6 +42,12 @@ public class TmeDataTemplate extends TXDataTemplate {
 
     private String mServiceUptreamTopic;
 
+    private Context mContext;
+
+    private String mProductID;
+
+    private String mDevName;
+
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
      * @param connection
@@ -44,6 +61,9 @@ public class TmeDataTemplate extends TXDataTemplate {
         this.mConnection = connection;
         this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/" + deviceName;
         this.mServiceUptreamTopic = TOPIC_SERVICE_UP_PREFIX + productId + "/" + deviceName;
+        this.mContext = context;
+        this.mProductID = productId;
+        this.mDevName = deviceName;
     }
 
     public Status requestUserInfo() {
@@ -87,5 +107,72 @@ public class TmeDataTemplate extends TXDataTemplate {
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
         TXLog.d(TAG, message.toString());
+        if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageReceived(message);
+        }
+    }
+
+    private void onServiceMessageReceived(final MqttMessage message) {
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if (METHOD_KUGOU_QUERY_PID_REPLY.equals(method)) {
+                // user info reply
+                int code = jsonObj.getInt("code");
+                String pid, pkey, userId, token;
+                long expire;
+                if (code == 0) {
+                    JSONObject response = jsonObj.getJSONObject("data");
+                    pid = response.getString("pid");
+                    pkey = response.getString("pkey");
+                    userId = response.getString("user_id");
+                    token = response.getString("token");
+                    expire = response.getLong("expire");
+                    UserInfo user = new UserInfo(pid, pkey, userId, token, expire);
+                    doAuth(user);
+                } else {
+                    ToastUtil.showS(String.format("query user info error, code=%d", code));
+                }
+            }
+        } catch (Exception e) {
+            TXLog.e(TAG, "onServiceMessageArrivedCallBack: invalid message: " + message);
+        }
+    }
+
+    private void doAuth(UserInfo userInfo) {
+        UltimateTv.Callback callback = new UltimateTv.Callback() {
+            @Override
+            public void onInitResult(int code, String msg) {
+                if (code == ErrorCode.CODE_SUCCESS) {
+                    EventBus.getDefault().post(new SDKInitEvent());
+                    TXLog.d(TAG, "init sdk success, " + msg);
+                }
+            }
+            @Override
+            public void onRefreshToken(UserAuth userAuth) {
+
+            }
+        };
+        //开启日志
+        UltimateTv.enableLog(true);
+        //配置域名
+        HashMap<Integer, String> baseUrlProxyMap = new HashMap<>();
+        UltimateTv.Config config = new UltimateTv.Config()
+                .connectTimeout(3000, TimeUnit.MILLISECONDS)
+                .readTimeout(3000, TimeUnit.MILLISECONDS)
+                .forceMvPlayerDeCodeType(0)//默认，自适配
+                .defaultSongQuality(SongInfo.QUALITY_SUPER) //无损音质
+                .baseUrlProxyMap(baseUrlProxyMap);
+        UltimateTv.getInstance().setConfig(config);
+        try {
+            String deviceId = mProductID + "/" + mDevName;
+            User user = new User();
+            user.userId = userInfo.getUserId();
+            user.token = userInfo.getToken();
+            user.expireTime = userInfo.getExpire();
+            UltimateTv.getInstance().init(mContext, userInfo.getPid(), userInfo.getPkey(), deviceId, user, callback);
+        } catch (IllegalArgumentException e) {
+            TXLog.e(TAG, "初始化失败" + e.getMessage());
+        }
     }
 }

@@ -67,6 +67,7 @@
             android:id="@+id/request_song"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:text="请求歌曲" />
     </LinearLayout>
 

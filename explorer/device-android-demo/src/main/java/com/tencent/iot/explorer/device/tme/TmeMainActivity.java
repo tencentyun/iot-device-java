@@ -23,21 +23,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
-import com.kugou.ultimatetv.UltimateTv;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
-import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
-import com.kugou.ultimatetv.data.entity.User;
 import com.kugou.ultimatetv.entity.Song;
-import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
-import com.kugou.ultimatetv.entity.UserAuth;
 import com.kugou.ultimatetv.util.KGLog;
 import com.kugou.ultimatetv.util.RxUtil;
 import com.kugou.ultimatetv.util.ToastUtil;
@@ -53,24 +47,19 @@ import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
-import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
 import com.tencent.iot.explorer.device.tme.utils.SharePreferenceUtil;
 import com.tencent.iot.explorer.device.tme.utils.Utils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.explorer.device.android.app.BuildConfig;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -444,9 +433,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("onMessageReceived, topic[%s], message[%s]", topic, message.toString());
             TXLog.d(TAG, logInfo);
-            if (topic.equals(TOPIC_SERVICE_DOWN_PREFIX + productId + "/" + deviceName)) {
-                onServiceMessageReceived(message);
-            }
         }
     }
 
@@ -660,71 +646,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private void onServiceMessageReceived(final MqttMessage message) {
-        //根据method进行相应处理
-        try {
-            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
-            String method = jsonObj.getString("method");
-            if (METHOD_KUGOU_QUERY_PID_REPLY.equals(method)) {
-                // user info reply
-                int code = jsonObj.getInt("code");
-                String pid, pkey, userId, token;
-                if (code == 0) {
-                    JSONObject response = jsonObj.getJSONObject("data");
-                    pid = response.getString("pid");
-                    pkey = response.getString("pkey");
-                    userId = response.getString("user_id");
-                    token = response.getString("access_token");
-                    // init kugou sdk
-                    initKugouSDK(pid, pkey, userId, token);
-                } else {
-                    ToastUtil.showS(String.format("kugou query user info error, code=%d", code));
-                }
-            } else if (METHOD_KUGOU_QUERY_SONG_REPLY.equals(method)) {
-                // kugou music reply
-            }
-        } catch (Exception e) {
-            TXLog.e(TAG, "onServiceMessageArrivedCallBack: invalid message: " + message);
-        }
-    }
-
-    private void initKugouSDK(String pid, String pkey, String userId, String token) {
-        UltimateTv.Callback callback = new UltimateTv.Callback() {
-            @Override
-            public void onInitResult(int code, String msg) {
-                if (code == ErrorCode.CODE_SUCCESS) {
-                    EventBus.getDefault().post(new SDKInitEvent());
-                    TXLog.d(TAG, "init kugou sdk success, " + msg);
-                }
-            }
-            @Override
-            public void onRefreshToken(UserAuth userAuth) {
-
-            }
-        };
-        //开启日志
-        UltimateTv.enableLog(true);
-        //配置域名
-        HashMap<Integer, String> baseUrlProxyMap = new HashMap<>();
-        UltimateTv.Config config = new UltimateTv.Config()
-                .connectTimeout(3000, TimeUnit.MILLISECONDS)
-                .readTimeout(3000, TimeUnit.MILLISECONDS)
-                .forceMvPlayerDeCodeType(0)//默认，自适配
-                .defaultSongQuality(SongInfo.QUALITY_SUPER) //无损音质
-                .baseUrlProxyMap(baseUrlProxyMap);
-        UltimateTv.getInstance().setConfig(config);
-        try {
-            String deviceId = mProductID+"/"+mDevName;
-            User user = new User();
-            user.userId = userId;
-            user.token = token;
-            user.expireTime = 1639282332; // 2020/12/12 12:12:12
-            UltimateTv.getInstance().init(this, pid, pkey, deviceId, user, callback);
-        } catch (IllegalArgumentException e) {
-            TXLog.e(TAG, "初始化失败" + e.getMessage());
-        }
-    }
-
     private void getSongListById(String id, String type) {
         Consumer<Response<? extends SongList>> consumer = response -> {
             if (response.isSuccess() && response.getData() != null) {
@@ -744,19 +665,22 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             _throwable.printStackTrace();
             ToastUtil.showS("加载出错");
         };
-        RxUtil.d(mLoadSongDisposable);
-        if (Common.PLAY_TYPE_ALBUM.equals(type)) {
-            mLoadSongDisposable = UltimateSongApi.getAlbumInfoList(id, page, pageSize)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(consumer, throwable);
+        if (!TextUtils.isEmpty(id)) {
+            RxUtil.d(mLoadSongDisposable);
+            if (Common.PLAY_TYPE_ALBUM.equals(type)) {
+                mLoadSongDisposable = UltimateSongApi.getAlbumInfoList(id, page, pageSize)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer, throwable);
+            } else {
+                mLoadSongDisposable = UltimateSongApi.getSongList(id, page, pageSize)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer, throwable);
+            }
         } else {
-            mLoadSongDisposable = UltimateSongApi.getSongList(id, page, pageSize)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(consumer, throwable);
+            ToastUtil.showS("歌单为空，请在腾讯连连App或小程序下发歌单");
         }
-
     }
 
     private void doSearch(String word) {
