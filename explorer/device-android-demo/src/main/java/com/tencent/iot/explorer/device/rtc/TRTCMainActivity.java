@@ -40,6 +40,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -66,7 +67,7 @@ import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCData
 
 public class TRTCMainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TRTCMainActivity";
+    private static final String TAG = TRTCMainActivity.class.getSimpleName();
 
     private TRTCDataTemplateSample mDataTemplateSample;
 
@@ -115,10 +116,13 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
+    private NetWorkStateReceiver netWorkStateReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trtc_main);
+        startNetworkBroadcastReceiver(this);
 
         //日志功能开启写权限
         try {
@@ -221,6 +225,11 @@ public class TRTCMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
+                if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
@@ -235,6 +244,11 @@ public class TRTCMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
+                if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
@@ -253,6 +267,46 @@ public class TRTCMainActivity extends AppCompatActivity {
 
         initPermission();
     }
+
+//    //在onResume()方法注册
+//    @Override
+//    protected void onResume() {
+//        registerNetworkBroadcastReceiver(this);
+//        Log.e(TAG, "注册netWorkStateReceiver");
+//        super.onResume();
+//    }
+//
+//    //onPause()方法注销
+//    @Override
+//    protected void onPause() {
+//        unregisterNetworkBroadcastReceiver(this);
+//        Log.e(TAG, "注销netWorkStateReceiver");
+//        super.onPause();
+//    }
+
+    public void startNetworkBroadcastReceiver(Context currentContext) {
+        netWorkStateReceiver = new NetWorkStateReceiver();
+//        netWorkStateReceiver.addListener((NetWorkStateReceiver.NetworkStateReceiverListener) currentContext);
+//        registerNetworkBroadcastReceiver(currentContext);
+    }
+
+//    /**
+//     * Register the NetworkStateReceiver with your activity
+//     *
+//     * @param currentContext
+//     */
+//    public void registerNetworkBroadcastReceiver(Context currentContext) {
+//        currentContext.registerReceiver(netWorkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+//    }
+
+//    /**
+//     * Unregister the NetworkStateReceiver with your activity
+//     *
+//     * @param currentContext
+//     */
+//    public void unregisterNetworkBroadcastReceiver(Context currentContext) {
+//        currentContext.unregisterReceiver(netWorkStateReceiver);
+//    }
 
     private void initLogConfigurator() {
         // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
@@ -341,6 +395,16 @@ public class TRTCMainActivity extends AppCompatActivity {
                     .request();
         }
     }
+
+//    @Override
+//    public void networkAvailable() {
+//        Log.e(TAG, "networkAvailable");
+//    }
+//
+//    @Override
+//    public void networkUnavailable() {
+//        Log.e(TAG, "networkUnavailable");
+//    }
 
     /**
      * 实现下行消息处理的回调接口
