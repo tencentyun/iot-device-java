@@ -7,5 +7,8 @@
   "SUB_DEV_PSK":       "",
   "SUB_PRODUCT_ID2":   "",
   "SUB_DEV_NAME2":     "",
-  "SUB_DEV_PSK2":      ""
+  "SUB_DEV_PSK2":      "",
+  "TME_PRODUCT_ID":    "",
+  "TME_DEVICE_NAME":   "",
+  "TME_DEVICE_PSK":    ""
 }

@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.kugou.ultimatetv.SongPlayStateListener;
@@ -50,11 +51,14 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStre
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
 import com.tencent.iot.explorer.device.tme.consts.Common;
+import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
 import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
+import com.tencent.iot.explorer.device.tme.utils.SharePreferenceUtil;
 import com.tencent.iot.explorer.device.tme.utils.Utils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.explorer.device.android.app.BuildConfig;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -175,6 +179,9 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         mVolumeSeekBar.setMax(maxVolume);
         mVolumeSeekBar.setProgress(currentVolume);
+        mProductID = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_PRODUCT_ID);
+        mDevName = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_NAME);
+        mDevPSK = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_PSK);
     }
 
     private void initView() {
@@ -270,13 +277,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (mDataTemplateSample != null) return;
-                    buttonView.setText("ONLINE");
                     mDataTemplateSample = new TmeDataTemplateSample(TmeMainActivity.this,
                             mBrokerURL, mProductID, mDevName, mDevPSK,
                             new SelfMqttActionCallBack(mProductID, mDevName), JSON_FILE_NAME, new SelfDownStreamCallBack());
                     mDataTemplateSample.connect();
                 } else {
-                    buttonView.setText("OFFLINE");
                     if (mDataTemplateSample == null) return;
                     mDataTemplateSample.disconnect();
                     mDataTemplateSample = null;
@@ -358,9 +363,15 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             TXLog.d(TAG, logInfo);
-            if (mDataTemplateSample != null) {
-                if (!reconnect) {
-                    mDataTemplateSample.subscribeTopic();
+            if (Status.ERROR == status) {
+                ToastUtil.showS("上线失败，请检查设备三元组信息是否正确或网络是否正常");
+                mSwitch.setChecked(false);
+            } else {
+                ToastUtil.showS("上线成功");
+                if (mDataTemplateSample != null) {
+                    if (!reconnect) {
+                        mDataTemplateSample.subscribeTopic();
+                    }
                 }
             }
         }
@@ -855,7 +866,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     protected void onDestroy() {
         super.onDestroy();
         //彻底不需要使用歌曲播放了，释放资源
-        mDataTemplateSample.disconnect();
+        if (mDataTemplateSample != null) mDataTemplateSample.disconnect();
         UltimateSongPlayer.getInstance().removeSongPlayStateListener(mSongPlayStateListener);
         UltimateSongPlayer.getInstance().release();
     }

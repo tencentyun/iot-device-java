@@ -88,7 +88,7 @@ public class IoTDemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    Class c = Class.forName("com.tencent.iot.explorer.device.tme.TmeMainActivity");
+                    Class c = Class.forName("com.tencent.iot.explorer.device.tme.TmeConfigActivity");
                     startActivity(new Intent(IoTDemoActivity.this, c));
                 } catch (ClassNotFoundException e) {
                     Toast.makeText(IoTDemoActivity.this, "请线下联系", Toast.LENGTH_LONG).show();
