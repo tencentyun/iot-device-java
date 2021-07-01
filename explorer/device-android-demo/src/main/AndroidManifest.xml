@@ -33,7 +33,7 @@
         </activity>
         <receiver android:name="com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver">
             <intent-filter>
-                //检测网络变化的acton
+                <!--检测网络变化的acton-->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
