@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.rtc.ui.videocall;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -22,6 +23,7 @@ import androidx.constraintlayout.widget.Group;
 import com.alibaba.fastjson.JSON;
 import com.squareup.picasso.Picasso;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.rtc.data_template.model.IntentParams;
 import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
@@ -32,6 +34,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.UserInfo;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingImpl;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.videolayout.TRTCVideoLayout;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.videolayout.TRTCVideoLayoutManager;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
@@ -46,7 +49,10 @@ import java.util.TimerTask;
  *
  * @author guanyifeng
  */
-public class TRTCVideoCallActivity extends AppCompatActivity {
+public class TRTCVideoCallActivity extends AppCompatActivity implements NetWorkStateReceiver.NetworkStateReceiverListener {
+
+    private static final String TAG = TRTCVideoCallActivity.class.getSimpleName();
+
     public static final int TYPE_BEING_CALLED = 1;
     public static final int TYPE_CALL         = 2;
 
@@ -95,10 +101,13 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     private boolean               isHandsFree       = true;
     private boolean               isMuteMic         = false;
     private boolean               mIsFrontCamera    = true;
+    private volatile boolean      mIsEnterRoom      = false;
     private volatile boolean      mIsExitRoom       = false;
 
     private TimerTask otherEnterRoomTask = null;
     private TimerTask enterRoomTask = null;
+
+    private NetWorkStateReceiver netWorkStateReceiver;
 
     /**
      * 拨号的回调
@@ -138,6 +147,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
                     if (videoLayout == null) {
                         return;
                     }
+                    mIsEnterRoom = true;
                     removeIsEnterRoom60secondsTask();
                     videoLayout.setVideoAvailable(false);
 
@@ -313,20 +323,22 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
     }
 
     private void checkoutOtherIsEnterRoom15seconds() {
-        otherEnterRoomTask = new TimerTask(){
-            public void run(){
-                //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消timertask
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
-                        stopCameraAndFinish();
-                    }
-                });
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(otherEnterRoomTask, 15000);
+        if (otherEnterRoomTask == null) {
+            otherEnterRoomTask = new TimerTask(){
+                public void run(){
+                    //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
+                            stopCameraAndFinish();
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(otherEnterRoomTask, 15000);
+        }
     }
 
     private void removeOtherIsEnterRoom15secondsTask() {
@@ -336,21 +348,23 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         }
     }
 
-    private void checkoutIsEnterRoom60seconds() {
-        enterRoomTask = new TimerTask(){
-            public void run(){
-                //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "对方无人接听", Toast.LENGTH_LONG).show();
-                        stopCameraAndFinish();
-                    }
-                });
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(enterRoomTask, 60000);
+    private void checkoutIsEnterRoom60seconds(String message) {
+        if (enterRoomTask == null) {
+            enterRoomTask = new TimerTask(){
+                public void run(){
+                    //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            stopCameraAndFinish();
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(enterRoomTask, 60000);
+        }
     }
 
     private void removeIsEnterRoom60secondsTask() {
@@ -368,6 +382,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.trtccalling_videocall_activity_call_main);
+        startNetworkBroadcastReceiver(this);
 
         TRTCUIManager.getInstance().addCallingParamsCallback(new TRTCCallingParamsCallback() {
             @Override
@@ -387,7 +402,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         initView();
         initData();
         initListener();
-        checkoutIsEnterRoom60seconds();
+        checkoutIsEnterRoom60seconds("对方无人接听");
     }
 
     @Override
@@ -416,6 +431,59 @@ public class TRTCVideoCallActivity extends AppCompatActivity {
         super.onDestroy();
         stopTimeCount();
         mTimeHandlerThread.quit();
+    }
+    //在onResume()方法注册
+    @Override
+    protected void onResume() {
+        registerNetworkBroadcastReceiver(this);
+        TXLog.e(TAG, "注册netWorkStateReceiver");
+        super.onResume();
+    }
+
+    //onPause()方法注销
+    @Override
+    protected void onPause() {
+        unregisterNetworkBroadcastReceiver(this);
+        TXLog.e(TAG, "注销netWorkStateReceiver");
+        super.onPause();
+    }
+
+    public void startNetworkBroadcastReceiver(Context currentContext) {
+        netWorkStateReceiver = new NetWorkStateReceiver();
+        netWorkStateReceiver.addListener((NetWorkStateReceiver.NetworkStateReceiverListener) currentContext);
+        registerNetworkBroadcastReceiver(currentContext);
+    }
+
+    /**
+     * Register the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void registerNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.registerReceiver(netWorkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    /**
+     * Unregister the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void unregisterNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.unregisterReceiver(netWorkStateReceiver);
+    }
+
+    @Override
+    public void networkAvailable() {
+        TXLog.e(TAG, "networkAvailable");
+        if (mIsEnterRoom) {
+            removeIsEnterRoom60secondsTask();
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        TXLog.e(TAG, "networkUnavailable");
+        checkoutIsEnterRoom60seconds("网络异常，请稍后重试");
     }
 
     private void initListener() {
