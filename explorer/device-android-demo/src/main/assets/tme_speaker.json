@@ -58,18 +58,6 @@
       "required": false
     },
     {
-      "id": "song_list",
-      "name": "播放的歌曲列表",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "string",
-        "min": "0",
-        "max": "2048"
-      },
-      "required": false
-    },
-    {
       "id": "volume",
       "name": "音量",
       "desc": "",
@@ -135,9 +123,8 @@
         "type": "enum",
         "mapping": {
           "0": "标准",
-          "1": "流畅",
-          "2": "高清",
-          "3": "无损"
+          "1": "高清",
+          "2": "无损"
         }
       },
       "required": false

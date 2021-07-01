@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Product Id:"
             android:textSize="16sp"/>
@@ -32,7 +32,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Device Name:"
             android:textSize="16sp"/>
@@ -52,7 +52,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Device Psk:"
             android:textSize="16sp"/>
