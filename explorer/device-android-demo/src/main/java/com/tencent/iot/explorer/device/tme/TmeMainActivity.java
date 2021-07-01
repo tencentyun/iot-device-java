@@ -72,8 +72,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplate.METHOD_KUGOU_QUERY_PID_REPLY;
-import static com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplate.METHOD_KUGOU_QUERY_SONG_REPLY;
 
 
 public class TmeMainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -162,8 +160,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     };
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -551,6 +547,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             // 通过mqtt上报播放
             reportProperty(Common.PROPERTY_PAUSE_PLAY, 1);
             currentSongId = song.songId;
+            mAdapter.setCurrentPos(index);
+            TmeMainActivity.this.runOnUiThread(() -> mAdapter.notifyDataSetChanged());
         }
 
         @Override
@@ -694,7 +692,9 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private void getSongListById(String id, String type) {
         Consumer<Response<? extends SongList>> consumer = response -> {
             if (response.isSuccess() && response.getData() != null) {
-                mSongList.addAll(response.getData().getList());
+                List<Song> songs = response.getData().getList();
+                mSongList.addAll(songs);
+                UltimateSongPlayer.getInstance().enqueue(songs, true);
                 if (mAdapter != null) mAdapter.notifyDataSetChanged();
             } else {
                 if (page > 1) {

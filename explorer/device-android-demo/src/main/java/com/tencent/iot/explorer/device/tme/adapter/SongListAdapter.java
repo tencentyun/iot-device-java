@@ -20,10 +20,17 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
     private List<Song> mSongList;
     private LayoutInflater mInflater;
     private ItemClickListener mItemClickLitener;
+    private int mCurrentPos = -1;
+    private Context mContext;
 
     public SongListAdapter(Context context, List<Song> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mSongList = data;
+        this.mContext = context;
+    }
+
+    public void setCurrentPos(int pos) {
+        mCurrentPos = pos;
     }
 
     public void setOnItemClickListener(ItemClickListener listener) {
@@ -42,6 +49,11 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHo
         holder.tvSongName.setText(song.songName);
         holder.tvSingerName.setText(song.singerName);
 
+        if (position == mCurrentPos) {
+            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+        }
         if (mItemClickLitener != null) {
             holder.btnPlay.setOnClickListener(new View.OnClickListener() {
                 @Override

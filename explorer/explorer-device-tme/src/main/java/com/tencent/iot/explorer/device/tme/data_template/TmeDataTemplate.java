@@ -12,6 +12,7 @@ import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
 import com.tencent.iot.explorer.device.tme.entity.UserInfo;
 import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -171,8 +172,35 @@ public class TmeDataTemplate extends TXDataTemplate {
             user.token = userInfo.getToken();
             user.expireTime = userInfo.getExpire();
             UltimateTv.getInstance().init(mContext, userInfo.getPid(), userInfo.getPkey(), deviceId, user, callback);
+            new CheckTokenThread(user.expireTime, null).start();
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
+        }
+    }
+
+    class CheckTokenThread extends Thread {
+
+        private long expiredTime;
+        private ExpiredCallback callback;
+
+        public CheckTokenThread(long expiredTime, ExpiredCallback callback) {
+            this.expiredTime = expiredTime;
+            this.callback = callback;
+        }
+
+        @Override
+        public void run() {
+            while (expiredTime * 1000 > System.currentTimeMillis()) {
+                try {
+                    Thread.sleep(10000);
+                    TXLog.e(TAG, "===== check token");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (callback != null) {
+                callback.expired();
+            }
         }
     }
 }
