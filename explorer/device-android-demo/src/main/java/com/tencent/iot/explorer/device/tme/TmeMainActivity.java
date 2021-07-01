@@ -17,11 +17,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -31,6 +34,7 @@ import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
 import com.kugou.ultimatetv.entity.Song;
+import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
 import com.kugou.ultimatetv.util.KGLog;
 import com.kugou.ultimatetv.util.RxUtil;
@@ -79,6 +83,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private static final int TYPE_SEARCH = 0;
     private static final int TYPE_SONG_LIST = 1;
     private static final int MSG_REFRESH_VIEW = 1;
+    private static final String[] qualityStrArray = { "标准","高清","无损" };
+    private static final int[] qualities = { SongInfo.QUALITY_STANDARD, SongInfo.QUALITY_HIGH, SongInfo.QUALITY_SUPER };
 
     //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mBrokerURL = null;
@@ -103,7 +109,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private SeekBar mSeekBar;
     private SeekBar mVolumeSeekBar;
     private ToggleButton mSwitch;
-
+    private Spinner mSpinner;
 
     private TmeDataTemplateSample mDataTemplateSample;
     private SongListAdapter mAdapter;
@@ -140,10 +146,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 case MSG_REFRESH_VIEW:
                     if (UltimateSongPlayer.getInstance().isPlaying()) {
                         int position = (int) UltimateSongPlayer.getInstance().getPlayPositionMs() / 1000;
-                        mTimeTv.setText(Utils.toProgress((position), mDuration));
+                        mTimeTv.setText(Utils.toProgress(position, mDuration));
                         int pos = mSeekBar.getProgress();
                         if (pos != position && !mIsSeekBarTouching) {
                             mSeekBar.setProgress(position);
+                            int currentPos = (int) ((position/(mSeekBar.getMax()*1.00)) * Common.TOTOAL_DURATION);
+                            reportProperty(Common.PROPERTY_PLAY_POSITION, currentPos);
                         }
                     }
                     mMainHandler.removeMessages(MSG_REFRESH_VIEW);
@@ -189,6 +197,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mSeekBar = findViewById(R.id.sb_seek_bar);
         mVolumeSeekBar = findViewById(R.id.sb_volume);
         mSwitch = findViewById(R.id.tb_switch);
+        mSpinner = findViewById(R.id.sp_quality);
         mSmartRefreshLayout.setEnableLoadMore(true);
         mSmartRefreshLayout.setRefreshFooter(new ClassicsFooter(this));
         mGetSongBtn.setOnClickListener(this);
@@ -205,7 +214,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             public void onItemClick(View view, int position) {
                 Song song = mSongList.get(position);
                 mCurrentSongTv.setText(song.songName + "-" + song.singerName);
-                playSong(song.songId);
+                playSong(position);
             }
         });
         mPlayList.setAdapter(mAdapter);
@@ -241,6 +250,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             public void onStopTrackingTouch(SeekBar seekBar) {
                 UltimateSongPlayer.getInstance().seekTo(seekValue * 1000);
                 mIsSeekBarTouching = false;
+                int currentPos = (int) ((seekValue/(mSeekBar.getMax()*1.00)) * Common.TOTOAL_DURATION);
+                reportProperty(Common.PROPERTY_PLAY_POSITION, currentPos);
             }
         });
         mVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -277,6 +288,37 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     mDataTemplateSample = null;
                 }
             }
+        });
+
+        mSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, qualityStrArray));
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (UltimateSongPlayer.getInstance().getCurrentPlayQuality() == qualities[position]) {
+                    return;
+                }
+                //当前歌曲详情
+                SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
+                if (songInfo == null) {
+                    ToastUtil.showS("无法切换音质");
+                    parent.setSelection(0);
+                    return;
+                }
+                if (songInfo.isTryListen()) {
+                    ToastUtil.showS("试听中，无法切换音质");
+                    parent.setSelection(0);
+                    return;
+                }
+                if (songInfo.getSupportQualities().contains(qualities[position])) {
+                    UltimateSongPlayer.getInstance().changeQuality(qualities[position]);
+                    reportProperty(Common.PROPERTY_RECOMMEND_QUALITY, position);
+                } else {
+                    parent.setSelection(0);
+                    ToastUtil.showS(String.format("当前歌曲不支持%s音质", qualityStrArray[position]));
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
@@ -477,6 +519,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             TmeMainActivity.this.runOnUiThread(() -> {
                 mSeekBar.setMax(mDuration);
             });
+            String currSongId = UltimateSongPlayer.getInstance().getCurPlaySong().songId;
+            reportProperty(Common.PROPERTY_CUR_SONG_ID, currSongId);
         }
 
         @Override
@@ -633,6 +677,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PROPERTY_RECOMMEND_QUALITY)) { //播放质量
                 value = msg.getInt(Common.PROPERTY_RECOMMEND_QUALITY);
                 TXLog.d(TAG, "recommend_quality = " + value);
+                updateQuality(value);
             } else if (msg.has(Common.PROPERTY_CUR_PLAY_LIST)) { //播放列表
                 strValue = msg.getString(Common.PROPERTY_CUR_PLAY_LIST);
                 TXLog.d(TAG, "cur_play_list = " + strValue);
@@ -700,10 +745,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         throwable -> ToastUtil.showS("加载出错"));
     }
 
-    private void playSong(String songId) {
-        Song song = new Song();
-        song.setSongId(songId);
-        UltimateSongPlayer.getInstance().insertPlay(song, true);
+    private void playSong(int index) {
+        UltimateSongPlayer.getInstance().play(mSongList, index, true);
     }
 
     private void resetState() {
@@ -787,7 +830,43 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         reportProperty(Common.PROPERTY_PLAY_MODE, playMode - 1);
     }
 
+    private void updateQuality(int quality) {
+        //当前歌曲详情
+        SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
+        if (songInfo == null) {
+            ToastUtil.showS("无法切换音质");
+            return;
+        }
+        if (songInfo.isTryListen()) {
+            ToastUtil.showS("试听中，无法切换音质");
+            return;
+        }
+        if (songInfo.getSupportQualities().contains(qualities[quality])) {
+            UltimateSongPlayer.getInstance().changeQuality(qualities[quality]);
+            mSpinner.setSelection(quality, true);
+            ToastUtil.showS(qualityStrArray[quality]);
+        } else {
+            ToastUtil.showS(String.format("当前歌曲不支持%s音质", qualityStrArray[quality]));
+        }
+    }
+
     private void reportProperty(String key, int value) {
+        JSONObject params = new JSONObject();
+        try {
+            params.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (mDataTemplateSample != null) {
+            if (Status.OK != mDataTemplateSample.propertyReport(params, null)) {
+                TXLog.e(TAG, key + " property report failed!");
+            }
+        } else {
+            TXLog.e(TAG, "mDataTemplateSample is null!");
+        }
+    }
+
+    private void reportProperty(String key, String value) {
         JSONObject params = new JSONObject();
         try {
             params.put(key, value);
