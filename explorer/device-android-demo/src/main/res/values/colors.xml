@@ -37,4 +37,6 @@
     <color name="login_transparent">#00000000</color>
 
     <color name="gray_E7E8EB">#E7E8EB</color>
+    <color name="black_000000">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>
