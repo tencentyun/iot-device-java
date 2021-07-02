@@ -114,7 +114,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private List<Song> mSongList = new ArrayList<>();
 
     private int page = 1;
-    private int pageSize = 10;
+    private int pageSize = 20;
     private String currentSongId = "";
     private int mDuration = 0;
     private boolean mIsSeekBarTouching = false;
@@ -122,6 +122,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private int volumeSeekValue = 0;
     private int maxVolume = 0;
     private int currentVolume = 0;
+    private boolean isGetStatusReply = false;
 
     private Disposable mLoadSongDisposable;
     private Disposable mSearchSongDisposable;
@@ -290,27 +291,32 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (UltimateSongPlayer.getInstance().getCurrentPlayQuality() == qualities[position]) {
-                    return;
-                }
-                //当前歌曲详情
-                SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
-                if (songInfo == null) {
-                    ToastUtil.showS("无法切换音质");
-                    parent.setSelection(0);
-                    return;
-                }
-                if (songInfo.isTryListen()) {
-                    ToastUtil.showS("试听中，无法切换音质");
-                    parent.setSelection(0);
-                    return;
-                }
-                if (songInfo.getSupportQualities().contains(qualities[position])) {
+                if (isGetStatusReply) {
                     UltimateSongPlayer.getInstance().changeQuality(qualities[position]);
-                    reportProperty(Common.PROPERTY_RECOMMEND_QUALITY, position);
+                    isGetStatusReply = false;
                 } else {
-                    parent.setSelection(0);
-                    ToastUtil.showS(String.format("当前歌曲不支持%s音质", qualityStrArray[position]));
+                    if (UltimateSongPlayer.getInstance().getCurrentPlayQuality() == qualities[position]) {
+                        return;
+                    }
+                    //当前歌曲详情
+                    SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
+                    if (songInfo == null) {
+                        ToastUtil.showS("无法切换音质");
+                        parent.setSelection(0);
+                        return;
+                    }
+                    if (songInfo.isTryListen()) {
+                        ToastUtil.showS("试听中，无法切换音质");
+                        parent.setSelection(0);
+                        return;
+                    }
+                    if (songInfo.getSupportQualities().contains(qualities[position])) {
+                        UltimateSongPlayer.getInstance().changeQuality(qualities[position]);
+                        reportProperty(Common.PROPERTY_RECOMMEND_QUALITY, position);
+                    } else {
+                        parent.setSelection(0);
+                        ToastUtil.showS(String.format("当前歌曲不支持%s音质", qualityStrArray[position]));
+                    }
                 }
             }
             @Override
@@ -343,14 +349,14 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 ToastUtil.showS("pre");
                 UltimateSongPlayer.getInstance().previous();
                 // 通过mqtt上报切歌动作
-                reportProperty(Common.PROPERTY_PRE_NEXT, 1);
+                reportProperty(Common.PROPERTY_PRE_NEXT, Common.PROPERTY_PRE);
             }
             break;
             case R.id.iv_next: {
                 ToastUtil.showS("next");
                 UltimateSongPlayer.getInstance().next();
                 // 通过mqtt上报切歌动作
-                reportProperty(Common.PROPERTY_PRE_NEXT, 2);
+                reportProperty(Common.PROPERTY_PRE_NEXT, Common.PROPERTY_NEXT);
             }
             break;
             case R.id.iv_play: {
@@ -639,18 +645,29 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private void onControlMsgReceived(final JSONObject msg) {
         int value = -1;
+        int controlSeq = -1;
         String strValue = "";
         try {
+            if (msg.has(Common.PROPERTY_CONTROL_SEQ)) {
+                controlSeq = msg.getInt(Common.PROPERTY_CONTROL_SEQ);
+            }
             if (msg.has(Common.PROPERTY_PAUSE_PLAY)) { //播放暂停控制
                 value = msg.getInt(Common.PROPERTY_PAUSE_PLAY);
                 TXLog.d(TAG, "pause_play = " + value);
                 if (TextUtils.isEmpty(currentSongId)) {
                     if (mSongList != null && mSongList.size() > 0) {
-                        UltimateSongPlayer.getInstance().play(mSongList);
+                        if (value == 1) {
+                            UltimateSongPlayer.getInstance().play(mSongList);
+                        }
                     }
                 } else {
-                    UltimateSongPlayer.getInstance().toggle();
+                    if (value == 0) {
+                        UltimateSongPlayer.getInstance().pause();
+                    } else if (value == 1){
+                        UltimateSongPlayer.getInstance().play();
+                    }
                 }
+                reportProperty(Common.PROPERTY_PAUSE_PLAY, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_PRE_NEXT)) { //上一首下一首
                 value = msg.getInt(Common.PROPERTY_PRE_NEXT);
                 TXLog.d(TAG, "pre_next = " + value);
@@ -659,30 +676,37 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 } else if (value == 2) { //下一首
                     UltimateSongPlayer.getInstance().next();
                 }
+                reportProperty(Common.PROPERTY_PRE_NEXT, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_PLAY_MODE)) { //播放模式
                 value = msg.getInt(Common.PROPERTY_PLAY_MODE);
                 TXLog.d(TAG, "play_mode = " + value);
                 updatePlayMode(value);
+                reportProperty(Common.PROPERTY_PLAY_MODE, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_VOLUME)) { //播放音量
                 value = msg.getInt(Common.PROPERTY_VOLUME);
                 TXLog.d(TAG, "volume = " + value);
                 updateVolume(value);
+                reportProperty(Common.PROPERTY_VOLUME, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_PLAY_POSITION)) { //播放进度
                 value = msg.getInt(Common.PROPERTY_PLAY_POSITION);
                 TXLog.d(TAG, "play_position = " + value);
                 int position = (int) (mDuration * (value/(Common.TOTOAL_DURATION * 1.000)) * 1000);
                 UltimateSongPlayer.getInstance().seekTo(position);
+                reportProperty(Common.PROPERTY_PLAY_POSITION, position, controlSeq);
             } else if (msg.has(Common.PROPERTY_RECOMMEND_QUALITY)) { //播放质量
                 value = msg.getInt(Common.PROPERTY_RECOMMEND_QUALITY);
                 TXLog.d(TAG, "recommend_quality = " + value);
                 updateQuality(value);
+                reportProperty(Common.PROPERTY_RECOMMEND_QUALITY, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_CUR_PLAY_LIST)) { //播放列表
                 strValue = msg.getString(Common.PROPERTY_CUR_PLAY_LIST);
                 TXLog.d(TAG, "cur_play_list = " + strValue);
                 updatePlayList(strValue);
+                reportProperty(Common.PROPERTY_CUR_PLAY_LIST, strValue, controlSeq);
             } else if (msg.has(Common.PROPERTY_CUR_SONG_ID)) { //当前播放的歌曲ID
                 strValue = msg.getString(Common.PROPERTY_CUR_SONG_ID);
                 TXLog.d(TAG, "cur_song_id = " + strValue);
+                reportProperty(Common.PROPERTY_CUR_SONG_ID, strValue, controlSeq);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -774,20 +798,26 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             try {
                 int volume = 0;
                 int playMode = 0;
+                int quality = 0;
                 String currentPlayList = "";
                 JSONObject obj = data.getJSONObject("reported");
-                if (obj.has(Common.PROPERTY_VOLUME)) {
+                if (obj.has(Common.PROPERTY_VOLUME)) { //恢复现场-音量
                     volume = obj.getInt(Common.PROPERTY_VOLUME);
+                    updateVolume(volume);
                 }
-                if (obj.has(Common.PROPERTY_PLAY_MODE)) {
+                if (obj.has(Common.PROPERTY_PLAY_MODE)) { //恢复现场-播放模式
                     playMode = obj.getInt(Common.PROPERTY_PLAY_MODE);
+                    updatePlayMode(playMode);
                 }
-                if (obj.has(Common.PROPERTY_CUR_PLAY_LIST)) {
+                if (obj.has(Common.PROPERTY_CUR_PLAY_LIST)) { //恢复现场-歌单列表
                     currentPlayList = obj.getString(Common.PROPERTY_CUR_PLAY_LIST);
+                    updatePlayList(currentPlayList);
                 }
-                updateVolume(volume);
-                updatePlayMode(playMode);
-                updatePlayList(currentPlayList);
+                if (obj.has(Common.PROPERTY_RECOMMEND_QUALITY)) { //恢复现场-音质
+                    quality = obj.getInt(Common.PROPERTY_RECOMMEND_QUALITY);
+                    mSpinner.setSelection(quality, true);
+                    isGetStatusReply = true;
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -806,8 +836,13 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         resetState();
         try {
             JSONObject obj = new JSONObject(msg);
-            songListType = obj.getString(Common.PLAY_TYPE);
-            songListId = obj.getString(Common.PLAY_ID);
+            songListType = obj.getString(Common.PLAY_TYPE).split("/")[1];
+            JSONObject playParams = obj.getJSONObject(Common.PLAY_PARAMS);
+            if (Common.PLAY_TYPE_ALBUM.equals(songListType)) {
+                songListId = playParams.getString(Common.ALBUM_ID);
+            } else if (Common.PLAY_TYPE_PLAYLIST.equals(songListType)) {
+                songListId = playParams.getString(Common.PLAYLIST_ID);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -851,9 +886,16 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void reportProperty(String key, int value) {
+        reportProperty(key, value, -1);
+    }
+
+    private void reportProperty(String key, int value, int seq) {
         JSONObject params = new JSONObject();
         try {
             params.put(key, value);
+            if (seq >= 0 ) {
+                params.put(Common.PROPERTY_CONTROL_SEQ, seq);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -867,9 +909,16 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void reportProperty(String key, String value) {
+        reportProperty(key, value, -1);
+    }
+
+    private void reportProperty(String key, String value, int seq) {
         JSONObject params = new JSONObject();
         try {
             params.put(key, value);
+            if (seq >= 0 ) {
+                params.put(Common.PROPERTY_CONTROL_SEQ, seq);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
