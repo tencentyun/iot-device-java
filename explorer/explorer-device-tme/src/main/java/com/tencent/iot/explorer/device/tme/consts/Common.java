@@ -26,9 +26,15 @@ public class Common {
 
     public static final String PLAY_TYPE = "play_type";
 
-    public static final String PLAY_ID = "play_id";
+    public static final String PLAY_PARAMS = "play_params";
+
+    public static final String PLAYLIST_ID = "playlist_id";
+
+    public static final String ALBUM_ID = "album_id";
 
     public static final String PLAY_TYPE_ALBUM = "album";
+
+    public static final String PLAY_TYPE_PLAYLIST = "playlist";
 
     public static final String PLAY_TYPE_SONGLIST = "songlist";
 
