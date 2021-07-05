@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,7 +48,9 @@ import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
+import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
+import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
@@ -245,6 +248,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                if (seekValue >= 60) {
+                    SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
+                    if (songInfo != null && songInfo.isTryListen()) {
+                        TmeMainActivity.this.runOnUiThread(() -> ToastUtil.showS("当前歌曲只支持试听60秒~"));
+                    }
+                }
                 UltimateSongPlayer.getInstance().seekTo(seekValue * 1000);
                 mIsSeekBarTouching = false;
                 int currentPos = (int) ((seekValue/(mSeekBar.getMax()*1.00)) * Common.TOTOAL_DURATION);
@@ -277,7 +286,9 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     if (mDataTemplateSample != null) return;
                     mDataTemplateSample = new TmeDataTemplateSample(TmeMainActivity.this,
                             mBrokerURL, mProductID, mDevName, mDevPSK,
-                            new SelfMqttActionCallBack(mProductID, mDevName), JSON_FILE_NAME, new SelfDownStreamCallBack());
+                            new SelfMqttActionCallBack(mProductID, mDevName), JSON_FILE_NAME,
+                            new SelfDownStreamCallBack(),
+                            mExpiredCallback);
                     mDataTemplateSample.connect();
                 } else {
                     if (mDataTemplateSample == null) return;
@@ -643,6 +654,12 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
+    private final ExpiredCallback mExpiredCallback = () -> TmeMainActivity.this.runOnUiThread(() -> {
+        Bitmap qrcode = ZXingUtils.createQRCodeBitmap("test", 200, 200,
+                "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
+        showDialog(TmeMainActivity.this, qrcode);
+    });
+
     private void onControlMsgReceived(final JSONObject msg) {
         int value = -1;
         int controlSeq = -1;
@@ -878,23 +895,25 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         reportProperty(Common.PROPERTY_PLAY_MODE, playMode - 1);
     }
 
-    private void updateQuality(int quality) {
+    private boolean updateQuality(int quality) {
         //当前歌曲详情
         SongInfo songInfo = UltimateSongPlayer.getInstance().getSongInfo();
         if (songInfo == null) {
             ToastUtil.showS("无法切换音质");
-            return;
+            return false;
         }
         if (songInfo.isTryListen()) {
             ToastUtil.showS("试听中，无法切换音质");
-            return;
+            return false;
         }
         if (songInfo.getSupportQualities().contains(qualities[quality])) {
             UltimateSongPlayer.getInstance().changeQuality(qualities[quality]);
             mSpinner.setSelection(quality, true);
             ToastUtil.showS(qualityStrArray[quality]);
+            return true;
         } else {
             ToastUtil.showS(String.format("当前歌曲不支持%s音质", qualityStrArray[quality]));
+            return false;
         }
     }
 
