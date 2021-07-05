@@ -100,21 +100,6 @@
       "required": false
     },
     {
-      "id": "control_seq",
-      "name": "下发标志",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "int",
-        "min": "0",
-        "max": "100000",
-        "start": "0",
-        "step": "1",
-        "unit": ""
-      },
-      "required": false
-    },
-    {
       "id": "recommend_quality",
       "name": "推荐播放质量",
       "desc": "\"SQ,HQ,LQ\"",
@@ -126,6 +111,36 @@
           "1": "高清",
           "2": "无损"
         }
+      },
+      "required": false
+    },
+    {
+      "id": "control_seq",
+      "name": "下发标志",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "9999999999",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "song_index",
+      "name": "song_index",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "10000",
+        "start": "0",
+        "step": "1",
+        "unit": ""
       },
       "required": false
     }

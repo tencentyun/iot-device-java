@@ -706,11 +706,24 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PROPERTY_CUR_SONG_ID)) { //当前播放的歌曲ID
                 strValue = msg.getString(Common.PROPERTY_CUR_SONG_ID);
                 TXLog.d(TAG, "cur_song_id = " + strValue);
+                playSong(getIndexBySongId(strValue));
                 reportProperty(Common.PROPERTY_CUR_SONG_ID, strValue, controlSeq);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private int getIndexBySongId(String songId) {
+        if (mSongList == null || mSongList.isEmpty() || TextUtils.isEmpty(songId)) {
+            return 0;
+        }
+        for (int i = 0; i < mSongList.size(); i++) {
+            if (mSongList.get(i).songId.equals(songId)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private void getSongListById(String id, String type) {
