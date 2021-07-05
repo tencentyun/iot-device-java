@@ -49,6 +49,8 @@ public class TmeDataTemplate extends TXDataTemplate {
 
     private String mDevName;
 
+    private ExpiredCallback mExpiredCallback;
+
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
      * @param connection
@@ -56,8 +58,9 @@ public class TmeDataTemplate extends TXDataTemplate {
      * @param deviceName         设备名
      * @param jsonFileName       数据模板描述文件
      * @param downStreamCallBack 下行数据接收回调函数
+     * @param expiredCallback    TME用户信息过期回调函数
      */
-    public TmeDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+    public TmeDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, ExpiredCallback expiredCallback) {
         super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack);
         this.mConnection = connection;
         this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/" + deviceName;
@@ -65,6 +68,7 @@ public class TmeDataTemplate extends TXDataTemplate {
         this.mContext = context;
         this.mProductID = productId;
         this.mDevName = deviceName;
+        this.mExpiredCallback = expiredCallback;
     }
 
     public Status requestUserInfo() {
@@ -130,7 +134,7 @@ public class TmeDataTemplate extends TXDataTemplate {
                     token = response.getString("token");
                     expire = response.getLong("expire");
                     UserInfo user = new UserInfo(pid, pkey, userId, token, expire);
-                    doAuth(user);
+                    doAuth(user, mExpiredCallback);
                 } else {
                     ToastUtil.showS(String.format("query user info error, code=%d", code));
                 }
@@ -140,7 +144,7 @@ public class TmeDataTemplate extends TXDataTemplate {
         }
     }
 
-    private void doAuth(UserInfo userInfo) {
+    private void doAuth(UserInfo userInfo , ExpiredCallback expiredCallback) {
         UltimateTv.Callback callback = new UltimateTv.Callback() {
             @Override
             public void onInitResult(int code, String msg) {
@@ -151,7 +155,9 @@ public class TmeDataTemplate extends TXDataTemplate {
             }
             @Override
             public void onRefreshToken(UserAuth userAuth) {
-
+                if (expiredCallback != null) {
+                    expiredCallback.expired();
+                }
             }
         };
         //开启日志
@@ -172,7 +178,7 @@ public class TmeDataTemplate extends TXDataTemplate {
             user.token = userInfo.getToken();
             user.expireTime = userInfo.getExpire();
             UltimateTv.getInstance().init(mContext, userInfo.getPid(), userInfo.getPkey(), deviceId, user, callback);
-            new CheckTokenThread(user.expireTime, null).start();
+            new CheckTokenThread(user.expireTime, expiredCallback).start();
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
         }
