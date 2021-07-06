@@ -42,8 +42,12 @@ android {
         buildConfigField 'String', 'TME_BROKER_URL', "\"${getValueById('TME_BROKER_URL')}\""
     }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
