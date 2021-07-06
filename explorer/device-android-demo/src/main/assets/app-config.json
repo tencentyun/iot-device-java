@@ -10,5 +10,6 @@
   "SUB_DEV_PSK2":      "",
   "TME_PRODUCT_ID":    "",
   "TME_DEVICE_NAME":   "",
-  "TME_DEVICE_PSK":    ""
+  "TME_DEVICE_PSK":    "",
+  "TME_BROKER_URL":    ""
 }

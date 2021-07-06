@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -58,6 +59,8 @@ import com.tencent.iot.explorer.device.tme.utils.SharePreferenceUtil;
 import com.tencent.iot.explorer.device.tme.utils.Utils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+
+import com.tencent.iot.explorer.device.android.app.BuildConfig;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -169,6 +172,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tme_main);
+        Intent intent = getIntent();
+        String preBrokerUrl = intent.getStringExtra(TmeConst.TME_BROKER_URL);
+        if (!TextUtils.isEmpty(preBrokerUrl)) {
+            mBrokerURL = preBrokerUrl;
+        }
         initView();
         UltimateSongPlayer.getInstance().init();
         UltimateSongPlayer.getInstance().addSongPlayStateListener(mSongPlayStateListener);
