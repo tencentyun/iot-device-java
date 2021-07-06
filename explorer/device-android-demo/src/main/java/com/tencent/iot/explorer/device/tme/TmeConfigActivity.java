@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.tme;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.kugou.ultimatetv.util.ToastUtil;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.utils.SharePreferenceUtil;
@@ -9,18 +10,26 @@ import com.tencent.iot.explorer.device.android.app.BuildConfig;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TmeConfigActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private int counts = 5; //点击次数
+    private long duration = 3 * 1000; //规定有效时间
+    private long[] hits = new long[counts];
+    private String preBrokerUrl = "";
 
     private Button mConfigBtn;
     private EditText mProductIdEt;
     private EditText mDeviceNameEt;
     private EditText mDevicePSKEt;
+    private TextView mEmptyTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +44,9 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
         mProductIdEt = findViewById(R.id.et_productid);
         mDeviceNameEt = findViewById(R.id.et_device_name);
         mDevicePSKEt = findViewById(R.id.et_device_psk);
+        mEmptyTv = findViewById(R.id.tv_empty_area);
         mConfigBtn.setOnClickListener(this);
+        mEmptyTv.setOnClickListener(this);
     }
 
     private void initConfig() {
@@ -68,7 +79,21 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
         if (v.getId() == R.id.btn_config) {
             if (checkInput()) {
-                startActivity(new Intent(TmeConfigActivity.this, TmeMainActivity.class));
+                Intent intent = new Intent(TmeConfigActivity.this, TmeMainActivity.class);
+                intent.putExtra(TmeConst.TME_BROKER_URL, preBrokerUrl);
+                startActivity(intent);
+            }
+        }
+        if (v.getId() == R.id.tv_empty_area) {
+            // 连续点击五次复制AndroidID
+            System.arraycopy(hits, 1, hits, 0, hits.length - 1);
+            //实现左移，然后最后一个位置更新距离开机的时间，如果最后一个时间和最开始时间小于duration，即连续5次点击
+            hits[hits.length - 1] = SystemClock.uptimeMillis();
+            if (hits[0] >= SystemClock.uptimeMillis() - duration) {
+                if (hits.length == 5) {
+                    ToastUtil.showS("预发布环境");
+                    preBrokerUrl = BuildConfig.TME_BROKER_URL;
+                }
             }
         }
     }
