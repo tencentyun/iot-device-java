@@ -517,6 +517,7 @@ public class TXOTAImpl {
 
 						long downloadBytes = fos.length();
 						int lastPercent = 0;
+						long lastReportProcentTimestamp = 0;
 
 						if (downloadBytes > 0) {
 							fos.seek(downloadBytes);
@@ -547,6 +548,7 @@ public class TXOTAImpl {
 							fos.write(buffer, 0, len);
 
 							int percent = (int) (((float) downloadBytes / (float) totalLength) * 100);
+							long currentTimestamp = System.currentTimeMillis();
 
 							if (percent != lastPercent) {
 								lastPercent = percent;
@@ -555,8 +557,11 @@ public class TXOTAImpl {
 									mCallback.onDownloadProgress(percent, version);
 								}
 
-								Loggor.debug(TAG,  "download " + downloadBytes + " bytes. percent:" + percent);
-								reportProgressMessage(OTA_REPORT_TOPIC, percent, version);
+								if (lastReportProcentTimestamp == 0 || (currentTimestamp - lastReportProcentTimestamp >= 100)) { //间隔100ms上报一次process进度，防止每秒上报超过30次
+									Loggor.debug(TAG,  "download " + downloadBytes + " bytes. percent:" + percent);
+									lastReportProcentTimestamp = currentTimestamp;
+									reportProgressMessage(OTA_REPORT_TOPIC, percent, version);
+								}
 							}
 						}
 
