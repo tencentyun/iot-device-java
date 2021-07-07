@@ -600,6 +600,7 @@ public class TXOTAImpl {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
+						new File(outputFile).delete(); // delete
 
 					} finally {
 						if (fos != null) {
