@@ -155,8 +155,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         int pos = mSeekBar.getProgress();
                         if (pos != position && !mIsSeekBarTouching) {
                             mSeekBar.setProgress(position);
-                            int currentPos = (int) ((position/(mSeekBar.getMax()*1.00)) * Common.TOTOAL_DURATION);
-                            reportProperty(Common.PROPERTY_PLAY_POSITION, currentPos);
+                            reportProperty(Common.PROPERTY_PLAY_POSITION, position);
                         }
                     }
                     mMainHandler.removeMessages(MSG_REFRESH_VIEW);
@@ -264,8 +263,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 UltimateSongPlayer.getInstance().seekTo(seekValue * 1000);
                 mIsSeekBarTouching = false;
-                int currentPos = (int) ((seekValue/(mSeekBar.getMax()*1.00)) * Common.TOTOAL_DURATION);
-                reportProperty(Common.PROPERTY_PLAY_POSITION, currentPos);
+                reportProperty(Common.PROPERTY_PLAY_POSITION, seekValue);
             }
         });
         mVolumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -735,9 +733,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PROPERTY_PLAY_POSITION)) { //播放进度
                 value = msg.getInt(Common.PROPERTY_PLAY_POSITION);
                 TXLog.d(TAG, "play_position = " + value);
-                int position = (int) (mDuration * (value/(Common.TOTOAL_DURATION * 1.000)) * 1000);
-                UltimateSongPlayer.getInstance().seekTo(position);
-                reportProperty(Common.PROPERTY_PLAY_POSITION, position, controlSeq);
+                UltimateSongPlayer.getInstance().seekTo(value);
+                reportProperty(Common.PROPERTY_PLAY_POSITION, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_RECOMMEND_QUALITY)) { //播放质量
                 value = msg.getInt(Common.PROPERTY_RECOMMEND_QUALITY);
                 TXLog.d(TAG, "recommend_quality = " + value);

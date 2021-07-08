@@ -38,8 +38,6 @@ public class Common {
 
     public static final String PLAY_TYPE_SONGLIST = "songlist";
 
-    public static final int TOTOAL_DURATION = 7200;
-
     public static final int TOTOAL_VOLUME_DURATION = 100;
 
     public static final int PROPERTY_PRE = 1;
