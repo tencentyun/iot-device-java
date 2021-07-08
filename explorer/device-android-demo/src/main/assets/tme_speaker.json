@@ -115,21 +115,6 @@
       "required": false
     },
     {
-      "id": "control_seq",
-      "name": "下发标志",
-      "desc": "",
-      "mode": "rw",
-      "define": {
-        "type": "int",
-        "min": "0",
-        "max": "9999999999",
-        "start": "0",
-        "step": "1",
-        "unit": ""
-      },
-      "required": false
-    },
-    {
       "id": "song_index",
       "name": "song_index",
       "desc": "",
@@ -138,6 +123,21 @@
         "type": "int",
         "min": "0",
         "max": "10000",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "control_seq",
+      "name": "下发标志",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "2000000000",
         "start": "0",
         "step": "1",
         "unit": ""
