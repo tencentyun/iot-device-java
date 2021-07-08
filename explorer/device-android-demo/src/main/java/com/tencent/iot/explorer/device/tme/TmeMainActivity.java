@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -70,6 +71,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -117,7 +119,8 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private TmeDataTemplateSample mDataTemplateSample;
     private SongListAdapter mAdapter;
-    private List<Song> mSongList = new ArrayList<>();
+    private volatile List<Song> mSongList = new ArrayList<>();
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     private int page = 1;
     private int pageSize = 20;
@@ -516,13 +519,36 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         public JSONObject onControlCallBack(JSONObject msg) {
             TXLog.d(TAG, "======onControlCallBack : " + msg);
             onControlMsgReceived(msg);
-            return null;
+            JSONObject result = new JSONObject();
+            try {
+                result.put("code",0);
+                result.put("status", "some message wher errorsome message when error");
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return result;
         }
 
         @Override
         public JSONObject onActionCallBack(String actionId, JSONObject params) {
             TXLog.d(TAG, String.format("======onActionCallBack: actionId=[%s], params=[%s]", actionId, params.toString()));
-            return null;
+
+            JSONObject result = new JSONObject();
+            try {
+                result.put("code", 0);
+                result.put("status", "some message wher errorsome message when error");
+
+                // response based on output
+                JSONObject response = new JSONObject();
+                response.put("result", 0);
+
+                result.put("response", response);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return result;
         }
 
         @Override
@@ -740,15 +766,20 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private int getIndexBySongId(String songId) {
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (mSongList == null || mSongList.isEmpty() || TextUtils.isEmpty(songId)) {
-            return 0;
+            return -1;
         }
         for (int i = 0; i < mSongList.size(); i++) {
             if (mSongList.get(i).songId.equals(songId)) {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
     private void getSongListById(String id, String type) {
@@ -756,6 +787,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             if (response.isSuccess() && response.getData() != null) {
                 List<Song> songs = response.getData().getList();
                 mSongList.addAll(songs);
+                countDownLatch.countDown();
                 UltimateSongPlayer.getInstance().enqueue(songs, true);
                 if (mAdapter != null) mAdapter.notifyDataSetChanged();
             } else {
@@ -808,12 +840,17 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void playSong(int index) {
-        UltimateSongPlayer.getInstance().play(mSongList, index, true);
+        if (index >= 0) {
+            UltimateSongPlayer.getInstance().play(mSongList, index, true);
+        } else {
+            ToastUtil.showS("歌单里没有该歌曲");
+        }
     }
 
     private void resetState() {
         page = 1;
         currentSongId = "";
+        countDownLatch = new CountDownLatch(1);
         mSongList.clear();
     }
 
@@ -870,7 +907,9 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private void updatePlayList(String msg) {
         operationType = TYPE_SONG_LIST;
-        UltimateSongPlayer.getInstance().pause();
+        if (UltimateSongPlayer.getInstance().isPlaying()) {
+            UltimateSongPlayer.getInstance().pause();
+        }
         resetState();
         try {
             JSONObject obj = new JSONObject(msg);
