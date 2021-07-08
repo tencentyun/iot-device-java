@@ -85,3 +85,6 @@ options.setAutomaticReconnect(true);
 #### 配了混淆规则后报错：java.lang.IllegalArgumentException: no NetworkModule installed for scheme
 在项目根目录下的[build.gradle](../../../build.gradle)文件中查看gradle插件的版本号 'com.android.tools.build:gradle:x.x.x'，建议使用3.6以上的版本
 
+#### SDK中发布的消息大小有限制吗？如果有限制的话限制是多少？
+有限制，大小限制16k
+
