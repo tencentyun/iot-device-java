@@ -27,8 +27,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
 public class TmeDataTemplate extends TXDataTemplate {
 
@@ -182,6 +184,31 @@ public class TmeDataTemplate extends TXDataTemplate {
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
         }
+    }
+    @Override
+    public Status propertyReport(JSONObject property, JSONObject metadata) {
+
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        String clientToken = mProductId + mDeviceName + UUID.randomUUID().toString();
+        try {
+            object.put("method", METHOD_PROPERTY_REPORT);
+            object.put("clientToken", clientToken);
+            object.put("timestamp", System.currentTimeMillis());
+            object.put("params", property);
+            if (null != metadata) {
+                object.put("metadata", metadata);
+            }
+        } catch (Exception e) {
+            TXLog.e(TAG, "propertyReport: failed!");
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(object.toString().getBytes());
+
+        return publishTemplateMessage(clientToken, PROPERTY_UP_STREAM_TOPIC, message);
     }
 
     class CheckTokenThread extends Thread {
