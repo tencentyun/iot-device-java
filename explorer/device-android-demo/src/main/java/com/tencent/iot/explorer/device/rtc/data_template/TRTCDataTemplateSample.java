@@ -93,6 +93,14 @@ public class TRTCDataTemplateSample {
     }
 
     /**
+     * 设备绑定App下发的token
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public Status appBindToken(String token) {
+        return mMqttConnection.appBindToken(token);
+    }
+
+    /**
      * 建立MQTT连接
      */
     public void connect() {

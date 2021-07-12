@@ -25,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttSuback;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttWireMessage;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -32,10 +33,13 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_APP_BIND_TOKEN;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 
@@ -253,6 +257,33 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         }
 
         return Status.OK;
+    }
+
+    /**
+     * 设备绑定App下发的token
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public Status appBindToken(String token) {
+
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        JSONObject params = new JSONObject();
+        String clientToken = mProductId + mDeviceName + UUID.randomUUID().toString();
+        try {
+            object.put("method", METHOD_APP_BIND_TOKEN);
+            object.put("clientToken", clientToken);
+            object.put("timestamp", System.currentTimeMillis());
+            params.put("token", token);
+            object.put("params", params);
+        } catch (Exception e) {
+            TXLog.e(TAG, "appBindToken: failed!");
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(1); //qos 1
+        message.setPayload(object.toString().getBytes());
+        return publish(TOPIC_SERVICE_UP_PREFIX + mProductId + "/" + mDeviceName, message, null);
     }
 
 }

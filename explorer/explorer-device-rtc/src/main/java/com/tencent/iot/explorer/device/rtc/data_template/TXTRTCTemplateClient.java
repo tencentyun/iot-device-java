@@ -46,6 +46,14 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
     }
 
     /**
+     * 设备绑定App下发的token
+     * @return 生成的绑定设备的二维码字符串;
+     */
+    public Status appBindToken(String token) {
+        return this.appBindToken(token);
+    }
+
+    /**
      * 订阅数据模板相关主题
      * @param topicId 主题ID
      * @param qos QOS等级
