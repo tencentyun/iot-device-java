@@ -34,6 +34,7 @@ import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
+import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
@@ -669,8 +670,26 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 case PlayerErrorCode.MAKE_STREAM_FAIL:
                     tip = "流转换失败";
                     break;
-                case PlayerErrorCode.NO_SUCH_FILE:
-                    tip = "文件不存在";
+                case ErrorCode.UNDEFINED_ERROR_CODE:
+                    tip = "未定义错误码";
+                    break;
+                case ErrorCode.PARAMETER_ERROR:
+                    tip = "参数错误";
+                    break;
+                case ErrorCode.SYSTEM_BUSY:
+                    tip = "系统繁忙";
+                    break;
+                case ErrorCode.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG:
+                    tip = "认证信息过期或错误,请重新登录";
+                    break;
+                case ErrorCode.CODE_DEVICE_NOTACTIVATE:
+                    tip = "设备未激活,请使用api激活";
+                    break;
+                case ErrorCode.SYSTEM_ERROR:
+                    tip = "系统错误";
+                    break;
+                case ErrorCode.NO_RIGHT_TO_CALL_THIS_INTERFACE:
+                    tip = "无权调用此接口";
                     break;
                 default:
                     break;
