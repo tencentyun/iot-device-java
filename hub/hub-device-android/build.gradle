@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply from: '../../gradle-javadoc.gradle'
 
 
 android {
