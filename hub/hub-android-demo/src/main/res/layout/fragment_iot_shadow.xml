@@ -13,14 +13,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="连接IoT" />
+            android:text="@string/connect_iot" />
 
         <Button
             android:id="@+id/close_connect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="断开连接" />
+            android:text="@string/break_connection" />
 
     </LinearLayout>
 
@@ -33,14 +33,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="注册设备属性" />
+            android:text="@string/registe_dev_property" />
 
         <Button
             android:id="@+id/get_device_document"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="获取设备文档" />
+            android:text="@string/get_dev_doc" />
 
     </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:id="@+id/loop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="定时更新设备影子" />
+            android:text="@string/timely_update_dev_shadow" />
 
     </LinearLayout>
 
@@ -65,24 +65,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="订阅主题" />
+            android:text="@string/subscribe_topic" />
 
         <Button
             android:id="@+id/publish_topic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="发布主题" />
+            android:text="@string/publish_topic" />
         <Button
             android:id="@+id/unSubscribe_topic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="取消订阅主题" />
+            android:text="@string/unsubscribe_topic" />
     </LinearLayout>
 
     <TextView
-        android:text="日志输出："
+        android:text="@string/print_log"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_width="match_parent"

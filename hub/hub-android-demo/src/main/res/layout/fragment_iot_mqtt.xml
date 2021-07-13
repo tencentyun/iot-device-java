@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="参数" />
+        android:text="@string/param" />
 
     <Spinner
         android:id="@+id/spinner4"
@@ -34,21 +34,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="连接MQTT" />
+            android:text="@string/connect_mqtt" />
 
         <Button
             android:id="@+id/close_connect"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="断开MQTT连接" />
+            android:text="@string/break_mqtt" />
 
         <Button
             android:id="@+id/dynreg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="动态注册" />
+            android:text="@string/dynreg" />
 
     </LinearLayout>
 
@@ -61,21 +61,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="订阅主题" />
+            android:text="@string/subscribe_topic" />
 
         <Button
             android:id="@+id/unSubscribe_topic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.4"
-            android:text="取消订阅主题" />
+            android:text="@string/unsubscribe_topic" />
 
         <Button
             android:id="@+id/publish_topic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="发布主题" />
+            android:text="@string/publish_topic" />
 
     </LinearLayout>
     <LinearLayout
@@ -86,13 +86,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="订阅RRPC主题" />
+            android:text="@string/subscribe_rrpc_topic" />
         <Button
             android:id="@+id/subscribe_broadcast_topic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="订阅广播主题" />
+            android:text="@string/subscribe_broadcast_topic" />
     </LinearLayout>
 
     <LinearLayout
@@ -104,21 +104,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="子设备上线" />
+            android:text="@string/subdev_online" />
 
         <Button
             android:id="@+id/subdev_offline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="子设备下线" />
+            android:text="@string/subdev_offline" />
 
         <Button
             android:id="@+id/check_firmware"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="检查固件更新" />
+            android:text="@string/check_firmware" />
 
 
     </LinearLayout>
@@ -132,13 +132,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="日志测试" />
+            android:text="@string/log_test" />
         <Button
             android:id="@+id/uploadlog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="日志上传" />
+            android:text="@string/upload_log" />
     </LinearLayout>
 
     <LinearLayout
@@ -150,21 +150,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="绑定子设备" />
+            android:text="@string/bind_subdev" />
 
         <Button
             android:id="@+id/subdev_unbinded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="解绑子设备" />
+            android:text="@string/unbind_subdev" />
 
         <Button
             android:id="@+id/check_subdev_relation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="查询设备拓扑关系" />
+            android:text="@string/check_subdev_relation" />
 
 
     </LinearLayout>
@@ -178,21 +178,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="连接MQTT(websocket)" />
+            android:text="@string/websocket_connect" />
 
         <Button
             android:id="@+id/websocket_disconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="断开MQTT连接(websocket)" />
+            android:text="@string/websocket_disconnect" />
 
         <Button
             android:id="@+id/websocket_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="MQTT连接状态(websocket)" />
+            android:text="@string/websocket_status" />
 
 
     </LinearLayout>
@@ -206,26 +206,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="获取远程配置信息" />
+            android:text="@string/get_remote_config" />
         <Button
             android:id="@+id/concern_remote_config"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="关注远程配置信息" />
+            android:text="@string/concern_remote_config" />
         <Button
             android:id="@+id/report_sub_dev_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="上报子设备版本" />
+            android:text="@string/report_sub_dev_version" />
     </LinearLayout>
 
     </LinearLayout>
     </ScrollView>
 
     <TextView
-        android:text="日志输出："
+        android:text="@string/print_log"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_width="match_parent"

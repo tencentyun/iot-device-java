@@ -14,21 +14,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.4"
             android:checked="false"
-            android:text="使用shadow" />
+            android:text="@string/use_shadow" />
 
         <Button
             android:id="@+id/btn_start_remote_service"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="开启远程服务" />
+            android:text="@string/start_remote_service" />
 
         <Button
             android:id="@+id/btn_stop_remote_service"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="停止远程服务" />
+            android:text="@string/stop_remote_service" />
 
     </LinearLayout>
 
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="连接IoT" />
+            android:text="@string/connect_iot" />
 
 
         <Button
@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="断开连接" />
+            android:text="@string/break_connection" />
 
 
         <Button
@@ -57,14 +57,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="订阅主题" />
+            android:text="@string/subscribe_topic" />
 
         <Button
             android:id="@+id/btn_publish"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
-            android:text="发布主题" />
+            android:text="@string/publish_topic" />
 
     </LinearLayout>
 
@@ -76,13 +76,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="订阅广播主题" />
+            android:text="@string/subscribe_broadcast_topic" />
         <Button
             android:id="@+id/btn_subscribe_rrpc_topic"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="订阅RRPC主题" />
+            android:text="@string/subscribe_rrpc_topic" />
 
     </LinearLayout>
     <LinearLayout
@@ -101,14 +101,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="注册设备属性" />
+                android:text="@string/registe_dev_property" />
 
             <Button
                 android:id="@+id/btn_get_shadow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="获取设备影子" />
+                android:text="@string/get_dev_shadow" />
 
         </LinearLayout>
 
@@ -122,12 +122,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:onClick="onUpdateShadow"
-                android:text="更新设备影子" />
+                android:text="@string/update_dev_shadow" />
 
         </LinearLayout>
     </LinearLayout>
     <TextView
-        android:text="日志输出："
+        android:text="@string/print_log"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_width="match_parent"

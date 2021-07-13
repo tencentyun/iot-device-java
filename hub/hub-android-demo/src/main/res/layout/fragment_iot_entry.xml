@@ -13,18 +13,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="进门" />
+            android:text="@string/in_door" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="出门" />
+            android:text="@string/out_door" />
     </LinearLayout>
 
     <TextView
-        android:text="日志输出："
+        android:text="@string/print_log"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_width="match_parent"
