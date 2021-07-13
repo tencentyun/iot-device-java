@@ -36,6 +36,7 @@ import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
 import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
+import com.kugou.ultimatetv.entity.DailyRecommendList;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
@@ -752,7 +753,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             } else if (msg.has(Common.PROPERTY_PLAY_POSITION)) { //播放进度
                 value = msg.getInt(Common.PROPERTY_PLAY_POSITION);
                 TXLog.d(TAG, "play_position = " + value);
-                UltimateSongPlayer.getInstance().seekTo(value);
+                UltimateSongPlayer.getInstance().seekTo(value * 1000);
                 reportProperty(Common.PROPERTY_PLAY_POSITION, value, controlSeq);
             } else if (msg.has(Common.PROPERTY_RECOMMEND_QUALITY)) { //播放质量
                 value = msg.getInt(Common.PROPERTY_RECOMMEND_QUALITY);
@@ -792,7 +793,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         return -1;
     }
 
-    private void getSongListById(String id, String type) {
+    private void getSongList(String _type, String _id, int _page, int _size, int _topId) {
         Consumer<Response<? extends SongList>> consumer = response -> {
             if (response.isSuccess() && response.getData() != null) {
                 List<Song> songs = response.getData().getList();
@@ -814,15 +815,25 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
             _throwable.printStackTrace();
             ToastUtil.showS("加载出错");
         };
-        if (!TextUtils.isEmpty(id)) {
+        if (!TextUtils.isEmpty(_id)) {
             RxUtil.d(mLoadSongDisposable);
-            if (Common.PLAY_TYPE_ALBUM.equals(type)) {
-                mLoadSongDisposable = UltimateSongApi.getAlbumInfoList(id, page, pageSize)
+            if (Common.PLAY_TYPE_ALBUM.equals(_type)) { // 专辑
+                mLoadSongDisposable = UltimateSongApi.getAlbumInfoList(_id, page, pageSize)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
-            } else {
-                mLoadSongDisposable = UltimateSongApi.getSongList(id, page, pageSize)
+            } else if (Common.PLAY_TYPE_PLAYLIST.equals(_type)){ // 歌单
+                mLoadSongDisposable = UltimateSongApi.getSongList(_id, page, pageSize)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer, throwable);
+            } else if (Common.PLAY_TYPE_EVERYDAY.equals(_type)) { // 日推
+                mLoadSongDisposable = UltimateSongApi.getDailyRecommendList()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(consumer, throwable);
+            } else if (Common.PLAY_TYPE_NEWSONG.equals(_type)) { // 新歌首发
+                mLoadSongDisposable = UltimateSongApi.getFirstPublishSongList(_page, _size, _topId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
@@ -830,6 +841,10 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             ToastUtil.showS("歌单为空，请在腾讯连连App或小程序下发歌单");
         }
+    }
+
+    private void getSongListById(String id, String type) {
+        getSongList(type, id, 0, 0, 0);
     }
 
     private void doSearch(String word) {
@@ -923,17 +938,30 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         resetState();
         try {
             JSONObject obj = new JSONObject(msg);
-            songListType = obj.getString(Common.PLAY_TYPE).split("/")[1];
+            String[] items = obj.getString(Common.PLAY_TYPE).split("/");
+            songListType = items[1];
             JSONObject playParams = obj.getJSONObject(Common.PLAY_PARAMS);
-            if (Common.PLAY_TYPE_ALBUM.equals(songListType)) {
-                songListId = playParams.getString(Common.ALBUM_ID);
-            } else if (Common.PLAY_TYPE_PLAYLIST.equals(songListType)) {
-                songListId = playParams.getString(Common.PLAYLIST_ID);
+
+            if (Common.PLAY_TYPE_AWESOME.equals(songListType)) { // 新歌或日推
+                if (Common.PLAY_TYPE_NEWSONG.equals(items[2])) { // 新歌
+                    int _topId = playParams.getInt(Common.PLAY_TOP_ID);
+                    int _page = playParams.getInt(Common.PLAY_PAGE);
+                    int _size = playParams.getInt(Common.PLAY_SIZE);
+                    getSongList(Common.PLAY_TYPE_NEWSONG, "", _page, _size, _topId);
+                } else if (Common.PLAY_TYPE_EVERYDAY.equals(items[2])) { // 日推
+                    getSongList(Common.PLAY_TYPE_EVERYDAY, "", 0, 0, 0);
+                }
+            } else { // 热门歌单或专辑
+                if (Common.PLAY_TYPE_ALBUM.equals(songListType)) {
+                    songListId = playParams.getString(Common.ALBUM_ID);
+                } else if (Common.PLAY_TYPE_PLAYLIST.equals(songListType)) {
+                    songListId = playParams.getString(Common.PLAYLIST_ID);
+                }
+                getSongListById(songListId, songListType);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        getSongListById(songListId, songListType);
     }
 
     private void switchPlayMode() {

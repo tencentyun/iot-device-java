@@ -36,7 +36,19 @@ public class Common {
 
     public static final String PLAY_TYPE_PLAYLIST = "playlist";
 
+    public static final String PLAY_TYPE_AWESOME = "awesome";
+
+    public static final String PLAY_TYPE_NEWSONG = "newsong";
+
+    public static final String PLAY_TYPE_EVERYDAY = "everyday";
+
     public static final String PLAY_TYPE_SONGLIST = "songlist";
+
+    public static final String PLAY_PAGE = "page";
+
+    public static final String PLAY_SIZE = "size";
+
+    public static final String PLAY_TOP_ID = "top_id";
 
     public static final int TOTOAL_VOLUME_DURATION = 100;
 
