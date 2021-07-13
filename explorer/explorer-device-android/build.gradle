@@ -127,6 +127,7 @@ publishing {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13'
+    api 'androidx.annotation:annotation:1.2.0'
     if (findProject(':explorer:explorer-device-java') != null) {
         api project(path: ':explorer:explorer-device-java')
     }

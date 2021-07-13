@@ -26,6 +26,8 @@ import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServer;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerCallback;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
@@ -70,10 +72,12 @@ public class TRTCMainActivity extends AppCompatActivity {
     private static final String TAG = TRTCMainActivity.class.getSimpleName();
 
     private TRTCDataTemplateSample mDataTemplateSample;
+    private LLSyncGattServer mServer;
 
     private ImageView mQRCodeImgView;
     private Button mConnectBtn;
     private Button mCloseConnectBtn;
+    private Button mStartAdvBtn;
     private Button mAudioCallBtn;
     private Button mVideoCallBtn;
 
@@ -145,6 +149,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         mQRCodeImgView = findViewById(R.id.iv_qrcode);
         mConnectBtn = findViewById(R.id.connect);
         mCloseConnectBtn = findViewById(R.id.close_connect);
+        mStartAdvBtn = findViewById(R.id.start_adv);
         mAudioCallBtn = findViewById(R.id.select_audio_call);
         mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
@@ -217,6 +222,32 @@ public class TRTCMainActivity extends AppCompatActivity {
                     return;
                 mDataTemplateSample.disconnect();
                 mDataTemplateSample = null;
+            }
+        });
+
+        mStartAdvBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mServer == null) {
+                    mServer = new LLSyncGattServer(TRTCMainActivity.this, mProductID, mDevName, new LLSyncGattServerCallback() {
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            Log.d(TAG, "LLSyncGattServer onFailure : " + errorMessage);
+                        }
+
+                        @Override
+                        public void requestConnectWifi(String ssid, String password) {
+                            Log.d(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password);
+                            mConnectBtn.callOnClick(); //连接mqtt
+                        }
+
+                        @Override
+                        public void requestAppBindToken(String token) {
+                            Log.d(TAG, "LLSyncGattServer requestAppBindToken : " + token);
+                            mDataTemplateSample.appBindToken(token);
+                        }
+                    });
+                }
             }
         });
 
@@ -510,6 +541,10 @@ public class TRTCMainActivity extends AppCompatActivity {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+
+            if (mServer != null) { //开启了llsync辅助配网
+                mServer.noticeAppConnectWifiIsSuccess(status == Status.OK);
+            }
             if (mDataTemplateSample != null) {
                 if (!reconnect) {
                     mDataTemplateSample.subscribeTopic();
