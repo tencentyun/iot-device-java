@@ -696,6 +696,14 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     break;
             }
             ToastUtil.showS("播放出错, " + tip);
+            int index = UltimateSongPlayer.getInstance().getCurrentIndex();
+            Song song = mSongList.get(index);
+            TmeMainActivity.this.runOnUiThread(() -> {
+                mCurrentSongTv.setText(song.songName + "-" + song.singerName);
+            });
+            currentSongId = song.songId;
+            mAdapter.setCurrentPos(index);
+            TmeMainActivity.this.runOnUiThread(() -> mAdapter.notifyDataSetChanged());
             mMainHandler.removeMessages(MSG_REFRESH_VIEW);
         }
     };
