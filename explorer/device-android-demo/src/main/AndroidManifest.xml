@@ -12,6 +12,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 绑定设备的授权方式需要读取机器序列号 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- llsync蓝牙辅助配网需要连接指定WiFi，添加WiFi权限 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"

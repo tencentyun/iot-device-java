@@ -1,2 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tencent.iot.explorer.device.android" />
+    package="com.tencent.iot.explorer.device.android" >
+
+    <!-- llsync蓝牙辅助配网需要使用蓝牙权限 Android 5.0 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE"/>
+</manifest>

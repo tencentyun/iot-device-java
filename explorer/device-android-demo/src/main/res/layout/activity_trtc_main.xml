@@ -87,6 +87,13 @@
             android:layout_weight="0.5"
             android:text="设备下线" />
 
+        <Button
+            android:id="@+id/start_adv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="LLSync配网" />
+
     </LinearLayout>
 
     <ScrollView
