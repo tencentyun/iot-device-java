@@ -146,6 +146,7 @@ public class TXMqttDynreg {
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 conn.setConnectTimeout(2000);
+                Loggor.info(TAG, "HttpURLConnection header: "+ conn.getRequestProperties());
 
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
                 os.writeBytes(postData);
@@ -284,7 +285,7 @@ public class TXMqttDynreg {
             return false;
         }
 
-        Loggor.info(TAG, "Register request " + obj);
+        Loggor.info(TAG, "Register request " + obj + "; signSourceStr:" + signSourceStr);
         HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl,
                 String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
         httpThread.start();

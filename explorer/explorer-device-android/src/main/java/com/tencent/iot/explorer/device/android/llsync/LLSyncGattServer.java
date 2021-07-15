@@ -59,6 +59,7 @@ public class LLSyncGattServer {
      * @param context    context
      * @param productId  the product id
      * @param deviceName the device name
+     * @param mac        mac address eg: "FF:FF:FF:FF:FF:FF"
      * @param callback   callback for operation result
      */
     public LLSyncGattServer(Context context, String productId, String deviceName, String mac, LLSyncGattServerCallback callback) {
