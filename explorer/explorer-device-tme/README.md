@@ -78,8 +78,8 @@ public class MyApplication extends Application {
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | albumId | String | 专辑id |
-| page | String | 页码 |
-| size | String | 页面数量 |
+| page | int | 页码 |
+| size | int | 页面数量 |
 
 | 返回值 | 描述 |
 |:-|:-|
@@ -90,14 +90,33 @@ public class MyApplication extends Application {
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | playlistId | String | 歌单id |
-| page | String | 页码 |
-| size | String | 页面数量 |
+| page | int | 页码 |
+| size | int | 页面数量 |
 
 | 返回值 | 描述 |
 |:-|:-|
 | Observable<Response<SongList>> | 歌单内歌曲列表 |
 
-3、歌曲播放 UltimateSongPlayer#play(List<Song> songs, int position, boolean autoStart);
+3、获取每日推荐 UltimateSongApi.getDailyRecommendList()
+
+| 返回值 | 描述 |
+|:-|:-|
+| Observable<Response<SongList>> | 每日推荐列表 |
+
+4、获取首发新歌 UltimateSongApi.getFirstPublishSongList(int page, int size, int topId)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| page | int | 页码 |
+| size | int | 页面数量 |
+| topId| int | 榜单id 1:华语，2:欧美，3:韩语，4:日语 |
+
+| 返回值 | 描述 |
+|:-|:-|
+| Observable<Response<SongList>> | 歌曲列表 |
+
+
+5、歌曲播放 UltimateSongPlayer#play(List<Song> songs, int position, boolean autoStart);
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
@@ -105,25 +124,25 @@ public class MyApplication extends Application {
 | position | int | 要播放列表里的第几首 |
 | autoStart | boolean | 是否自动播放 |
 
-4、歌曲暂停 UltimateSongPlayer.getInstance().pause()
+6、歌曲暂停 UltimateSongPlayer.getInstance().pause()
 
-5、切歌上一首 UltimateSongPlayer.getInstance().previous()
+7、切歌上一首 UltimateSongPlayer.getInstance().previous()
 
-6、切歌下一首 UltimateSongPlayer.getInstance().next
+8、切歌下一首 UltimateSongPlayer.getInstance().next()
 
-7、设置播放模式 UltimateSongPlayer#setPlayMode(int playMode)
+9、设置播放模式 UltimateSongPlayer#setPlayMode(int playMode)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | playMode | int | 播放模式 顺序播放PLAY_MODE_CYCLE、单曲循环PLAY_MODE_SINGLE、随机播放PLAY_MODE_RANDOM|
 
-8、设置播放音质 UltimateSongPlayer#changeQuality(int songQuality)
+10、设置播放音质 UltimateSongPlayer#changeQuality(int songQuality)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | songQuality | int | 播放音质 标准QUALITY_STANDARD、高清QUALITY_HIGH、超清QUALITY_SUPER |
 
-9、调整播放进度 UltimateSongPlayer#seekTo(int positionMs)
+11、调整播放进度 UltimateSongPlayer#seekTo(int positionMs)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
