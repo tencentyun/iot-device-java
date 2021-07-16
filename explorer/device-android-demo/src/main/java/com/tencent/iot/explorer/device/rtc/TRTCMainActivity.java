@@ -251,7 +251,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                                         }
                                     };
                                     Timer timer = new Timer();
-                                    timer.schedule(task, 5000);//防止刚切换到wifi时，mqtt连接不上延迟3s
+                                    timer.schedule(task, 5000);//防止刚切换到wifi时，mqtt连接不上延迟5s
                                 }
                             });
                         }

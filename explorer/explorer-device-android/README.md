@@ -36,6 +36,7 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 * [事件上报以及多事件上报](docs/事件上报以及多事件上报.md)
 * [检查固件更新](docs/检查固件更新.md)
 * [网关使用示例](docs/网关使用示例.md)
+* [LLSync蓝牙辅助配网](docs/LLSync蓝牙辅助配网.md)
 
 ## 第三方服务接入指引
 * [IoT Explorer人脸识别 Android SDK开发指南](../explorer-device-face/README.md)
