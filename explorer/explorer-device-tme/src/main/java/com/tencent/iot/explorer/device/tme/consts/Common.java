@@ -20,6 +20,8 @@ public class Common {
 
     public static final String PROPERTY_CUR_SONG_ID = "cur_song_id";
 
+    public static final String PROPERTY_SONG_INDEX = "song_index";
+
     public static final String PROPERTY_CONTROL_SEQ = "control_seq";
 
     public static final String PROPERTY_RECOMMEND_QUALITY = "recommend_quality";

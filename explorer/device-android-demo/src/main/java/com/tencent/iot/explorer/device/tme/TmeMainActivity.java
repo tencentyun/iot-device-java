@@ -131,6 +131,9 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private int maxVolume = 0;
     private int currentVolume = 0;
     private boolean isGetStatusReply = false;
+    private String currentPlayType = "";
+    private int currentTopId = -1;
+    private String currentSongListId = "";
 
     private Disposable mLoadSongDisposable;
     private Disposable mSearchSongDisposable;
@@ -775,13 +778,33 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 reportProperty(Common.PROPERTY_CUR_PLAY_LIST, strValue, controlSeq);
             } else if (msg.has(Common.PROPERTY_CUR_SONG_ID)) { //当前播放的歌曲ID
                 strValue = msg.getString(Common.PROPERTY_CUR_SONG_ID);
+                int songIndex = msg.getInt(Common.PROPERTY_SONG_INDEX);
                 TXLog.d(TAG, "cur_song_id = " + strValue);
-                playSong(getIndexBySongId(strValue));
+                playSong(songIndex);
                 reportProperty(Common.PROPERTY_CUR_SONG_ID, strValue, controlSeq);
             }
         } catch (JSONException e) {
+            ToastUtil.showS("JSON解析错误");
             e.printStackTrace();
         }
+    }
+
+    private void playSong(int index) {
+        if (index >= mSongList.size()) {
+            int count = (((index+1) - mSongList.size()) / pageSize) + 1;
+            while (count-- > 0) {
+                // 加载更多
+                countDownLatch = new CountDownLatch(1);
+                page++;
+                getSongList(currentPlayType, songListId, currentTopId);
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        UltimateSongPlayer.getInstance().play(mSongList, index, true);
     }
 
     private int getIndexBySongId(String songId) {
@@ -801,12 +824,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         return -1;
     }
 
-    private void getSongList(String _type, String _id, int _page, int _size, int _topId) {
+    private void getSongList(String _type, String _id, int _topId) {
         Consumer<Response<? extends SongList>> consumer = response -> {
             if (response.isSuccess() && response.getData() != null) {
                 List<Song> songs = response.getData().getList();
                 mSongList.addAll(songs);
-                countDownLatch.countDown();
                 UltimateSongPlayer.getInstance().enqueue(songs, true);
                 if (mAdapter != null) mAdapter.notifyDataSetChanged();
             } else {
@@ -815,6 +837,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 ToastUtil.showS("加载出错");
             }
+            countDownLatch.countDown();
         };
         Consumer<Throwable> throwable = _throwable -> {
             if (page>1) {
@@ -843,7 +866,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
             } else if (Common.PLAY_TYPE_NEWSONG.equals(_type)) { // 新歌首发
-                mLoadSongDisposable = UltimateSongApi.getFirstPublishSongList(_page, _size, _topId)
+                mLoadSongDisposable = UltimateSongApi.getFirstPublishSongList(page, pageSize, _topId)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
@@ -854,7 +877,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void getSongListById(String id, String type) {
-        getSongList(type, id, 0, 0, 0);
+        getSongList(type, id, 0);
     }
 
     private void doSearch(String word) {
@@ -872,14 +895,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                             }
                         },
                         throwable -> ToastUtil.showS("加载出错"));
-    }
-
-    private void playSong(int index) {
-        if (index >= 0) {
-            UltimateSongPlayer.getInstance().play(mSongList, index, true);
-        } else {
-            ToastUtil.showS("歌单里没有该歌曲");
-        }
     }
 
     private void resetState() {
@@ -956,16 +971,21 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 if (Common.PLAY_TYPE_AWESOME.equals(songListType)) { // 新歌或日推
                     if (Common.PLAY_TYPE_NEWSONG.equals(items[2])) { // 新歌
                         int _topId = playParams.getInt(Common.PLAY_TOP_ID);
-                        int _page = playParams.getInt(Common.PLAY_PAGE);
-                        int _size = playParams.getInt(Common.PLAY_SIZE);
-                        getSongList(Common.PLAY_TYPE_NEWSONG, "", _page, _size, _topId);
+                        currentPlayType = Common.PLAY_TYPE_NEWSONG;
+                        currentTopId = _topId;
+                        songListId = "";
+                        getSongList(Common.PLAY_TYPE_NEWSONG, "", _topId);
                     } else if (Common.PLAY_TYPE_EVERYDAY.equals(items[2])) { // 日推
-                        getSongList(Common.PLAY_TYPE_EVERYDAY, "", 0, 0, 0);
+                        currentPlayType = Common.PLAY_TYPE_EVERYDAY;
+                        songListId = "";
+                        getSongList(Common.PLAY_TYPE_EVERYDAY, "", 0);
                     }
                 } else { // 热门歌单或专辑
                     if (Common.PLAY_TYPE_ALBUM.equals(songListType)) {
+                        currentPlayType = Common.PLAY_TYPE_ALBUM;
                         songListId = playParams.getString(Common.ALBUM_ID);
                     } else if (Common.PLAY_TYPE_PLAYLIST.equals(songListType)) {
+                        currentPlayType = Common.PLAY_TYPE_PLAYLIST;
                         songListId = playParams.getString(Common.PLAYLIST_ID);
                     }
                     getSongListById(songListId, songListType);
