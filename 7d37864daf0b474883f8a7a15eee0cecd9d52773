@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d563eb7d_cc822643",
+        "filename": "explorer/explorer-device-rtc/media/UserCallDeviceUML.png",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-07-16T00:16:35Z",
+      "side": 1,
+      "message": "需不需要标识类名？",
+      "revId": "7d37864daf0b474883f8a7a15eee0cecd9d52773",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
