@@ -10,7 +10,7 @@
 
 #### 物联网通信有示例Demo吗
 
-java的示例请参考[功能文档](../READEME.md#功能文档)。
+java的示例请参考[功能文档](../README.md#功能文档)。
 
 #### java的示例中mProductID，mDevName，mDevPSK需要填什么？
 
