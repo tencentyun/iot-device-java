@@ -21,7 +21,7 @@
         implementation project(':explorer:explorer-device-tme')
     }
     ```
-    注：Demo示例工程使用的是 依赖本地 explorer-device-tme 的 sdk源码 构建方式。
+    注：**需要集成该SDK请线下联系**，Demo示例工程使用的是 依赖本地 explorer-device-tme 的 sdk源码 构建方式。
 
 2、集成 SDK 时的注意点
 
@@ -248,9 +248,23 @@ public Status eventsPost(JSONArray events)
 
 ExpiredCallback token过期回调callback说明如下：
 
-```
-void expired();
-```
+| 回调接口 | 功能 |
+| ----------------------- | ---------- |
+| expired()                 | token 过期 |
+
+SongPlayStateListener 歌曲播放状态变化的监听
+
+| 回调接口 | 功能 |
+| ----------------------- | ---------- |
+| onBufferingEnd()                 | 缓冲结束 |
+| onBufferingStart()               | 缓冲开始 |
+| onBufferingUpdate()              | 缓冲进度变化 |
+| onCompletion()                   | 播放结束 |
+| onError(int what, String msg)    | 播放出错 |
+| onPause()                        | 暂停 |
+| onPlay()                         | 开始播放 |
+| onPrepared()                     | 准备完成 |
+| onSeekComplete()                 | seek完成 |
 
 ## 设备与用户绑定说明
 
