@@ -25,7 +25,7 @@ ${productId}/${deviceName}/event    // 发布
 
 ## 编译运行示例程序
 
-[下载IoT Hub Android-SDK Demo示例代码](../README.md#下载IoT-Hub-Android-SDK-Demo示例代码)
+[下载IoT-Hub-Java-SDK-Demo示例代码](../README.md#下载IoT-Hub-Java-SDK-Demo示例代码)
 
 #### 填写认证连接设备的参数
 示例中编辑 [unit_test_config.json](../src/test/resources/unit_test_config.json) 文件中的参数配置信息

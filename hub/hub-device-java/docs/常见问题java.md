@@ -10,11 +10,11 @@
 
 #### 物联网通信有示例Demo吗
 
-java的示例对应可以运行 [App.java](../../hub-device-java/src/main/java/com/tencent/iot/hub/device/java/App.java) 和 [ShadowApp.java](../../hub-device-java/src/main/java/com/tencent/iot/hub/device/java/ShadowApp.java) 的main函数去查看。
+java的示例请参考[功能文档](../READEME.md#功能文档)。
 
 #### java的示例中mProductID，mDevName，mDevPSK需要填什么？
 
-mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对应填写设备密钥（使用密钥认证方式）。如果使用证书认证方式请参考 [java认证连接部分](../../hub-device-java/README.md#认证连接)
+mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对应填写设备密钥（使用密钥认证方式）。如果使用证书认证方式请参考 [MqttSampleTest.java](../../hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java)
 
 #### 设备为何一直上下线？
 
