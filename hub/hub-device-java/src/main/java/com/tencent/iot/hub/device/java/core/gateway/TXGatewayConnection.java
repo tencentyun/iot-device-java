@@ -34,9 +34,8 @@ import javax.crypto.spec.SecretKeySpec;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 /**
- * Created by willssong on 2018/12/25.
+ * 网关连接类
  */
-
 public class TXGatewayConnection extends TXMqttConnection {
 	public static final String TAG = "TXMQTT" + MQTT_SDK_VER;
 	private static final String HMAC_SHA_256 = "HmacSHA256";
@@ -50,20 +49,15 @@ public class TXGatewayConnection extends TXMqttConnection {
 	static { Loggor.setLogger(logger); }
 
 	/**
-	 * @param serverURI
-	 *            服务器URI
-	 * @param productID
-	 *            产品名
-	 * @param deviceName
-	 *            设备名，唯一
-	 * @param secretKey
-	 *            密钥
-	 * @param bufferOpts
-	 *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-	 * @param clientPersistence
-	 *            消息永久存储
-	 * @param callBack
-	 *            连接、消息发布、消息订阅回调接口
+	 * 构造函数
+	 *
+	 * @param serverURI 服务器 URI
+	 * @param productID 产品名
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
 	 */
 	public TXGatewayConnection(String serverURI, String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -72,13 +66,14 @@ public class TXGatewayConnection extends TXMqttConnection {
 	}
 
 	/**
-	 * 使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
-	 * @param productID
-	 * @param deviceName
-	 * @param secretKey
-	 * @param bufferOpts
-	 * @param clientPersistence
-	 * @param callBack
+	 * 构造函数，使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+	 *
+	 * @param productID 产品名
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
 	 */
 	public TXGatewayConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -87,12 +82,13 @@ public class TXGatewayConnection extends TXMqttConnection {
 	}
 
 	/**
+	 * 构造函数
 	 *
-	 * @param productID
-	 * @param deviceName
-	 * @param secretKey
-	 * @param bufferOpts
-	 * @param callBack
+	 * @param productID 产品名
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
 	 */
 	public TXGatewayConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, TXMqttActionCallBack callBack) {
@@ -100,26 +96,37 @@ public class TXGatewayConnection extends TXMqttConnection {
 	}
 
 	/**
+	 * 构造函数
 	 *
-	 * @param productID
-	 * @param deviceName
-	 * @param secretKey
-	 * @param callBack
+	 * @param productID 产品名
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
 	 */
 	public TXGatewayConnection(String productID, String deviceName, String secretKey, TXMqttActionCallBack callBack) {
 		this(productID, deviceName, secretKey, null, null, callBack);
 	}
 
+	/**
+	 * 构造函数
+	 *
+	 * @param srvURL 服务器 URI
+	 * @param productID 产品名
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+	 */
 	public TXGatewayConnection(String srvURL, String productID, String deviceName, String secretKey,
 			TXMqttActionCallBack callBack) {
 		this(srvURL, productID, deviceName, secretKey, null, null, callBack);
 	}
 
 	/**
+	 * 查找子设备
 	 *
-	 * @param productId
-	 * @param devName
-	 * @return null if not existed otherwise the subdev
+	 * @param productId 产品 ID
+	 * @param devName 设备名
+	 * @return {@link TXGatewaySubdev}
 	 */
 	private TXGatewaySubdev findSubdev(String productId, String devName) {
 
@@ -128,41 +135,41 @@ public class TXGatewayConnection extends TXMqttConnection {
 	}
 
 	/**
-	 * remove the subdev if it is offline
+	 * 当设备离线时，移除子设备
 	 *
-	 * @param subdev
-	 * @return the operation results
+	 * @param subdev 子设备 {@link TXGatewaySubdev}
+	 * @return 操作结果 {@link TXGatewaySubdev}
 	 */
 	private synchronized TXGatewaySubdev removeSubdev(TXGatewaySubdev subdev) {
 		return mSubdevs.remove(subdev.mProductId + subdev.mDevName);
 	}
 
 	/**
-	 * remove the subdev if it is offline
+	 * 当设备离线时，移除子设备
 	 *
-	 * @param productId
-	 * @param devName
-	 * @return
+	 * @param productId 产品 ID
+	 * @param devName 设备名
+	 * @return 操作结果 {@link TXGatewaySubdev}
 	 */
 	private synchronized TXGatewaySubdev removeSubdev(String productId, String devName) {
 		return mSubdevs.remove(productId + devName);
 	}
 
 	/**
-	 * add a new subdev entry
+	 * 添加子设备
 	 *
-	 * @param dev
+	 * @param dev 子设备 {@link TXGatewaySubdev}
 	 */
 	private synchronized void addSubdev(TXGatewaySubdev dev) {
 		mSubdevs.put(dev.mProductId + dev.mDevName, dev);
 	}
 
 	/**
-	 * Get the subdev status
+	 * 获取子设备状态
 	 *
-	 * @param productId
-	 * @param devName
-	 * @return the status of subdev
+	 * @param productId 产品 ID
+	 * @param devName 设备名
+	 * @return 子设备状态 {@link Status}
 	 */
 	public Status getSubdevStatus(String productId, String devName) {
 		TXGatewaySubdev subdev = findSubdev(productId, devName);
@@ -173,28 +180,28 @@ public class TXGatewayConnection extends TXMqttConnection {
 	}
 
 	/**
-	 * set the status of the subdev
+	 * 设置子设备状态
 	 *
-	 * @param productId
-	 * @param devName
-	 * @param stat
-	 * @return the status of operation
+	 * @param productId 产品 ID
+	 * @param devName 设备名
+	 * @param state 状态 {@link Status}
+	 * @return 操作结果 {@link Status}
 	 */
-	public Status setSubdevStatus(String productId, String devName, Status stat) {
+	public Status setSubdevStatus(String productId, String devName, Status state) {
 		TXGatewaySubdev subdev = findSubdev(productId, devName);
 		if (subdev == null) {
 			return Status.SUBDEV_STAT_NOT_EXIST;
 		}
-		subdev.setSubdevStatus(stat);
+		subdev.setSubdevStatus(state);
 		return Status.OK;
 	}
 
 	/**
-	 * publish the offline message for the subdev
+	 * 发布子设备离线消息
 	 *
-	 * @param subProductID
-	 * @param subDeviceName
-	 * @return the result of operation
+	 * @param subProductID 子设备产品 ID
+	 * @param subDeviceName 子设备名
+	 * @return 操作结果 {@link Status}
 	 */
 	public Status gatewaySubdevOffline(String subProductID, String subDeviceName) {
 		Loggor.debug(TAG, "Try to find " + subProductID + " & " + subDeviceName);
@@ -227,6 +234,13 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return super.publish(topic, message, null);
 	}
 
+	/**
+	 * 子设备上线消息
+	 *
+	 * @param subProductID 子设备产品 ID
+	 * @param subDeviceName 子设备名
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status gatewaySubdevOnline(String subProductID, String subDeviceName) {
 		TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
 		if (subdev == null) {
@@ -281,6 +295,14 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return null;
 	}
 
+	/**
+	 * 网关绑定子设备
+	 *
+	 * @param subProductID 子设备产品 ID
+	 * @param subDeviceName 子设备名
+	 * @param psk 设备密钥
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status gatewayBindSubdev(String subProductID, String subDeviceName, String psk) {
 
 		String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
@@ -317,6 +339,13 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return super.publish(topic, message, null);
 	}
 
+	/**
+	 * 解绑网关子设备
+	 *
+	 * @param subProductID 子设备产品 ID
+	 * @param subDeviceName 子设备名
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status gatewayUnbindSubdev(String subProductID, String subDeviceName) {
 
 		String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
@@ -345,6 +374,11 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return super.publish(topic, message, null);
 	}
 
+	/**
+	 * 获取网关子设备拓扑关系
+	 *
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status getGatewaySubdevRealtion() {
 		String topic = GW_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
 
@@ -363,6 +397,11 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return super.publish(topic, message, null);
 	}
 
+	/**
+	 * 获取远程配置
+	 *
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status getRemoteConfig() {
 		// format the payload
 		JSONObject obj = new JSONObject();
@@ -423,11 +462,23 @@ public class TXGatewayConnection extends TXMqttConnection {
 		return true;
 	}
 
+	/**
+	 * 关注配置变化
+	 *
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status concernConfig() {
 		String subscribeConfigTopic = PRODUCT_CONFIG_PREFIX + mProductId + "/" + mDeviceName;
 		return this.subscribe(subscribeConfigTopic, 1, "subscribe config topic");
 	}
 
+	/**
+	 * 消息到达回调
+	 *
+	 * @param topic 消息主题
+	 * @param message 消息内容结构体
+	 * @throws Exception
+	 */
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		Loggor.debug(TAG, "message received " + topic);
@@ -436,6 +487,13 @@ public class TXGatewayConnection extends TXMqttConnection {
 		}
 	}
 
+	/**
+	 * 连接 MQTT 服务
+	 *
+	 * @param options 连接参数
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 操作结果 {@link Status}
+	 */
 	@Override
 	public synchronized Status connect(MqttConnectOptions options, Object userContext) {
 		if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
