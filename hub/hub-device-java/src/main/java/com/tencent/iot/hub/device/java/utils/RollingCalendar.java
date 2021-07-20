@@ -5,14 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
- 
-/**
- * ClassName:RollingCalendar <br/>
- * Date:     2016年3月31日 上午11:41:34 <br/>
- * @author   lujie
- * @version 
- * @see     
- */
+
 class RollingCalendar extends GregorianCalendar
 {
     private static final long serialVersionUID = -3560331770601814177L;

@@ -1,9 +1,13 @@
 package com.tencent.iot.hub.device.java.core.device;
 
-
+/**
+ * 证书类
+ */
 public class CA {
 
-    //IoT服务器根证书
+    /**
+     * IoT服务器根证书
+     */
     public static String caCrt =
         "-----BEGIN CERTIFICATE-----\r\n" +
         "MIIDxTCCAq2gAwIBAgIJALM1winYO2xzMA0GCSqGSIb3DQEBCwUAMHkxCzAJBgNV\r\n" +
@@ -29,8 +33,9 @@ public class CA {
         "QVrcRBDxzx/G\r\n" +
         "-----END CERTIFICATE-----";
 
-
-    //OTA升级包下载服务器的CA证书链
+    /**
+     * OTA 升级包下载服务器的 CA 证书链
+     */
     public static String[] cosServerCaCrtList = {
         "-----BEGIN CERTIFICATE-----\r\n" +
         "MIIDdTCCAl2gAwIBAgILBAAAAAABFUtaw5QwDQYJKoZIhvcNAQEFBQAwVzELMAkG\r\n" +

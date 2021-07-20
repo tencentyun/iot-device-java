@@ -8,33 +8,20 @@ import java.io.InputStream;
 import java.math.BigInteger;
 
 /**
- * A bare-minimum ASN.1 DER decoder, just having enough functions to decode
- * PKCS#1 private keys. Especially, it doesn't handle explicitly tagged types
- * with an outer tag.
- *
- * <p/>
- * This parser can only handle one layer. To parse nested constructs, get a new
- * parser for each layer using <code>Asn1Object.getParser()</code>.
- *
- * <p/>
- * There are many DER decoders in JRE but using them will tie this program to a
- * specific JCE/JVM.
- *
- * @author shockcao
- *
+ * 基于 ASN.1 DER 的解码类
  */
 public class DerParser {
 
-    // Classes
+    // 类
     public final static int UNIVERSAL = 0x00;
     public final static int APPLICATION = 0x40;
     public final static int CONTEXT = 0x80;
     public final static int PRIVATE = 0xC0;
 
-    // Constructed Flag
+    // 构造标记
     public final static int CONSTRUCTED = 0x20;
 
-    // Tag and data types
+    // 数据类型和标记
     public final static int ANY = 0x00;
     public final static int BOOLEAN = 0x01;
     public final static int INTEGER = 0x02;
@@ -68,35 +55,30 @@ public class DerParser {
     protected InputStream in;
 
     /**
-     * Create a new DER decoder from an input stream.
+     * 构造函数
      *
-     * @param in
-     *            The DER encoded stream
+     * @param in 加密源
+     * @throws IOException
      */
     public DerParser(InputStream in) throws IOException {
         this.in = in;
     }
 
     /**
-     * Create a new DER decoder from a byte array.
+     * 构造函数
      *
-     * @param bytes
-     *            encoded bytes
+     * @param bytes 加密源
      * @throws IOException
-     *             IOException resulted from invalid file IO
      */
     public DerParser(byte[] bytes) throws IOException {
         this(new ByteArrayInputStream(bytes));
     }
 
     /**
-     * Read next object. If it's constructed, the value holds encoded content
-     * and it should be parsed by a new parser from
-     * <code>Asn1Object.getParser</code>.
+     * 读取下一段加密的内容
      *
-     * @return A object
+     * @return {@link Asn1Object}
      * @throws IOException
-     *             IOException resulted from invalid file IO
      */
     public Asn1Object read() throws IOException {
         int tag = in.read();

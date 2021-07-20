@@ -1,5 +1,8 @@
 package com.tencent.iot.hub.device.java.core.shadow;
 
+/**
+ * 影子常量
+ */
 public interface TXShadowConstants {
     String TYPE = "type";
     String GET = "get";
