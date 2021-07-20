@@ -29,21 +29,26 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-
+/**
+ * SSL 工具类
+ */
 public class AsymcSslUtils {
 
+    /**
+     * 类标记
+     */
     public static final String TAG = "iot.AsymcSslUtils";
 
     private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
 
     /**
-     * 证书文件及Key文件存放在Android asset目录下，通过AssetManager读取文件内容获取输入流，
-     * 通过输入流构造双向认证SSLSocketFactory
+     * 证书文件及 Key文件存放在 Android asset 目录下，通过 AssetManager 读取文件内容获取输入流，
+     * 通过输入流构造双向认证 SSLSocketFactory
      *
-     * @param context              Android上下文，可使用进程上下文/Activity
-     * @param clientCrtFileName    客户端证书文件名
+     * @param context Android上下文，可使用进程上下文/Activity
+     * @param clientCrtFileName 客户端证书文件名
      * @param clientPriKeyFileName 客户端私钥文件名
-     * @return
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByAssetsFile(Context context, final String clientCrtFileName, final String clientPriKeyFileName) {
         SSLSocketFactory factory = null;
@@ -84,40 +89,45 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 证书文件及Key文件存放在Android 本地存储中，通过FileInputStream读取文件内容输入流
-     * 通过输入流解析构造双向认证SSLSocketFactory
+     * 证书文件及 Key文件存放在 Android 本地存储中，通过 FileInputStream 读取文件内容输入流
+     * 通过输入流解析构造双向认证 SSLSocketFactory
      *
-     * @param clientCrtFileName    客户端证书文件名，要求全路径
+     * @param clientCrtFileName 客户端证书文件名，要求全路径
      * @param clientPriKeyFileName 客户端私钥文件名，要求全路径
-     * @return
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByFile(final String clientCrtFileName, final String clientPriKeyFileName) {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByFile(clientCrtFileName, clientPriKeyFileName);
     }
 
     /**
-     * 获取双向认证SSLSocketFactory
+     * 获取双向认证 SSLSocketFactory
      *
      * @param clientInput 设备证书文件输入流
-     * @param keyInput    设备私钥文件输入流
-     * @return
+     * @param keyInput 设备私钥文件输入流
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput) {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByStream(clientInput, keyInput);
     }
 
     /**
-     * 获取双向认证SSLSocketFactory
+     * 获取双向认证 SSLSocketFactory
      *
      * @param clientInput 设备证书文件输入流
-     * @param keyInput    设备私钥文件输入流
-     * @param customCA    自定义CA
-     * @return
+     * @param keyInput 设备私钥文件输入流
+     * @param customCA 自定义 CA
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput, String customCA) {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactoryByStream(clientInput, keyInput, customCA);
     }
 
+    /**
+     * 获取双向认证 SSLSocketFactory
+     *
+     * @return {@link SSLSocketFactory}
+     */
     public static SSLContext getDefaultSLLContext() {
         SSLContext sslContext = null;
         try {
@@ -151,19 +161,19 @@ public class AsymcSslUtils {
     };
 
     /**
-     * 获取SSLSocketFactory
+     * 获取 SSLSocketFactory
      *
-     * @return
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactory() {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactory();
     }
 
     /**
-     * 获取自定义CA证书的SSLSocketFactory
+     * 获取自定义 CA 证书的 SSLSocketFactory
      *
-     * @param customCA 自定义CA证书
-     * @return SSLSocketFactory
+     * @param customCA 自定义 CA 证书
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactory(String customCA) {
         return com.tencent.iot.hub.device.java.core.util.AsymcSslUtils.getSocketFactory(customCA);

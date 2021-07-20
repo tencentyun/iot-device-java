@@ -15,8 +15,10 @@ import org.apache.log4j.helpers.CountingQuietWriter;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.helpers.OptionConverter;
 import org.apache.log4j.spi.LoggingEvent;
- 
- 
+
+/**
+ * 日志附加器
+ */
 public class MyDailyRollingFileAppender extends FileAppender
 {
  
@@ -74,87 +76,101 @@ public class MyDailyRollingFileAppender extends FileAppender
     static final TimeZone gmtTimeZone = TimeZone.getTimeZone("GMT");
  
     /** 
-    * The default constructor does nothing. 
+    * 构造函数
     */
     public MyDailyRollingFileAppender()
     {
     }
- 
-    /** 
-    * ouput destination for this appender. 
-    */
+
+    /**
+     * 构造函数
+     *
+     * @param layout 布局方式
+     * @param filename 文件名
+     * @param datePattern 日期模板
+     * @throws IOException
+     */
     public MyDailyRollingFileAppender(Layout layout, String filename, String datePattern) throws IOException
     {
         super(layout, filename, true);
         this.datePattern = datePattern;
         activateOptions();
     }
- 
-    /** 
-    * being rolled over to backup files. 
-    *  
-    * @since 1.1 
-    */
+
+    /**
+     * 获取文件最大的容量
+     *
+     * @return 文件大小上限
+     */
     public long getMaximumFileSize()
     {
         return maxFileSize;
     }
- 
-    /** 
-    * being rolled over to backup files. 
-    *  
-    * <p> 
-    * JavaBeans {@link java.beans.Introspector Introspector}. 
-    *  
-    * @see #setMaxFileSize(String) 
-    */
+
+    /**
+     * 设置文件最大的容量
+     *
+     * @param maxFileSize 文件大小上限
+     */
     public void setMaximumFileSize(long maxFileSize)
     {
         this.maxFileSize = maxFileSize;
     }
  
     /** 
-    * being rolled over to backup files. 
+    * 设置文件最大的容量
     *  
-    * <p> 
-    * the value "10KB" will be interpreted as 10240. 
+    * @param value 文件大小上限（例："10KB"）
     */
     public void setMaxFileSize(String value)
     {
         maxFileSize = OptionConverter.toFileSize(value, maxFileSize + 1);
     }
- 
-    /** 
-    * Returns the value of the <b>MaxBackupIndex</b> option. 
-    */
+
+
+    /**
+     * 获取备份文件最大的容量
+     *
+     * @return 备份文件大小上限
+     */
     public int getMaxBackupIndex()
     {
         return maxBackupIndex;
     }
- 
-    /** 
-    * Set the maximum number of backup files to keep around. 
-    *  
-    * <p> 
-    */
+
+    /**
+     * 设置备份文件最大的容量
+     *
+     * @param maxBackups 备份文件大小上限
+     */
     public void setMaxBackupIndex(int maxBackups)
     {
         this.maxBackupIndex = maxBackups;
     }
- 
-    /** 
-    */
+
+    /**
+     * 设置日期模板
+     *
+     * @param pattern 日期模板
+     */
     public void setDatePattern(String pattern)
     {
         datePattern = pattern;
     }
- 
-    /** Returns the value of the <b>DatePattern</b> option. */
+
+    /**
+     * 返回日期模板
+     *
+     * @return 日期模板
+     */
     public String getDatePattern()
     {
         return datePattern;
     }
- 
+
+    /**
+     * 设置文件属性
+     */
     @Override
     public void activateOptions()
     {
@@ -239,15 +255,7 @@ public class MyDailyRollingFileAppender extends FileAppender
     }
  
     /** 
-    * Implements the usual roll over behaviour. 
-    *  
-    * <p> 
-    * If <code>MaxBackupIndex</code> is positive, then files { 
-     
-    *  
-    * <p> 
-    * If <code>MaxBackupIndex</code> is equal to zero, then the 
-    * <code>File</code> is truncated with no backup files created. 
+    * 日志翻滚
     */
     public // synchronization not necessary since doAppend is alreasy synched
     void sizeRollOver()
@@ -318,7 +326,16 @@ public class MyDailyRollingFileAppender extends FileAppender
         }
         scheduledFilename = datedFilename;
     }
- 
+
+    /**
+     * 设置文件属性
+     *
+     * @param fileName 文件名
+     * @param append 是否追加
+     * @param bufferedIO 是否缓冲流
+     * @param bufferSize 缓存大小
+     * @throws IOException
+     */
     @Override
     public synchronized void setFile(String fileName, boolean append, boolean bufferedIO, int bufferSize) throws IOException
     {
@@ -329,15 +346,15 @@ public class MyDailyRollingFileAppender extends FileAppender
             ((CountingQuietWriter) qw).setCount(f.length());
         }
     }
- 
+
     @Override
     protected void setQWForFiles(Writer writer)
     {
         this.qw = new CountingQuietWriter(writer, errorHandler);
     }
- 
-    /** 
-    * Rollover the current file to a new file. 
+
+    /**
+    * Rollover the current file to a new file.
     */
     void timeRollOver() throws IOException
     {
@@ -390,11 +407,11 @@ public class MyDailyRollingFileAppender extends FileAppender
         }
         scheduledFilename = datedFilename;
     }
- 
-    /** 
-    *  
-    * <p> 
-    * rollover. 
+
+    /**
+    *
+    * <p>
+    * rollover.
     * */
     @Override
     protected void subAppend(LoggingEvent event)

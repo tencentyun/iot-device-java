@@ -45,23 +45,27 @@ import org.slf4j.LoggerFactory;
 import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
-
+/**
+ * SSL 工具类
+ */
 public class AsymcSslUtils {
 
-    public static final String TAG = AsymcSslUtils.class.getName();
+    /**
+     * 类标记
+     */
+    private static final String TAG = AsymcSslUtils.class.getName();
     private static final Logger logger = LoggerFactory.getLogger(AsymcSslUtils.class);
     static { Loggor.setLogger(logger); }
     private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
 
     /**
-     * 读取resouce文件
-     * 
-     * 证书文件及Key文件存放在Android asset目录下，通过AssetManager读取文件内容获取输入流，
-     * 通过输入流构造双向认证SSLSocketFactory
+     * 读取 resouce 文件证书文件及 Key 文件存放在 Android asset 目录
+     * 下，通过 AssetManager 读取文件内容获取输入流，通过输入流构造双向
+     * 认证 SSLSocketFactory
      *
-     * @param clientCrtFileName    客户端证书文件名
+     * @param clientCrtFileName 客户端证书文件名
      * @param clientPriKeyFileName 客户端私钥文件名
-     * @return
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByAssetsFile(final String clientCrtFileName, final String clientPriKeyFileName) {
         SSLSocketFactory factory = null;
@@ -75,12 +79,12 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 证书文件及Key文件存放在Android 本地存储中，通过FileInputStream读取文件内容输入流
-     * 通过输入流解析构造双向认证SSLSocketFactory
+     * 证书文件及 Key 文件存放在 Android 本地存储中，通过 FileInputStream
+     * 读取文件内容输入流通过输入流解析构造双向认证 SSLSocketFactory
      *
-     * @param clientCrtFileName    客户端证书文件名，要求全路径
+     * @param clientCrtFileName 客户端证书文件名，要求全路径
      * @param clientPriKeyFileName 客户端私钥文件名，要求全路径
-     * @return
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByFile(final String clientCrtFileName, final String clientPriKeyFileName) {
         InputStream clientInputStream = null;
@@ -116,23 +120,23 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 获取双向认证SSLSocketFactory
+     * 获取双向认证 SSLSocketFactory
      *
      * @param clientInput 设备证书文件输入流
-     * @param keyInput    设备私钥文件输入流
-     * @return
+     * @param keyInput 设备私钥文件输入流
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput) {
         return getSocketFactoryByStream(clientInput, keyInput, null);
     }
 
     /**
-     * 获取双向认证SSLSocketFactory
+     * 获取双向认证 SSLSocketFactory
      *
      * @param clientInput 设备证书文件输入流
-     * @param keyInput    设备私钥文件输入流
-     * @param customCA 自定义CA证书
-     * @return
+     * @param keyInput 设备私钥文件输入流
+     * @param customCA 自定义 CA 证书
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactoryByStream(final InputStream clientInput, final InputStream keyInput, String customCA) {
         Security.addProvider(new BouncyCastleProvider());
@@ -249,19 +253,19 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 获取默认CA证书的SSLSocketFactory
+     * 获取默认 CA 证书的 SSLSocketFactory
      *
-     * @return SSLSocketFactory
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactory() {
         return getSocketFactory(null);
     }
 
     /**
-     * 获取自定义CA证书的SSLSocketFactory
+     * 获取自定义 CA 证书的 SSLSocketFactory
      *
-     * @param customCA 自定义CA证书
-     * @return SSLSocketFactory
+     * @param customCA 自定义 CA 证书
+     * @return {@link SSLSocketFactory}
      */
     public static SSLSocketFactory getSocketFactory(String customCA) {
         Security.addProvider(new BouncyCastleProvider());
@@ -396,9 +400,10 @@ public class AsymcSslUtils {
     }
 
     /**
-     * 从PEM格式的公钥字符串中提取rsa公钥的前24字节
-     * @param pemStr PEM格式的公钥字符串
-     * @return rsa公钥的前24字节
+     * 从 PEM 格式的公钥字符串中提取 rsa 公钥的前 24 字节
+     *
+     * @param pemStr PEM 格式的公钥字符串
+     * @return rsa 公钥的前 24 字节
      */
     public static byte[] getRSAPublicKeyFromPem(String pemStr) {
         byte[] ret = new byte[24];

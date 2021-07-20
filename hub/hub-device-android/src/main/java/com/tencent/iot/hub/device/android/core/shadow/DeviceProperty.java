@@ -22,6 +22,9 @@ public class DeviceProperty extends com.tencent.iot.hub.device.java.core.shadow.
         }
     };
 
+    /**
+     * 构造函数
+     */
     public DeviceProperty() {
     }
 
@@ -32,11 +35,22 @@ public class DeviceProperty extends com.tencent.iot.hub.device.java.core.shadow.
         mDataType = TXShadowConstants.JSONDataType.valueOf(TXShadowConstants.JSONDataType.class, in.readString());
     }
 
+    /**
+     * 内容描述
+     *
+     * @return 描述符
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * 序列化
+     *
+     * @param out {@link Parcel}
+     * @param flag 标记
+     */
     @Override
     public void writeToParcel(Parcel out, int flag) {
         out.writeString(mKey);

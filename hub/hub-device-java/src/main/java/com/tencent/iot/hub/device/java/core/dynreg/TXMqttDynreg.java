@@ -33,7 +33,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 /**
- * The type Tx iothub dynreg.
+ * MQTT 动态注册类
  */
 public class TXMqttDynreg {
     private static final String TAG = TXMqttDynreg.class.getSimpleName();
@@ -48,19 +48,19 @@ public class TXMqttDynreg {
 
     private TXMqttDynregCallback mCallback;
 
-    // 默认的动态注册URL，文档链接：https://cloud.tencent.com/document/product/634/47225
+    // 默认的动态注册 URL，文档链接：https://cloud.tencent.com/document/product/634/47225
     private final String mDefaultDynRegUrl ="https://ap-guangzhou.gateway.tencentdevices.com/device/register";
 
     static { Loggor.setLogger(logger); }
 
     /**
-     * Instantiates a new Tx iothub dynreg.
+     * 构造函数
      *
-     * @param dynregUrl  the dynreg url
-     * @param productId  the product id
-     * @param productKey the product key
-     * @param deviceName the device name
-     * @param callback    the callback for operation result
+     * @param dynregUrl 动态注册 url
+     * @param productId 产品 ID
+     * @param productKey 产品密钥
+     * @param deviceName 设备名
+     * @param callback 动态注册结果回调 {@link TXMqttDynregCallback}
      */
     public TXMqttDynreg(String dynregUrl, String productId, String productKey, String deviceName, TXMqttDynregCallback callback) {
         this.mDynRegUrl = dynregUrl;
@@ -71,12 +71,12 @@ public class TXMqttDynreg {
     }
 
     /**
-     * Instantiates a new Tx iothub dynreg.
+     * 构造函数
      *
-     * @param productId  the product id
-     * @param productKey the product key
-     * @param deviceName the device name
-     * @param callback callback for operation result
+     * @param productId 产品 ID
+     * @param productKey 产品密钥
+     * @param deviceName 设备名
+     * @param callback 动态注册结果回调 {@link TXMqttDynregCallback}
      */
     public TXMqttDynreg(String productId, String productKey, String deviceName, TXMqttDynregCallback callback) {
         this.mDynRegUrl = mDefaultDynRegUrl;
@@ -228,9 +228,9 @@ public class TXMqttDynreg {
     }
 
     /**
-     * Do dynamic register
+     * 动态注册
      *
-     * @return true for register OK, false for register ERROR
+     * @return 动态注册结果；true：OK；false：ERROR
      */
     public boolean doDynamicRegister() {
         Mac mac = null;

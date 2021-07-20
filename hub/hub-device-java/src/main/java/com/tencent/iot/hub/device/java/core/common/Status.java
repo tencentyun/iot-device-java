@@ -1,41 +1,43 @@
 package com.tencent.iot.hub.device.java.core.common;
 
 
-
+/**
+ * 状态码
+ */
 public enum Status {
     /**
-     * Indicates that the operation succeeded
+     * 操作成功
      */
     OK,
 
     /**
-     * Indicates that the operation failed
+     * 操作失败
      */
     ERROR,
 
     /**
-     * Indicates that the operation's result may be returned asynchronously
+     * 表示结果可能是异步返回
      */
     NO_RESULT,
 
     /**
-     * Indicates that the parameter is invalid
+     * 参数无效
      */
     PARAMETER_INVALID,
 
     /**
-     * Indicates that the MQTT connecting is in progress
+     * 正在连接中
      */
     MQTT_CONNECT_IN_PROGRESS,
 
 
     /**
-     * Indicates that the mqtt connection is not established
+     * 未建立连接
      */
     MQTT_NO_CONN,
 
     /**
-     * Indicates that the mqtt topic is not subscribed
+     * 主题未订阅
      */
     ERROR_TOPIC_UNSUBSCRIBED,
 
