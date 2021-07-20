@@ -20,7 +20,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.SocketFactory;
 
-
+/**
+ * websocket 连接类
+ */
 public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackExtended {
 
     private static final String TAG = TXWebSocketClient.class.getName();
@@ -35,6 +37,14 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     // 状态机
     private AtomicReference<ConnectionState> state = new AtomicReference<>(ConnectionState.DISCONNECTED);
 
+    /**
+     * 构造函数
+     *
+     * @param serverURI 服务器 URI
+     * @param clientId 客户端 ID
+     * @param secretKey 密钥
+     * @throws MqttException
+     */
     public TXWebSocketClient(String serverURI, String clientId, String secretKey) throws MqttException {
         super(serverURI, clientId, new MemoryPersistence());
         this.secretKey = secretKey;
@@ -42,7 +52,12 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         setCallback(this);
     }
 
-    // 连接接口
+    /**
+     * 连接
+     *
+     * @return mqtt token {@link IMqttToken}
+     * @throws MqttException {@link MqttException}
+     */
     public IMqttToken connect() throws MqttException {
         if (state.get() == ConnectionState.CONNECTED) { // 已经连接过
             Loggor.debug(TAG, "already connect");
@@ -55,11 +70,20 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         return ret;
     }
 
-    // 重连接口
+    /**
+     * 重连
+     *
+     * @throws MqttException {@link MqttException}
+     */
     public void reconnect() throws MqttException {
         super.reconnect();
     }
 
+    /**
+     * 设置连接配置
+     *
+     * @param mqttConnectOptions {@link MqttConnectOptions}
+     */
     public void setMqttConnectOptions(MqttConnectOptions mqttConnectOptions) {
         this.conOptions = mqttConnectOptions;
 
@@ -76,19 +100,39 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         conOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
     }
 
+    /**
+     * 获取密钥
+     *
+     * @return 密钥
+     */
     public String getSecretKey() {
         return secretKey;
     }
 
+    /**
+     * 设置连接监听器
+     *
+     * @param connectListener {@link TXWebSocketActionCallback}
+     */
     public void setTXWebSocketActionCallback(TXWebSocketActionCallback connectListener) {
         this.connectListener = connectListener;
     }
 
+    /**
+     * 获取连接监听器
+     *
+     * @return {@link TXWebSocketActionCallback}
+     */
     public TXWebSocketActionCallback getTXWebSocketActionCallback() {
         return this.connectListener;
     }
 
-    // 主动断开连接
+    /**
+     * 断开连接
+     *
+     * @return mqtt token {@link IMqttToken}
+     * @throws MqttException {@link MqttException}
+     */
     public synchronized IMqttToken disconnect() throws MqttException {
         if (state.get() == ConnectionState.DISCONNECTED || state.get() == ConnectionState.DISCONNECTING) {      // 已经处于断开连接状态
             throw new MqttException(MqttException.REASON_CODE_CLIENT_ALREADY_DISCONNECTED);
@@ -121,7 +165,11 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         }
     };
 
-    // 获取连接状态 true:上线 false:掉线
+    /**
+     * 获取连接状态
+     *
+     * @return {@link ConnectionState}
+     */
     public ConnectionState getConnectionState() {
         return state.get();
     }
@@ -171,6 +219,12 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         return connectId.toString();
     }
 
+    /**
+     * 连接完成
+     *
+     * @param reconnect 是否重连
+     * @param serverURI 服务器 URI
+     */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         state.set(ConnectionState.CONNECTED);
@@ -196,17 +250,34 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         }
     }
 
+    /**
+     * 掉线
+     *
+     * @param cause 掉线原因
+     */
     @Override
     public void connectionLost(Throwable cause) {
         Loggor.error(TAG, "connectionLost");
         state.set(ConnectionState.CONNECTION_LOST);
     }
 
+    /**
+     * 收到消息
+     *
+     * @param topic 主题
+     * @param message 消息 {@link MqttMessage}
+     * @throws Exception
+     */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         Loggor.debug(TAG, "messageArrived");
     }
 
+    /**
+     * 发送消息完成
+     *
+     * @param token {@link IMqttDeliveryToken}
+     */
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
         Loggor.debug(TAG, "deliveryComplete");

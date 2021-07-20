@@ -4,19 +4,28 @@ package com.tencent.iot.hub.device.java.core.gateway;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 /**
- * Created by willssong on 2018/12/25.
+ * 网关子设备类
  */
-
 public class TXGatewaySubdev {
+    /**
+     * 类标记
+     */
     public static final String TAG = "TXGatewaySubdev";
+    /**
+     * 设备名
+     */
     public String mDevName;
+    /**
+     * 产品 ID
+     */
     public String mProductId;
     private Status mStat;
 
     /**
+     * 构造函数
      *
-     * @param devName           子设备设备名
-     * @param productId         子设备设备ID
+     * @param devName 子设备设备名
+     * @param productId 子设备设备ID
      */
     public TXGatewaySubdev(String productId, String devName) {
         mDevName = devName;
@@ -25,16 +34,18 @@ public class TXGatewaySubdev {
     }
 
     /**
+     * 获取网关子设备状态
      *
-     * @return                  子设备当前状态
+     * @return 子设备当前状态
      */
     public synchronized Status getSubdevStatus() {
         return mStat;
     }
 
     /**
+     * 设置网关子设备状态
      *
-     * @param stat              更新子设备状态
+     * @param stat 更新子设备状态
      */
     public synchronized  void setSubdevStatus(Status stat) {
         mStat = stat;

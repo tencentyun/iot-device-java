@@ -4,9 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * mqtt远程客户端选项
+ * mqtt 远程客户端选项
  */
-
 public class TXMqttClientOptions extends com.tencent.iot.hub.device.java.service.TXMqttClientOptions implements Parcelable {
 
     public static final Creator<TXMqttClientOptions> CREATOR = new Creator<TXMqttClientOptions>() {
@@ -21,6 +20,9 @@ public class TXMqttClientOptions extends com.tencent.iot.hub.device.java.service
         }
     };
 
+    /**
+     * 构造函数
+     */
     public TXMqttClientOptions() {
     }
 
@@ -31,11 +33,20 @@ public class TXMqttClientOptions extends com.tencent.iot.hub.device.java.service
         secretKey(in.readString());
     }
 
+    /**
+     * 内容描述符
+     * @return 描述符
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * 序列化
+     * @param parcel {@link Parcel}
+     * @param i 标记
+     */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getServerURI());

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply from: '../../gradle-javadoc.gradle'
 
 
 android {
@@ -150,4 +149,29 @@ signing {
     if (isReleaseVersion) {
         sign publishing.publications.aar
     }
+}
+
+task javaDoc(type: Javadoc) {
+    delete("javadoc/")
+
+    options{
+        encoding('UTF-8')
+        charSet('UTF-8')
+        memberLevel = JavadocMemberLevel.PUBLIC
+        linkSource true
+        author false
+        noTree true
+        noIndex true
+        noNavBar true
+    }
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    destinationDir = file("javadoc/")
+    failOnError false
+}
+
+afterEvaluate {
+    javaDoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath.files
+    })
 }
