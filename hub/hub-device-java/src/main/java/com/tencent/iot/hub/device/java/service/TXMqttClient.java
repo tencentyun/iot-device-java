@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 /**
  * mqtt远程服务客户端
  */
-
 public class TXMqttClient {
 
     private static final String TAG = TXMqttClient.class.getSimpleName();
@@ -88,13 +87,16 @@ public class TXMqttClient {
         }
     };
 
+    /**
+     * 构造函数
+     */
     public TXMqttClient() {
     }
 
     /**
-     * 设置MqttAction回调接口
+     * 设置 MqttAction 回调接口
      *
-     * @param mMqttActionCallBack mqttAction回调接口
+     * @param mMqttActionCallBack mqttAction 回调接口
      * @return
      */
     public TXMqttClient setMqttActionCallBack(TXMqttActionCallBack mMqttActionCallBack) {
@@ -123,9 +125,9 @@ public class TXMqttClient {
     }
 
     /**
-     * 初始化远程服务客户端（内部接口不对外，仅供TXShadowClient调用）
+     * 初始化远程服务客户端（内部接口不对外，仅供 TXShadowClient 调用）
      *
-     * @param clientOptions        客户端选项
+     * @param clientOptions 客户端选项
      * @param shadowActionListener shadowAction监听器
      */
     protected void init( TXMqttClientOptions clientOptions, final ITXShadowActionListener shadowActionListener) {
@@ -144,7 +146,7 @@ public class TXMqttClient {
 
 
     /**
-     * 设置断连状态buffer缓冲区
+     * 设置断连状态 buffer 缓冲区
      *
      * @param bufferOpts
      */
@@ -160,11 +162,11 @@ public class TXMqttClient {
     }
 
     /**
-     * 连接MQTT服务器，结果通过回调函数通知。
+     * 连接 MQTT 服务器，结果通过回调函数通知。
      *
      * @param connectOptions 连接参数
-     * @param userContext    用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status connect(TXMqttConnectOptions connectOptions, Object userContext) {
         Status status = Status.ERROR;
@@ -188,7 +190,7 @@ public class TXMqttClient {
     /**
      * 重新连接, 结果通过回调函数通知。
      *
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status reconnect() {
         Status status = Status.ERROR;
@@ -211,7 +213,7 @@ public class TXMqttClient {
      * MQTT断连，结果通过回调函数通知。
      *
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status disConnect(Object userContext) {
         return disConnect(0, userContext);
@@ -222,7 +224,7 @@ public class TXMqttClient {
      *
      * @param timeout     等待时间（必须大于0）。单位：毫秒
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status disConnect(long timeout, Object userContext) {
         Status status = Status.ERROR;
@@ -244,10 +246,10 @@ public class TXMqttClient {
     /**
      * 订阅Topic, 结果通过回调函数通知。
      *
-     * @param topic       topic名称
-     * @param qos         QOS等级
+     * @param topic topic名称
+     * @param qos QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status subscribe(String topic, int qos, Object userContext) {
         Status status = Status.ERROR;
@@ -269,9 +271,9 @@ public class TXMqttClient {
     /**
      * 取消订阅主题, 结果通过回调函数通知。
      *
-     * @param topic       要取消订阅的主题
+     * @param topic 要取消订阅的主题
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status unSubscribe(String topic, Object userContext) {
         Status status = Status.ERROR;
@@ -294,10 +296,10 @@ public class TXMqttClient {
     /**
      * 发布MQTT消息接口, 结果通过回调函数通知。
      *
-     * @param topic       topic名称
-     * @param message     消息内容
+     * @param topic topic名称
+     * @param message 消息内容
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status publish(String topic, TXMqttMessage message, Object userContext) {
         Status status = Status.ERROR;
@@ -326,10 +328,10 @@ public class TXMqttClient {
 
 
     /**
-     * 初始化OTA功能。
+     * 初始化 OTA 功能
      *
      * @param storagePath OTA升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
-     * @param callback    OTA事件回调
+     * @param callback OTA事件回调
      */
     public void initOTA(String storagePath, TXOTACallBack callback) {
         mOTACallback = callback;
@@ -345,7 +347,7 @@ public class TXMqttClient {
      * 上报设备当前版本信息到后台服务器。
      *
      * @param currentFirmwareVersion 设备当前版本信息
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status reportCurrentFirmwareVersion(String currentFirmwareVersion)  {
         Status status = Status.ERROR;
@@ -367,7 +369,7 @@ public class TXMqttClient {
      * @param resultCode 结果代码。0：表示成功；其它：表示失败；常见错误码：-1:下载超时; -2:文件不存在；-3:签名过期；-4:校验错误；-5:更新固件失败
      * @param resultMsg 结果描述
      * @param version 版本号
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败 {@link Status}
      */
     public Status reportOTAState(TXOTAConstansts.ReportState state, int resultCode, String resultMsg, String version) {
         Status status = Status.ERROR;
@@ -385,8 +387,8 @@ public class TXMqttClient {
     /**
      * 添加用户上下文
      *
-     * @param userContext
-     * @return
+     * @param userContext 用户上下文
+     * @return 请求 ID
      */
     protected long addUserContext(Object userContext) {
         long requestId = mRequestId.getAndIncrement();
@@ -397,8 +399,8 @@ public class TXMqttClient {
     /**
      * 获取用户上下文
      *
-     * @param userContextId
-     * @return
+     * @param userContextId 请求 ID
+     * @return 用户上下文
      */
     protected Object getUserContext(long userContextId) {
         return mUserContextMap.get(userContextId);
