@@ -441,7 +441,9 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
         if (mMqttClient == null) {
             try {
-                mMqttClient = new MqttAsyncClient(mServerURI, mClientId, mMqttPersist);
+                TestPingSender pingSender = new TestPingSender();
+                System.out.println("=========== TestPingSender =============");
+                mMqttClient = new MqttAsyncClient(mServerURI, mClientId, mMqttPersist, pingSender);
                 mMqttClient.setCallback(this);
                 mMqttClient.setBufferOpts(this.bufferOpts);
                 mMqttClient.setManualAcks(false);
