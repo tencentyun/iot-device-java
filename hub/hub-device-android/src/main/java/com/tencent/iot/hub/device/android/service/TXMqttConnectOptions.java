@@ -6,9 +6,8 @@ import android.os.Parcelable;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 /**
- * 该类负责序列化MqttConnectOptions相关信息
+ * 该类负责序列化 MqttConnectOptions 相关信息
  */
-
 public class TXMqttConnectOptions extends com.tencent.iot.hub.device.java.service.TXMqttConnectOptions implements Parcelable {
 
     public static final Creator<TXMqttConnectOptions> CREATOR = new Creator<TXMqttConnectOptions>() {
@@ -23,6 +22,9 @@ public class TXMqttConnectOptions extends com.tencent.iot.hub.device.java.servic
         }
     };
 
+    /**
+     * 构造函数
+     */
     public TXMqttConnectOptions() {
     }
 
@@ -40,11 +42,20 @@ public class TXMqttConnectOptions extends com.tencent.iot.hub.device.java.servic
         setAsymcEncryption(booleanArray[3]);
     }
 
+    /**
+     * 内容描述符
+     * @return 描述符
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * 序列化
+     * @param out {@link Parcel}
+     * @param flag 标记
+     */
     @Override
     public void writeToParcel(Parcel out, int flag) {
         out.writeInt(getConnectionTimeout());

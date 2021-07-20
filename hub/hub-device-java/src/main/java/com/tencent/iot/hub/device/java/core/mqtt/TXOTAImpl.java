@@ -31,6 +31,9 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
+/**
+ * OTA 实现类
+ */
 public class TXOTAImpl {
 	private static final String TAG = TXOTAImpl.class.getName();
 	private static final Logger logger = LoggerFactory.getLogger(TXOTAImpl.class);
@@ -88,12 +91,12 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 构造OTA对象
+	 * 构造 OTA 对象
 	 *
-	 * @param connection MQTT连接
+	 * @param connection MQTT 连接
 	 * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
-	 * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
-	 * @param callback OTA事件回调
+	 * @param cosServerCaCrtList OTA 升级包下载服务器的 CA 证书链
+	 * @param callback OTA 事件回调
 	 */
 	public TXOTAImpl(TXMqttConnection connection, String storagePath, String[] cosServerCaCrtList, TXOTACallBack callback) {
 		this.mConnection = connection;
@@ -112,40 +115,39 @@ public class TXOTAImpl {
 
 		prepareOTAServerCA();
 
-		subscribeTopic();  // 提前订阅话题
+		subscribeTopic();  // 提前订阅主题
 		if (mConnection.getSubProductID() != null) { // 设置子设备时
 			subscribeSubDevTopic();  //网关子设备订阅
 		}
 	}
 
 	/**
-	 * 构造OTA对象
+	 * 构造 OTA 对象
 	 *
-	 * @param connection MQTT连接
+	 * @param connection MQTT 连接
 	 * @param storagePath 用于保存固件的路径（调用者须保证目录已存在，并具有写权限）
-	 * @param callback OTA事件回调
+	 * @param callback OTA 事件回调
 	 */
 	public TXOTAImpl(TXMqttConnection connection, String storagePath, TXOTACallBack callback) {
 		this(connection, storagePath, null, callback);
 	}
 
 	/**
-	 * 设置OTA TOPIC订阅是否成功的标记
+	 * 设置 OTA TOPIC 订阅是否成功的标记
 	 *
-	 * @param state
-	 *            true：表示订阅成功； false: 表示订阅失败
+	 * @param state true：表示订阅成功；false: 表示订阅失败
 	 */
 	public void setSubscribedState(boolean state) {
 		this.mSubscribedState = state;
 	}
 
 	/**
-	 * 处理从服务器收到的MQTT应答消息，如果OTA订阅成功的应答消息则处理，不是OTA消息则忽略
+	 * 处理从服务器收到的 MQTT 应答消息，如果 OTA 订阅成功的应答消息则处理，不是 OTA 消息则忽略
 	 *
-	 * @param status
-	 * @param token
-	 * @param userContext
-	 * @param msg
+	 * @param status {@link Status}
+	 * @param token mqtt 连接 token {@link IMqttToken}
+	 * @param userContext 用户上下文
+	 * @param msg 平台返回消息
 	 */
 	public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
 		Loggor.debug(TAG, "onSubscribeCompleted status " + status);
@@ -163,13 +165,11 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 处理从服务器收到的MQTT消息，如果是OTA消息则处理，不是OTA消息则忽略
+	 * 处理从服务器收到的 MQTT 消息，如果是 OTA 消息则处理，不是 OTA 消息则忽略
 	 *
-	 * @param topic
-	 *            来自哪个TOPIC的消息
-	 * @param message
-	 *            MQTT消息
-	 * @return 返回true, 表示此消息已由OTA模块处理；返回false，表示些消息不是OTA消息；
+	 * @param topic 来自哪个 TOPIC 的消息
+	 * @param message MQTT 消息
+	 * @return 返回 true, 表示此消息已由 OTA 模块处理；返回 false，表示些消息不是 OTA 消息
 	 */
 	public boolean processMessage(String topic, MqttMessage message) {
 		if (!topic.startsWith("$ota/")) {
@@ -209,11 +209,10 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 上报设备当前版本信息到后台服务器。
+	 * 上报设备当前版本信息到后台服务器
 	 *
-	 * @param currentFirmwareVersion
-	 *            设备当前版本信息
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param currentFirmwareVersion 设备当前版本信息
+	 * @return 发送请求成功时返回Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
 		return reportDevVersion(OTA_REPORT_TOPIC, currentFirmwareVersion);
@@ -224,11 +223,10 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 上报设备当前版本信息到后台服务器。
+	 * 上报设备当前版本信息到后台服务器
 	 *
-	 * @param currentVersion
-	 *            设备当前版本信息
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param currentVersion 设备当前版本信息
+	 * @return 发送请求成功时返回Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportDevVersion(String topic, String currentVersion) {
 		if (!mSubscribedState) {
@@ -258,39 +256,60 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 上报设备升级状态到后台服务器。
+	 * 上报设备升级状态到后台服务器
 	 *
-	 * @param state
-	 * @param resultCode
-	 * @param resultMsg
-	 * @param version
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param state 状态
+	 * @param resultCode 结果码
+	 * @param resultMsg 平台返回消息
+	 * @param version 目标固件版本号
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportUpdateFirmwareState(String state, int resultCode, String resultMsg, String version) {
 		return reportMessage(OTA_REPORT_TOPIC, "report_progress", state, resultCode, resultMsg, version);
 	}
 
+	/**
+	 * 上报失败信息
+	 *
+	 * @param errorCode 错误码
+	 * @param errorMsg 错误信息
+	 * @param version 目标固件版本号
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status reportFailedMessage(int errorCode, String errorMsg, String version) {
 		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "fail", errorCode, errorMsg, version);
 	}
 
+	/**
+	 * 上报成功信息
+	 *
+	 * @param version 目标固件版本号
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status reportSuccessMessage(String version) {
 		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "done", 0, "", version);
 	}
 
+	/**
+	 * 上报烧录信息
+	 *
+	 * @param version 目标固件版本号
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status reportBurnngMessage(String version) {
 		return reportMessage(OTA_SUB_DEV_REPORT_TOPIC, "report_progress", "burning", 0, "", version);
 	}
 
 	/**
-	 * 上报设备升级状态到后台服务器。
+	 * 上报设备升级状态到后台服务器
 	 *
-	 * @param type
-	 * @param state
-	 * @param resultCode
-	 * @param resultMsg
-	 * @param version
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param topic 主题
+	 * @param type 类型
+	 * @param state 状态
+	 * @param resultCode 结果码
+	 * @param resultMsg 结果信息
+	 * @param version 版本号
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	private Status reportMessage(String topic, String type, String state, int resultCode, String resultMsg, String version) {
 		MqttMessage message = new MqttMessage();
@@ -322,11 +341,11 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 上报下载进度消息到后台服务器。
+	 * 上报下载进度消息到后台服务器
 	 *
-	 * @param percent
-	 * @param version
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param percent 进度
+	 * @param version 目标固件版本号
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	private Status reportProgressMessage(String topic, int percent, String version) {
 		MqttMessage message = new MqttMessage();
@@ -359,11 +378,10 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 订阅用于OTA升级的TOPIC
+	 * 订阅用于 OTA 升级的 TOPIC
 	 *
-	 * @param timeout
-	 *            超时时间(必须大于0); 单位：毫秒
-	 * @return Status.OK：表示订阅成功时; 其它返回值表示订阅失败；
+	 * @param timeout 超时时间(必须大于0)；单位：毫秒
+	 * @return Status.OK：表示订阅成功时；其它返回值表示订阅失败
 	 */
 	private Status subscribeTopic(int timeout) {
 		Status tag = mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
@@ -387,20 +405,29 @@ public class TXOTAImpl {
 		return Status.ERROR_TOPIC_UNSUBSCRIBED;
 	}
 
+	/**
+	 * 订阅 OTA 主题
+	 *
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status subscribeTopic() {
 		return mConnection.subscribe(OTA_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
 	}
 
+	/**
+	 * 订阅子设备 OTA 主题
+	 *
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status subscribeSubDevTopic() {
 		return mConnection.subscribe(OTA_SUB_DEV_UPDATE_TOPIC, TXMqttConstants.QOS1, null);
 	}
 
 	/**
-	 * 根据URL创建对应的HTTP或HTTPS连接对象
+	 * 根据 URL 创建对应的 HTTP 或 HTTPS 连接对象
 	 *
-	 * @param firmwareURL
-	 *            固件URL
-	 * @return HttpURLConnection或HttpsURLConnection对象
+	 * @param firmwareURL 固件 URL
+	 * @return HttpURLConnection 或 HttpsURLConnection 对象
 	 */
 	private HttpURLConnection createURLConnection(String firmwareURL) throws Exception {
 
@@ -473,10 +500,25 @@ public class TXOTAImpl {
 		return conn;
 	}
 
+	/**
+	 * 下载固件
+	 *
+	 * @param firmwareURL 固件 URL
+	 * @param outputFile 输出文件
+	 * @param md5Sum md5 值
+	 * @param version 版本号
+	 */
 	public void gatewayDownSubdevApp(String firmwareURL, String outputFile, String md5Sum, String version) {
 		downloadFirmware(firmwareURL, outputFile, md5Sum, version);
 	}
 
+	/**
+	 * 网关上报子设备进度
+	 *
+	 * @param percent 进度
+	 * @param version 目标子设备固件版本号
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status gatewaySubdevReportProgress(int percent, String version) {
 		return reportProgressMessage(OTA_SUB_DEV_REPORT_TOPIC, percent, version);
 	}
@@ -484,12 +526,9 @@ public class TXOTAImpl {
 	/**
 	 * 开启线程下载固件
 	 *
-	 * @param firmwareURL
-	 *            固件URL
-	 * @param outputFile
-	 *            固件要保存的全路径及文件名
-	 * @param md5Sum
-	 *            用于下载完成后做校验的MD5
+	 * @param firmwareURL 固件 URL
+	 * @param outputFile 固件要保存的全路径及文件名
+	 * @param md5Sum 用于下载完成后做校验的 MD5
 	 */
 	private void downloadFirmware(final String firmwareURL, final String outputFile, final String md5Sum,
 			final String version) {
@@ -628,11 +667,10 @@ public class TXOTAImpl {
 	}
 
 	/**
-	 * 计算文件的MD5摘要值
+	 * 计算文件的 MD5 摘要值
 	 *
-	 * @param filePath
-	 *            全路径文件名
-	 * @return 以16进制字符表示的摘要字符串
+	 * @param filePath 全路径文件名
+	 * @return 以 16 进制字符表示的摘要字符串
 	 */
 	private static String fileToMD5(String filePath) {
 		InputStream inputStream = null;
@@ -668,9 +706,8 @@ public class TXOTAImpl {
 	/**
 	 * 转换摘要值为字符串形式
 	 *
-	 * @param digestBytes
-	 *            二进制摘要值
-	 * @return 以16进制字符表示的摘要字符串
+	 * @param digestBytes 二进制摘要值
+	 * @return 以 16 进制字符表示的摘要字符串
 	 */
 	private static String convertHashToString(byte[] digestBytes) {
 		String returnVal = "";

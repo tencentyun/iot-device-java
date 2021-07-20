@@ -4,7 +4,6 @@ plugins {
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
-apply from: '../../gradle-javadoc.gradle'
 
 rootProject.ext.configPath = "./src/test/resources/unit_test_config.json"
 apply from: "../../parse_json.gradle"
@@ -158,3 +157,33 @@ signing {
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
+
+task clearLastestJavadoc(type: Delete) {
+    doFirst {
+        delete("javadoc/")
+    }
+}
+
+task javaDoc(type: Javadoc) {
+
+    options{
+        encoding('UTF-8')
+        charSet('UTF-8')
+        memberLevel = JavadocMemberLevel.PUBLIC
+        linkSource true
+        author false
+        noTree true
+        noIndex true
+        noNavBar true
+    }
+
+    source = sourceSets.main.allJava
+    classpath += configurations.compile
+    classpath += files({ project(':hub:hub-device-java').sourceSets.main.compileClasspath })
+    destinationDir = file("javadoc/")
+
+    failOnError false
+}
+
+javaDoc.dependsOn clearLastestJavadoc
+
