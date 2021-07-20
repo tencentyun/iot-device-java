@@ -24,9 +24,15 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
+/**
+ * 影子连接类
+ */
 public class TXShadowConnection {
 
-	public static final String TAG = TXShadowConnection.class.getName();
+	/**
+	 * 类标记
+	 */
+	private static final String TAG = TXShadowConnection.class.getName();
 	private static final Logger logger = LoggerFactory.getLogger(TXShadowConnection.class);
 	static { Loggor.setLogger(logger); }
 
@@ -36,7 +42,7 @@ public class TXShadowConnection {
 	private static final String CLIENT_TOKEN = "%s-%d";
 
 	/**
-	 * shadow action回调接口
+	 * shadow action 回调接口
 	 */
 	private TXShadowActionCallBack mShadowActionCallback = null;
 
@@ -55,7 +61,7 @@ public class TXShadowConnection {
 	private HashMap<String, DeviceProperty> mRegisterPropertyMap = new HashMap<>();
 
 	/**
-	 * 是否已经成功订阅OPERATION_RESULT_TOPIC
+	 * 是否已经成功订阅 OPERATION_RESULT_TOPIC
 	 */
 	private boolean mIsOperationResultSubscribeSuccess = false;
 
@@ -70,17 +76,18 @@ public class TXShadowConnection {
 	private static final int MAX_MESSAGE_ID = 65535;
 	private int mPublishMessageId = 0;
 
+	/**
+	 * 影子的 MQTT 回调
+	 */
 	public ShadowUponMqttCallBack mShadowUponMqttCallBack = null;
 
 	/**
-	 * @param productID
-	 *            产品名
-	 * @param deviceName
-	 *            设备名，唯一
-	 * @param secretKey
-	 *            密钥
-	 * @param callBack
-	 *            连接、消息发布、消息订阅回调接口
+	 * 构造函数
+	 *
+	 * @param productID 产品 ID
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXShadowActionCallBack}
 	 */
 	public TXShadowConnection( String productID, String deviceName, String secretKey,
 			TXShadowActionCallBack callBack) {
@@ -88,16 +95,13 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * @param productID
-	 *            产品名
-	 * @param deviceName
-	 *            设备名，唯一
-	 * @param secretKey
-	 *            密钥
-	 * @param bufferOpts
-	 *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-	 * @param callBack
-	 *            连接、消息发布、消息订阅回调接口
+	 * 构造函数
+	 *
+	 * @param productID 产品 ID
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXShadowActionCallBack}
 	 */
 	public TXShadowConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, TXShadowActionCallBack callBack) {
@@ -105,18 +109,14 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * @param productID
-	 *            产品名
-	 * @param deviceName
-	 *            设备名，唯一
-	 * @param secretKey
-	 *            密钥
-	 * @param bufferOpts
-	 *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-	 * @param clientPersistence
-	 *            消息永久存储
-	 * @param callBack
-	 *            连接、消息发布、消息订阅回调接口
+	 * 构造函数
+	 *
+	 * @param productID 产品 ID
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXShadowActionCallBack}
 	 */
 	public TXShadowConnection(String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -126,22 +126,15 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * Shadow连接器构造器
+	 * Shadow 连接器构造器
 	 *
-	 * @param serverURI
-	 *            服务器URI
-	 * @param productID
-	 *            产品名
-	 * @param deviceName
-	 *            设备名，唯一
-	 * @param secretKey
-	 *            密钥
-	 * @param bufferOpts
-	 *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-	 * @param clientPersistence
-	 *            消息永久存储
-	 * @param callBack
-	 *            连接、消息发布、消息订阅回调接口
+	 * @param serverURI 服务器 URI
+	 * @param productID 产品 ID
+	 * @param deviceName 设备名，唯一
+	 * @param secretKey 密钥
+	 * @param bufferOpts 发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用 {@link DisconnectedBufferOptions}
+	 * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+	 * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXShadowActionCallBack}
 	 */
 	public TXShadowConnection(String serverURI, String productID, String deviceName, String secretKey,
 			DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -158,35 +151,39 @@ public class TXShadowConnection {
 		mPublishMessageId = new Random().nextInt(MAX_MESSAGE_ID);
 	}
 
+	/**
+	 * 设置 MQTT 连接
+	 *
+	 * @param connection {@link TXMqttConnection}
+	 */
 	public void setMqttConnection(TXMqttConnection connection) {
 		mMqttConnection = connection;
 	}
 
 	/**
-	 * 获取TXMqttConnection句柄
+	 * 获取 TXMqttConnection 句柄
+	 *
+	 * @return TXMqttConnection 句柄 {@link TXMqttConnection}
 	 */
 	public TXMqttConnection getMqttConnection() {
 		return mMqttConnection;
 	}
 
 	/**
-	 * 设置断连状态buffer缓冲区
+	 * 设置断连状态 buffer 缓冲区
 	 *
-	 * @param bufferOpts
-	 *            缓冲参数
+	 * @param bufferOpts 缓冲参数 {@link DisconnectedBufferOptions}
 	 */
 	public void setBufferOpts(DisconnectedBufferOptions bufferOpts) {
 		mMqttConnection.setBufferOpts(bufferOpts);
 	}
 
 	/**
-	 * 与云端建立连接，结果通过回调函数通知。
+	 * 与云端建立连接，结果通过回调函数通知
 	 *
-	 * @param options
-	 *            连接参数
-	 * @param userContext
-	 *            用户上下文（这个参数在回调函数时透传给用户）
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param options 连接参数
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public synchronized Status connect(MqttConnectOptions options, Object userContext) {
 		Status status = mMqttConnection.connect(options, userContext);
@@ -216,11 +213,10 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 断开连接请求，结果通过回调函数通知。
+	 * 断开连接请求，结果通过回调函数通知
 	 *
-	 * @param userContext
-	 *            用户上下文（这个参数在回调函数时透传给用户）
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status disConnect(Object userContext) {
 		Status status = mMqttConnection.unSubscribe(OPERATION_RESULT_TOPIC, userContext);
@@ -230,15 +226,38 @@ public class TXShadowConnection {
 
 		return mMqttConnection.disConnect("disconnect context");
 	}
-	
+
+	/**
+	 * 发布消息
+	 *
+	 * @param topic 主题
+	 * @param msg 消息 {@link MqttMessage}
+	 * @param userCtx 上下文
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status publish(String topic, MqttMessage msg, Object userCtx) {
 		return mMqttConnection.publish(topic, msg, userCtx);
 	}
-	
+
+	/**
+	 * 订阅主题
+	 *
+	 * @param topic 主题
+	 * @param qos 消息 qos
+	 * @param userContext 上下文
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status subcribe(String topic, int qos, Object userContext) {
 		return mMqttConnection.subscribe(topic, qos, userContext);
 	}
 
+	/**
+	 * 取消订阅主题
+	 *
+	 * @param topicName 主题
+	 * @param userContext 上下文
+	 * @return 操作结果 {@link Status}
+	 */
 	public Status unSubscribe(String topicName, Object userContext) {
 		return mMqttConnection.unSubscribe(topicName, userContext);
 	}
@@ -253,13 +272,11 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 更新设备属性信息，结果通过回调函数通知。
+	 * 更新设备属性信息，结果通过回调函数通知
 	 *
-	 * @param devicePropertyList
-	 *            需要更新的设备属性集
-	 * @param userContext
-	 *            用户上下文（这个参数在回调函数时透传给用户）
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param devicePropertyList 需要更新的设备属性集
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status update(List<? extends DeviceProperty> devicePropertyList, Object userContext) {
 		Status status = checkMqttStatus();
@@ -280,9 +297,9 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 上报空的reported信息，清空服务器中reported信息。
+	 * 上报空的 reported 信息，清空服务器中 reported 信息
 	 *
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportNullReportedInfo() {
 		Status status = checkMqttStatus();
@@ -299,9 +316,9 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
+	 * 更新 delta 信息后，上报空的 desired 信息，通知服务器不再发送 delta 消息
 	 *
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportNullDesiredInfo() {
 		Status status = checkMqttStatus();
@@ -318,11 +335,10 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
+	 * 更新 delta 信息后，上报空的 desired 信息，通知服务器不再发送 delta 消息
 	 *
-	 * @param reportJsonDoc
-	 *            用户上报的JSON内容
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param reportJsonDoc 用户上报的 JSON 内容
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status reportNullDesiredInfo(String reportJsonDoc) {
 		Status status = checkMqttStatus();
@@ -339,11 +355,10 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 获取设备影子文档，结果通过回调函数通知。
+	 * 获取设备影子文档，结果通过回调函数通知
 	 *
-	 * @param userContext
-	 *            用户上下文（这个参数在回调函数时透传给用户）
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	public Status get(Object userContext) {
 		Status status = checkMqttStatus();
@@ -369,8 +384,7 @@ public class TXShadowConnection {
 	/**
 	 * 注册当前设备的设备属性
 	 *
-	 * @param property
-	 *            设备属性
+	 * @param property 设备属性 {@link DeviceProperty}
 	 */
 	public void registerProperty(DeviceProperty property) {
 		mRegisterPropertyMap.put(property.mKey, property);
@@ -379,22 +393,19 @@ public class TXShadowConnection {
 	/**
 	 * 取消注册当前设备的指定属性
 	 *
-	 * @param property
+	 * @param property {@link DeviceProperty}
 	 */
 	public void unRegisterProperty(DeviceProperty property) {
 		mRegisterPropertyMap.remove(property.mKey);
 	}
 
 	/**
-	 * 向指定TOPIC发布设备影子文档，结果通过回调函数通知。
+	 * 向指定 TOPIC 发布设备影子文档，结果通过回调函数通知
 	 *
-	 * @param topic
-	 *            指定的topic
-	 * @param document
-	 *            json文档
-	 * @param userContext
-	 *            用户上下文（这个参数在回调函数时透传给用户）
-	 * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+	 * @param topic 指定的 topic
+	 * @param document json 文档
+	 * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+	 * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
 	 */
 	private Status publish(String topic, String document, Object userContext) {
 		Status status;
@@ -420,9 +431,9 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 检查mqtt状态
+	 * 检查 mqtt 状态
 	 *
-	 * @return 当前状态
+	 * @return 当前状态 {@link Status}
 	 */
 	private Status checkMqttStatus() {
 		if (null == mMqttConnection || mMqttConnection.getConnectStatus() != TXMqttConstants.ConnectStatus.kConnected) {
@@ -434,13 +445,11 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 构建json信息
+	 * 构建 json 信息
 	 *
-	 * @param devicePropertyList
-	 *            需要上报的设备属性集
-	 * @param clientToken
-	 *            clientToken字段
-	 * @return json字符串
+	 * @param devicePropertyList 需要上报的设备属性集
+	 * @param clientToken clientToken 字段
+	 * @return json 字符串
 	 */
 	private String buildUpdateJsonDocument(List<? extends DeviceProperty> devicePropertyList, String clientToken) {
 		JSONObject documentJSONObj = new JSONObject();
@@ -568,10 +577,8 @@ public class TXShadowConnection {
 	/**
 	 * 处理接收到的影子消息
 	 *
-	 * @param topic
-	 *            来自哪个TOPIC的消息
-	 * @param message
-	 *            MQTT消息
+	 * @param topic 来自哪个 TOPIC 的消息
+	 * @param message MQTT 消息
 	 */
 	private void processShadowMessageReceived(String topic, MqttMessage message) {
 		if (null == message || null == message.getPayload()) {
@@ -594,10 +601,9 @@ public class TXShadowConnection {
 	}
 
 	/**
-	 * 处理delta消息函数。 当服务端发送delta消息到终端, 将会调用此方法
+	 * 处理 delta 消息函数。 当服务端发送 delta 消息到终端, 将会调用此方法
 	 *
-	 * @param message
-	 *            mqtt消息
+	 * @param message mqtt 消息
 	 */
 	private void processDeltaMessage(MqttMessage message) {
 		JSONObject jsonObj = null;

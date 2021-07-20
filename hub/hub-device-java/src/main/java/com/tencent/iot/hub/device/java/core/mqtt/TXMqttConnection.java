@@ -46,23 +46,47 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
+/**
+ * MQTT 连接类
+ */
 public class TXMqttConnection implements MqttCallbackExtended {
 
-    public static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
+    /**
+     * 类标记
+     */
+    private static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
     private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
     private static final String HMAC_SHA_256 = "HmacSHA256";
     private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
     static { Loggor.setLogger(logger); }
     private String subDevVersion = "0.0"; // 未设置，则默认当前的版本是 0.0  用于上报版本号
     /**
-     * tcp://localhost:port ssl://localhost:port
+     * 服务器 URI，tcp://localhost:port ssl://localhost:port
      */
     public String mServerURI;
+    /**
+     * 客户端段 ID
+     */
     public String mClientId;
+    /**
+     * 产品 ID
+     */
     public String mProductId;
+    /**
+     * 设备名
+     */
     public String mDeviceName;
+    /**
+     * 用户名
+     */
     public String mUserName;
+    /**
+     * 密钥
+     */
     public String mSecretKey;
+    /**
+     * 日志 URL
+     */
     public String mLogUrl;
 
     private String mSubProductID;
@@ -86,41 +110,89 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
 
     protected boolean mMqttLogFlag;
+    /**
+     * MQTT 日志回调接口 {@link TXMqttLogCallBack}
+     */
     public TXMqttLogCallBack mMqttLogCallBack = null;
     protected TXMqttLog mMqttLog = null;
 
+    /**
+     * 设置日志回调
+     *
+     * @param mMqttLogCallBack {@link TXMqttLogCallBack}
+     */
     public void setmMqttLogCallBack(TXMqttLogCallBack mMqttLogCallBack) {
         this.mMqttLogCallBack = mMqttLogCallBack;
     }
 
+    /**
+     * 获取子设备版本号
+     *
+     * @return 子设备版本号
+     */
     public String getSubDevVersion() {
         return subDevVersion;
     }
 
+    /**
+     * 设置子设备版本号
+     *
+     * @param version 版本号
+     */
     public void setSubDevVersion(String version) {
         this.subDevVersion = version;
     }
 
+    /**
+     * 设置子产品 ID
+     *
+     * @param subProductID 子产品 ID
+     */
     public void setSubProductID(String subProductID) {
         mSubProductID = subProductID;
     }
 
+    /**
+     * 获取子产品 ID
+     *
+     * @return 子产品 ID
+     */
     public String getSubProductID() {
         return mSubProductID;
     }
 
+    /**
+     * 设置子设备名
+     *
+     * @param subDevName 子设备名
+     */
     public void setSubDevName(String subDevName) {
         this.mSubDevName = subDevName;
     }
 
+    /**
+     * 获取子设备名
+     *
+     * @return 子设备名
+     */
     public String getSubDevName() {
         return mSubDevName;
     }
 
-    public void setSubDevProductKey(String subDevProductKey) {
-        this.mSubDevProductKey = subDevProductKey;
+    /**
+     * 设置子设备密钥
+     *
+     * @param subDevKey 子设备密钥
+     */
+    public void setSubDevProductKey(String subDevKey) {
+        this.mSubDevProductKey = subDevKey;
     }
 
+    /**
+     * 获取子设备密钥
+     *
+     * @return 子设备密钥
+     */
     public String getSubDevProductKey() {
         return mSubDevProductKey;
     }
@@ -132,37 +204,37 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     protected volatile TXMqttConstants.ConnectStatus mConnectStatus = TXMqttConstants.ConnectStatus.kConnectIdle;
 
-    /**
-     * @param productID
-     *            产品名
-     * @param deviceName
-     *            设备名，唯一
-     * @param secretKey
-     *            密钥
-     * @param callBack
-     *            连接、消息发布、消息订阅回调接口
+    /** 构造函数
+     *
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String productID, String deviceName, String secretKey,
             TXMqttActionCallBack callBack) {
         this(productID, deviceName, secretKey, null, callBack);
     }
-    
+
+    /** 构造函数
+     *
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     */
     public TXMqttConnection(String productID, String deviceName,
             TXMqttActionCallBack callBack) {
         this(productID, deviceName, null, null, callBack);
     }
 
     /**
-     * @param productID
-     *            产品名
-     * @param deviceName
-     *            设备名，唯一
-     * @param secretKey
-     *            密钥
-     * @param bufferOpts
-     *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param callBack
-     *            连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String productID, String deviceName, String secretKey,
             DisconnectedBufferOptions bufferOpts, TXMqttActionCallBack callBack) {
@@ -170,20 +242,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+     * 构造函数，使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
      *
-     * @param productID
-     *            产品名
-     * @param deviceName
-     *            设备名，唯一
-     * @param secretKey
-     *            密钥
-     * @param bufferOpts
-     *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence
-     *            消息永久存储
-     * @param callBack
-     *            连接、消息发布、消息订阅回调接口
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String productID, String deviceName, String secretKey,
             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -192,20 +258,15 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * @param serverURI
-     *            服务器URI
-     * @param productID
-     *            产品名
-     * @param deviceName
-     *            设备名，唯一
-     * @param secretKey
-     *            密钥
-     * @param bufferOpts
-     *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence
-     *            消息永久存储
-     * @param callBack
-     *            连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -230,22 +291,16 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * @param serverURI
-     *            服务器URI
-     * @param productID
-     *            产品名
-     * @param deviceName
-     *            设备名，唯一
-     * @param secretKey
-     *            密钥
-     * @param bufferOpts
-     *            发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence
-     *            消息永久存储
-     * @param callBack
-     *            连接、消息发布、消息订阅回调接口
-     * @param logUrl
-     *            日志上报URL
+     * 构造函数
+     *
+     * @param serverURI 服务器URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 URL
      */
     public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
                             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,
@@ -256,28 +311,32 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param logCallBack       日子上传回调接口
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param logCallBack 日子上传回调接口 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,
-                            DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttLogCallBack logCallBack,TXMqttActionCallBack callBack) {
+                            DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
         this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, true, logCallBack, callBack);
     }
 
     /**
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
         this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
@@ -286,14 +345,16 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
-     * @param logUrl            日志上报url
+     * 构造函数
+     *
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 url
      */
     public TXMqttConnection(String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
         this(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
@@ -302,9 +363,9 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 设置断连状态buffer缓冲区
+     * 设置断连状态 buffer 缓冲区
      *
-     * @param bufferOpts
+     * @param bufferOpts {@link DisconnectedBufferOptions}
      */
     public void setBufferOpts(DisconnectedBufferOptions bufferOpts) {
         this.bufferOpts = bufferOpts;
@@ -312,13 +373,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 连接MQTT服务器，结果通过回调函数通知。
+     * 连接 MQTT 服务器，结果通过回调函数通知
      *
-     * @param options
-     *            连接参数
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param options 连接参数
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败；
      */
     public synchronized Status connect(MqttConnectOptions options, Object userContext) {
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
@@ -410,9 +469,9 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 重新连接, 结果通过回调函数通知。
+     * 重新连接, 结果通过回调函数通知
      *
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败；
      */
     public synchronized Status reconnect() {
         if (mMqttClient == null) {
@@ -469,24 +528,21 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * MQTT断连，结果通过回调函数通知。
+     * MQTT 断连，结果通过回调函数通知
      *
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回Status.OK；其它返回值表示发送请求失败；
      */
     public Status disConnect(Object userContext) {
         return disConnect(0, userContext);
     }
 
     /**
-     * MQTT断连, 结果通过回调函数通知。
+     * MQTT 断连, 结果通过回调函数通知
      *
-     * @param timeout
-     *            等待时间（必须大于0）。单位：毫秒
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param timeout 等待时间（必须大于0）。单位：毫秒
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败；
      */
     public Status disConnect(long timeout, Object userContext) {
         mLastReceivedMessageId = INVALID_MESSAGE_ID;
@@ -527,15 +583,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 发布MQTT消息接口, 结果通过回调函数通知。
+     * 发布 MQTT 消息接口, 结果通过回调函数通知
      *
-     * @param topic
-     *            topic名称
-     * @param message
-     *            消息内容
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param topic topic名称
+     * @param message 消息内容
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status publish(String topic, MqttMessage message, Object userContext) {
         IMqttDeliveryToken sendToken = null;
@@ -581,6 +634,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.OK;
     }
 
+    /**
+     * 获取远程配置
+     *
+     * @return 操作结果 {@link Status}
+     */
     public Status getRemoteConfig() {
         // format the payload
         JSONObject obj = new JSONObject();
@@ -598,11 +656,21 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return publish(topic, message, null);
     }
 
+    /**
+     * 关注远程配置变化
+     *
+     * @return 操作结果 {@link Status}
+     */
     public Status concernConfig() {
         String subscribeConfigTopic = PRODUCT_CONFIG_PREFIX + mProductId + "/" + mDeviceName;
         return this.subscribe(subscribeConfigTopic, 1, "subscribe config topic");
     }
 
+    /**
+     * 获取网关子设备拓扑关系
+     *
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewayGetSubdevRelation() {
 
         // format the payload
@@ -622,6 +690,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return publish(topic, message, null);
     }
 
+    /**
+     * 网关绑定子设备
+     *
+     * @param subProductID 子产品 ID
+     * @param subDeviceName 子设备名
+     * @param psk 子设备密钥
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewayBindSubdev(String subProductID, String subDeviceName, String psk) {
 
         // format the payload
@@ -658,6 +734,13 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return publish(topic, message, null);
     }
 
+    /**
+     * 签名
+     *
+     * @param src 签名源
+     * @param psk 签名密钥
+     * @return 签名后的内容
+     */
     private String sign(String src, String psk) {
         Mac mac;
 
@@ -682,7 +765,13 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return null;
     }
 
-
+    /**
+     * 网关解绑子设备
+     *
+     * @param subProductID 子产品 ID
+     * @param subDeviceName 子设备名
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewayUnbindSubdev(String subProductID, String subDeviceName) {
 
         // format the payload
@@ -711,15 +800,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 订阅Topic, 结果通过回调函数通知。
+     * 订阅 Topic, 结果通过回调函数通知
      *
-     * @param topic
-     *            topic名称
-     * @param qos
-     *            QOS等级
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param topic topic 名称
+     * @param qos QOS 等级
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status subscribe(final String topic, final int qos, Object userContext) {
         if (topic == null || topic.trim().length() == 0) {
@@ -751,13 +837,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 取消订阅主题, 结果通过回调函数通知。
+     * 取消订阅主题, 结果通过回调函数通知
      *
-     * @param topic
-     *            要取消订阅的主题
-     * @param userContext
-     *            用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param topic 要取消订阅的主题
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status unSubscribe(final String topic, Object userContext) {
         if (topic == null || topic.trim().length() == 0) {
@@ -789,34 +873,31 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 初始化OTA功能。
+     * 初始化 OTA 功能
      *
-     * @param storagePath
-     *            OTA升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
-     * @param callback
-     *            OTA事件回调
+     * @param storagePath OTA 升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
+     * @param callback OTA事件回调
      */
     public void initOTA(String storagePath, TXOTACallBack callback) {
         mOTAImpl = new TXOTAImpl(this, storagePath, callback);
     }
 
     /**
-     * 初始化OTA功能。
+     * 初始化 OTA 功能
      *
-     * @param storagePath OTA升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
-     * @param cosServerCaCrtList OTA升级包下载服务器的CA证书链
-     * @param callback OTA事件回调
+     * @param storagePath OTA 升级包存储路径(调用者必须确保路径已存在，并且具有写权限)
+     * @param cosServerCaCrtList OTA 升级包下载服务器的 CA 证书链
+     * @param callback OTA 事件回调
      */
     public void initOTA(String storagePath, String[] cosServerCaCrtList, TXOTACallBack callback) {
         mOTAImpl = new TXOTAImpl(this, storagePath, cosServerCaCrtList, callback);
     }
 
     /**
-     * 上报设备当前版本信息到后台服务器。
+     * 上报设备当前版本信息到后台服务器
      *
-     * @param currentFirmwareVersion
-     *            设备当前版本信息
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param currentFirmwareVersion 设备当前版本信息
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
         if (mOTAImpl != null && currentFirmwareVersion != null) {
@@ -826,7 +907,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-
+    /**
+     * 网关子设备上报版本号
+     *
+     * @param currentVersion 子设备固件版本号
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportVer(String currentVersion) {
         if (mOTAImpl != null && currentVersion != null) {
             return mOTAImpl.gatewaySubdevReportVer(currentVersion);
@@ -835,7 +921,11 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-    //子设备上报默认的固件版本
+    /**
+     * 子设备上报默认的固件版本
+     *
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportVer() {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             return mOTAImpl.gatewaySubdevReportVer(getSubDevVersion());
@@ -844,14 +934,27 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-    //网关上报子设备固件下载进度
+    /**
+     * 网关上报子设备固件下载进度
+     *
+     * @param firmwareURL 固件 URL
+     * @param outputFile 输出文件
+     * @param md5Sum md5 值
+     * @param version 子设备固件版本号
+     */
     public void gatewayDownSubdevApp(String firmwareURL, String outputFile, String md5Sum, String version) {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             mOTAImpl.gatewayDownSubdevApp(firmwareURL, outputFile, md5Sum, version);
         }
     }
 
-    //网关上报子设备固件下载进度
+    /**
+     * 网关上报子设备固件下载进度
+     *
+     * @param percent 当前进度
+     * @param targetVersion 子设备固件版本号
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportProgress(int percent, String targetVersion) {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             return mOTAImpl.gatewaySubdevReportProgress(percent, targetVersion);
@@ -860,7 +963,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-    //子设备上报固件开始升级
+    /**
+     * 子设备上报固件开始升级
+     *
+     * @param targetVersion 子设备固件目标版本号
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportStart(String targetVersion) {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             return mOTAImpl.reportBurnngMessage(targetVersion);
@@ -869,7 +977,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-    //子设备上报固件升级成功
+    /**
+     * 子设备上报固件升级成功
+     *
+     * @param targetVersion 子设备固件版本号
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportSuccess(String targetVersion) {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             return mOTAImpl.reportSuccessMessage(targetVersion);
@@ -878,7 +991,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return Status.ERROR;
     }
 
-    // 上报子设备升级过程中的失败原因
+    /**
+     * 上报子设备升级过程中的失败原因
+     *
+     * @param errorCode 错误码
+     * @param errorMsg 错误信息
+     * @param targetVersion 子设备固件版本号
+     * @return 操作结果 {@link Status}
+     */
     public Status gatewaySubdevReportFail(int errorCode, String errorMsg,String targetVersion) {
         if (mOTAImpl != null && getSubDevVersion() != null) {
             return mOTAImpl.reportFailedMessage(errorCode, errorMsg, targetVersion);
@@ -888,18 +1008,19 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 上报设备升级状态到后台服务器。
+     * 上报设备升级状态到后台服务器
      *
-     * @param state
-     *            状态
-     * @param resultCode
-     *            结果代码。0：表示成功；其它：表示失败；常见错误码：-1: 下载超时;
-     *            -2:文件不存在；-3:签名过期；-4:校验错误；-5:更新固件失败
-     * @param resultMsg
-     *            结果描述
-     * @param version
-     *            版本号
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param state 状态
+     * @param resultCode 结果代码。0：表示成功；
+     *                   其它：表示失败；常见错误码：
+     *                   -1:下载超时；
+     *                   -2:文件不存在；
+     *                   -3:签名过期；
+     *                   -4:校验错误；
+     *                   -5:更新固件失败
+     * @param resultMsg 结果描述
+     * @param version 子设备固件版本号
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportOTAState(TXOTAConstansts.ReportState state, int resultCode, String resultMsg, String version) {
         if (mOTAImpl != null) {
@@ -911,7 +1032,8 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     /**
      * 初始化日志上传功能
-     * @param tag
+     *
+     * @param tag 日志标记
      */
     protected void initMqttLog(final String tag) {
         if (mMqttLog == null) {
@@ -929,17 +1051,18 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
     /**
      * 生成一条设备日志
+     *
      * @param logLevel 日志级别：
      *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
      *                 错误：TXMqttLogConstants.LEVEL_ERROR
      *                 警告：TXMqttLogConstants.LEVEL_WARN
      *                 通知：TXMqttLogConstants.LEVEL_INFO
      *                 调试：TXMqttLogConstants.LEVEL_DEBUG
-     * @param tag
-     * @param format
-     * @param obj
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
      */
-    public void mLog(int logLevel, final String tag,final String format, final Object... obj) {
+    public void mLog(int logLevel, final String tag, final String format, final Object... obj) {
         if( mMqttLog != null) {
             if( !(mMqttLog.saveMqttLog(logLevel, tag, format, obj))) {
                 Loggor.warn(TAG,  String.format("Save %s Level Log failed!", TXMqttLog.level_str[logLevel]));
@@ -947,7 +1070,19 @@ public class TXMqttConnection implements MqttCallbackExtended {
         }
     }
 
-    public void mLog(int logLevel, final String tag,final String msg) {
+    /**
+     * 生成一条设备日志
+     *
+     * @param logLevel 日志级别：
+     *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
+     *                 错误：TXMqttLogConstants.LEVEL_ERROR
+     *                 警告：TXMqttLogConstants.LEVEL_WARN
+     *                 通知：TXMqttLogConstants.LEVEL_INFO
+     *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
+    public void mLog(int logLevel, final String tag, final String msg) {
         if( mMqttLog != null) {
             if( !(mMqttLog.saveMqttLog(logLevel, tag, msg))) {
                 Loggor.warn(TAG,  String.format("Save %s Level Log failed!", TXMqttLog.level_str[logLevel]));
@@ -965,18 +1100,16 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 订阅RRPC Topic, 结果通过回调函数通知。
-     * topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
+     * 订阅 RRPC Topic, 结果通过回调函数通知，topic 格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
      *
-     * @param qos         QOS等级(仅支持QOS=0的消息)
+     * @param qos QOS 等级(仅支持 QOS=0 的消息)
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status subscribeRRPCTopic(final int qos, Object userContext) {
         String topic = String.format("$rrpc/rxd/%s/%s/+", mProductId, mDeviceName);
         return subscribe(topic, qos, userContext);
     }
-
 
     private Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
         // 应答topic格式: $rrpc/txd/${ProductId}/${DeviceName}/${messageid}
@@ -997,14 +1130,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return publish(topic, message ,userContext);
     }
 
-
     /**
-     * 订阅广播Topic, 结果通过回调函数通知。
-     * 广播Topic格式: $broadcast/rxd/${ProductId}/${DeviceName}
+     * 订阅广播 Topic，结果通过回调函数通知。广播 Topic 格式: $broadcast/rxd/${ProductId}/${DeviceName}
      *
-     * @param qos         QOS等级
+     * @param qos QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败；
      */
     public Status subscribeBroadcastTopic(final int qos, Object userContext) {
         String broadCastTopic = "";
@@ -1028,20 +1159,27 @@ public class TXMqttConnection implements MqttCallbackExtended {
     /**
      * 设置当前连接状态
      *
-     * @param connectStatus
-     *            当前连接状态
+     * @param connectStatus 当前连接状态 {@link TXMqttConstants.ConnectStatus}
      */
     protected synchronized void setConnectingState(TXMqttConstants.ConnectStatus connectStatus) {
         this.mConnectStatus = connectStatus;
     }
 
     /**
-     * @return 当前连接状态
+     * 获取当前连接状态
+     *
+     * @return 当前连接状态 {@link TXMqttConstants.ConnectStatus}
      */
     public TXMqttConstants.ConnectStatus getConnectStatus() {
         return this.mConnectStatus;
     }
 
+    /**
+     * 连接完成
+     *
+     * @param reconnect 重连标记
+     * @param serverURI 服务器 URI
+     */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         Loggor.info(TAG, "connectComplete. reconnect flag is " + reconnect);
@@ -1075,8 +1213,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
     /**
      * 连接丢失，回调上层
      *
-     * @param cause
-     *            连接断开原因
+     * @param cause 连接断开原因
      */
     @Override
     public void connectionLost(Throwable cause) {
@@ -1094,12 +1231,10 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 收到MQTT消息
+     * 收到 MQTT 消息
      *
-     * @param topic
-     *            消息主题
-     * @param message
-     *            消息内容结构体
+     * @param topic 消息主题
+     * @param message 消息内容结构体
      * @throws Exception
      */
     @Override
@@ -1161,8 +1296,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
     /**
      * 发布消息成功回调
      *
-     * @param messageToken
-     *            消息内容Token
+     * @param messageToken 消息内容 Token
      */
     @Override
     public void deliveryComplete(IMqttDeliveryToken messageToken) {

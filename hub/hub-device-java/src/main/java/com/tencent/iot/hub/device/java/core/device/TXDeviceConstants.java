@@ -1,7 +1,8 @@
 package com.tencent.iot.hub.device.java.core.device;
 
-
-
+/**
+ * 设备相关常量
+ */
 public interface TXDeviceConstants {
 
     /**

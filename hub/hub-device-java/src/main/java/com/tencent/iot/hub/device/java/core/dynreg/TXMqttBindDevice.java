@@ -19,6 +19,9 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * 绑定设备类
+ */
 public class TXMqttBindDevice {
     private static final String TAG = TXMqttBindDevice.class.getSimpleName();
     private static final Logger logger = LoggerFactory.getLogger(TXMqttDynreg.class);
@@ -36,13 +39,14 @@ public class TXMqttBindDevice {
     static { Loggor.setLogger(logger); }
 
     /**
+     * 构造函数
      *
-     * @param url  the bind device url
-     * @param productId  the product id
-     * @param deviceName the device name
-     * @param tid the device tid
-     * @param pubKey the public key of company
-     * @param callback    the callback for operation result
+     * @param url  绑定设备的 url
+     * @param productId  产品 ID
+     * @param deviceName 设备名
+     * @param tid 设备 ID
+     * @param pubKey 公钥
+     * @param callback 操作结果回调 {@link TXMqttBindDeviceCallback}
      */
     public TXMqttBindDevice(String url, String productId, String deviceName, String tid,
                             String pubKey, TXMqttBindDeviceCallback callback) {
@@ -55,12 +59,13 @@ public class TXMqttBindDevice {
     }
 
     /**
+     * 构造函数
      *
-     * @param productId  the product id
-     * @param deviceName the device name
-     * @param tid the device tid
-     * @param pubKey the public key of company
-     * @param callback callback for operation result
+     * @param productId  产品 ID
+     * @param deviceName 设备名
+     * @param tid 设备 ID
+     * @param pubKey 公钥
+     * @param callback 操作结果回调 {@link TXMqttBindDeviceCallback}
      */
     public TXMqttBindDevice(String productId, String deviceName, String tid, String pubKey,
                             TXMqttBindDeviceCallback callback) {
@@ -118,6 +123,9 @@ public class TXMqttBindDevice {
     }
 
 
+    /**
+     * 绑定设备
+     */
     public void doBind() {
         int randNum = (int)(Math.random() * ((1 << 31) - 1));
         int timestamp = (int)(System.currentTimeMillis() / 1000);

@@ -34,6 +34,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * MQTT 日志实现类
+ */
 public class TXMqttLogImpl {
     private static final String TAG = TXMqttLogImpl.class.getName();
 

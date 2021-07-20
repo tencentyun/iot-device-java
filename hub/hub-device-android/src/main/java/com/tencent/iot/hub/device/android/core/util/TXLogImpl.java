@@ -21,6 +21,9 @@ import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * 日志实现类
+ */
 public class TXLogImpl implements TXLog.LogImp {
 
     private static volatile Context sContext;
@@ -33,6 +36,9 @@ public class TXLogImpl implements TXLog.LogImp {
 
     private static AtomicInteger retryInitTimes = new AtomicInteger(0);
 
+    /**
+     * 日期格式
+     */
     public static final SimpleDateFormat timeFormatter = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 
     private static String logTime = "";
@@ -61,6 +67,8 @@ public class TXLogImpl implements TXLog.LogImp {
 
     /**
      * 初始化日志
+     *
+     * @param context 上下文
      */
     public static void init(Context context) {
         init(context, logDuration, logPath);
@@ -68,6 +76,7 @@ public class TXLogImpl implements TXLog.LogImp {
 
     /**
      * 初始化日志
+     *
      * @param context 上下文
      * @param duration 保存近${duration}天的日志
      */
@@ -77,6 +86,7 @@ public class TXLogImpl implements TXLog.LogImp {
 
     /**
      * 初始化日志
+     *
      * @param context 上下文
      * @param duration 保存近${duration}天的日志
      * @param _logPath 保存路径
@@ -91,6 +101,8 @@ public class TXLogImpl implements TXLog.LogImp {
 
     /**
      * 将日志写到文件
+     *
+     * @param log 日志内容
      */
     private synchronized static void writeLogToFile(String log) {
         try {
@@ -192,6 +204,12 @@ public class TXLogImpl implements TXLog.LogImp {
         nextSecondMinuteTime = calendar.getTimeInMillis() + 1000;
     }
 
+    /**
+     * 获取日志文件名
+     *
+     * @param dataStr 日期
+     * @return 日志文件名
+     */
     public static String getLogFileName(String dataStr) {
         return "iot_" + dataStr + ".log";
     }
@@ -205,10 +223,14 @@ public class TXLogImpl implements TXLog.LogImp {
         }
     }
 
+    /**
+     * 获取日志路径
+     *
+     * @return 日志路径
+     */
     public static String getLogPath() {
         return logPath;
     }
-
 
     /**
      * 初始化日志文件
@@ -270,7 +292,7 @@ public class TXLogImpl implements TXLog.LogImp {
     }
 
     /**
-     * 日志初始化Runnable
+     * 日志初始化 Runnable
      */
     public static Runnable initRunnable = new Runnable() {
         @Override
@@ -310,6 +332,14 @@ public class TXLogImpl implements TXLog.LogImp {
         }
     };
 
+    /**
+     * 写日志
+     *
+     * @param level 日志级别
+     * @param tag 日志标记
+     * @param msg 日志内容
+     * @param tr 异常内容
+     */
     public static void writeLog(String level, String tag, String msg, Throwable tr) {
         long now = System.currentTimeMillis();
         if (now >= nextSecondMinuteTime) {
@@ -364,6 +394,18 @@ public class TXLogImpl implements TXLog.LogImp {
         }
     }
 
+    /**
+     * 打印 VERBOSE 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logV(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -375,6 +417,18 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 打印 INFO 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logI(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -386,6 +440,18 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 打印 DEBUG 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logD(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -397,6 +463,18 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 打印 WARNING 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logW(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -408,6 +486,18 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 打印 ERROR 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logE(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -419,6 +509,18 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 打印 FATAL 级别的日志
+     *
+     * @param tag 日志标记
+     * @param filename 日志文件名
+     * @param funcname 函数名
+     * @param line 行号
+     * @param pid 进程 ID
+     * @param tid 线程 ID
+     * @param maintid 主线程 ID
+     * @param log 日志内容
+     */
     @Override
     public void logF(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log) {
         long now = System.currentTimeMillis();
@@ -430,31 +532,61 @@ public class TXLogImpl implements TXLog.LogImp {
         addLogToCache(message);
     }
 
+    /**
+     * 获取日志级别
+     *
+     * @return 日志级别
+     */
     @Override
     public int getLogLevel() {
         return logLevel;
     }
 
+    /**
+     * 设置日志级别
+     *
+     * @param level 日志级别
+     */
     @Override
     public void setLogLevel(int level) {
         logLevel = level;
     }
 
+    /**
+     * 打印 DEBUG 级别的日志
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
     @Override
     public void debug(String tag, String msg) {
         logD(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
     }
 
+    /**
+     * 打印 INFO 级别的日志
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
     @Override
     public void info(String tag, String msg) {
         logI(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
     }
 
+    /**
+     * 打印 WARNING 级别的日志
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
     @Override
     public void warn(String tag, String msg) {
         logW(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
     }
 
+    /**
+     * 打印 ERROR 级别的日志
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
     @Override
     public void error(String tag, String msg) {
         logE(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);

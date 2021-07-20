@@ -4,6 +4,9 @@ package com.tencent.iot.hub.device.java.core.util;
 import java.io.IOException;
 import java.math.BigInteger;
 
+/**
+ * Asn1 编码类
+ */
 public class Asn1Object {
 
     protected final int type;
@@ -12,33 +15,11 @@ public class Asn1Object {
     protected final int tag;
 
     /**
-     * Construct a ASN.1 TLV. The TLV could be either a constructed or primitive
-     * entity.
+     * 构造函数
      *
-     * <p/>
-     * The first byte in DER encoding is made of following fields,
-     *
-     * <pre>
-     * -------------------------------------------------
-     * |Bit 8|Bit 7|Bit 6|Bit 5|Bit 4|Bit 3|Bit 2|Bit 1|
-     * -------------------------------------------------
-     * |  Class    | CF  |     +      Type             |
-     * -------------------------------------------------
-     * </pre>
-     *
-     * <ul>
-     * <li>Class: Universal, Application, Context or Private
-     * <li>CF: Constructed flag. If 1, the field is constructed.
-     * <li>Type: This is actually called tag in ASN.1. It indicates data type
-     * (Integer, String) or a construct (sequence, choice, set).
-     * </ul>
-     *
-     * @param tag
-     *            Tag or Identifier
-     * @param length
-     *            Length of the field
-     * @param value
-     *            Encoded octet string for the field.
+     * @param tag 标记
+     * @param length 长度
+     * @param value 编码源
      */
     public Asn1Object(int tag, int length, byte[] value) {
         this.tag = tag;
@@ -47,28 +28,44 @@ public class Asn1Object {
         this.value = value;
     }
 
+    /**
+     * 获取类型
+     * @return 类型
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * 获取长度
+     * @return 长度
+     */
     public int getLength() {
         return length;
     }
 
+    /**
+     * 获取编码源
+     * @return 编码源
+     */
     public byte[] getValue() {
         return value;
     }
 
+    /**
+     * 是否已构造
+     *
+     * @return true：已构造；false：未构造
+     */
     public boolean isConstructed() {
         return (tag & DerParser.CONSTRUCTED) == DerParser.CONSTRUCTED;
     }
 
     /**
-     * For constructed field, return a parser for its content.
+     * 获取解析器
      *
-     * @return A parser for the construct.
+     * @return 解析器 {@link DerParser}
      * @throws IOException
-     *             IOException resulted from invalid file IO
      */
     public DerParser getParser() throws IOException {
         if (!isConstructed())
@@ -78,11 +75,10 @@ public class Asn1Object {
     }
 
     /**
-     * Get the value as integer
+     * 获取 Integer 类型的值
      *
-     * @return BigInteger
+     * @return {@link BigInteger}
      * @throws IOException
-     *             IOException resulted from invalid file IO
      */
     public BigInteger getInteger() throws IOException {
         if (type != DerParser.INTEGER)
@@ -92,11 +88,10 @@ public class Asn1Object {
     }
 
     /**
-     * Get value as string. Most strings are treated as Latin-1.
+     * 获取 String 类型的值
      *
-     * @return Java string
+     * @return String 类型的值
      * @throws IOException
-     *             IOException resulted from invalid file IO
      */
     public String getString() throws IOException {
 

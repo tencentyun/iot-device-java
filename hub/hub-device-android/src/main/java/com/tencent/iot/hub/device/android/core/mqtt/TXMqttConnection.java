@@ -36,10 +36,15 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SER
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
-
+/**
+ * MQTT 连接类
+ */
 public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection implements MqttCallbackExtended {
 
-    public static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
+    /**
+     * 类标记
+     */
+    private static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
 
     /**
      * tcp://localhost:port ssl://localhost:port tid://localhost:port
@@ -57,37 +62,42 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     protected volatile TXMqttConstants.ConnectStatus mConnectStatus = TXMqttConstants.ConnectStatus.kConnectIdle;
 
     /**
-     * @param context    用户上下文（这个参数在回调函数时透传给用户）
-     * @param productID  产品名
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param productID 产品 ID
      * @param deviceName 设备名，唯一
-	 * @param secretKey  密钥
-     * @param callBack   连接、消息发布、消息订阅回调接口
+	 * @param secretKey 设备密钥
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String productID, String deviceName, String secretKey, TXMqttActionCallBack callBack) {
         this(context, productID, deviceName, secretKey, null, callBack);
     }
 
     /**
-     * @param context    用户上下文（这个参数在回调函数时透传给用户）
-     * @param productID  产品名
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param productID 产品 ID
      * @param deviceName 设备名，唯一
-	 * @param secretKey  密钥
-     * @param bufferOpts 发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param callBack   连接、消息发布、消息订阅回调接口
+	 * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts, TXMqttActionCallBack callBack) {
         this(context, productID, deviceName, secretKey, bufferOpts, null, callBack);
     }
 
     /**
-     * 使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-	 * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数，使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+	 * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String productID, String deviceName, String secretKey,
                             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack) {
@@ -95,14 +105,16 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,
                             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence,TXMqttActionCallBack callBack) {
@@ -110,15 +122,17 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-	 * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param logCallBack       日子上传回调接口
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+	 * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param logCallBack 日子上传回调接口 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,
                             DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttLogCallBack logCallBack,TXMqttActionCallBack callBack) {
@@ -126,14 +140,18 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
      */
     public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
         super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
@@ -143,15 +161,19 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * @param context           用户上下文（这个参数在回调函数时透传给用户）
-     * @param serverURI         服务器URI
-     * @param productID         产品名
-     * @param deviceName        设备名，唯一
-     * @param secretKey         密钥
-     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
-     * @param clientPersistence 消息永久存储
-     * @param callBack          连接、消息发布、消息订阅回调接口
-     * @param logUrl            日志上报url
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 url
      */
     public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
         super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
@@ -161,7 +183,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * 设置TrustID & HardwareID
+     * 设置 TrustID 和 HardwareID
      *
      * @param tid trust id
      * @param hid hardware id
@@ -176,11 +198,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * 连接MQTT服务器，结果通过回调函数通知。
+     * 连接 MQTT 服务器，结果通过回调函数通知
      *
-     * @param options     连接参数
+     * @param options 连接参数 {@link MqttConnectOptions}
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public synchronized Status connect(MqttConnectOptions options, Object userContext) {
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
@@ -271,7 +293,8 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
     /**
      * 初始化日志上传功能
-     * @param tag
+     *
+     * @param tag 日志标记
      */
     protected void initMqttLog(final String tag) {
         if (mMqttLog == null) {
@@ -289,15 +312,16 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
     /**
      * 生成一条设备日志
+     *
      * @param logLevel 日志级别：
      *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL    
      *                 错误：TXMqttLogConstants.LEVEL_ERROR
      *                 警告：TXMqttLogConstants.LEVEL_WARN
      *                 通知：TXMqttLogConstants.LEVEL_INFO
      *                 调试：TXMqttLogConstants.LEVEL_DEBUG
-     * @param tag
-     * @param format
-     * @param obj
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
      */
     public void mLog(int logLevel, final String tag,final String format, final Object... obj) {
         if( mMqttLog != null) {
@@ -307,7 +331,19 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         }
     }
 
-    public void mLog(int logLevel, final String tag,final String msg) {
+    /**
+     * 生成一条设备日志
+     *
+     * @param logLevel 日志级别：
+     *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
+     *                 错误：TXMqttLogConstants.LEVEL_ERROR
+     *                 警告：TXMqttLogConstants.LEVEL_WARN
+     *                 通知：TXMqttLogConstants.LEVEL_INFO
+     *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
+    public void mLog(int logLevel, final String tag, final String msg) {
         if( mMqttLog != null) {
             if( !(mMqttLog.saveMqttLog(logLevel, tag, msg))) {
                 TXLog.w(tag, "Save %s Level Log failed!", TXMqttLog.level_str[logLevel] );
@@ -325,12 +361,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * 订阅RRPC Topic, 结果通过回调函数通知。
-     * topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
+     * 订阅 RRPC Topic, 结果通过回调函数通知。topic格式: $rrpc/rxd/${ProductId}/${DeviceName}/+
      *
-     * @param qos         QOS等级(仅支持QOS=0的消息)
+     * @param qos QOS等级(仅支持 QOS=0 的消息)
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status subscribeRRPCTopic(final int qos, Object userContext) {
         String topic = String.format("$rrpc/rxd/%s/%s/+", mProductId, mDeviceName);
@@ -359,12 +394,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
 
     /**
-     * 订阅广播Topic, 结果通过回调函数通知。
-     * 广播Topic格式: $broadcast/rxd/${ProductId}/${DeviceName}
+     * 订阅广播 Topic, 结果通过回调函数通知。广播 Topic 格式: $broadcast/rxd/${ProductId}/${DeviceName}
      *
-     * @param qos         QOS等级
+     * @param qos QOS等级
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status subscribeBroadcastTopic(final int qos, Object userContext) {
         String broadCastTopic = "";
@@ -385,6 +419,12 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         return Status.OK;
     }
 
+    /**
+     * 连接完成
+     *
+     * @param reconnect 重连标记
+     * @param serverURI 服务器 URI
+     */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         TXLog.i(TAG, "connectComplete. reconnect flag is " + reconnect);
@@ -416,11 +456,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
-     * 收到MQTT消息
+     * 收到 MQTT 消息
      *
-     * @param topic   消息主题
-     * @param message 消息内容结构体
-     * @throws Exception
+     * @param topic 消息主题
+     * @param message 消息内容结构体 {@link MqttMessage}
+     * @throws Exception 抛出异常 {@link Exception}
      */
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {

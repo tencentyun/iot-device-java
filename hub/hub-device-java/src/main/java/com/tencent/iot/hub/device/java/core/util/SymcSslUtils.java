@@ -25,8 +25,9 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-
-
+/**
+ * SSL 工具类
+ */
 public class SymcSslUtils {
 
     public static final String TAG = SymcSslUtils.class.getName();
@@ -35,6 +36,11 @@ public class SymcSslUtils {
 
     private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
 
+    /**
+     * 获取 socket SSL
+     * @param psk 密钥
+     * @return {@link SSLSocketFactory}
+     */
     public static SSLSocketFactory getSocketFactory(String psk) {
         Security.addProvider(new BouncyCastleProvider());
         CertificateFactory certFactory = null;

@@ -1,5 +1,8 @@
 package com.tencent.iot.hub.device.java.core.log;
 
+/**
+ * MQTT 日志常量
+ */
 public interface TXMqttLogConstants {
     /**
      * 请求日志等级相关
