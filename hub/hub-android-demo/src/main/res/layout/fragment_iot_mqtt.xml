@@ -139,6 +139,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
             android:text="@string/upload_log" />
+        <Button
+            android:id="@+id/http_publish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="@string/http_publish" />
     </LinearLayout>
 
     <LinearLayout

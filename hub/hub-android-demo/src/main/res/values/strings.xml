@@ -30,6 +30,7 @@
     <string name="get_remote_config">获取远程配置信息</string>
     <string name="concern_remote_config">关注远程配置信息</string>
     <string name="report_sub_dev_version">上报子设备版本</string>
+    <string name="http_publish">基于 HTTP 接入</string>
     <string name="use_shadow">使用shadow</string>
     <string name="start_remote_service">开启远程服务</string>
     <string name="stop_remote_service">停止远程服务</string>
