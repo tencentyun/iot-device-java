@@ -963,19 +963,19 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         resetState();
         try {
             JSONObject obj = new JSONObject(msg);
-            String[] items = obj.getString(Common.PLAY_TYPE).split("/");
-            if (items != null && items.length == 3) {
-                songListType = items[1];
+            String[] items = obj.getString(Common.PLAY_TYPE).split("_");
+            if (items != null && items.length == 2) {
+                songListType = items[0];
                 JSONObject playParams = obj.getJSONObject(Common.PLAY_PARAMS);
 
                 if (Common.PLAY_TYPE_AWESOME.equals(songListType)) { // 新歌或日推
-                    if (Common.PLAY_TYPE_NEWSONG.equals(items[2])) { // 新歌
+                    if (Common.PLAY_TYPE_NEWSONG.equals(items[1])) { // 新歌
                         int _topId = playParams.getInt(Common.PLAY_TOP_ID);
                         currentPlayType = Common.PLAY_TYPE_NEWSONG;
                         currentTopId = _topId;
                         songListId = "";
                         getSongList(Common.PLAY_TYPE_NEWSONG, "", _topId);
-                    } else if (Common.PLAY_TYPE_EVERYDAY.equals(items[2])) { // 日推
+                    } else if (Common.PLAY_TYPE_EVERYDAY.equals(items[1])) { // 日推
                         currentPlayType = Common.PLAY_TYPE_EVERYDAY;
                         songListId = "";
                         getSongList(Common.PLAY_TYPE_EVERYDAY, "", 0);
