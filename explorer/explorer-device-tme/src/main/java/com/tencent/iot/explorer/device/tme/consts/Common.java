@@ -57,4 +57,8 @@ public class Common {
     public static final int PROPERTY_PRE = 1;
 
     public static final int PROPERTY_NEXT = 2;
+
+    public static final String ACTION_REFRESH_TOKEN = "fresh_token";
+
+    public static final String QRCODE_CONTENT = "https://iot.cloud.tencent.com/iotexplorer/kugouAuth?deviceId=%s";
 }
