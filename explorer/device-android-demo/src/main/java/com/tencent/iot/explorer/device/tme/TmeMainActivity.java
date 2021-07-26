@@ -552,6 +552,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         public void onUnbindDeviceCallBack(String msg) {
             TXLog.d(TAG, "======onUnbindDeviceCallBack : " + msg);
         }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            TXLog.d(TAG, "======onBindDeviceCallBack : " + msg);
+        }
     }
 
     private final SongPlayStateListener mSongPlayStateListener = new SongPlayStateListener() {
