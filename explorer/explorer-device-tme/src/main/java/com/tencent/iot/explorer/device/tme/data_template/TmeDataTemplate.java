@@ -12,7 +12,7 @@ import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
-import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
+import com.tencent.iot.explorer.device.tme.callback.AuthCallback;
 import com.tencent.iot.explorer.device.tme.entity.UserInfo;
 import com.tencent.iot.explorer.device.tme.event.SDKInitEvent;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -25,7 +25,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
@@ -49,7 +48,7 @@ public class TmeDataTemplate extends TXDataTemplate {
 
     private String mDevName;
 
-    private ExpiredCallback mExpiredCallback;
+    private AuthCallback mAuthCallback;
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
@@ -58,9 +57,11 @@ public class TmeDataTemplate extends TXDataTemplate {
      * @param deviceName         设备名
      * @param jsonFileName       数据模板描述文件
      * @param downStreamCallBack 下行数据接收回调函数
-     * @param expiredCallback    TME用户信息过期回调函数
+     * @param authCallback    TME用户信息过期回调函数
      */
-    public TmeDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, ExpiredCallback expiredCallback) {
+    public TmeDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName,
+                           TXDataTemplateDownStreamCallBack downStreamCallBack,
+                           AuthCallback authCallback) {
         super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack);
         this.mConnection = connection;
         this.mServiceDownStreamTopic = TOPIC_SERVICE_DOWN_PREFIX + productId + "/" + deviceName;
@@ -68,7 +69,7 @@ public class TmeDataTemplate extends TXDataTemplate {
         this.mContext = context;
         this.mProductID = productId;
         this.mDevName = deviceName;
-        this.mExpiredCallback = expiredCallback;
+        this.mAuthCallback = authCallback;
     }
 
     public Status requestUserInfo() {
@@ -134,7 +135,7 @@ public class TmeDataTemplate extends TXDataTemplate {
                     token = response.getString("token");
                     expire = response.getLong("expire");
                     UserInfo user = new UserInfo(pid, pkey, userId, token, expire);
-                    doAuth(user, mExpiredCallback);
+                    doAuth(user, mAuthCallback);
                 } else {
                     ToastUtil.showS(String.format("query user info error, code=%d", code));
                 }
@@ -144,20 +145,20 @@ public class TmeDataTemplate extends TXDataTemplate {
         }
     }
 
-    private void doAuth(UserInfo userInfo , ExpiredCallback expiredCallback) {
+    private void doAuth(UserInfo userInfo , AuthCallback authCallback) {
         UltimateTv.Callback callback = new UltimateTv.Callback() {
             @Override
             public void onInitResult(int code, String msg) {
                 if (code == ErrorCode.CODE_SUCCESS) {
                     EventBus.getDefault().post(new SDKInitEvent());
-                    TXLog.d(TAG, "init sdk success, " + msg);
+                    TXLog.d(TAG, "sdk初始化成功, " + msg);
+                    authCallback.refreshed();
                 }
             }
             @Override
             public void onRefreshToken(UserAuth userAuth) {
-                if (expiredCallback != null) {
-                    expiredCallback.expired();
-                }
+                TXLog.d(TAG, "token已更新");
+                authCallback.refreshed();
             }
         };
         //开启日志
@@ -178,7 +179,7 @@ public class TmeDataTemplate extends TXDataTemplate {
             user.token = userInfo.getToken();
             user.expireTime = userInfo.getExpire();
             UltimateTv.getInstance().init(mContext, userInfo.getPid(), userInfo.getPkey(), deviceId, user, callback);
-            new CheckTokenThread(user.expireTime, expiredCallback).start();
+            new CheckTokenThread(user.expireTime, authCallback).start();
         } catch (IllegalArgumentException e) {
             TXLog.e(TAG, "初始化失败" + e.getMessage());
         }
@@ -187,9 +188,9 @@ public class TmeDataTemplate extends TXDataTemplate {
     class CheckTokenThread extends Thread {
 
         private long expiredTime;
-        private ExpiredCallback callback;
+        private AuthCallback callback;
 
-        public CheckTokenThread(long expiredTime, ExpiredCallback callback) {
+        public CheckTokenThread(long expiredTime, AuthCallback callback) {
             this.expiredTime = expiredTime;
             this.callback = callback;
         }
@@ -199,7 +200,7 @@ public class TmeDataTemplate extends TXDataTemplate {
             while (expiredTime * 1000 > System.currentTimeMillis()) {
                 try {
                     Thread.sleep(10000);
-                    TXLog.e(TAG, "===== check token");
+                    TXLog.e(TAG, "检查token是否过期");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

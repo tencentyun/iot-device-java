@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
-import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
+import com.tencent.iot.explorer.device.tme.callback.AuthCallback;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -27,9 +27,9 @@ public class TmeTemplateClient extends TXMqttConnection {
     public TmeTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                              MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                              final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack,
-                             ExpiredCallback expiredCallback) {
+                             AuthCallback authCallback) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TmeDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack, expiredCallback);
+        this.mDataTemplate = new TmeDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack, authCallback);
     }
 
     /**
