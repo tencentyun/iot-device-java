@@ -146,7 +146,41 @@
     }
   ],
   "events": [],
-  "actions": [],
+  "actions": [
+    {
+      "id": "fresh_token",
+      "name": "刷新token",
+      "desc": "",
+      "input": [
+        {
+          "id": "fresh_token",
+          "name": "刷新token",
+          "define": {
+            "type": "bool",
+            "mapping": {
+              "0": "关",
+              "1": "开"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "id": "Code",
+          "name": "Code",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    }
+  ],
   "profile": {
     "ProductId": "CJTPB68RMZ",
     "CategoryId": "1"

@@ -17,8 +17,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,7 +48,7 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStre
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
-import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
+import com.tencent.iot.explorer.device.tme.callback.AuthCallback;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.consts.TmeErrorEnum;
@@ -86,6 +84,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private static final int TYPE_SEARCH = 0;
     private static final int TYPE_SONG_LIST = 1;
     private static final int MSG_REFRESH_VIEW = 1;
+    private static final int MSG_POPUP_QRCODE = 2;
     private static final String[] qualityStrArray = { "标准","高清","无损" };
     private static final int[] qualities = { SongInfo.QUALITY_STANDARD, SongInfo.QUALITY_HIGH, SongInfo.QUALITY_SUPER };
 
@@ -163,6 +162,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     mMainHandler.removeMessages(MSG_REFRESH_VIEW);
                     mMainHandler.sendEmptyMessageDelayed(MSG_REFRESH_VIEW, 500);
+                    break;
+                case MSG_POPUP_QRCODE:
+                    Bitmap qrcode = ZXingUtils.createQRCodeBitmap(mDataTemplateSample.getAuthQrcode(), 200, 200,
+                            "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
+                    showDialog(TmeMainActivity.this, qrcode);
                     break;
                 default:
                     break;
@@ -297,7 +301,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                             mBrokerURL, mProductID, mDevName, mDevPSK,
                             new SelfMqttActionCallBack(mProductID, mDevName), JSON_FILE_NAME,
                             new SelfDownStreamCallBack(),
-                            mExpiredCallback);
+                            mAuthCallback);
                     mDataTemplateSample.connect();
                 } else {
                     if (mDataTemplateSample == null) return;
@@ -531,13 +535,15 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public JSONObject onActionCallBack(String actionId, JSONObject params) {
             TXLog.d(TAG, String.format("======onActionCallBack: actionId=[%s], params=[%s]", actionId, params.toString()));
-
+            if (Common.ACTION_REFRESH_TOKEN.equals(actionId)) {
+                mDataTemplateSample.requestUserInfo();
+            }
             JSONObject result = new JSONObject();
             try {
                 result.put("code", 0);
                 result.put("status", "success");
                 JSONObject response = new JSONObject();
-                response.put("result", 0);
+                response.put("Code", 0);
                 result.put("response", response);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -690,6 +696,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     case AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG:
                         tip = TmeErrorEnum.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG.msg();
+                        mMainHandler.sendEmptyMessage(MSG_POPUP_QRCODE);
                         break;
                     case CODE_DEVICE_NOTACTIVATE:
                         tip = TmeErrorEnum.CODE_DEVICE_NOTACTIVATE.msg();
@@ -717,11 +724,20 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
-    private final ExpiredCallback mExpiredCallback = () -> TmeMainActivity.this.runOnUiThread(() -> {
-        Bitmap qrcode = ZXingUtils.createQRCodeBitmap("test", 200, 200,
-                "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
-        showDialog(TmeMainActivity.this, qrcode);
-    });
+    private final AuthCallback mAuthCallback = new AuthCallback() {
+        @Override
+        public void expired() {
+            mMainHandler.sendEmptyMessage(MSG_POPUP_QRCODE);
+        }
+
+        @Override
+        public void refreshed() {
+            ToastUtil.showS("用户信息已刷新");
+            if (dialog != null && dialog.isShowing()) {
+                dismissDialog();
+            }
+        }
+    };
 
     private void onControlMsgReceived(final JSONObject msg) {
         int value = -1;
@@ -1089,18 +1105,26 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void showDialog(Context context, Bitmap bitmap){
-        dialog = new Dialog(context, R.style.iOSDialog);
-        dialog.setContentView(R.layout.qrcode_dialog);
-        ImageView imageView = dialog.findViewById(R.id.iv_qrcode);
-        imageView.setImageBitmap(bitmap);
-        dialog.show();
-        //选择true的话点击其他地方可以使dialog消失，为false的话不会消失
-        dialog.setCanceledOnTouchOutside(false);
-        Window w = dialog.getWindow();
-        WindowManager.LayoutParams lp = w.getAttributes();
-        lp.x = 0;
-        lp.y = 40;
-        dialog.onWindowAttributesChanged(lp);
+        if (dialog == null) {
+            dialog = new Dialog(context, R.style.iOSDialog);
+            dialog.setContentView(R.layout.qrcode_dialog);
+            ImageView imageView = dialog.findViewById(R.id.iv_qrcode);
+            imageView.setImageBitmap(bitmap);
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setOnKeyListener((dialog, keyCode, event) -> true);
+            dialog.show();
+        } else {
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
+        }
+    }
+
+    private void dismissDialog(){
+        if (dialog != null) {
+            dialog.cancel();
+            dialog = null;
+        }
     }
 
     @Override
@@ -1108,6 +1132,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
         //彻底不需要使用歌曲播放了，释放资源
         if (mDataTemplateSample != null) mDataTemplateSample.disconnect();
+        if (dialog != null) dialog = null;
         UltimateSongPlayer.getInstance().removeSongPlayStateListener(mSongPlayStateListener);
         UltimateSongPlayer.getInstance().clearPlayQueue();
         UltimateSongPlayer.getInstance().release();
