@@ -1,5 +1,6 @@
 package com.tencent.iot.explorer.device.tme.callback;
 
-public interface ExpiredCallback {
+public interface AuthCallback {
     void expired();
+    void refreshed();
 }
