@@ -7,7 +7,7 @@ import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
+import com.tencent.iot.explorer.device.tme.callback.AuthCallback;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
@@ -42,7 +42,7 @@ public class TmeDataTemplateSample {
     private TXMqttActionCallBack mMqttActionCallBack;
     private TmeTemplateClient mClient;
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
-    private ExpiredCallback mExpiredCallback;
+    private AuthCallback mAuthCallback;
 
     private Context mContext;
 
@@ -52,7 +52,7 @@ public class TmeDataTemplateSample {
     }
 
     public TmeDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, ExpiredCallback expiredCallback) {
+                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, AuthCallback authCallback) {
         mBrokerURL = brokerURL;
         mProductID = productId;
         mDevName = devName;
@@ -63,11 +63,11 @@ public class TmeDataTemplateSample {
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
         mDownStreamCallBack = downStreamCallBack;
-        mExpiredCallback = expiredCallback;
+        mAuthCallback = authCallback;
     }
 
     public TmeDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, TXMqttActionCallBack mqttActionCallBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, ExpiredCallback expiredCallback) {
+                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, AuthCallback authCallback) {
         mContext = context;
         mBrokerURL = brokerURL;
         mProductID = productId;
@@ -76,7 +76,7 @@ public class TmeDataTemplateSample {
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
         mDownStreamCallBack = downStreamCallBack;
-        mExpiredCallback = expiredCallback;
+        mAuthCallback = authCallback;
     }
 
     public Status requestUserInfo() {
@@ -101,7 +101,7 @@ public class TmeDataTemplateSample {
      */
     public void connect() {
         mClient = new TmeTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, null, null, mMqttActionCallBack,
-                mJsonFileName, mDownStreamCallBack, mExpiredCallback);
+                mJsonFileName, mDownStreamCallBack, mAuthCallback);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);

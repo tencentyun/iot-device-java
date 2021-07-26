@@ -36,7 +36,6 @@ import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
 import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.constant.PlayerErrorCode;
-import com.kugou.ultimatetv.entity.DailyRecommendList;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
@@ -53,7 +52,7 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStre
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
-import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
+import com.tencent.iot.explorer.device.tme.callback.AuthCallback;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
@@ -88,6 +87,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private static final int TYPE_SEARCH = 0;
     private static final int TYPE_SONG_LIST = 1;
     private static final int MSG_REFRESH_VIEW = 1;
+    private static final int MSG_POPUP_QRCODE = 2;
     private static final String[] qualityStrArray = { "标准","高清","无损" };
     private static final int[] qualities = { SongInfo.QUALITY_STANDARD, SongInfo.QUALITY_HIGH, SongInfo.QUALITY_SUPER };
 
@@ -165,6 +165,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     }
                     mMainHandler.removeMessages(MSG_REFRESH_VIEW);
                     mMainHandler.sendEmptyMessageDelayed(MSG_REFRESH_VIEW, 500);
+                    break;
+                case MSG_POPUP_QRCODE:
+                    Bitmap qrcode = ZXingUtils.createQRCodeBitmap("test", 200, 200,
+                            "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
+                    showDialog(TmeMainActivity.this, qrcode);
                     break;
                 default:
                     break;
@@ -299,7 +304,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                             mBrokerURL, mProductID, mDevName, mDevPSK,
                             new SelfMqttActionCallBack(mProductID, mDevName), JSON_FILE_NAME,
                             new SelfDownStreamCallBack(),
-                            mExpiredCallback);
+                            mAuthCallback);
                     mDataTemplateSample.connect();
                 } else {
                     if (mDataTemplateSample == null) return;
@@ -545,6 +550,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
                 return null;
             }
+            mDataTemplateSample.requestUserInfo();
             return result;
         }
 
@@ -685,6 +691,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                     break;
                 case ErrorCode.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG:
                     tip = "认证信息过期或错误,请重新登录";
+                    mMainHandler.sendEmptyMessage(MSG_POPUP_QRCODE);
                     break;
                 case ErrorCode.CODE_DEVICE_NOTACTIVATE:
                     tip = "设备未激活,请使用api激活";
@@ -711,11 +718,22 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         }
     };
 
-    private final ExpiredCallback mExpiredCallback = () -> TmeMainActivity.this.runOnUiThread(() -> {
-        Bitmap qrcode = ZXingUtils.createQRCodeBitmap("test", 200, 200,
-                "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
-        showDialog(TmeMainActivity.this, qrcode);
-    });
+    private final AuthCallback mAuthCallback = new AuthCallback() {
+        @Override
+        public void expired() {
+            TmeMainActivity.this.runOnUiThread(() -> {
+                Bitmap qrcode = ZXingUtils.createQRCodeBitmap("test", 200, 200,
+                        "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
+                showDialog(TmeMainActivity.this, qrcode);
+            });
+        }
+
+        @Override
+        public void refreshed() {
+            //TODO 判断dialog是否在前台
+            //TODO dismiss
+        }
+    };
 
     private void onControlMsgReceived(final JSONObject msg) {
         int value = -1;
