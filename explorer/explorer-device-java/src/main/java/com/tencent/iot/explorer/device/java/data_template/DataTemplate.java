@@ -625,7 +625,12 @@ public class DataTemplate {
                 if(null != mDownStreamCallBack) {
                     mDownStreamCallBack.onUnbindDeviceCallBack(new String(message.getPayload()));
                 }
+            } else if (method != null && method.equals(METHOD_BIND_DEVICE)) {
+                if(null != mDownStreamCallBack) {
+                    mDownStreamCallBack.onBindDeviceCallBack(new String(message.getPayload()));
+                }
             }
+
         } catch (Exception e) {
             log.error( "onServiceMessageArrivedCallBack: invalid message:" + message);
         }
