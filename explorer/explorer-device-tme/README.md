@@ -246,11 +246,12 @@ public Status eventsPost(JSONArray events)
 
 ### explorer-device-tme SDK 回调callback 设计说明
 
-ExpiredCallback token过期回调callback说明如下：
+AuthCallback SDK认证回调callback说明如下：
 
 | 回调接口 | 功能 |
 | ----------------------- | ---------- |
 | expired()                 | token 过期 |
+| refreshed()               | token 刷新 |
 
 SongPlayStateListener 歌曲播放状态变化的监听
 
