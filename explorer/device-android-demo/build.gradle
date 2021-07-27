@@ -9,7 +9,7 @@ android {
     buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.tencent.iot.explorer.device.android.app"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName rootProject.ext.sdk.sdkdemoVersion

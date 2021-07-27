@@ -395,7 +395,8 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     }
     private void onGetAIFaceLicenseCallBack(Integer code, String status, String license, String secret_key) {
         if (code == 0) {//请求License成功
-            Auth.AuthResult authResult = Auth.initAuthByString(license, secret_key);
+            Auth.AuthResult authResult = Auth.authLicenseString(license, secret_key);
+
             String msg = String.format("授权%s, licenceFileName=%s   base64授权", authResult.isSucceeded() ? "成功" : "失败",  authResult.toString());
             if (authResult.isSucceeded()) {
                 if (mAuthCallBack != null && !isAuthoried) {
