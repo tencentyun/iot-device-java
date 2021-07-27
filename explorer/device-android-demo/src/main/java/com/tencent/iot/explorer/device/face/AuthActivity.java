@@ -41,7 +41,7 @@ public class AuthActivity extends AppCompatActivity {
     static {
         System.loadLibrary("YTCommon");
         System.loadLibrary("YTFaceFeature");
-        System.loadLibrary("YTFaceAlignment");
+        System.loadLibrary("YTFaceAlign");
         System.loadLibrary("YTFaceQuality");
         System.loadLibrary("YTFaceTracker");
         System.loadLibrary("YTFaceQualityPro");

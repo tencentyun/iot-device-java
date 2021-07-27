@@ -7,7 +7,7 @@ android {
     buildToolsVersion "26.0.3"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -133,7 +133,7 @@ dependencies {
     if (findProject(':explorer:explorer-device-android') != null) {
         api project(':explorer:explorer-device-android')
     }
-    api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.0.0.140'
+    api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.3.2.155-SNAPSHOT'
 }
 
 signing {
