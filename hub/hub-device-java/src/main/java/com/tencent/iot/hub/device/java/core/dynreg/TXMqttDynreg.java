@@ -243,7 +243,7 @@ public class TXMqttDynreg {
         }
         int randNum = (int)(Math.random() * ((1 << 31) - 1));
         String hmacSign;
-        int timestamp = (int)(System.currentTimeMillis() / 1000);
+        int timestamp = 0;//修改为0时不校验timestamp
         SecretKeySpec signKey = new SecretKeySpec(mProductKey.getBytes(), HMAC_ALGO);
 
         final JSONObject obj = new JSONObject();
