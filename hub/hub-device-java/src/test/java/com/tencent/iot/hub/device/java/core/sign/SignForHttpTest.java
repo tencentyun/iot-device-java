@@ -1,7 +1,5 @@
 package com.tencent.iot.hub.device.java.core.sign;
 
-import com.tencent.iot.hub.device.java.core.util.Base64;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -10,6 +8,7 @@ import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -90,7 +89,7 @@ public class SignForHttpTest {
                 mac = Mac.getInstance(HMAC_ALGO);
                 mac.init(signKey);
                 byte[] rawHmac = mac.doFinal(data);
-                return Base64.encodeToString(rawHmac, Base64.NO_WRAP);
+                return Base64.getEncoder().encodeToString(rawHmac);
             } catch (InvalidKeyException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
