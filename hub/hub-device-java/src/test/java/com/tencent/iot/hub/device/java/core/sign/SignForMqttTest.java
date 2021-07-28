@@ -1,5 +1,7 @@
 package com.tencent.iot.hub.device.java.core.sign;
 
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+
 import org.junit.Test;
 
 import javax.crypto.Mac;
@@ -26,9 +28,9 @@ public class SignForMqttTest {
             devicePsk) throws Exception {
         final Base64.Decoder decoder = Base64.getDecoder();
         //1. 生成 connid 为一个随机字符串，方便后台定位问题
-        String connid = HMACSHA256.getRandomString2(5);
+        String connid = HMACSHA256.getConnectId(5);
         //2. 生成过期时间，表示签名的过期时间,从纪元1970年1月1日 00:00:00 UTC 时间至今秒数的 UTF8 字符串
-        Long expiry = Calendar.getInstance().getTimeInMillis()/1000 +600;
+        Long expiry = Calendar.getInstance().getTimeInMillis()/1000 + 600;
         //3. 生成 MQTT 的 clientid 部分, 格式为 ${productid}${devicename}
         String clientid = productID+devicename;
         //4. 生成 MQTT 的 username 部分, 格式为 ${clientid};${sdkappid};${connid};${expiry}
@@ -79,27 +81,30 @@ public class SignForMqttTest {
             }
             return sb.toString();
         }
-        public static String getRandomString2(int length) {
-            Random random = new Random();
-            StringBuffer sb = new StringBuffer();
+
+
+        /**
+         * 获取连接ID（长度为5的数字字母随机字符串）
+         */
+        public static String getConnectId(int length) {
+            StringBuffer connectId = new StringBuffer();
             for (int i = 0; i < length; i++) {
-                int number = random.nextInt(3);
-                long result = 0;
-                switch (number) {
+                int flag = (int) (Math.random() * Integer.MAX_VALUE) % 3;
+                int randNum = (int) (Math.random() * Integer.MAX_VALUE);
+                switch (flag) {
                     case 0:
-                        result = Math.round(Math.random() * 25 + 65);
-                        sb.append(String.valueOf((char) result));
+                        connectId.append((char) (randNum % 26 + 'a'));
                         break;
                     case 1:
-                        result = Math.round(Math.random() * 25 + 97);
-                        sb.append(String.valueOf((char) result));
+                        connectId.append((char) (randNum % 26 + 'A'));
                         break;
                     case 2:
-                        sb.append(String.valueOf(new Random().nextInt(10)));
+                        connectId.append((char) (randNum % 10 + '0'));
                         break;
                 }
             }
-            return sb.toString();
+
+            return connectId.toString();
         }
     }
 }
