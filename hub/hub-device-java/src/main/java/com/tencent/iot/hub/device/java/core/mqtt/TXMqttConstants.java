@@ -6,7 +6,7 @@ public interface TXMqttConstants {
     /**
      * sdk版本号
      */
-    String APPID = "12020126";
+    String APPID = "12010126";
 
     /**
      * 腾讯云密钥认证唯一连接地址前缀
