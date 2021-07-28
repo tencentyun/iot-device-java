@@ -46,7 +46,7 @@ public interface TXMqttConstants {
     /**
      * 云端保留主题的最大长度
      */
-    int MAX_SIZE_OF_CLOUD_TOPIC = 128;
+    int MAX_SIZE_OF_CLOUD_TOPIC = 255;
 
     /**
      * 连接标识字符串最大长度
