@@ -14,8 +14,7 @@ Android Studio 可在 [Android developers 官网](https://developer.android.com/
     在应用模块的 build.gradle 中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本 
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.hub:hub-device-android-core:x.x.x'
-        implementation 'com.tencent.iot.hub:hub-device-android-service:x.x.x'
+        implementation 'com.tencent.iot.hub:hub-device-android:x.x.x'
     }
     ```
  -  gradle 工程 snapshot 版 SDK 远程构建
@@ -37,8 +36,7 @@ Android Studio 可在 [Android developers 官网](https://developer.android.com/
     在应用模块的 build.gradle 中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，末位+1
     ``` gr
     dependencies {
-        implementation 'com.tencent.iot.hub:hub-device-android-core:x.x.x-SNAPSHOT'
-        implementation 'com.tencent.iot.hub:hub-device-android-service:x.x.x-SNAPSHOT'
+        implementation 'com.tencent.iot.hub:hub-device-android:x.x.x-SNAPSHOT'
     }
     ```
  -  依赖本地 sdk 源码构建
