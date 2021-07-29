@@ -34,9 +34,6 @@ import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
-import com.kugou.ultimatetv.constant.ErrorCode;
-import com.kugou.ultimatetv.constant.PlayerErrorCode;
-import com.kugou.ultimatetv.entity.DailyRecommendList;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
@@ -56,6 +53,7 @@ import com.tencent.iot.explorer.device.tme.adapter.SongListAdapter;
 import com.tencent.iot.explorer.device.tme.callback.ExpiredCallback;
 import com.tencent.iot.explorer.device.tme.consts.Common;
 import com.tencent.iot.explorer.device.tme.consts.TmeConst;
+import com.tencent.iot.explorer.device.tme.consts.TmeErrorEnum;
 import com.tencent.iot.explorer.device.tme.data_template.TmeDataTemplateSample;
 import com.tencent.iot.explorer.device.tme.utils.SharePreferenceUtil;
 import com.tencent.iot.explorer.device.tme.utils.Utils;
@@ -631,77 +629,80 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onError(int what, String msg) {
             //根据错误码自定义提示信息
-            String tip = "播放出错，error: " + what;
+            String tip = String.format("播放出错，error: %d, msg: %s", what, msg);
             TXLog.d(TAG, "======" + tip);
-            switch (what) {
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_OVERSEAS:
-                    tip = "海外地区不能播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_NO_COPYRIGHT:
-                    tip = "歌曲无版权不能播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_NEED_VIP:
-                    tip = "会员歌曲，非会员不能播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_NEED_PAY:
-                    tip = "付费内容，须购买才可播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_NIU_NEED_VIP:
-                    tip = "牛方案策略，非会员不能播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_PLATFORM_NO_COPYRIGHT:
-                    tip = "因定向版权下架不能播放（针对APP有权但设备端无权的情况）";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_UNKNOWN:
-                    tip = "未知原因,无权播放";
-                    break;
-                case PlayerErrorCode.KPLAYER_ERROR_SONG_NETWORK_ERROR:
-                    tip = "网络错误，请检查网络后重试";
-                    break;
-                case PlayerErrorCode.PLAY_NET_MUSIC_ERR:
-                    tip = "播放网络音乐错误";
-                    break;
-                case PlayerErrorCode.NO_AVALID_NET:
-                    tip = "未找到可用的网络连接";
-                    break;
-                case PlayerErrorCode.INAVALID_AREA:
-                    tip = "该地区无法播放";
-                    break;
-                case PlayerErrorCode.TRACKER_URL_ERROR:
-                    tip = "播放链接错误";
-                    break;
-                case PlayerErrorCode.NO_SDCARD:
-                    tip = "已经拨出SD卡,暂时无法使用";
-                    break;
-                case PlayerErrorCode.NO_ENOUGH_SPACE:
-                    tip = "SD卡未插入或SD卡空间不足";
-                    break;
-                case PlayerErrorCode.MAKE_STREAM_FAIL:
-                    tip = "流转换失败";
-                    break;
-                case ErrorCode.UNDEFINED_ERROR_CODE:
-                    tip = "未定义错误码";
-                    break;
-                case ErrorCode.PARAMETER_ERROR:
-                    tip = "参数错误";
-                    break;
-                case ErrorCode.SYSTEM_BUSY:
-                    tip = "系统繁忙";
-                    break;
-                case ErrorCode.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG:
-                    tip = "认证信息过期或错误,请重新登录";
-                    break;
-                case ErrorCode.CODE_DEVICE_NOTACTIVATE:
-                    tip = "设备未激活,请使用api激活";
-                    break;
-                case ErrorCode.SYSTEM_ERROR:
-                    tip = "系统错误";
-                    break;
-                case ErrorCode.NO_RIGHT_TO_CALL_THIS_INTERFACE:
-                    tip = "无权调用此接口";
-                    break;
-                default:
-                    break;
+            TmeErrorEnum error = TmeErrorEnum.byCode(what);
+            if (error != null) {
+                switch (error) {
+                    case KPLAYER_ERROR_SONG_OVERSEAS:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_OVERSEAS.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_NO_COPYRIGHT:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_NO_COPYRIGHT.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_NEED_VIP:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_NEED_VIP.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_NEED_PAY:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_NEED_PAY.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_NIU_NEED_VIP:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_NIU_NEED_VIP.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_PLATFORM_NO_COPYRIGHT:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_PLATFORM_NO_COPYRIGHT.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_UNKNOWN:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_UNKNOWN.msg();
+                        break;
+                    case KPLAYER_ERROR_SONG_NETWORK_ERROR:
+                        tip = TmeErrorEnum.KPLAYER_ERROR_SONG_NETWORK_ERROR.msg();
+                        break;
+                    case PLAY_NET_MUSIC_ERR:
+                        tip = TmeErrorEnum.PLAY_NET_MUSIC_ERR.msg();
+                        break;
+                    case NO_AVALID_NET:
+                        tip = TmeErrorEnum.NO_AVALID_NET.msg();
+                        break;
+                    case INAVALID_AREA:
+                        tip = TmeErrorEnum.INAVALID_AREA.msg();
+                        break;
+                    case TRACKER_URL_ERROR:
+                        tip = TmeErrorEnum.TRACKER_URL_ERROR.msg();
+                        break;
+                    case NO_SDCARD:
+                        tip = TmeErrorEnum.NO_SDCARD.msg();
+                        break;
+                    case NO_ENOUGH_SPACE:
+                        tip = TmeErrorEnum.NO_ENOUGH_SPACE.msg();
+                        break;
+                    case MAKE_STREAM_FAIL:
+                        tip = TmeErrorEnum.MAKE_STREAM_FAIL.msg();
+                        break;
+                    case UNDEFINED_ERROR_CODE:
+                        tip = TmeErrorEnum.UNDEFINED_ERROR_CODE.msg();
+                        break;
+                    case PARAMETER_ERROR:
+                        tip = TmeErrorEnum.PARAMETER_ERROR.msg();
+                        break;
+                    case SYSTEM_BUSY:
+                        tip = TmeErrorEnum.SYSTEM_BUSY.msg();
+                        break;
+                    case AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG:
+                        tip = TmeErrorEnum.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG.msg();
+                        break;
+                    case CODE_DEVICE_NOTACTIVATE:
+                        tip = TmeErrorEnum.CODE_DEVICE_NOTACTIVATE.msg();
+                        break;
+                    case SYSTEM_ERROR:
+                        tip = TmeErrorEnum.SYSTEM_ERROR.msg();
+                        break;
+                    case NO_RIGHT_TO_CALL_THIS_INTERFACE:
+                        tip = TmeErrorEnum.NO_RIGHT_TO_CALL_THIS_INTERFACE.msg();
+                        break;
+                    default:
+                        break;
+                }
             }
             ToastUtil.showS("播放出错, " + tip);
             int index = UltimateSongPlayer.getInstance().getCurrentIndex();
