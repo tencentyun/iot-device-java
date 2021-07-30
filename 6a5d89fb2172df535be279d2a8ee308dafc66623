@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "851a6380_9bbc869d",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61cf1d93_b9bfb454",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6cedbb16_f1dc6240",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -50,6 +68,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f9dcf9f0_ffa451e6",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6cedbb16_f1dc6240",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "7a625598_627efb5c",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5f09ed5_d69e3d7a",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4c27ce13_83217a5f",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -84,6 +138,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4a237d37_513b253f",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c27ce13_83217a5f",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "ba6bd6ff_1a458bfc",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4c87e8c6_eec2a672",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3891d260_83197937",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -118,6 +208,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "c9844149_9261a19e",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3891d260_83197937",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -138,6 +246,24 @@
     },
     {
       "key": {
+        "uuid": "34913320_edd95273",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3e0326f_1354602a",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec430b41_bd06a250",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -152,6 +278,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d713e505_53739f09",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec430b41_bd06a250",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -172,6 +316,24 @@
     },
     {
       "key": {
+        "uuid": "6d1f97cb_3b2b33a2",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "497a85d9_efc9cc0d",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8a4b3faf_15243d68",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -186,6 +348,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e9ef5148_6d5fae63",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a4b3faf_15243d68",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -206,6 +386,24 @@
     },
     {
       "key": {
+        "uuid": "f1de5c7b_3e8267ee",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "faa25487_d142b970",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ccf65343_7e5f39c0",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -220,6 +418,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d5bfdd89_ea2b0eea",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ccf65343_7e5f39c0",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -240,6 +456,24 @@
     },
     {
       "key": {
+        "uuid": "8a1d7e38_9abb8eba",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "43face7f_5d959ba7",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "64d52695_2ad2fab6",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -254,6 +488,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a06959db_0d3a3a1f",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64d52695_2ad2fab6",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -274,6 +526,24 @@
     },
     {
       "key": {
+        "uuid": "4362e408_94524eec",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f35dd42c_b7f416a3",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ac432e60_236cfe59",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -288,6 +558,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "db171cd3_7d12b70c",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac432e60_236cfe59",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -308,6 +596,24 @@
     },
     {
       "key": {
+        "uuid": "53feacb4_ddb7bdc5",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f21ac7a4_dacaba62",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2dfae8fa_aa0e4b5c",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -322,6 +628,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72344cf2_ca4207c0",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2dfae8fa_aa0e4b5c",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -342,6 +666,24 @@
     },
     {
       "key": {
+        "uuid": "53a22da3_509af59f",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "588a07c7_f9d700de",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "46a06536_242ec0fa",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -356,6 +698,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8447c3b9_07601b6e",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46a06536_242ec0fa",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -376,6 +736,24 @@
     },
     {
       "key": {
+        "uuid": "b2e5b1a5_980c4b7c",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c5c0fb2c_5c82c79a",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "13edad7b_dcfb366d",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -390,6 +768,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6938bb38_4e47699b",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "13edad7b_dcfb366d",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -410,6 +806,24 @@
     },
     {
       "key": {
+        "uuid": "4fe113d1_97022347",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46e1f23a_8f073cfa",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c68a1416_876b4b06",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
         "patchSetId": 4
@@ -424,6 +838,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3d331a26_5165b82e",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c68a1416_876b4b06",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -444,6 +876,24 @@
     },
     {
       "key": {
+        "uuid": "ea10e047_29fb3d76",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e1fec3d2_d11a2f91",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3dec26cb_b936d690",
         "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
         "patchSetId": 4
@@ -458,6 +908,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "45b2c7f9_988ce2c5",
+        "filename": "hub/hub-device-android/src/main/java/com/tencent/iot/hub/device/android/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3dec26cb_b936d690",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -478,6 +946,24 @@
     },
     {
       "key": {
+        "uuid": "d8626a64_7fe5d958",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/common/Status.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1e0791f4_1ada57aa",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2288ff61_96d24f50",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
         "patchSetId": 4
@@ -492,6 +978,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a1ce74ec_c94b4831",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2288ff61_96d24f50",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -512,6 +1016,24 @@
     },
     {
       "key": {
+        "uuid": "6421b23d_e03934d4",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/dynreg/TXMqttDynreg.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "074619c9_c0a6a262",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "237e303f_29b8a0e3",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -526,6 +1048,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0e3e1d9f_ef5bdaeb",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "237e303f_29b8a0e3",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -546,6 +1086,24 @@
     },
     {
       "key": {
+        "uuid": "56774b2b_a18e4559",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7b45d32_0cded64d",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "beabfdca_43a94b61",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -560,6 +1118,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2eec23f5_0f1e339c",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "beabfdca_43a94b61",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -580,6 +1156,24 @@
     },
     {
       "key": {
+        "uuid": "6e3b6c09_1513a234",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a3c5b70_24d4af11",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "863463bc_f1f8cbde",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -594,6 +1188,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e0ea91b4_e7281fad",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "863463bc_f1f8cbde",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -614,6 +1226,24 @@
     },
     {
       "key": {
+        "uuid": "69547c9a_78a1995a",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "52ab8821_bc6c95d7",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7906c96b_5e22dc3e",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -628,6 +1258,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "29ea1198_c9d73ff3",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7906c96b_5e22dc3e",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -648,6 +1296,24 @@
     },
     {
       "key": {
+        "uuid": "529a1254_48392ee2",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cbd32c2c_08f0cbd6",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "12844942_ef86216b",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
         "patchSetId": 4
@@ -662,6 +1328,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6ec0308f_5884cd3c",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "12844942_ef86216b",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -682,6 +1366,24 @@
     },
     {
       "key": {
+        "uuid": "186f3abb_a3b7a176",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewayConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c2a7fa9c_0736b162",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a643c68_f7b70127",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewaySubdev.java",
         "patchSetId": 4
@@ -696,6 +1398,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "13fa0abb_30380189",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/gateway/TXGatewaySubdev.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a643c68_f7b70127",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -716,6 +1436,24 @@
     },
     {
       "key": {
+        "uuid": "03a5c067_64b1c257",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXAlarmPingSender.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "38c59ec7_0fa7e5d7",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b52afff6_de778bc0",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXAlarmPingSender.java",
         "patchSetId": 4
@@ -730,6 +1468,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "10782805_52cb3add",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXAlarmPingSender.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b52afff6_de778bc0",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -750,6 +1506,24 @@
     },
     {
       "key": {
+        "uuid": "743e61ca_fa7ffecb",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8f6e620_4ff6727d",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "71110966_0c2c38d3",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -764,6 +1538,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f148019a_e51752d5",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71110966_0c2c38d3",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -784,6 +1576,24 @@
     },
     {
       "key": {
+        "uuid": "243d13fb_15b5cb2a",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b29611b_729209cb",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a8f596f2_2924bdc3",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -798,6 +1608,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8088fa32_8c8c7879",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a8f596f2_2924bdc3",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -818,6 +1646,24 @@
     },
     {
       "key": {
+        "uuid": "17d05da5_a3fd42cc",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "741405fa_d0872bff",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "99edaa6a_b7941a03",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -832,6 +1678,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "553232f6_a09fab46",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "99edaa6a_b7941a03",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -852,6 +1716,24 @@
     },
     {
       "key": {
+        "uuid": "3973b419_d51f78ee",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a4babee7_7cd437a5",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24b57522_a7891f47",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -866,6 +1748,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "673a4486_3e84756b",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24b57522_a7891f47",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -886,6 +1786,24 @@
     },
     {
       "key": {
+        "uuid": "7072e5a3_58259ac6",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ad9df59_dedfeddc",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ff52cd7b_b26639cf",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -900,6 +1818,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc629c8f_d5aa655c",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff52cd7b_b26639cf",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -920,6 +1856,24 @@
     },
     {
       "key": {
+        "uuid": "9dd5f749_f843afbf",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8cb75db2_1ed74b83",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0558d515_76469886",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -934,6 +1888,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fc576519_1de7d150",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0558d515_76469886",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -954,6 +1926,24 @@
     },
     {
       "key": {
+        "uuid": "33e49ef2_b7ff70ec",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 317,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9e72fad8_9e5aedbc",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2d1fb433_91af35ab",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -968,6 +1958,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0dce2558_3098e665",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d1fb433_91af35ab",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -988,6 +1996,24 @@
     },
     {
       "key": {
+        "uuid": "cabca280_07904134",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "06d0da86_63ba0176",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0bcac5ec_a4573489",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -1002,6 +2028,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a65de596_42e968ad",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 695,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0bcac5ec_a4573489",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1022,6 +2066,24 @@
     },
     {
       "key": {
+        "uuid": "08ddba68_3683aa01",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 768,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95f4dbc7_7cc669ce",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "95c4f1cd_9c72f403",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -1039,6 +2101,24 @@
     },
     {
       "key": {
+        "uuid": "b5c7b7de_a0dc6dd9",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 910,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95c4f1cd_9c72f403",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "786be2a8_2deeae1d",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -1053,6 +2133,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2e7ded9c_e5d750f1",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 952,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "786be2a8_2deeae1d",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1090,6 +2188,24 @@
     },
     {
       "key": {
+        "uuid": "72fa5e80_307cfa1a",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 980,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb37d3aa_1aa38186",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6bc8387f_39ced213",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
         "patchSetId": 4
@@ -1104,6 +2220,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "90d0dd8b_69cfcd90",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXMqttConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 996,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6bc8387f_39ced213",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1124,6 +2258,24 @@
     },
     {
       "key": {
+        "uuid": "771658ce_231ae93e",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTACallBack.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e7ae4f7_7be44cdd",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "df38d420_50c82be3",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTACallBack.java",
         "patchSetId": 4
@@ -1138,6 +2290,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2378abcf_9a23c9e4",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTACallBack.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df38d420_50c82be3",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1158,6 +2328,24 @@
     },
     {
       "key": {
+        "uuid": "c791bc16_dc1b91c2",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTACallBack.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fff9f049_2f85b07b",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31b191ad_2f455144",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
         "patchSetId": 4
@@ -1172,6 +2360,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "53351793_6ed676b9",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "31b191ad_2f455144",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1192,6 +2398,24 @@
     },
     {
       "key": {
+        "uuid": "df2cf794_c5a3f714",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "172df1fa_079c976c",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3b29050_7d15da6f",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
         "patchSetId": 4
@@ -1206,6 +2430,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f5df48df_6cd629f5",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 286,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3b29050_7d15da6f",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1226,6 +2468,24 @@
     },
     {
       "key": {
+        "uuid": "bf8966dd_52a1c1e2",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5162ebf_d3a53420",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ca541a3d_7e95ad9a",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
         "patchSetId": 4
@@ -1240,6 +2500,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a84fccfc_40729be4",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca541a3d_7e95ad9a",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1260,6 +2538,24 @@
     },
     {
       "key": {
+        "uuid": "122fe5fd_20bb3cc3",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/mqtt/TXOTAImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 519,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a6ea1252_96ab0135",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e796e1fd_b69a8ee1",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
         "patchSetId": 4
@@ -1274,6 +2570,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4e0f224e_52d4bac5",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e796e1fd_b69a8ee1",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1294,6 +2608,24 @@
     },
     {
       "key": {
+        "uuid": "10f839fd_1ebff5b0",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "664bda56_34ed2743",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "69d9c5c9_6bdd2f56",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
         "patchSetId": 4
@@ -1308,6 +2640,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12d155e6_b62a8c5c",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "69d9c5c9_6bdd2f56",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1328,6 +2678,24 @@
     },
     {
       "key": {
+        "uuid": "cab7e3df_3e8802c1",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/shadow/TXShadowConnection.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "447efa8b_f03a61d6",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bfe0bbbd_af6a9cbc",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/util/AsymcSslUtils.java",
         "patchSetId": 4
@@ -1342,6 +2710,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b65e83ef_c0cf154d",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/util/AsymcSslUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bfe0bbbd_af6a9cbc",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -1362,6 +2748,24 @@
     },
     {
       "key": {
+        "uuid": "aab94bf5_11809a82",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/service/interfaces/ITXOTAListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24c59720_b6122c07",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc60d53d_c885479b",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/service/interfaces/ITXOTAListener.java",
         "patchSetId": 4
@@ -1379,6 +2783,24 @@
     },
     {
       "key": {
+        "uuid": "db460a80_6eafb043",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/service/interfaces/ITXOTAListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc60d53d_c885479b",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "abde2493_c9a4823b",
         "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/service/interfaces/ITXOTAListener.java",
         "patchSetId": 4
@@ -1393,6 +2815,24 @@
       "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7fc51df6_e76cc084",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/service/interfaces/ITXOTAListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-07-30T03:05:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "abde2493_c9a4823b",
+      "revId": "6a5d89fb2172df535be279d2a8ee308dafc66623",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
