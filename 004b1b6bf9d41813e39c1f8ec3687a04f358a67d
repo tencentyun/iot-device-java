@@ -48,6 +48,54 @@
     },
     {
       "key": {
+        "uuid": "c894f76d_5117d94b",
+        "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-07-30T01:07:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01c0fa61_0e376f47",
+      "range": {
+        "startLine": 6,
+        "startChar": 154,
+        "endLine": 6,
+        "endChar": 157
+      },
+      "revId": "004b1b6bf9d41813e39c1f8ec3687a04f358a67d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5724ca0_f66519d6",
+        "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-07-30T01:07:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd3be9a5_ca73ed59",
+      "range": {
+        "startLine": 6,
+        "startChar": 121,
+        "endLine": 6,
+        "endChar": 123
+      },
+      "revId": "004b1b6bf9d41813e39c1f8ec3687a04f358a67d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c8d69b43_217fb061",
         "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
         "patchSetId": 1
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "be43e691_a83de86c",
+        "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-07-30T01:07:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8d69b43_217fb061",
+      "range": {
+        "startLine": 10,
+        "startChar": 62,
+        "endLine": 10,
+        "endChar": 69
+      },
+      "revId": "004b1b6bf9d41813e39c1f8ec3687a04f358a67d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7613e3d_8187d508",
         "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
         "patchSetId": 1
@@ -91,6 +163,30 @@
       "revId": "004b1b6bf9d41813e39c1f8ec3687a04f358a67d",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2d422b70_00f964fd",
+        "filename": "explorer/explorer-device-android/docs/LLSync蓝牙辅助配网.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-07-30T01:07:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7613e3d_8187d508",
+      "range": {
+        "startLine": 126,
+        "startChar": 79,
+        "endLine": 126,
+        "endChar": 87
+      },
+      "revId": "004b1b6bf9d41813e39c1f8ec3687a04f358a67d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
