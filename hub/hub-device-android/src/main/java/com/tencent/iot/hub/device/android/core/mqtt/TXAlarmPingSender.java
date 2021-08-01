@@ -61,7 +61,7 @@ public class TXAlarmPingSender implements MqttPingSender {
      */
     @Override
     public void start() {
-        String action = TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
+        String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
         TXLog.d(TAG, "Register alarmreceiver to Context " + action);
         if (mContext != null && mAlarmReceiver != null) {
             mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action));
@@ -127,7 +127,7 @@ public class TXAlarmPingSender implements MqttPingSender {
 
         private PowerManager.WakeLock wakelock;
 
-        private final String wakeLockTag = TXMqttConstants.PING_WAKELOCK + that.mComms.getClient().getClientId();
+        private final String wakeLockTag = TAG + TXMqttConstants.PING_WAKELOCK + that.mComms.getClient().getClientId();
 
         @Override
         @SuppressLint("Wakelock")

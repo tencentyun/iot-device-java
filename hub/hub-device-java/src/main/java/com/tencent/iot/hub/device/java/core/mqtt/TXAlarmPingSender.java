@@ -45,7 +45,7 @@ public class TXAlarmPingSender implements MqttPingSender {
 	 */
 	@Override
 	public void start() {
-		String action = TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
+		String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
 		Loggor.debug(TAG, "Register alarmreceiver to Context " + action);
 		schedule(mComms.getKeepAlive());
 		hasStarted = true;

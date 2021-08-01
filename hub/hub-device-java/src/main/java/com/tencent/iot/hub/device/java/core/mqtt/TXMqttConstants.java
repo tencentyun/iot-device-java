@@ -74,12 +74,12 @@ public interface TXMqttConstants {
     /**
      * ping 请求的 action
      */
-    String PING_SENDER = TXAlarmPingSender.TAG + ".pingSender.";
+    String PING_SENDER = ".pingSender.";
 
     /**
      * 唤醒常量
      */
-    String PING_WAKELOCK = TXAlarmPingSender.TAG + ".client.";
+    String PING_WAKELOCK = ".client.";
 
     // MQTT 信令类型
     /**
