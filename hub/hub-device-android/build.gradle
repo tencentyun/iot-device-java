@@ -177,7 +177,7 @@ task javaDoc(type: Javadoc) {
 
 afterEvaluate {
     javaDoc.classpath += files(android.libraryVariants.collect { variant ->
-        variant.javaCompileProvider.get().classpath.files
+        variant.javaCompileProvider.get().classpath
     })
 }
 
