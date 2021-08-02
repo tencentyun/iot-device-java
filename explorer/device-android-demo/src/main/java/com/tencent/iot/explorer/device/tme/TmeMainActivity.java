@@ -32,6 +32,7 @@ import com.kugou.ultimatetv.SongPlayStateListener;
 import com.kugou.ultimatetv.UltimateSongPlayer;
 import com.kugou.ultimatetv.api.UltimateSongApi;
 import com.kugou.ultimatetv.api.model.Response;
+import com.kugou.ultimatetv.constant.ErrorCode;
 import com.kugou.ultimatetv.entity.Song;
 import com.kugou.ultimatetv.entity.SongInfo;
 import com.kugou.ultimatetv.entity.SongList;
@@ -848,18 +849,22 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
 
     private void getSongList(String _type, String _id, int _topId) {
         Consumer<Response<? extends SongList>> consumer = response -> {
-            if (response.isSuccess() && response.getData() != null) {
-                List<Song> songs = response.getData().getList();
-                mSongList.addAll(songs);
-                UltimateSongPlayer.getInstance().enqueue(songs, true);
-                if (mAdapter != null) mAdapter.notifyDataSetChanged();
+            if (response.code == TmeErrorEnum.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG.code()) {
+                mMainHandler.sendEmptyMessage(MSG_POPUP_QRCODE);
             } else {
-                if (page > 1) {
-                    page--;
+                if (response.isSuccess() && response.getData() != null) {
+                    List<Song> songs = response.getData().getList();
+                    mSongList.addAll(songs);
+                    UltimateSongPlayer.getInstance().enqueue(songs, true);
+                    if (mAdapter != null) mAdapter.notifyDataSetChanged();
+                } else {
+                    if (page > 1) {
+                        page--;
+                    }
+                    ToastUtil.showS("加载出错");
                 }
-                ToastUtil.showS("加载出错");
+                countDownLatch.countDown();
             }
-            countDownLatch.countDown();
         };
         Consumer<Throwable> throwable = _throwable -> {
             if (page>1) {
