@@ -72,7 +72,7 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      * @param callback 事件回调
      */
     public void initResource(String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
-        mResourceImpl = new TXResourceImpl(mConnection, storagePath, cosServerCaCrtList, callback);
+        mResourceImpl = new TXResourceImpl(this, mConnection, storagePath, cosServerCaCrtList, callback);
     }
 
     /**
@@ -84,7 +84,7 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      *            事件回调
      */
     public void initResource(String storagePath, TXResourceCallBack callback) {
-        mResourceImpl = new TXResourceImpl(mConnection, storagePath, callback);
+        mResourceImpl = new TXResourceImpl(this, mConnection, storagePath, callback);
     }
 
     /**
@@ -227,9 +227,9 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      * @param message 消息内容
      * @throws Exception 异常
      */
+    @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
-
         if (mResourceImpl != null ) {
             mResourceImpl.processMessage(topic, message);
         }

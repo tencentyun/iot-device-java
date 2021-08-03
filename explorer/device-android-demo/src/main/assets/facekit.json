@@ -1,1 +1,59 @@
-{"version":"1.0","profile":{"ProductId":"79LKM47JZ1","CategoryId":"1"},"properties":[],"events":[],"actions":[]}
+{
+  "version": "1.0",
+  "properties": [],
+  "events": [
+    {
+      "id": "update_result_report",
+      "name": "结果上报",
+      "desc": "1 下载成功，待注册，2 下载失败 3 注册成功，4 注册失败 ，5，删除成功 6. 删除失败",
+      "type": "info",
+      "params": [
+        {
+          "id": "resource_name",
+          "name": "资源名",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        },
+        {
+          "id": "version",
+          "name": "资源版本",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "32"
+          }
+        },
+        {
+          "id": "feature_id",
+          "name": "员工ID",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "128"
+          }
+        },
+        {
+          "id": "update_result",
+          "name": "更新结果",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    }
+  ],
+  "actions": [],
+  "profile": {
+    "ProductId": "TVNY4NEH5H",
+    "CategoryId": "1"
+  }
+}
