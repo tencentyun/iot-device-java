@@ -217,12 +217,26 @@ public class DataTemplate {
      * @return 结果
      */
     public Status propertyReport(JSONObject property, JSONObject metadata) {
-        //检查构造是否符合json文件中的定义
-        if (Status.OK != mDataTemplateJson.checkPropertyJson(property)) {
-            log.error("propertyReport: invalid property json!");
-            return Status.PARAMETER_INVALID;
-        }
+        return propertyReport(property, metadata, true);
+    }
 
+
+    /**
+     * 属性上报
+     *
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
+     * @param check 是否检查上报的数据的合法性
+     * @return 结果
+     */
+    public Status propertyReport(JSONObject property, JSONObject metadata, Boolean check) {
+        if (check) {
+            //检查构造是否符合json文件中的定义
+            if (Status.OK != mDataTemplateJson.checkPropertyJson(property)) {
+                log.error("propertyReport: invalid property json!");
+                return Status.PARAMETER_INVALID;
+            }
+        }
         //构造发布信息
         JSONObject object = new JSONObject();
         String clientToken = mProductId + mDeviceName + UUID.randomUUID().toString();

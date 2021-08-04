@@ -65,7 +65,7 @@ public class TmeTemplateClient extends TXMqttConnection {
      * @return 结果
      */
     public Status propertyReport(JSONObject property, JSONObject metadata) {
-        return mDataTemplate.propertyReport(property, metadata);
+        return mDataTemplate.propertyReport(property, metadata, false);
     }
 
     /**
