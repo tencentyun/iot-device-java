@@ -113,7 +113,7 @@ public class TXFaceKitTemplate extends TXDataTemplate {
         }
 
         MqttMessage message = new MqttMessage();
-        message.setQos(0);
+        message.setQos(1);
         message.setPayload(object.toString().getBytes());
 
         return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
