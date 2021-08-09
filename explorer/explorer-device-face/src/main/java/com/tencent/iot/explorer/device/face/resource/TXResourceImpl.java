@@ -661,10 +661,10 @@ public class TXResourceImpl {
                         if (resourceFile.exists()) {//存在创建文件,需要删除
                             if (resourceFile.delete()) {
                                 // 上报'删除成功'
-                                eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_SUCCESS);
+                                mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_SUCCESS);
                             } else {
                                 // 上报'删除失败'
-                                eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_FAIL);
+                                mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_FAIL);
                             }
                         }
                         if (mCallback != null) {
@@ -734,7 +734,7 @@ public class TXResourceImpl {
                     if (!calcMD5.equalsIgnoreCase(headerMd5)) {
                         LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
                         // 上报'下载失败'
-                        eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_FAIL);
+                        mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_FAIL);
                         if (mCallback != null) {
                             reportFailedMessage(staffId, -4, "MD5不匹配", version);
                             mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
@@ -742,7 +742,7 @@ public class TXResourceImpl {
                         new File(mStoragePath + "/" + staffId).delete(); // delete
                     } else {
                         // 上报'下载成功，待注册'
-                        eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_SUCCESS);
+                        mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_SUCCESS);
                         if (finalI == (readerArr.size() - 1)) {
                             reportCurrentFirmwareVersion(generalReportVersionData(csvResourceName, version, csvResourceType));
                         }
@@ -751,6 +751,14 @@ public class TXResourceImpl {
                             reportSuccessMessage(staffId, version);
                             mCallback.onDownloadCompleted(mStoragePath + "/" + staffId, version);
                         }
+                        // 重命名staff文件名 staffId --> csvResourceName__version__staffId，注册的时候需要用到csv、version、staffId
+                        String originName = mStoragePath + "/" + staffId + "." + formatStr;
+                        String format = "%s" + Common.SPLITER + "%s" + Common.SPLITER + "%s";
+                        String temp = String.format(format, csvResourceName, version, staffId);
+                        String targetName = mStoragePath + "/" + temp + "." + formatStr;
+                        File origin = new File(originName);
+                        File target = new File(targetName);
+                        origin.renameTo(target);
                     }
                 } catch (CertificateException e) {
                     if (mCallback != null) {
@@ -783,19 +791,6 @@ public class TXResourceImpl {
             };
             threadPoolExecutor.execute(runnable);
         }
-    }
-
-    private Status eventPost(String resourceName, String version, String featureId, int result) {
-        JSONObject obj = new JSONObject();
-        try {
-            obj.put(Common.PARAMS_RESOURCE_NAME, resourceName);
-            obj.put(Common.PARAMS_VERSION, version);
-            obj.put(Common.PARAMS_FEATURE_ID, featureId);
-            obj.put(Common.PARAMS_UPDATE_RESULT, result);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return mDataTemplate.sysEventSinglePost(Common.EVENT_UPDATE_RESULT_REPORT, Common.EVENT_TYPE_INFO, obj);
     }
 
     /**

@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.cloud.ai.fr.RegWithFileActivity;
 import com.tencent.cloud.ai.fr.business.thread.AIThreadPool;
 import com.tencent.cloud.ai.fr.utils.PermissionHandler;
 import com.tencent.cloud.ai.fr.utils.PermissionHandler.GetPermissionsException;

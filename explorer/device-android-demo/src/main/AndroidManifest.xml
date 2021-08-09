@@ -44,6 +44,7 @@
         </receiver>
         <activity android:name=".IoTMainActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.face.RegWithFileActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
         <activity
