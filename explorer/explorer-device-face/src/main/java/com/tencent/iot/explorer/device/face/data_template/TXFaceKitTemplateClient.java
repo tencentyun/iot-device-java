@@ -165,6 +165,18 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     }
 
     /**
+     * 单个人脸下载/删除/注册状态的事件上报， 不检查构造是否符合json文件中的定义
+     * @param resourceName csv资源文件名
+     * @param version 版本
+     * @param featureId 特征ID
+     * @param result 结果值 1：下载成功，待注册 2：下载失败 3：注册成功 4：注册失败 5：删除成功 6：删除失败
+     * @return 返回状态
+     */
+    public Status eventPost(String resourceName, String version, String featureId, int result) {
+        return  mDataTemplate.faceStatusPost(resourceName, version, featureId, result);
+    }
+
+    /**
      * 系统单个事件上报，不对本地json进行检验
      * @param eventId 事件ID
      * @param type 事件类型
