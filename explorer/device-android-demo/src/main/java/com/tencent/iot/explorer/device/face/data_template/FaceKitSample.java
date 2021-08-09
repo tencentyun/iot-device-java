@@ -4,8 +4,25 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.tencent.cloud.ai.fr.business.heavystep.AlignmentStep;
+import com.tencent.cloud.ai.fr.business.heavystep.ExtractFeatureStep;
+import com.tencent.cloud.ai.fr.business.heavystep.FaceForReg;
+import com.tencent.cloud.ai.fr.business.heavystep.FileToFrameStep;
+import com.tencent.cloud.ai.fr.business.heavystep.GlassesDetectorStep;
+import com.tencent.cloud.ai.fr.business.heavystep.QualityProStep;
+import com.tencent.cloud.ai.fr.business.heavystep.RegStep;
+import com.tencent.cloud.ai.fr.business.heavystep.SaveFeaturesToFileStep;
+import com.tencent.cloud.ai.fr.business.job.StuffBox;
+import com.tencent.cloud.ai.fr.business.job.SyncJobBuilder;
+import com.tencent.cloud.ai.fr.business.lightstep.PickBestStep;
+import com.tencent.cloud.ai.fr.business.lightstep.PreprocessStep;
+import com.tencent.cloud.ai.fr.business.lightstep.TrackStep;
+import com.tencent.cloud.ai.fr.pipeline.AbsJob;
+import com.tencent.cloud.ai.fr.pipeline.AbsStep;
+import com.tencent.cloud.ai.fr.sdksupport.YTSDKManager;
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.face.consts.Common;
 import com.tencent.iot.explorer.device.face.resource.TXResourceCallBack;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
@@ -14,6 +31,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.youtu.YTFaceRetrieval;
+import com.tencent.youtu.YTFaceTracker;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -21,10 +39,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.cloud.ai.fr.sdksupport.YTSDKManager.FACE_FEAT_LENGTH;
@@ -210,6 +234,10 @@ public class FaceKitSample {
         return  mMqttConnection.eventSinglePost(eventId, type, params);
     }
 
+    public Status eventPost(String resourceName, String version, String featureId, int result) {
+        return  mMqttConnection.eventPost(resourceName, version, featureId, result);
+    }
+
     public Status reportSysRetrievalResultEvent(String feature_id, float score, float sim){
         return  mMqttConnection.reportSysRetrievalResultEvent(feature_id, score, sim);
     }
@@ -370,6 +398,12 @@ public class FaceKitSample {
             }
 
             @Override
+            public void onFaceDownloadCompleted(String resourceName, String outputFile, String version) {
+                TXLog.e(TAG, "onFaceDownloadCompleted:" + outputFile + ", version:" + version);
+                regWithFile(outputFile, resourceName, version);
+            }
+
+            @Override
             public void onDownloadFailure(String resourceName, int errCode, String version) {
                 TXLog.e(TAG, "onDownloadFailure:" + errCode);
             }
@@ -410,5 +444,166 @@ public class FaceKitSample {
 
         JSONArray resourceList = new JSONArray();
         mMqttConnection.reportCurrentResourceVersion(resourceList);
+    }
+
+    private HashMap<String, String> staffMap = new HashMap<>();
+
+    private void regWithFile(String filePath, String resourceName, String version) {
+        String staffId = new File(filePath).getName();
+        staffMap.put(staffId, resourceName + Common.SPLITER + version);
+        File file = new File(filePath);
+        new Thread() {
+            @Override
+            public void run() {
+                YTSDKManager sdkMgr = new YTSDKManager(mContext.getAssets());//每个线程都必须使用单独的算法SDK实例, 这里为当前线程生成一份实例
+                //创建流水线运行过程所需的物料箱
+                StuffBox stuffBox = new StuffBox()
+                        .store(FileToFrameStep.IN_FILE, file)
+                        .setSdkManagerForThread(sdkMgr, Thread.currentThread().getId());
+                //创建任务
+                new AbsJob<>(stuffBox, regPipeline).run(/*直接在当前线程执行任务*/);
+                sdkMgr.destroy();//销毁算法SDK实例
+            }
+        }.start();
+    }
+
+    private final List<AbsStep<StuffBox>> regPipeline = new SyncJobBuilder()
+            .addStep(new FileToFrameStep(FileToFrameStep.IN_FILE))
+            .addStep(new AbsStep<StuffBox>() {
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    return true;
+                }
+            })
+            .addStep(new PreprocessStep(FileToFrameStep.OUT_FRAME_GROUP))//【必选】图像预处理
+            .addStep(new TrackStep())//【必选】人脸检测跟踪, 是后续任何人脸算法的前提
+            .addStep(new PickBestStep(TrackStep.OUT_COLOR_FACE))
+            .addStep(new AbsStep<StuffBox>() {//检测上一个步骤的结果, 决定流水线是否能继续
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    Collection<YTFaceTracker.TrackedFace> faces = stuffBox.find(TrackStep.OUT_COLOR_FACE);
+                    int size = faces.size();
+                    if (size != 1) {
+                        String name = stuffBox.find(FileToFrameStep.IN_FILE).getName();
+                        String msg = "图片中" + (size == 0 ? "检测不到" : "多于一张") + "人脸, 无法注册: " + name;
+                        TXLog.e(TAG, msg);
+                        //注册失败状态的上报
+                        eventPost(name, Common.RESULT_REGISTER_FAIL);
+                        return false;
+                    }
+                    return true;
+                }
+            })
+            .addStep(new GlassesDetectorStep(PickBestStep.OUT_PICK_OK_FACES)) //眼镜检测 支持普通眼镜 墨镜
+            .addStep(new AlignmentStep(GlassesDetectorStep.OUT_GLASS_OK_NEXT))//【必选】遮挡检查, 保证注册照质量, 才能保证以后人脸搜索的准确度
+            .addStep(new AbsStep<StuffBox>() {//检测上一个步骤的结果, 决定流水线是否能继续
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    for (Map.Entry<YTFaceTracker.TrackedFace, String> entry : stuffBox.find(AlignmentStep.OUT_ALIGNMENT_FAILED_FACES).entrySet()) {
+                        String frameName = stuffBox.find(PreprocessStep.IN_RAW_FRAME_GROUP).name;
+                        String msg = String.format("%s: Alignment 失败, msg:%s", frameName, entry.getValue());
+                        TXLog.e(TAG, msg);
+                    }
+                    boolean correct = stuffBox.find(AlignmentStep.OUT_ALIGNMENT_OK_FACES).size() > 0;
+                    if (!correct) {
+                        //注册失败状态的上报
+                        String name = stuffBox.find(PreprocessStep.IN_RAW_FRAME_GROUP).name;
+                        eventPost(name, Common.RESULT_REGISTER_FAIL);
+                    }
+                    return correct;//符合条件的人脸大于0才继续
+                }
+            })
+            .addStep(new QualityProStep(AlignmentStep.OUT_ALIGNMENT_OK_FACES))//【必选】质量检查, 保证注册照质量, 才能保证以后人脸搜索的准确度
+            .addStep(new AbsStep<StuffBox>() {
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    for (Map.Entry<YTFaceTracker.TrackedFace, String> entry : stuffBox.find(QualityProStep.OUT_QUALITY_PRO_FAILED).entrySet()) {
+                        String frameName = stuffBox.find(PreprocessStep.IN_RAW_FRAME_GROUP).name;
+                        String msg = String.format("%s: QualityPro 失败, msg:%s", frameName, entry.getValue());
+                        TXLog.e(TAG, msg);
+                    }
+
+                    boolean correct = stuffBox.find(QualityProStep.OUT_QUALITY_PRO_OK).size() > 0;
+                    if (!correct) {
+                        //注册失败状态的上报
+                        String name = stuffBox.find(PreprocessStep.IN_RAW_FRAME_GROUP).name;
+                        eventPost(name, Common.RESULT_REGISTER_FAIL);
+                    }
+                    return correct;//符合条件的人脸大于0才继续
+                }
+            })
+            .addStep(new ExtractFeatureStep(QualityProStep.OUT_QUALITY_PRO_OK))//【必选】提取人脸特征
+            .addStep(new AbsStep<StuffBox>() {
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    Map<YTFaceTracker.TrackedFace, float[]> features = stuffBox.find(ExtractFeatureStep.OUT_FACE_FEATURES);
+                    String name = stuffBox.find(FileToFrameStep.IN_FILE).getName();
+                    if (features.size() > 1) {
+                        //如果这里触发了, 说明前面的步骤检查失效, 请检查流水线改动
+                        TXLog.e(TAG, "注册失败, 图中多于一张人脸, 无法注册: " + name);
+                        //注册失败状态的上报
+                        eventPost(name, Common.RESULT_REGISTER_FAIL);
+                        throw new IllegalArgumentException("图中多于一张人脸, 无法注册: " + name);
+                    } else if (features.size() == 0) {
+                        String msg = "图片提取人脸特征失败, 无法注册: " + name;
+                        TXLog.e(TAG, "注册失败: " + msg);
+                        //注册失败状态的上报
+                        eventPost(name, Common.RESULT_REGISTER_FAIL);
+                        return false;
+                    }
+                    return true;// 此时 size == 1
+                }
+            })
+            .addStep(new RegStep(new RegStep.InputProvider() {//【必选】人脸特征入库(RAM)
+                @Override
+                public Collection<FaceForReg> onGetInput(StuffBox stuffBox) {
+                    Map<YTFaceTracker.TrackedFace, float[]> features = stuffBox.find(ExtractFeatureStep.OUT_FACE_FEATURES);
+
+                    Collection<FaceForReg> faces = new ArrayList<>(1);
+                    for (Map.Entry<YTFaceTracker.TrackedFace, float[]> entry : features.entrySet()) {
+                        YTFaceTracker.TrackedFace face = entry.getKey();
+                        float[] feature = entry.getValue();
+                        String name = stuffBox.find(PreprocessStep.IN_RAW_FRAME_GROUP).name;//输入帧的名字(文件名)作为人名
+                        faces.add(new FaceForReg(face, name, feature));
+                        TXLog.d(TAG, "注册成功");
+                        //注册成功状态的上报
+                        eventPost(name, Common.RESULT_REGISTER_SUCCESS);
+                    }
+                    return faces;
+                }
+            }))
+            .addStep(new SaveFeaturesToFileStep(RegStep.IN_FACES))//【必选】把人脸特征保存到磁盘, 用于下次程序启动时恢复人脸库
+            .addStep(new AbsStep<StuffBox>() {
+                @Override
+                protected boolean onProcess(StuffBox stuffBox) {
+                    return true;
+                }
+            })
+            .build();
+
+    private String getFileNameWithEx(String name) {
+        int dot = name.lastIndexOf('.');
+        if ((dot > -1) && (dot < (name.length()))) {
+            return name.substring(0, dot);
+        } else {
+            return name;
+        }
+    }
+
+    private void eventPost(String name, int status) {
+        String info = staffMap.get(name); //${resourceName}__${version}
+
+        if (info != null) {
+            String[] items = info.split(Common.SPLITER);
+            if (items != null && items.length == 2) {
+                String resourceName = items[0];
+                String version = items[1];
+                eventPost(resourceName, version, getFileNameWithEx(name), status);
+            } else {
+                TXLog.e(TAG, String.format("Staff Info [%s] 格式错误.", info));
+            }
+        } else {
+            TXLog.e(TAG, String.format("StaffMap不存在 [%] 元素.", name));
+        }
     }
 }
