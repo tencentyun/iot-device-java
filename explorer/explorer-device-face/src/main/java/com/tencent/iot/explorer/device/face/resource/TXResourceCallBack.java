@@ -32,10 +32,21 @@ public interface TXResourceCallBack {
 
     /**
      * 资源文件下载完成回调
+     *
+     * @param resourceName  人脸库资源文件名称 或 资源文件名称，不含路径，包含featureId和文件格式;
      * @param outputFile  已下载完成的资源文件名（包含全路径）；
      * @param version  版本；
      */
     void onDownloadCompleted(String outputFile, String version);
+
+    /**
+     * 资源文件下载完成回调
+     *
+     * @param resourceName  人脸库资源文件名称 或 资源文件名称，不含路径，包含featureId和文件格式;
+     * @param outputFile  已下载完成的资源文件名（包含全路径）；
+     * @param version  版本；
+     */
+    void onFaceDownloadCompleted(String resourceName, String outputFile, String version);
 
     /**
      * 资源文件下载失败回调
