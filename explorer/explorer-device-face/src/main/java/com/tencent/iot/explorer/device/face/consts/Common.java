@@ -72,4 +72,6 @@ public class Common {
      */
     public static final String STATUS_DELETE = "1";
 
+    public static final String SPLITER = "__";
+
 }
