@@ -35,32 +35,32 @@ public class Common {
     /**
      * 人脸资源下载成功，待注册
      */
-    public static final int RESULT_DOWNLOAD_SUCCESS = 1;
+    public static final int RESULT_DOWNLOAD_SUCCESS = 2;
 
     /**
      * 人脸资源下载失败
      */
-    public static final int RESULT_DOWNLOAD_FAIL = 2;
+    public static final int RESULT_DOWNLOAD_FAIL = 3;
 
     /**
      * 人脸资源注册成功
      */
-    public static final int RESULT_REGISTER_SUCCESS = 3;
+    public static final int RESULT_REGISTER_SUCCESS = 4;
 
     /**
      * 人脸资源注册失败
      */
-    public static final int RESULT_REGISTER_FAIL = 4;
+    public static final int RESULT_REGISTER_FAIL = 5;
 
     /**
      * 人脸资源删除成功
      */
-    public static final int RESULT_DELETE_SUCCESS = 5;
+    public static final int RESULT_DELETE_SUCCESS = 6;
 
     /**
      * 人脸资源删除失败
      */
-    public static final int RESULT_DELETE_FAIL = 6;
+    public static final int RESULT_DELETE_FAIL = 7;
 
     /**
      * 新增或更新
@@ -71,5 +71,7 @@ public class Common {
      * 删除
      */
     public static final String STATUS_DELETE = "1";
+
+    public static final String SPLITER = "__";
 
 }
