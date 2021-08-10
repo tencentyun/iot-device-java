@@ -119,11 +119,11 @@ public class DataTemplateJson {
                 JSONObject arrayInfoJson = valueDescribeJson.getJSONObject("arrayInfo");
                 return ArrayCheckUtils.checkArrayValues(arrayInfoJson, value);
             } else {
-                log.error("Invalid Data Template Json, please check and replace it!");
+                log.error(TAG, "Invalid Data Template Json, please check and replace it!");
             }
-            log.error("Invalid Value, excepted " + valueDescribeJson);
+            log.error(TAG, "Invalid Value, excepted " + valueDescribeJson);
         } catch (JSONException e) {
-            log.error("Invalid Data Template Json, please check and replace it!");
+            log.error(TAG, "Invalid Data Template Json, please check and replace it!");
         }
         return Status.PARAMETER_INVALID;
     }
@@ -137,7 +137,7 @@ public class DataTemplateJson {
      */
     private Status checkParamsJson(JSONArray paramsDescribeJson, JSONObject paramsJson) {
         if (null == paramsJson || null == paramsDescribeJson) {
-            log.error("checkParamsJson: json is null!");
+            log.error(TAG, "checkParamsJson: json is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -151,14 +151,14 @@ public class DataTemplateJson {
                     JSONObject jsonNode = paramsDescribeJson.getJSONObject(i);
                     if (jsonNode.get("id").equals(key)) {
                         if (Status.OK != checkParamsValue(jsonNode.getJSONObject("define"), paramsJson.get(key))) {
-                            log.error("checkParamsJson: paramete [" + key + "] with invalid value (may be string): " + paramsJson.get(key));
+                            log.error(TAG, "checkParamsJson: paramete [" + key + "] with invalid value (may be string): " + paramsJson.get(key));
                             return Status.PARAMETER_INVALID;
                         }
                         break;
                     }
                 }
                 if (i == paramsDescribeJson.length()) { //property not found
-                    log.error("checkParamsJson: no such param:" + key);
+                    log.error(TAG, "checkParamsJson: no such param:" + key);
                     return Status.PARAMETER_INVALID;
                 }
             }
@@ -179,7 +179,7 @@ public class DataTemplateJson {
         System.out.append("paramsDescribeJson " + paramsDescribeJson.toString());
         System.out.append("paramsJson " + paramsJson.toString());
         if (null == paramsJson || null == paramsDescribeJson) {
-            log.error("checkParamsJson: json is null!");
+            log.error(TAG, "checkParamsJson: json is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -193,7 +193,7 @@ public class DataTemplateJson {
                     String key = it.next();
                     if (jsonNode.get("id").equals(key)) {
                         if (Status.OK != checkParamsValue(jsonNode.getJSONObject("define"), paramsJson.get(key))) {
-                            log.error("checkParamsJson: parameter [" + key + "] with invalid value (may be string): " + paramsJson.get(key));
+                            log.error(TAG, "checkParamsJson: parameter [" + key + "] with invalid value (may be string): " + paramsJson.get(key));
                             return Status.PARAMETER_INVALID;
                         }
                         isActionExit = true;
@@ -201,7 +201,7 @@ public class DataTemplateJson {
                     }
                 }
                 if (!isActionExit) {
-                    log.error("checkActionParamsJson: params [" + jsonNode.get("id") + "] not found, check the data template json on cloud console!");
+                    log.error(TAG, "checkActionParamsJson: params [" + jsonNode.get("id") + "] not found, check the data template json on cloud console!");
                     return Status.ERROR;
                 }
                 isActionExit = false;
@@ -232,7 +232,7 @@ public class DataTemplateJson {
      */
     public Status checkEventJson(String eventId, String type, JSONObject params) {
         if (null == eventId || null == type || null == params) {
-            log.error("checkEventJson: parameter is null!");
+            log.error(TAG, "checkEventJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
         int i;
@@ -244,13 +244,13 @@ public class DataTemplateJson {
                     if (jsonNode.get("type").equals(type)) {
                         return checkParamsJson(jsonNode.getJSONArray("params"), params);
                     } else {
-                        log.error("checkEventJson: type [" + type + "] is not matched, excepted[" + jsonNode.get("type") + "]!");
+                        log.error(TAG, "checkEventJson: type [" + type + "] is not matched, excepted[" + jsonNode.get("type") + "]!");
                         return Status.PARAMETER_INVALID;
                     }
                 }
             }
             if (i == mEventJson.length()) { //property not found
-                log.error("checkEventJson: no such event:" + eventId);
+                log.error(TAG, "checkEventJson: no such event:" + eventId);
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
@@ -267,7 +267,7 @@ public class DataTemplateJson {
      */
     public Status checkEventsJson(JSONArray events) {
         if (null == events) {
-            log.error("checkEventsJson: parameter is null!");
+            log.error(TAG, "checkEventsJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -276,16 +276,16 @@ public class DataTemplateJson {
             for (int i = 0; i < events.length(); i++) {
                 JSONObject jsonNode = events.getJSONObject(i);
                 if (!(jsonNode.get("timestamp") instanceof Long)) {
-                    log.error("checkEventsJson: timestamp invalid! EventId:[" + jsonNode.getString("eventId") + "].");
+                    log.error(TAG, "checkEventsJson: timestamp invalid! EventId:[" + jsonNode.getString("eventId") + "].");
                     return Status.PARAMETER_INVALID;
                 }
                 if (Status.OK != checkEventJson(jsonNode.getString("eventId"), jsonNode.getString("type"), jsonNode.getJSONObject("params"))) {
-                    log.error("checkEventsJson: events invalid!");
+                    log.error(TAG, "checkEventsJson: events invalid!");
                     return Status.PARAMETER_INVALID;
                 }
             }
         } catch (JSONException e) {
-            log.error("checkEventsJson: events invalid!");
+            log.error(TAG, "checkEventsJson: events invalid!");
             e.printStackTrace();
         }
         return Status.OK;
@@ -300,7 +300,7 @@ public class DataTemplateJson {
      */
     public Status checkActionJson(String actionId, JSONObject params) {
         if (null == params || null == actionId) {
-            log.error("checkActionJson: parameter is null!");
+            log.error(TAG, "checkActionJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -311,18 +311,18 @@ public class DataTemplateJson {
                 JSONObject jsonNode = mActionJson.getJSONObject(i);
                 if (jsonNode.get("id").equals(actionId)) {
                     if (Status.OK != checkActionParamsJson(jsonNode.getJSONArray("input"), params)) {
-                        log.error("checkActionJson: action [" + actionId + "] with invalid parameter, check the data template json on cloud console!");
+                        log.error(TAG, "checkActionJson: action [" + actionId + "] with invalid parameter, check the data template json on cloud console!");
                         return Status.PARAMETER_INVALID;
                     }
                     break;
                 }
             }
             if (i == mActionJson.length()) { //action not found
-                log.error("checkActionJson: no such action id [" + actionId + "], check the data template json on cloud console!");
+                log.error(TAG, "checkActionJson: no such action id [" + actionId + "], check the data template json on cloud console!");
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
-            log.error("checkActionJson: action message invalid!");
+            log.error(TAG, "checkActionJson: action message invalid!");
             e.printStackTrace();
         }
         return Status.OK;
@@ -337,7 +337,7 @@ public class DataTemplateJson {
      */
     public Status checkActionReplyJson(String actionId, JSONObject response) {
         if (null == response || null == actionId) {
-            log.error("checkActionJson: parameter is null!");
+            log.error(TAG, "checkActionJson: parameter is null!");
             return Status.PARAMETER_INVALID;
         }
 
@@ -348,18 +348,18 @@ public class DataTemplateJson {
                 JSONObject jsonNode = mActionJson.getJSONObject(i);
                 if (jsonNode.get("id").equals(actionId)) {
                     if (Status.OK != checkActionParamsJson(jsonNode.getJSONArray("output"), response)) {
-                        log.error("checkActionReplyJson: action [" + actionId + "] with invalid parameter:" + response);
+                        log.error(TAG, "checkActionReplyJson: action [" + actionId + "] with invalid parameter:" + response);
                         return Status.PARAMETER_INVALID;
                     }
                     break;
                 }
             }
             if (i == mActionJson.length()) { //action not found
-                log.error("checkActionReplyJson: no such action id :" + actionId);
+                log.error(TAG, "checkActionReplyJson: no such action id :" + actionId);
                 return Status.PARAMETER_INVALID;
             }
         } catch (JSONException e) {
-            log.error("checkActionReplyJson: events invalid!");
+            log.error(TAG, "checkActionReplyJson: events invalid!");
             e.printStackTrace();
         }
         return Status.OK;

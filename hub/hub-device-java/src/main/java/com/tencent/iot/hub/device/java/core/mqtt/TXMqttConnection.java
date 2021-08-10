@@ -50,10 +50,6 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREF
  * MQTT 连接类
  */
 public class TXMqttConnection implements MqttCallbackExtended {
-
-    /**
-     * 类标记
-     */
     private static final String TAG = "TXMQTT_" + MQTT_SDK_VER;
     private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
     private static final String HMAC_SHA_256 = "HmacSHA256";

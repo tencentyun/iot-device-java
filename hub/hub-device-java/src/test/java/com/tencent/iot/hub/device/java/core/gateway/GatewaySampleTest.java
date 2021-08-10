@@ -5,11 +5,9 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
-import com.tencent.iot.hub.device.java.core.mqtt.MqttSampleTest;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -31,13 +29,12 @@ import hub.unit.test.BuildConfig;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Hello world!
- *
- */
+
 public class GatewaySampleTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GatewaySampleTest.class);
+
+	private static final String TAG = GatewaySampleTest.class.getSimpleName();
 
 	private static String path2Store = System.getProperty("user.dir");
 
@@ -60,26 +57,28 @@ public class GatewaySampleTest {
 
 	private static TXGatewayConnection mqttconnection;
 	private static MqttConnectOptions options;
+	
+	static {
+		Loggor.setLogger(LOG);
+	}
 
 	private static void connect() {
 
 		String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
 
-		// init connection
 		options = new MqttConnectOptions();
 		options.setConnectionTimeout(8);
 		options.setKeepAliveInterval(60);
 		options.setAutomaticReconnect(true);
 		//客户端证书文件名  mDevPSK是设备秘钥
-
 		if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
-			LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+			Loggor.info(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
 		} else if (mDevPSK != null && mDevPSK.length() != 0){
-			LOG.info("Using PSK");
-//				options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
+			Loggor.info(TAG, "Using PSK");
+            // options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
 		} else {
-			LOG.info("Using cert assets file");
+			Loggor.info(TAG, "Using cert assets file");
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
 
@@ -91,7 +90,6 @@ public class GatewaySampleTest {
 	}
 
 	private static void gatewaySubdevOnline() {
-		// set subdev online
 		mqttconnection.gatewaySubdevOnline(mSubProductID, mSubDevName);
 	}
 
@@ -131,14 +129,12 @@ public class GatewaySampleTest {
 				jsonObject.put(entrys.getKey(), entrys.getValue());
 			}
 		} catch (JSONException e) {
-			LOG.error(e.getMessage()+"pack json data failed!");
+			Loggor.error(TAG, e.getMessage() + "pack json data failed!");
 		}
 		message.setQos(TXMqttConstants.QOS1);
 		message.setPayload(jsonObject.toString().getBytes());
 
-		// 用户上下文（请求实例）
-
-		LOG.debug("pub topic " + mTestTopic + message);
+		Loggor.debug(TAG, "pub topic " + mTestTopic + message);
 		// 发布主题
 		mqttconnection.publish(mTestTopic, message, null);
 	}
@@ -163,7 +159,7 @@ public class GatewaySampleTest {
 
 			String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
 					status.name(), reconnect, userContextInfo, msg);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 			unlock();
 		}
 
@@ -171,30 +167,30 @@ public class GatewaySampleTest {
 
 			@Override
 			public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
-				LOG.error("onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+				Loggor.error(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
 			}
 
 			@Override
 			public boolean onLastestFirmwareReady(String url, String md5, String version) {
-				LOG.error("onLastestFirmwareReady url=" + url + " version " + version);
+				Loggor.error(TAG, "onLastestFirmwareReady url=" + url + " version " + version);
 				return false; // false 自动触发下载升级文件  true 需要手动触发下载升级文件
 			}
 
 			@Override
 			public void onDownloadProgress(int percent, String version) {
-				LOG.error("onDownloadProgress:" + percent);
+				Loggor.error(TAG, "onDownloadProgress:" + percent);
 			}
 
 			@Override
 			public void onDownloadCompleted(String outputFile, String version) {
-				LOG.error("onDownloadCompleted:" + outputFile + ", version:" + version);
+				Loggor.error(TAG, "onDownloadCompleted:" + outputFile + ", version:" + version);
 
 				mqttconnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
 			}
 
 			@Override
 			public void onDownloadFailure(int errCode, String version) {
-				LOG.error("onDownloadFailure:" + errCode);
+				Loggor.error(TAG, "onDownloadFailure:" + errCode);
 
 				mqttconnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
 			}
@@ -203,7 +199,7 @@ public class GatewaySampleTest {
 		@Override
 		public void onConnectionLost(Throwable cause) {
 			String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 
 		}
 
@@ -212,7 +208,7 @@ public class GatewaySampleTest {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 		}
 
 		@Override
@@ -221,7 +217,7 @@ public class GatewaySampleTest {
 
 			String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 		}
 
 		@Override
@@ -231,9 +227,9 @@ public class GatewaySampleTest {
 			String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			if (Status.ERROR == status) {
-				LOG.error(logInfo);
+				Loggor.error(TAG, logInfo);
 			} else {
-				LOG.debug(logInfo);
+				Loggor.debug(TAG, logInfo);
 			}
 		}
 
@@ -243,13 +239,13 @@ public class GatewaySampleTest {
 
 			String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 		}
 
 		@Override
 		public void onMessageReceived(final String topic, final MqttMessage message) {
 			String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 			if (message.toString().contains("\"type\":\"online\"") && message.toString().contains(mSubDevName)) {
 				subdevOnlineSuccess = true;
 				unlock();
@@ -296,38 +292,35 @@ public class GatewaySampleTest {
 
 	@Test
 	public void testGatewayConnect() {
-		LogManager.resetConfiguration();
-		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
+		// Loggor.saveLogs("hub/hub-device-java.log"); //保存日志到文件
 		connect();
 		lock();
 		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-		LOG.debug("after connect");
+		Loggor.debug(TAG, "after connect");
 
 		setSubDevUnbinded();
 		lock();
 		assertTrue(subDevUnbindedSuccess);
-		LOG.debug("after setSubDevUnbinded");
+		Loggor.debug(TAG, "after setSubDevUnbinded");
 
 		setSubDevBinded();
 		lock();
 		assertTrue(subDevBindedSuccess);
-		LOG.debug("after setSubDevBinded");
+		Loggor.debug(TAG, "after setSubDevBinded");
 
 		gatewaySubdevOnline();
 		lock();
 		assertTrue(subdevOnlineSuccess);
-		LOG.debug("after gatewaySubdevOnline");
+		Loggor.debug(TAG, "after gatewaySubdevOnline");
 
 		checkSubdevRelation();
 		lock();
 		assertTrue(checkSubdevRelationSuccess);
-		LOG.debug("after checkSubdevRelation");
+		Loggor.debug(TAG, "after checkSubdevRelation");
 
 		gatewaySubdevOffline();
 		lock();
 		assertTrue(subdevOfflineSuccess);
-		LOG.debug("after gatewaySubdevOffline");
+		Loggor.debug(TAG, "after gatewaySubdevOffline");
 	}
 }
