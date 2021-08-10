@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -182,15 +183,19 @@ public class TRTCMainActivity extends AppCompatActivity {
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
         editor.commit();
 
-        if (!mProductID.equals("")) {
+        if (!TextUtils.isEmpty(mBrokerURL)) {
+            mBrokerURLEditText.setText(mBrokerURL);
+        }
+
+        if (!TextUtils.isEmpty(mProductID)) {
             mProductIdEditText.setText(mProductID);
         }
 
-        if (!mDevName.equals("")) {
+        if (!TextUtils.isEmpty(mDevName)) {
             mDevNameEditText.setText(mDevName);
         }
 
-        if (!mDevPSK.equals("")) {
+        if (!TextUtils.isEmpty(mDevPSK)) {
             mDevPSKEditText.setText(mDevPSK);
         }
 
@@ -362,6 +367,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private boolean checkInput() {
         String inputBrokerURL = String.valueOf(mBrokerURLEditText.getText());
         if (inputBrokerURL.equals("")) {
+            mBrokerURL = null;
         } else {
             mBrokerURL = inputBrokerURL;
         }
