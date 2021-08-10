@@ -1,9 +1,7 @@
 package com.tencent.iot.hub.device.java.core.httppublish;
 
-import com.tencent.iot.hub.device.java.core.mqtt.MqttSampleTest;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -26,11 +24,15 @@ public class HttpPublishSampleTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(HttpPublishSampleTest.class);
 
-    private static final String TAG = "HttpPublishSampleTest";
+    private static final String TAG = HttpPublishSampleTest.class.getSimpleName();
 
     private static String mProductID = BuildConfig.TESTOTASAMPLE_PRODUCT_ID;
     private static String mDevName = BuildConfig.TESTOTASAMPLE_DEVICE_NAME;
     private static String mDevPSK = BuildConfig.TESTOTASAMPLE_DEVICE_PSK;
+
+    static {
+        Loggor.setLogger(LOG);
+    }
 
     /**
      * 请求ID
@@ -66,9 +68,9 @@ public class HttpPublishSampleTest {
         String topic = String.format("%s/%s/data", mProductID, mDevName);
         TXHTTPPulish httpPulish = new TXHTTPPulish(mProductID, mDevPSK, mDevName, new SelfHttpPublishCallback());
         if (httpPulish.doHttpPublish(topic, property, 0)) {
-            LOG.debug(TAG, "http publish OK!");
+            Loggor.debug(TAG, "http publish OK!");
         } else {
-            LOG.error(TAG, "http publish failed!");
+            Loggor.error(TAG, "http publish failed!");
         }
     }
 
@@ -80,7 +82,7 @@ public class HttpPublishSampleTest {
         @Override
         public void onFailedPublish(Throwable cause) {
             String logInfo = String.format("http publish failed! onFailedPublish, ErrMsg[%s]", cause.toString());
-            LOG.error(logInfo);
+            Loggor.error(TAG, logInfo);
             httpPublishTopicSuccess = false;
             unlock();
         }
@@ -88,7 +90,7 @@ public class HttpPublishSampleTest {
         @Override
         public void onFailedPublish(Throwable cause, String errMsg) {
             String logInfo = String.format("http publish failed! onFailedPublish, ErrMsg[%s]", cause.toString() + errMsg);
-            LOG.error(logInfo);
+            Loggor.error(TAG, logInfo);
             httpPublishTopicSuccess = false;
             unlock();
         }
@@ -96,7 +98,7 @@ public class HttpPublishSampleTest {
         @Override
         public void onSuccessPublishGetRequestId(String requestId) {
             String logInfo = String.format("http publish OK!onSuccessPublishGetRequestId, requestId[%s]", requestId);
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             httpPublishTopicSuccess = true;
             unlock();
         }
@@ -124,13 +126,10 @@ public class HttpPublishSampleTest {
 
     @Test
     public void testHttpPublishDev() {
-        LogManager.resetConfiguration();
-        LOG.isDebugEnabled();
-        PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
+        // Loggor.saveLogs("hub/hub-device-java.log"); //保存日志到文件
         httpPublish();
         lock();
-        LOG.debug("after http publish");
+        Loggor.debug(TAG, "after http publish");
         assertTrue(httpPublishTopicSuccess);
     }
 }

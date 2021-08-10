@@ -353,5 +353,11 @@ public class ProductLight {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
             LOG.debug("unbind device received : " + msg);
         }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            LOG.debug("bind device received : " + msg);
+        }
     }
 }

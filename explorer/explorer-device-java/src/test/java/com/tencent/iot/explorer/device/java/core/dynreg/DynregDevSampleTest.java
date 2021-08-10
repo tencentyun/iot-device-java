@@ -8,8 +8,6 @@ import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
@@ -25,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import explorer.unit.test.BuildConfig;
 import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSample;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import static org.junit.Assert.assertSame;
 
@@ -220,6 +219,12 @@ public class DynregDevSampleTest {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
             LOG.debug("unbind device received : " + msg);
         }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            LOG.debug("bind device received : " + msg);
+        }
     }
 
     /**
@@ -278,10 +283,6 @@ public class DynregDevSampleTest {
 
     @Test
     public void testDynregDev() {
-        LogManager.resetConfiguration();
-        LOG.isDebugEnabled();
-        PropertyConfigurator.configure(DynregDevSampleTest.class.getResource("/log4j.properties"));
-
         dynReg();
         lock();
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);

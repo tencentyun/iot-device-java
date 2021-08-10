@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TXAlarmPingSender implements MqttPingSender {
 	private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
-	/**
-	 * 类标记
-	 */
+
 	private static final String TAG = TXAlarmPingSender.class.getSimpleName();
 
 	static { Loggor.setLogger(logger); }
