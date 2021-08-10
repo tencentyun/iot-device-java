@@ -182,15 +182,19 @@ public class TRTCMainActivity extends AppCompatActivity {
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
         editor.commit();
 
-        if (!mProductID.equals("")) {
+        if (mBrokerURL != null && !mBrokerURL.equals("")) {
+            mBrokerURLEditText.setText(mBrokerURL);
+        }
+
+        if (mProductID != null && !mProductID.equals("")) {
             mProductIdEditText.setText(mProductID);
         }
 
-        if (!mDevName.equals("")) {
+        if (mDevName != null && !mDevName.equals("")) {
             mDevNameEditText.setText(mDevName);
         }
 
-        if (!mDevPSK.equals("")) {
+        if (mDevPSK != null && !mDevPSK.equals("")) {
             mDevPSKEditText.setText(mDevPSK);
         }
 
@@ -362,6 +366,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private boolean checkInput() {
         String inputBrokerURL = String.valueOf(mBrokerURLEditText.getText());
         if (inputBrokerURL.equals("")) {
+            mBrokerURL = null;
         } else {
             mBrokerURL = inputBrokerURL;
         }
