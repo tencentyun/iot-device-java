@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class Door {
 
-    public static final String TAG = "iot.scenarized.Door";
+    public static final String TAG = Door.class.getSimpleName();
     private static final Logger LOG = LoggerFactory.getLogger(Door.class);
     
     /**

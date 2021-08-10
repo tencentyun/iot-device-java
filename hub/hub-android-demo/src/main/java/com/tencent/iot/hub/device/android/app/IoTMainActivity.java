@@ -16,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.android.core.util.TXLogImpl;
+
 import java.io.File;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
@@ -67,25 +69,14 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
                     ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
                     break;
                 } else {
-                    initLogConfigurator();
+                    TXLogImpl.init(this);
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void initLogConfigurator() {
-        // 下面配置是为了让sdk中用log4j记录的日志可以输出至logcat
-        LogConfigurator logConfigurator = new LogConfigurator();
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "hub-demo.log");
-        try {
-            logConfigurator.configure();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -97,7 +88,7 @@ public class IoTMainActivity extends AppCompatActivity implements View.OnClickLi
                     Log.e(TAG, getString(R.string.request_permission_first));
                     finish();
                 } else {
-                    initLogConfigurator();
+                    TXLogImpl.init(this);
                     break;
                 }
             }
