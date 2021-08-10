@@ -20,7 +20,7 @@ import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK
 class TXDataTemplateJson extends DataTemplateJson {
 
     private static final String TAG = "TX_TEMPLATE_JSON_" + MQTT_SDK_VER;
-    private static final CustomLog CUSTOM_LOG = new CustomLog(TAG);
+    private static final CustomLog CUSTOM_LOG = new CustomLog();
 
     TXDataTemplateJson(Context context, final String jsonFileName) {
         super(CUSTOM_LOG);
