@@ -2,12 +2,11 @@ package com.tencent.iot.hub.device.java.core.shadow;
 
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.mqtt.MqttSampleTest;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import main.mqtt.MQTTRequest;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -37,6 +36,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ShadowSampleTest {
 	private static final Logger LOG = LoggerFactory.getLogger(ShadowSampleTest.class);
+	private static final String TAG = ShadowSampleTest.class.getSimpleName();
 	private static TXShadowConnection mShadowConnection;
 
 	private static String mProductID = BuildConfig.TESTSHADOWSAMPLE_PRODUCT_ID;
@@ -58,6 +58,10 @@ public class ShadowSampleTest {
 	//设备属性集（该变量必须为全局变量）
 	private static List<DeviceProperty> mDevicePropertyList = new ArrayList<>();
 
+	static {
+		Loggor.setLogger(LOG);
+	}
+	
 	private static void connect() {
 		String workDir = System.getProperty("user.dir") + "/";
 
@@ -69,13 +73,13 @@ public class ShadowSampleTest {
 		//客户端证书文件名  mDevPSK是设备秘钥
 
 		if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
-			LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+			Loggor.info(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
 		} else if (mDevPSK != null && mDevPSK.length() != 0){
-			LOG.info("Using PSK");
-//				options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
+			Loggor.info(TAG, "Using PSK");
+			// options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
 		} else {
-			LOG.info("Using cert assets file");
+			Loggor.info(TAG, "Using cert assets file");
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
 		mShadowConnection = new TXShadowConnection(mProductID, mDevName, mDevPSK, new callback());
@@ -109,7 +113,7 @@ public class ShadowSampleTest {
 			}
 		}
 
-		LOG.info("update device property");
+		Loggor.info(TAG, "update device property");
 		mShadowConnection.update(mDevicePropertyList, null);
 	}
 
@@ -122,7 +126,7 @@ public class ShadowSampleTest {
 		int qos = TXMqttConstants.QOS1;
 		// 用户上下文（请求实例）
 		MQTTRequest mqttRequest = new MQTTRequest("subscribeTopic", requestID.getAndIncrement());
-		LOG.debug("Start to subscribe" + mTestTopic);
+		Loggor.debug(TAG, "Start to subscribe" + mTestTopic);
 		// 调用TXShadowConnection的subscribe方法订阅主题
 		mShadowConnection.subcribe(mTestTopic, qos, mqttRequest);
 	}
@@ -130,7 +134,7 @@ public class ShadowSampleTest {
 	private static void unSubscribeTopic() {
 		// 用户上下文（请求实例）
 		MQTTRequest mqttRequest = new MQTTRequest("unSubscribeTopic", requestID.getAndIncrement());
-		LOG.debug("Start to unSubscribe" + mTestTopic);
+		Loggor.debug(TAG, "Start to unSubscribe" + mTestTopic);
 		// 取消订阅主题
 		mShadowConnection.unSubscribe(mTestTopic, mqttRequest);
 	}
@@ -154,7 +158,7 @@ public class ShadowSampleTest {
 				jsonObject.put(entrys.getKey(), entrys.getValue());
 			}
 		} catch (JSONException e) {
-			LOG.error("pack json data failed!" + e.getMessage());
+			Loggor.error(TAG, "pack json data failed!" + e.getMessage());
 		}
 		message.setQos(TXMqttConstants.QOS1);
 		message.setPayload(jsonObject.toString().getBytes());
@@ -162,7 +166,7 @@ public class ShadowSampleTest {
 		// 用户上下文（请求实例）
 		MQTTRequest mqttRequest = new MQTTRequest("publishTopic", requestID.getAndIncrement());
 
-		LOG.debug("pub topic " + mTestTopic + message);
+		Loggor.debug(TAG, "pub topic " + mTestTopic + message);
 		// 发布主题
 		mShadowConnection.publish(mTestTopic, message, mqttRequest);
 	}
@@ -181,7 +185,7 @@ public class ShadowSampleTest {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onConnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 			unlock();
 		}
 
@@ -192,7 +196,7 @@ public class ShadowSampleTest {
 		 */
 		public void onConnectionLost(Throwable cause) {
 			String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 		}
 		
 		/**
@@ -204,7 +208,7 @@ public class ShadowSampleTest {
 	     */
 	    public void onRequestCallback(String type, int result, String document) {
 			String logInfo = String.format("onRequestCallback, type[%s], result[%d], document[%s]", type, result, document);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 			if (type.equals("get")) {
 				getDeviceDocumentSuccess = true;
 				unlock();
@@ -220,7 +224,7 @@ public class ShadowSampleTest {
 	    public void onDevicePropertyCallback(String propertyJSONDocument, List<? extends DeviceProperty> devicePropertyList) {
 			String logInfo = String.format("onDevicePropertyCallback, propertyJSONDocument[%s], deviceProperty[%s]",
 					propertyJSONDocument, devicePropertyList.toString());
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 	    }
 
 
@@ -248,7 +252,7 @@ public class ShadowSampleTest {
 
 			String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 
 			if (status == Status.OK && Arrays.toString(token.getTopics()).contains(mTestTopic)) {
 				publishTopicSuccess = true;
@@ -270,9 +274,9 @@ public class ShadowSampleTest {
 			String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			if (Status.ERROR == status) {
-				LOG.error(logInfo);
+				Loggor.error(TAG, logInfo);
 			} else {
-				LOG.debug(logInfo);
+				Loggor.debug(TAG, logInfo);
 			}
 
 			if (Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
@@ -294,7 +298,7 @@ public class ShadowSampleTest {
 
 			String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 
 			if (status == Status.OK && Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
 				unSubscribeTopicSuccess = true;
@@ -330,33 +334,30 @@ public class ShadowSampleTest {
 
 	@Test
 	public void testShadowConnect() {
-		LogManager.resetConfiguration();
-		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
+		// Loggor.saveLogs("hub/hub-device-java.log"); //保存日志到文件
 		connect();
 		lock();
 		assertSame(mShadowConnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-		LOG.debug("after connect");
+		Loggor.debug(TAG, "after connect");
 
 		subscribeTopic();
 		lock();
 		assertTrue(subscribeTopicSuccess);
-		LOG.debug("after subscribe");
+		Loggor.debug(TAG, "after subscribe");
 
 		publishTopic();
 		lock();
 		assertTrue(publishTopicSuccess);
-		LOG.debug("after publish");
+		Loggor.debug(TAG, "after publish");
 
 		unSubscribeTopic();
 		lock();
 		assertTrue(unSubscribeTopicSuccess);
-		LOG.debug("after unSubscribe");
+		Loggor.debug(TAG, "after unSubscribe");
 
 		getDeviceDocument();
 		lock();
 		assertTrue(getDeviceDocumentSuccess);
-		LOG.debug("after getDeviceDocument");
+		Loggor.debug(TAG, "after getDeviceDocument");
 	}
 }
