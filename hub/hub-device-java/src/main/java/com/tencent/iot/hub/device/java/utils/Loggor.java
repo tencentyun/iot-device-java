@@ -2,6 +2,10 @@ package com.tencent.iot.hub.device.java.utils;
 
 import com.tencent.iot.hub.device.java.core.shadow.TXShadowConnection;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +17,42 @@ public class Loggor {
     private static Logger logger = LoggerFactory.getLogger(Loggor.class);
 
     private static LogCallBack logCallback;
+
+    /**
+     * 开启控制台日志输出
+     */
+    public static void openConsoleLog() {
+        org.apache.log4j.Logger rootLogger = LogManager.getRootLogger();
+        ConsoleAppender appender = new ConsoleAppender();
+        PatternLayout layout = new PatternLayout();
+        String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
+        layout.setConversionPattern(conversionPattern);
+        appender.setLayout(layout);
+        appender.setEncoding("UTF-8");
+        appender.setThreshold(Level.DEBUG);
+        appender.activateOptions();
+        rootLogger.addAppender(appender);
+    }
+
+    /**
+     * 开启日志保存
+     * @param path 日志保存路径
+     */
+    public static void saveLogs(String path) {
+        org.apache.log4j.Logger rootLogger = LogManager.getRootLogger();
+        MyDailyRollingFileAppender appender = new MyDailyRollingFileAppender();
+        PatternLayout layout = new PatternLayout();
+        String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
+        layout.setConversionPattern(conversionPattern);
+        appender.setLayout(layout);
+        appender.setFile(path);
+        appender.setEncoding("UTF-8");
+        appender.setAppend(true);
+        appender.setThreshold(Level.DEBUG);
+        appender.activateOptions();
+        rootLogger.addAppender(appender);
+    }
+
 
     /**
      * 设置日志打印的对象
