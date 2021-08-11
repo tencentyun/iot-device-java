@@ -18,6 +18,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,7 +26,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 
 
 public class DataTemplateSample {
-    private static final String TAG = "TXDataTemplate";
+    private static final String TAG = DataTemplateSample.class.getSimpleName();
     // Default Value, should be changed in testing
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = "PRODUCT-ID";
@@ -39,16 +40,14 @@ public class DataTemplateSample {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataTemplateSample.class);
 
+    static {
+        Loggor.setLogger(LOG);
+    }
+
     private TXMqttActionCallBack mMqttActionCallBack;
 
-    /**
-     * MQTT连接实例
-     */
     private TXDataTemplateClient mMqttConnection;
 
-    /**
-     * 请求ID
-     */
     private static AtomicInteger requestID = new AtomicInteger(0);
 
     TXDataTemplateDownStreamCallBack mDownStreamCallBack = null;
@@ -91,10 +90,10 @@ public class DataTemplateSample {
         options.setAutomaticReconnect(true);
 
         if (mDevPSK != null && mDevPSK.length() != 0){
-            LOG.info(TAG, "Using PSK");
+            Loggor.info(TAG, "Using PSK");
 //            options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 explorer-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
         } else {
-            LOG.info(TAG, "Using cert assets file");
+            Loggor.info(TAG, "Using cert assets file");
             options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mDevCertName, workDir + mDevKeyName));
         }
         TXMqttRequest mqttRequest = new TXMqttRequest("connect", requestID.getAndIncrement());
@@ -125,16 +124,16 @@ public class DataTemplateSample {
      */
     public void subscribeTopic() {
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)){
-           LOG.debug(TAG, "subscribeTopic: subscribe property down stream topic failed!");
+           Loggor.debug(TAG, "subscribeTopic: subscribe property down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC, 0)){
-           LOG.debug(TAG, "subscribeTopic: subscribe event down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: subscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC, 0)){
-            LOG.debug(TAG, "subscribeTopic: subscribe action down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: subscribe action down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.subscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC, 0)){
-            LOG.debug(TAG, "subscribeTopic: subscribe service down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: subscribe service down stream topic failed!");
         }
     }
 
@@ -144,16 +143,16 @@ public class DataTemplateSample {
      */
     public void unSubscribeTopic() {
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC)){
-            LOG.debug(TAG, "subscribeTopic: unSubscribe property down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: unSubscribe property down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(EVENT_DOWN_STREAM_TOPIC)){
-            LOG.debug(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: unSubscribe event down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(ACTION_DOWN_STREAM_TOPIC)){
-            LOG.debug(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: unSubscribe action down stream topic failed!");
         }
         if(Status.OK != mMqttConnection.unSubscribeTemplateTopic(SERVICE_DOWN_STREAM_TOPIC)){
-            LOG.debug(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
+            Loggor.debug(TAG, "subscribeTopic: unSubscribe service down stream topic failed!");
         }
     }
 
@@ -187,7 +186,7 @@ public class DataTemplateSample {
         mMqttConnection.initOTA(workDir, new TXOTACallBack() {
             @Override
             public void onReportFirmwareVersion(int resultCode, String version, String resultMsg) {
-                LOG.error("onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
+                Loggor.error(TAG, "onReportFirmwareVersion:" + resultCode + ", version:" + version + ", resultMsg:" + resultMsg);
             }
 
             @Override
@@ -197,19 +196,19 @@ public class DataTemplateSample {
 
             @Override
             public void onDownloadProgress(int percent, String version) {
-                LOG.error("onDownloadProgress:" + percent);
+                Loggor.error(TAG, "onDownloadProgress:" + percent);
             }
 
             @Override
             public void onDownloadCompleted(String outputFile, String version) {
-                LOG.error("onDownloadCompleted:" + outputFile + ", version:" + version);
+                Loggor.error(TAG, "onDownloadCompleted:" + outputFile + ", version:" + version);
 
                 mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.DONE, 0, "OK", version);
             }
 
             @Override
             public void onDownloadFailure(int errCode, String version) {
-                LOG.error("onDownloadFailure:" + errCode);
+                Loggor.error(TAG, "onDownloadFailure:" + errCode);
 
                 mMqttConnection.reportOTAState(TXOTAConstansts.ReportState.FAIL, errCode, "FAIL", version);
             }
