@@ -34,7 +34,7 @@ public class DynregDevSampleTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DynregDevSampleTest.class);
 
-    private static final String TAG = "TXMQTT";
+    private static final String TAG = DynregDevSampleTest.class.getSimpleName();
 
     private static String path2Store = System.getProperty("user.dir");
 
@@ -53,6 +53,10 @@ public class DynregDevSampleTest {
 
     private static DataTemplateSample mDataTemplateSample;
 
+    static {
+        Loggor.setLogger(LOG);
+    }
+
     private static void connect() {
         // init connection
         mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
@@ -61,12 +65,12 @@ public class DynregDevSampleTest {
     }
 
     private static void dynReg() {
-        LOG.debug("Test Dynamic");
+        Loggor.debug(TAG, "Test Dynamic");
         TXMqttDynreg dynreg = new TXMqttDynreg(mProductID, mProductSecret, mDevName, new SelfMqttDynregCallback());
         if (dynreg.doDynamicRegister()) {
-            LOG.debug("Dynamic Register OK!");
+            Loggor.debug(TAG, "Dynamic Register OK!");
         } else {
-            LOG.error("Dynamic Register failed!");
+            Loggor.error(TAG, "Dynamic Register failed!");
         }
     }
 
@@ -80,7 +84,7 @@ public class DynregDevSampleTest {
             }
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -92,7 +96,7 @@ public class DynregDevSampleTest {
         @Override
         public void onConnectionLost(Throwable cause) {
             String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
         }
 
         @Override
@@ -102,7 +106,7 @@ public class DynregDevSampleTest {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             unlock();
         }
 
@@ -114,7 +118,7 @@ public class DynregDevSampleTest {
             }
             String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
         }
 
         @Override
@@ -126,9 +130,9 @@ public class DynregDevSampleTest {
             String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             if (Status.ERROR == status) {
-                LOG.error(logInfo);
+                Loggor.error(TAG, logInfo);
             } else {
-                LOG.debug(logInfo);
+                Loggor.debug(TAG, logInfo);
             }
         }
 
@@ -140,13 +144,13 @@ public class DynregDevSampleTest {
             }
             String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
         }
 
         @Override
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
         }
     }
 
@@ -157,18 +161,18 @@ public class DynregDevSampleTest {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
-            LOG.debug("reply received : " + replyMsg);
+            Loggor.debug(TAG, "reply received : " + replyMsg);
         }
 
         @Override
         public void onGetStatusReplyCallBack(JSONObject data) {
             //可根据自己需求进行处理状态和控制信息的获取结果
-            LOG.debug("event down stream message received : " + data);
+            Loggor.debug(TAG, "event down stream message received : " + data);
         }
 
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
-            LOG.debug("control down stream message received : " + msg);
+            Loggor.debug(TAG, "control down stream message received : " + msg);
             //do something
 
             //output
@@ -178,21 +182,21 @@ public class DynregDevSampleTest {
                 result.put("status", "some message wher errorsome message when error");
                 return result;
             } catch (JSONException e) {
-                LOG.error("Construct params failed!");
+                Loggor.error(TAG, "Construct params failed!");
                 return null;
             }
         }
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug("action [{}] received, input:" + params, actionId);
+            Loggor.debug(TAG, String.format("action [%s] received, input:%s", actionId, params));
             //do something based action id and input
             if(actionId.equals("blink")) {
                 try {
                     Iterator<String> it = params.keys();
                     while (it.hasNext()) {
                         String key = it.next();
-                        LOG.debug("Input parameter[{}]:" + params.get(key), key);
+                        Loggor.debug(TAG, String.format("Input parameter[%s]:%s", key, params.get(key)));
                     }
                     //construct result
                     JSONObject result = new JSONObject();
@@ -217,13 +221,13 @@ public class DynregDevSampleTest {
         @Override
         public void onUnbindDeviceCallBack(String msg) {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
-            LOG.debug("unbind device received : " + msg);
+            Loggor.debug(TAG, "unbind device received : " + msg);
         }
 
         @Override
         public void onBindDeviceCallBack(String msg) {
             //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
-            LOG.debug("bind device received : " + msg);
+            Loggor.debug(TAG, "bind device received : " + msg);
         }
     }
 
@@ -236,7 +240,7 @@ public class DynregDevSampleTest {
         public void onGetDevicePSK(String devicePsk) {
             mDevPSK = devicePsk;
             String logInfo = String.format("Dynamic register OK! onGetDevicePSK, devicePSK");
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             connect();
         }
 
@@ -245,20 +249,20 @@ public class DynregDevSampleTest {
 //            mDevCert = deviceCert;   //这里获取的是证书内容字符串 创建对应ssl认证时可使用options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));方式，示例中使用的是读取本地文件路径的方式。
 //            mDevPriv = devicePriv;   //这里获取的是秘钥内容字符串
             String logInfo = String.format("Dynamic register OK!onGetDeviceCert, deviceCert devicePriv");
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             connect();
         }
 
         @Override
         public void onFailedDynreg(Throwable cause, String errMsg) {
             String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString() + errMsg);
-            LOG.error(logInfo);
+            Loggor.error(TAG, logInfo);
         }
 
         @Override
         public void onFailedDynreg(Throwable cause) {
             String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString());
-            LOG.error(logInfo);
+            Loggor.error(TAG, logInfo);
         }
     }
 
@@ -283,14 +287,15 @@ public class DynregDevSampleTest {
 
     @Test
     public void testDynregDev() {
+        // Loggor.saveLogs("explorer/explorer-device-java.log"); //保存日志到文件
         dynReg();
         lock();
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-        LOG.debug("after dynreg connect");
+        Loggor.debug(TAG, "after dynreg connect");
 
         mDataTemplateSample.disconnect();
         lock();
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
-        LOG.debug("after disconnect");
+        Loggor.debug(TAG, "after disconnect");
     }
 }
