@@ -22,6 +22,30 @@
       "revId": "e310f2b00d31d1604a97d56dc23d89ddcddeefc6",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe261aaf_a22bd919",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/TRTCMainActivity.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-11T06:02:02Z",
+      "side": 1,
+      "message": "已修改",
+      "parentUuid": "da0c0f5e_ed36309f",
+      "range": {
+        "startLine": 185,
+        "startChar": 12,
+        "endLine": 185,
+        "endChar": 56
+      },
+      "revId": "e310f2b00d31d1604a97d56dc23d89ddcddeefc6",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
