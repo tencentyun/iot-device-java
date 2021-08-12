@@ -178,11 +178,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tme_main);
-        Intent intent = getIntent();
-        String preBrokerUrl = intent.getStringExtra(TmeConst.TME_BROKER_URL);
-        if (!TextUtils.isEmpty(preBrokerUrl)) {
-            mBrokerURL = preBrokerUrl;
-        }
         initView();
         UltimateSongPlayer.getInstance().init();
         UltimateSongPlayer.getInstance().addSongPlayStateListener(mSongPlayStateListener);
@@ -194,6 +189,10 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         mProductID = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_PRODUCT_ID);
         mDevName = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_NAME);
         mDevPSK = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_PSK);
+        String brokerUrl = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_BROKER_URL);
+        if (!TextUtils.isEmpty(brokerUrl)) {
+            mBrokerURL = brokerUrl;
+        }
     }
 
     private void initView() {
