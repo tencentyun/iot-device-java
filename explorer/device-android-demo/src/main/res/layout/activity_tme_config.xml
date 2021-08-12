@@ -42,7 +42,6 @@
             android:id="@+id/et_device_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
             android:textSize="16sp"
             android:hint="请输入Device Name" />
     </LinearLayout>
@@ -67,6 +66,27 @@
             android:hint="请输入Device PSK" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_broker_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="Broker Url:"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/et_broker_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:inputType="text"
+            android:hint="请输入Broker Url" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btn_config"
@@ -75,11 +95,5 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="100dp"
         android:text="配置" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/tv_empty_area" />
 
 </LinearLayout>
