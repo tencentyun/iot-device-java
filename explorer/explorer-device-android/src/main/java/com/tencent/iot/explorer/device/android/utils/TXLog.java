@@ -7,19 +7,49 @@ import android.util.Log;
 import com.tencent.iot.hub.device.java.utils.LogCallBack;
 
 
+/**
+ * 日志类
+ */
 public class TXLog {
     private static final String TAG = "mars.xlog.log";
 
+    /**
+     * 日志级别 VERBOSE
+     */
     public static final int LEVEL_VERBOSE = 0;
+    /**
+     * 日志级别 DEBUG
+     */
     public static final int LEVEL_DEBUG = 1;
+    /**
+     * 日志级别 INFO
+     */
     public static final int LEVEL_INFO = 2;
+    /**
+     * 日志级别 WARNING
+     */
     public static final int LEVEL_WARNING = 3;
+    /**
+     * 日志级别 ERROR
+     */
     public static final int LEVEL_ERROR = 4;
+    /**
+     * 日志级别 FATAL
+     */
     public static final int LEVEL_FATAL = 5;
+    /**
+     * 日志级别 NONE
+     */
     public static final int LEVEL_NONE = 6;
 
+    /**
+     * 上下文
+     */
     public static Context toastSupportContext = null;
 
+    /**
+     * 日志接口类
+     */
     public interface LogImp extends LogCallBack {
 
         void logV(String tag, String filename, String funcname, int line, int pid, long tid, long maintid, String log);
@@ -53,14 +83,29 @@ public class TXLog {
 
     private static LogImp logImp = new TXLogImpl();
 
+    /**
+     * 设置日志实例
+     *
+     * @param imp 日志实例
+     */
     public static void setLogImp(LogImp imp) {
         logImp = imp;
     }
 
+    /**
+     * 获取日志实例
+     *
+     * @return 日志实例
+     */
     public static LogImp getImpl() {
         return logImp;
     }
 
+    /**
+     * 获取日志级别
+     *
+     * @return 日志级别
+     */
     public static int getLogLevel() {
         if (logImp != null) {
             return logImp.getLogLevel();
@@ -68,6 +113,11 @@ public class TXLog {
         return LEVEL_NONE;
     }
 
+    /**
+     * 设置日志级别
+     *
+     * @param level 日志级别
+     */
     public static void setLevel(final int level) {
         logImp.setLogLevel(level);
     }
@@ -92,6 +142,13 @@ public class TXLog {
         e(tag, msg, (Object[]) null);
     }
 
+    /**
+     * 打印日志级别 ERROR 的日志
+     *
+     * @param tag 日志标记
+     * @param msg 日志内容
+     * @param tr 异常内容
+     */
     public static void e(final String tag, final String msg, Throwable tr) {
         e(tag, tr, msg, (Object[]) null);
     }
@@ -136,15 +193,29 @@ public class TXLog {
         v(tag, msg, (Object[]) null);
     }
 
+    /**
+     * 打印日志级别 FATAL 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void f(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_FATAL >= logImp.getLogLevel()) {
             final String log = obj == null ? format : String.format(format, obj);
             logImp.logF(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), log);
         }
     }
 
+    /**
+     * 打印日志级别 ERROR 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void e(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -156,8 +227,15 @@ public class TXLog {
         }
     }
 
+    /**
+     * 打印日志级别 WARNING 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void w(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_WARNING >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -169,8 +247,15 @@ public class TXLog {
         }
     }
 
+    /**
+     * 打印日志级别 INFO 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void i(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_INFO >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -182,8 +267,15 @@ public class TXLog {
         }
     }
 
+    /**
+     * 打印日志级别 DEBUG 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void d(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_DEBUG >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -195,8 +287,15 @@ public class TXLog {
         }
     }
 
+    /**
+     * 打印日志级别 VERBOSE 的日志
+     *
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void v(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_VERBOSE >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -208,8 +307,16 @@ public class TXLog {
         }
     }
 
+    /**
+     * 打印日志级别 ERROR 的日志
+     *
+     * @param tag 日志标记
+     * @param tr 异常内容
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
     public static void e(String tag, Throwable tr, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -248,6 +355,11 @@ public class TXLog {
         SYS_INFO = sb.toString();
     }
 
+    /**
+     * 获取系统信息
+     *
+     * @return 系统信息
+     */
     public static String getSysInfo() {
         return SYS_INFO;
     }

@@ -200,7 +200,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void f(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_FATAL >= logImp.getLogLevel()) {
             final String log = obj == null ? format : String.format(format, obj);
             logImp.logF(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), log);
         }
@@ -214,7 +214,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void e(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -234,7 +234,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void w(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_WARNING >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -254,7 +254,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void i(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_INFO >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -274,7 +274,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void d(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_DEBUG >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -294,7 +294,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void v(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_VERBOSE >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -315,7 +315,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void e(String tag, Throwable tr, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
