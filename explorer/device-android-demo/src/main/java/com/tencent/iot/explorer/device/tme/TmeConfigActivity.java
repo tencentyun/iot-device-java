@@ -23,13 +23,12 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
     private int counts = 5; //点击次数
     private long duration = 3 * 1000; //规定有效时间
     private long[] hits = new long[counts];
-    private String preBrokerUrl = "";
 
     private Button mConfigBtn;
     private EditText mProductIdEt;
     private EditText mDeviceNameEt;
     private EditText mDevicePSKEt;
-    private TextView mEmptyTv;
+    private EditText mBrokerUrlEt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +43,15 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
         mProductIdEt = findViewById(R.id.et_productid);
         mDeviceNameEt = findViewById(R.id.et_device_name);
         mDevicePSKEt = findViewById(R.id.et_device_psk);
-        mEmptyTv = findViewById(R.id.tv_empty_area);
+        mBrokerUrlEt = findViewById(R.id.et_broker_url);
         mConfigBtn.setOnClickListener(this);
-        mEmptyTv.setOnClickListener(this);
     }
 
     private void initConfig() {
         String productId = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_PRODUCT_ID);
         String deviceName = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_NAME);
         String devicePSK = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_PSK);
+        String brokerUrl = SharePreferenceUtil.getString(this, TmeConst.TME_CONFIG, TmeConst.TME_BROKER_URL);
 
         if (TextUtils.isEmpty(productId.trim())) {
             productId = BuildConfig.TME_PRODUCT_ID.trim();
@@ -63,7 +62,9 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
         if (TextUtils.isEmpty(devicePSK.trim())) {
             devicePSK = BuildConfig.TME_DEVICE_PSK.trim();
         }
-
+        if (TextUtils.isEmpty(brokerUrl.trim())) {
+            brokerUrl = BuildConfig.TME_BROKER_URL.trim();
+        }
         if (!TextUtils.isEmpty(productId)) {
             mProductIdEt.setText(productId);
         }
@@ -73,6 +74,9 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
         if (!TextUtils.isEmpty(devicePSK)) {
             mDevicePSKEt.setText(devicePSK);
         }
+        if (!TextUtils.isEmpty(brokerUrl)) {
+            mBrokerUrlEt.setText(brokerUrl);
+        }
     }
 
     @Override
@@ -80,20 +84,7 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
         if (v.getId() == R.id.btn_config) {
             if (checkInput()) {
                 Intent intent = new Intent(TmeConfigActivity.this, TmeMainActivity.class);
-                intent.putExtra(TmeConst.TME_BROKER_URL, preBrokerUrl);
                 startActivity(intent);
-            }
-        }
-        if (v.getId() == R.id.tv_empty_area) {
-            // 连续点击五次复制AndroidID
-            System.arraycopy(hits, 1, hits, 0, hits.length - 1);
-            //实现左移，然后最后一个位置更新距离开机的时间，如果最后一个时间和最开始时间小于duration，即连续5次点击
-            hits[hits.length - 1] = SystemClock.uptimeMillis();
-            if (hits[0] >= SystemClock.uptimeMillis() - duration) {
-                if (hits.length == 5) {
-                    ToastUtil.showS("预发布环境");
-                    preBrokerUrl = BuildConfig.TME_BROKER_URL;
-                }
             }
         }
     }
@@ -115,9 +106,12 @@ public class TmeConfigActivity extends AppCompatActivity implements View.OnClick
             return false;
         }
 
+        String brokerUrl = mBrokerUrlEt.getText().toString();
+
         SharePreferenceUtil.saveString(this, TmeConst.TME_CONFIG, TmeConst.TME_PRODUCT_ID, productId);
         SharePreferenceUtil.saveString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_NAME, deviceName);
         SharePreferenceUtil.saveString(this, TmeConst.TME_CONFIG, TmeConst.TME_DEVICE_PSK, devicePsk);
+        SharePreferenceUtil.saveString(this, TmeConst.TME_CONFIG, TmeConst.TME_BROKER_URL, brokerUrl);
 
         return true;
     }
