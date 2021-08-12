@@ -21,9 +21,12 @@ import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * 日志实现类
- */
+import static com.tencent.iot.hub.device.android.core.util.TXLog.LEVEL_DEBUG;
+import static com.tencent.iot.hub.device.android.core.util.TXLog.LEVEL_ERROR;
+import static com.tencent.iot.hub.device.android.core.util.TXLog.LEVEL_INFO;
+import static com.tencent.iot.hub.device.android.core.util.TXLog.LEVEL_VERBOSE;
+import static com.tencent.iot.hub.device.android.core.util.TXLog.LEVEL_WARNING;
+
 public class TXLogImpl implements TXLog.LogImp {
 
     private static volatile Context sContext;
@@ -63,7 +66,7 @@ public class TXLogImpl implements TXLog.LogImp {
 
     private static Handler retryInitHandler = new Handler(Looper.getMainLooper());
 
-    private int logLevel = TXLog.LEVEL_INFO;
+    private int logLevel = LEVEL_VERBOSE;
 
     /**
      * 初始化日志
@@ -559,7 +562,9 @@ public class TXLogImpl implements TXLog.LogImp {
      */
     @Override
     public void debug(String tag, String msg) {
-        logD(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        if (LEVEL_DEBUG >= getLogLevel()) {
+            logD(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        }
     }
 
     /**
@@ -569,7 +574,9 @@ public class TXLogImpl implements TXLog.LogImp {
      */
     @Override
     public void info(String tag, String msg) {
-        logI(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        if (LEVEL_INFO >= getLogLevel()) {
+            logI(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        }
     }
 
     /**
@@ -579,7 +586,9 @@ public class TXLogImpl implements TXLog.LogImp {
      */
     @Override
     public void warn(String tag, String msg) {
-        logW(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        if (LEVEL_WARNING >= getLogLevel()) {
+            logW(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        }
     }
 
     /**
@@ -589,7 +598,8 @@ public class TXLogImpl implements TXLog.LogImp {
      */
     @Override
     public void error(String tag, String msg) {
-        logE(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        if (LEVEL_ERROR >= getLogLevel()) {
+            logE(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), msg);
+        }
     }
 }
-

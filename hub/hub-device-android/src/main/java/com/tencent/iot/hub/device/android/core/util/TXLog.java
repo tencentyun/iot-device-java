@@ -122,20 +122,20 @@ public class TXLog {
     }
 
     /**
-     * 打印日志级别 FATAL 的日志
+     * use f(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void f(final String tag, final String msg) {
         f(tag, msg, (Object[]) null);
     }
 
     /**
-     * 打印日志级别 ERROR 的日志
+     * use e(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void e(final String tag, final String msg) {
         e(tag, msg, (Object[]) null);
@@ -153,40 +153,40 @@ public class TXLog {
     }
 
     /**
-     * 打印日志级别 WARNING 的日志
+     * use w(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void w(final String tag, final String msg) {
         w(tag, msg, (Object[]) null);
     }
 
     /**
-     * 打印日志级别 INFO 的日志
+     * use i(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void i(final String tag, final String msg) {
         i(tag, msg, (Object[]) null);
     }
 
     /**
-     * 打印日志级别 DEBUG 的日志
+     * use d(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void d(final String tag, final String msg) {
         d(tag, msg, (Object[]) null);
     }
 
     /**
-     * 打印日志级别 VERBOSE 的日志
+     * use v(tag, format, obj) instead
      *
-     * @param tag 日志标记
-     * @param msg 日志内容
+     * @param tag
+     * @param msg
      */
     public static void v(final String tag, final String msg) {
         v(tag, msg, (Object[]) null);
@@ -200,7 +200,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void f(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_FATAL >= logImp.getLogLevel()) {
             final String log = obj == null ? format : String.format(format, obj);
             logImp.logF(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), log);
         }
@@ -214,7 +214,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void e(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -234,7 +234,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void w(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_WARNING >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -254,7 +254,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void i(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_INFO >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -274,7 +274,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void d(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_DEBUG >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -294,7 +294,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void v(String tag, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_VERBOSE >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
@@ -315,7 +315,7 @@ public class TXLog {
      * @param obj 日志内容
      */
     public static void e(String tag, Throwable tr, final String format, final Object... obj) {
-        if (logImp != null) {
+        if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
             String log = obj == null ? format : String.format(format, obj);
             if (log == null) {
                 log = "";
