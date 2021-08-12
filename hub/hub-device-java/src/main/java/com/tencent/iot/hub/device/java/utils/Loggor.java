@@ -1,11 +1,15 @@
 package com.tencent.iot.hub.device.java.utils;
 
 import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Enumeration;
 
 /**
  * 日志打印类
@@ -25,15 +29,25 @@ public class Loggor {
      */
     public static void openConsoleLog() {
         org.apache.log4j.Logger rootLogger = LogManager.getRootLogger();
-        ConsoleAppender appender = new ConsoleAppender();
-        PatternLayout layout = new PatternLayout();
-        String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
-        layout.setConversionPattern(conversionPattern);
-        appender.setLayout(layout);
-        appender.setEncoding("UTF-8");
-        appender.setThreshold(Level.DEBUG);
-        appender.activateOptions();
-        rootLogger.addAppender(appender);
+        Enumeration appenders = rootLogger.getAllAppenders();
+        boolean hasConsoleAppender = false;
+        while (appenders.hasMoreElements()) {
+            if (appenders.nextElement() instanceof ConsoleAppender) {
+                hasConsoleAppender = true;
+                break;
+            }
+        }
+        if (!hasConsoleAppender) {
+            ConsoleAppender appender = new ConsoleAppender();
+            PatternLayout layout = new PatternLayout();
+            String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
+            layout.setConversionPattern(conversionPattern);
+            appender.setLayout(layout);
+            appender.setEncoding("UTF-8");
+            appender.setThreshold(Level.DEBUG);
+            appender.activateOptions();
+            rootLogger.addAppender(appender);
+        }
     }
 
     /**
@@ -42,17 +56,27 @@ public class Loggor {
      */
     public static void saveLogs(String path) {
         org.apache.log4j.Logger rootLogger = LogManager.getRootLogger();
-        MyDailyRollingFileAppender appender = new MyDailyRollingFileAppender();
-        PatternLayout layout = new PatternLayout();
-        String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
-        layout.setConversionPattern(conversionPattern);
-        appender.setLayout(layout);
-        appender.setFile(path);
-        appender.setEncoding("UTF-8");
-        appender.setAppend(true);
-        appender.setThreshold(Level.DEBUG);
-        appender.activateOptions();
-        rootLogger.addAppender(appender);
+        Enumeration appenders = rootLogger.getAllAppenders();
+        boolean hasFileAppender = false;
+        while (appenders.hasMoreElements()) {
+            if (appenders.nextElement() instanceof FileAppender) {
+                hasFileAppender = true;
+                break;
+            }
+        }
+        if (!hasFileAppender) {
+            MyDailyRollingFileAppender appender = new MyDailyRollingFileAppender();
+            PatternLayout layout = new PatternLayout();
+            String conversionPattern = "%d{yyyy/MM/dd HH:mm:ss} %-5p %c{1} %M %L %x - %m%n";
+            layout.setConversionPattern(conversionPattern);
+            appender.setLayout(layout);
+            appender.setFile(path);
+            appender.setEncoding("UTF-8");
+            appender.setAppend(true);
+            appender.setThreshold(Level.DEBUG);
+            appender.activateOptions();
+            rootLogger.addAppender(appender);
+        }
     }
 
 
