@@ -23,3 +23,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-keep class org.apache.log4j.** { *; }
+-keep class de.mindpipe.android.logging.log4j.** { *; }
+-keep class org.eclipse.paho.client.mqttv3.** {*;}
+-keepclasseswithmembers class org.eclipse.paho.** {*;}
