@@ -81,6 +81,7 @@ options.setAutomaticReconnect(true);
 -keep class org.eclipse.paho.client.mqttv3.** {*;}
 -keepclasseswithmembers class org.eclipse.paho.** {*;}
 ```
+可参考[Demo中的配置](../../hub-android-demo/proguard-rules.pro)
 
 #### 配了混淆规则后报错：java.lang.IllegalArgumentException: no NetworkModule installed for scheme
 在项目根目录下的[build.gradle](../../../build.gradle)文件中查看gradle插件的版本号 'com.android.tools.build:gradle:x.x.x'，建议使用3.6以上的版本
