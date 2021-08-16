@@ -44,3 +44,40 @@ mProductID对应填写产品ID，mDevName对应填写设备名称，mDevPSK对�
 #### 填写了设备三元组信息，但是在连接的时候报'代理程序不可用(3)'
 
 如果所创建的产品的认证方式是密钥认证，请检查设备三元组信息（productId/deviceName/devicePsk）是否填写正确，特别注意devicePsk一般均以'=='双等号结尾，复制的时候务必复制完整；若创建的产品是证书认证方式，在设备详情页下载设备证书和设备私钥，并在调用AsymcSslUtils.getSocketFactoryByFile()获取socketFactory时传入正确的证书和私钥路径，同时TXMqttConnection构造时设备psk务必传空值。
+
+#### 如何保存SDK的日志以及SDK日志的存放路径是什么？
+
+保存日志的方法有两种：
+
+1、在使用我们的SDK功能API前调用以下方法即可保存SDK日志：
+```
+Loggor.saveLogs(String path)
+```
+
+以下示例会将SDK日志保存在hub/hub-device-java.log文件中
+```
+public void doJob() {
+    Loggor.saveLogs("hub/hub-device-java.log");
+    ... //业务代码
+}
+```
+
+2、在工程中配置log4j.properties文件
+
+配置文件存放路径：
+```
+${parent_path}/src/main/resources/log4j.properties
+```
+
+配置文件内容示例：
+```
+log4j.rootLogger = debug,file
+
+log4j.appender.file = com.tencent.iot.hub.device.java.utils.MyDailyRollingFileAppender
+log4j.appender.file.File = hub/hub-device-java.log
+log4j.appender.file.Append = true
+log4j.appender.file.Threshold = DEBUG
+log4j.appender.file.layout = org.apache.log4j.PatternLayout
+log4j.appender.file.layout.ConversionPattern = %d{HH:mm:ss,SSS} [%t] %-5p %c{1} %L %x - %m%n
+```
+以上示例会将SDK日志文件保存在hub/hub-device-java.log文件中
