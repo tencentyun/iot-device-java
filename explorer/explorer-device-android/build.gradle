@@ -127,6 +127,12 @@ publishing {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13'
+    // Optional -- Mockito framework（可选，用于模拟一些依赖对象，以达到隔离依赖的效果）
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+
+    testImplementation "androidx.test.ext:junit:1.1.3"
+    testImplementation "org.robolectric:robolectric:4.5.1"
+
     api 'androidx.annotation:annotation:1.2.0'
     if (findProject(':explorer:explorer-device-java') != null) {
         api project(path: ':explorer:explorer-device-java')
