@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ea95d54b_c30d5b4e",
+        "filename": "explorer/explorer-device-android/build.gradle",
+        "patchSetId": 7
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-18T08:23:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "268534a8_cb268ea6",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 51
+      },
+      "revId": "4c2193a08baf498b288d04d91f0456f2bc017455",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e31a28f_8738dc02",
         "filename": "explorer/explorer-device-android/src/test/java/com/tencent/iot/explorer/device/android/GatewaySampleTest.java",
         "patchSetId": 7
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "4fabc532_3cddf419",
+        "filename": "explorer/explorer-device-android/src/test/java/com/tencent/iot/explorer/device/android/GatewaySampleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-18T08:23:39Z",
+      "side": 1,
+      "message": "已修改为TXLog",
+      "parentUuid": "7e31a28f_8738dc02",
+      "range": {
+        "startLine": 172,
+        "startChar": 12,
+        "endLine": 172,
+        "endChar": 19
+      },
+      "revId": "4c2193a08baf498b288d04d91f0456f2bc017455",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "67b7965f_733905ed",
         "filename": "explorer/explorer-device-android/src/test/java/com/tencent/iot/explorer/device/android/GatewaySampleTest.java",
         "patchSetId": 7
@@ -68,6 +116,30 @@
       "revId": "4c2193a08baf498b288d04d91f0456f2bc017455",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b60901ef_d223efe9",
+        "filename": "explorer/explorer-device-android/src/test/java/com/tencent/iot/explorer/device/android/GatewaySampleTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-18T08:23:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "67b7965f_733905ed",
+      "range": {
+        "startLine": 356,
+        "startChar": 0,
+        "endLine": 359,
+        "endChar": 15
+      },
+      "revId": "4c2193a08baf498b288d04d91f0456f2bc017455",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
