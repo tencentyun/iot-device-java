@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50b3882e_e8db5e12",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/data_template/TXFaceKitTemplate.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-19T16:32:01Z",
+      "side": 1,
+      "message": "系统单个事件上报， 不检查构造是否符合json文件中的定义   ------\u003e  这个描述不太确切。\n\n该方法是上报人员库中每一张人脸图片的？",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "887bb31e_b9ffad72",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/data_template/TXFaceKitTemplateClient.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-19T16:32:01Z",
+      "side": 1,
+      "message": "系统单个事件上报， 不检查构造是否符合json文件中的定义   ------\u003e  这个描述不太确切。\n\n该方法是上报人员库中每一张人脸图片的？\n\neventPost的方法名称表达不够准确带着featureId参数是和下载注册人脸图片有关的。",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "46a3e888_dec45d92",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/resource/TXResourceCallBack.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-08-19T16:32:01Z",
+      "side": 1,
+      "message": "resourceName这个方法中没有该参数。。。",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
