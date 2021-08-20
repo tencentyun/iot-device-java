@@ -886,6 +886,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
+                playOnReadyDownLatch = new CountDownLatch(1);
             } else {
                  ToastUtil.showS("歌单为空，请在腾讯连连App或小程序下发歌单");
              }
