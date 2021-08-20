@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0a74bb87_77a79825",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/data_template/TXFaceKitTemplate.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-08-20T01:34:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "50b3882e_e8db5e12",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "887bb31e_b9ffad72",
         "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/data_template/TXFaceKitTemplateClient.java",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "579e2547_5753733d",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/data_template/TXFaceKitTemplateClient.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-08-20T01:34:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "887bb31e_b9ffad72",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "46a3e888_dec45d92",
         "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/resource/TXResourceCallBack.java",
         "patchSetId": 4
@@ -50,6 +86,24 @@
       "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1923a7a5_164df5ab",
+        "filename": "explorer/explorer-device-face/src/main/java/com/tencent/iot/explorer/device/face/resource/TXResourceCallBack.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2021-08-20T01:34:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "46a3e888_dec45d92",
+      "revId": "3e661dcd8aeb14c2513950894bf2352ab6ac9269",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
