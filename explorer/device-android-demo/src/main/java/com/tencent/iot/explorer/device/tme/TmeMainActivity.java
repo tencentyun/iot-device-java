@@ -117,6 +117,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     private SongListAdapter mAdapter;
     private volatile List<Song> mSongList = new ArrayList<>();
     private CountDownLatch countDownLatch = new CountDownLatch(1);
+    private CountDownLatch playOnReadyDownLatch = new CountDownLatch(1);
 
     private int page = 1;
     private int pageSize = 20;
@@ -811,6 +812,11 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void playSong(int index) {
+        try {
+            playOnReadyDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (index >= mSongList.size()) {
             int count = (((index+1) - mSongList.size()) / pageSize) + 1;
             while (count-- > 0) {
@@ -828,23 +834,6 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
         UltimateSongPlayer.getInstance().play(mSongList, index, true);
     }
 
-    private int getIndexBySongId(String songId) {
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (mSongList == null || mSongList.isEmpty() || TextUtils.isEmpty(songId)) {
-            return -1;
-        }
-        for (int i = 0; i < mSongList.size(); i++) {
-            if (mSongList.get(i).songId.equals(songId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     private void getSongList(String _type, String _id, int _topId) {
         Consumer<Response<? extends SongList>> consumer = response -> {
             if (response.code == TmeErrorEnum.AUTHENTICATION_INFORMATION_OUT_OF_DATE_OR_WRONG.code()) {
@@ -853,6 +842,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                 if (response.isSuccess() && response.getData() != null) {
                     List<Song> songs = response.getData().getList();
                     mSongList.addAll(songs);
+                    playOnReadyDownLatch.countDown();
                     UltimateSongPlayer.getInstance().enqueue(songs, true);
                     if (mAdapter != null) mAdapter.notifyDataSetChanged();
                 } else {
@@ -883,6 +873,7 @@ public class TmeMainActivity extends AppCompatActivity implements View.OnClickLi
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(consumer, throwable);
+                playOnReadyDownLatch = new CountDownLatch(1);
             }
         } else {
             if (Common.PLAY_TYPE_EVERYDAY.equals(_type)) { // 日推
