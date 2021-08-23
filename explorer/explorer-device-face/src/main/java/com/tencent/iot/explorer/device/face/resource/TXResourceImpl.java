@@ -661,10 +661,10 @@ public class TXResourceImpl {
                         if (resourceFile.exists()) {//存在创建文件,需要删除
                             if (resourceFile.delete()) {
                                 // 上报'删除成功'
-                                mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_SUCCESS);
+                                mDataTemplate.faceStatusPost(csvResourceName, version, staffId, Common.RESULT_DELETE_SUCCESS);
                             } else {
                                 // 上报'删除失败'
-                                mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DELETE_FAIL);
+                                mDataTemplate.faceStatusPost(csvResourceName, version, staffId, Common.RESULT_DELETE_FAIL);
                             }
                         }
                         if (mCallback != null) {
@@ -735,7 +735,7 @@ public class TXResourceImpl {
                     if (!calcMD5.equalsIgnoreCase(headerMd5)) {
                         LOG.error("{}", "md5 checksum not match!!!" + " calculated md5:" + calcMD5);
                         // 上报'下载失败'
-                        mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_FAIL);
+                        mDataTemplate.faceStatusPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_FAIL);
                         if (mCallback != null) {
                             reportFailedMessage(staffId, -4, "MD5不匹配", version);
                             mCallback.onDownloadFailure(staffId + "." + formatStr, -4, version); // 校验失败
@@ -743,7 +743,7 @@ public class TXResourceImpl {
                         new File(mStoragePath + "/" + staffId).delete(); // delete
                     } else {
                         // 上报'下载成功，待注册'
-                        mDataTemplate.eventPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_SUCCESS);
+                        mDataTemplate.faceStatusPost(csvResourceName, version, staffId, Common.RESULT_DOWNLOAD_SUCCESS);
                         if (finalI == (readerArr.size() - 1)) {
                             reportCurrentFirmwareVersion(generalReportVersionData(csvResourceName, version, csvResourceType));
                         }
