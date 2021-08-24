@@ -21,7 +21,14 @@ class TXDataTemplateJson extends DataTemplateJson {
 
     TXDataTemplateJson(final String jsonFileName) {
         super(CUSTOM_LOG);
-        if (Status.OK != registerDataTemplateJson( jsonFileName)) {
+        if (Status.OK != registerDataTemplateJson( jsonFileName, null)) {
+            LOG.info("TXDataTemplateJson: construct json failed!");
+        }
+    }
+
+    TXDataTemplateJson(final String jsonFileName, final String jsonFilePath) {
+        super(CUSTOM_LOG);
+        if (Status.OK != registerDataTemplateJson( jsonFileName, jsonFilePath)) {
             LOG.info("TXDataTemplateJson: construct json failed!");
         }
     }
@@ -32,8 +39,13 @@ class TXDataTemplateJson extends DataTemplateJson {
      * @param jsonFileName assets中json文件名
      * @return 检查结果
      */
-    private Status registerDataTemplateJson(final String jsonFileName) {
-        File file = new File(System.getProperty("user.dir") + "/src/test/resources/" + jsonFileName);
+    private Status registerDataTemplateJson(final String jsonFileName, final String jsonFilePath) {
+        File file;
+        if (jsonFilePath == null || jsonFilePath.length() == 0) {
+            file = new File(System.getProperty("user.dir") + "/src/test/resources/" + jsonFileName);
+        } else {
+            file = new File(jsonFilePath + jsonFileName);
+        }
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             try {

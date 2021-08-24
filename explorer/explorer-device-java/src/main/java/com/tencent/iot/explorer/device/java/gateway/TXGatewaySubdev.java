@@ -31,6 +31,24 @@ public class TXGatewaySubdev extends TXDataTemplate {
     }
 
     /**
+     * @param connection         网关设备连接句柄
+     * @param productId         产品名
+     * @param deviceName        设备名，唯一
+     * @param jsonFileName      数据模板描述文件
+     * @param jsonFilePath      数据模板描述文件路径
+     * @param actionCallBack    上下线回调
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXGatewaySubdev(TXGatewayClient connection,  String productId, String deviceName, final String jsonFileName, final String jsonFilePath,
+                           TXGatewaySubdevActionCallBack actionCallBack, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(connection, productId, deviceName, jsonFileName, jsonFilePath, downStreamCallBack);
+        this.mDeviceName = deviceName;
+        this.mProductId = productId;
+        this.mStat = Status.SUBDEV_STAT_INIT;
+        this.mActionCallBack = actionCallBack;
+    }
+
+    /**
      *
      * @return                  子设备当前状态
      */

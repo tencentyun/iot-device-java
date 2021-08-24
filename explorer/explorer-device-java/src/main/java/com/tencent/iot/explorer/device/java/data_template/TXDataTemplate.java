@@ -23,4 +23,17 @@ public class TXDataTemplate extends DataTemplate {
                           final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(connection, productId, deviceName, new TXDataTemplateJson(jsonFileName), downStreamCallBack, CUSTOM_LOG);
     }
+
+    /**
+     * @param connection         mqtt连接
+     * @param productId          产品名
+     * @param deviceName         设备名，唯一
+     * @param jsonFileName       数据模板描述文件
+     * @param jsonFilePath       数据模板描述文件路径
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXDataTemplate(TXMqttConnection connection, String productId, String deviceName,
+                          final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(connection, productId, deviceName, new TXDataTemplateJson(jsonFileName, jsonFilePath), downStreamCallBack, CUSTOM_LOG);
+    }
 }

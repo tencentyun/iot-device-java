@@ -55,6 +55,17 @@ public class GatewaySample {
                                 new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
     }
 
+    public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, final String jsonFilePath, String subDev1ProductId, String subDev2ProductId) {
+
+        this.mDevPSK = devPSK;
+        this.mSubDev1ProductId = subDev1ProductId;
+        this.mSubDev2ProductId = subDev2ProductId;
+        this.mDevCertName = devCertName;
+        this.mDevKeyName = devKeyName;
+        mConnection = new TXGatewayClient(brokerURL, productId, devName, devPSK,null,null,
+                new GatewaySampleMqttActionCallBack(), jsonFileName, jsonFilePath, new GatewaySampleDownStreamCallBack());
+    }
+
     /**
      * @return 当前连接状态
      */
