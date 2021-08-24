@@ -35,6 +35,7 @@ public class DataTemplateSample {
     private String mDevCertName = "DEVICE_CERT-NAME ";
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
     private String mJsonFileName = "JSON_FILE_NAME";
+    private String mJsonFilePath = "";
 
     private String workDir = System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/";
 
@@ -66,6 +67,20 @@ public class DataTemplateSample {
         mDownStreamCallBack = downStreamCallBack;
     }
 
+    public DataTemplateSample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
+                              final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        mBrokerURL = brokerURL;
+        mProductID = productId;
+        mDevName = devName;
+        mDevPSK = devPSK;
+        mDevCertName = devCertName;
+        mDevKeyName = devKeyName;
+        mMqttActionCallBack = mqttActionCallBack;
+        mJsonFileName = jsonFileName;
+        mJsonFilePath = jsonFilePath;
+        mDownStreamCallBack = downStreamCallBack;
+    }
+
     public DataTemplateSample( String brokerURL, String productId, String devName, String devPSK,TXMqttActionCallBack mqttActionCallBack,
                               final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         mBrokerURL = brokerURL;
@@ -82,7 +97,7 @@ public class DataTemplateSample {
      */
     public void connect() {
         mMqttConnection = new TXDataTemplateClient(mBrokerURL, mProductID, mDevName, mDevPSK,
-                null,null, mMqttActionCallBack, mJsonFileName, mDownStreamCallBack);
+                null,null, mMqttActionCallBack, mJsonFileName, mJsonFilePath, mDownStreamCallBack);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
