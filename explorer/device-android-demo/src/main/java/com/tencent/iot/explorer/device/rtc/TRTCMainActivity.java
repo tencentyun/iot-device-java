@@ -7,12 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.multidex.MultiDex;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,6 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.multidex.MultiDex;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
@@ -40,9 +40,9 @@ import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
 import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
+import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
-import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.WifiUtils;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
@@ -65,6 +65,7 @@ import java.util.TimerTask;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
 import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
@@ -239,24 +240,31 @@ public class TRTCMainActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(String errorMessage) {
                             Log.d(TAG, "LLSyncGattServer onFailure : " + errorMessage);
+                            printLogInfo(TAG, "LLSyncGattServer onFailure : " + errorMessage, mLogInfoText);
                         }
 
                         @Override
                         public void requestConnectWifi(String ssid, String password) {
                             Log.d(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password);
+                            printLogInfo(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password, mLogInfoText);
                             WifiUtils.connectWifiApByNameAndPwd(TRTCMainActivity.this, ssid, password, new WifiUtils.WifiConnectCallBack() {
                                 @Override
                                 public void connnectResult(boolean connectResult) {
-                                    Log.d(TAG, "WifiUtils connnectResult connectResult: " + connectResult);
-                                    TimerTask task = new TimerTask(){
-                                        public void run(){
-                                            if (connectResult) {
-                                                mConnectBtn.callOnClick(); //连接mqtt
+                                    Log.d(TAG, "WifiUtils connnectResult: " + connectResult);
+                                    printLogInfo(TAG, "WifiUtils connnectResult: " + connectResult, mLogInfoText);
+                                    if (!connectResult) {
+                                        mServer.noticeAppConnectWifiIsSuccess(false);
+                                    } else {
+                                        TimerTask task = new TimerTask(){
+                                            public void run(){
+                                                if (connectResult) {
+                                                    mConnectBtn.callOnClick(); //连接mqtt
+                                                }
                                             }
-                                        }
-                                    };
-                                    Timer timer = new Timer();
-                                    timer.schedule(task, 5000);//防止刚切换到wifi时，mqtt连接不上延迟5s
+                                        };
+                                        Timer timer = new Timer();
+                                        timer.schedule(task, 5000);//防止刚切换到wifi时，mqtt连接不上延迟5s
+                                    }
                                 }
                             });
                         }
@@ -264,9 +272,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                         @Override
                         public void requestAppBindToken(String token) {
                             Log.d(TAG, "LLSyncGattServer requestAppBindToken : " + token);
+                            printLogInfo(TAG, "LLSyncGattServer requestAppBindToken : " + token, mLogInfoText);
                             mDataTemplateSample.appBindToken(token);
                         }
                     });
+                    printLogInfo(TAG, "Start LLSyncGattServer Advertise", mLogInfoText);
                 }
             }
         });
@@ -648,6 +658,10 @@ public class TRTCMainActivity extends AppCompatActivity {
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive command, topic[%s], message[%s]", topic, message.toString());
             printLogInfo(TAG, logInfo, mLogInfoText);
+            if (mServer != null && topic.equals(TOPIC_SERVICE_DOWN_PREFIX+mProductID+"/"+mDevName) && message.toString().contains("app_bind_token_reply") && message.toString().contains("success")) {
+                printLogInfo(TAG, "app_bind_token success", mLogInfoText);
+                mServer.release();
+            }
         }
     }
 
