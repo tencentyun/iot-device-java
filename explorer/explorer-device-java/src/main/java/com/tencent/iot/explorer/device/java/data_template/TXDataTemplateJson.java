@@ -19,9 +19,9 @@ class TXDataTemplateJson extends DataTemplateJson {
     private static final Logger LOG = LoggerFactory.getLogger(TXDataTemplateJson.class);
     private static final CustomLog CUSTOM_LOG = new CustomLog(LOG);
 
-    TXDataTemplateJson(final String jsonFileName) {
+    TXDataTemplateJson(final String jsonFileName, final String jsonFilePath) {
         super(CUSTOM_LOG);
-        if (Status.OK != registerDataTemplateJson( jsonFileName)) {
+        if (Status.OK != registerDataTemplateJson( jsonFileName, jsonFilePath)) {
             LOG.info("TXDataTemplateJson: construct json failed!");
         }
     }
@@ -32,8 +32,8 @@ class TXDataTemplateJson extends DataTemplateJson {
      * @param jsonFileName assets中json文件名
      * @return 检查结果
      */
-    private Status registerDataTemplateJson(final String jsonFileName) {
-        File file = new File(System.getProperty("user.dir") + "/src/test/resources/" + jsonFileName);
+    private Status registerDataTemplateJson(final String jsonFileName, final String jsonFilePath) {
+        File file = new File(jsonFilePath + jsonFileName);
         System.out.println(file.getAbsolutePath());
         if (file.exists()) {
             try {

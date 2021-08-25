@@ -41,6 +41,7 @@ public class MqttSampleTest {
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
     private static String mJsonFileName = "struct.json";
+    private static String mJsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
 
     private static DataTemplateSample mDataTemplateSample;
 
@@ -51,7 +52,7 @@ public class MqttSampleTest {
     private static void connect() {
         // init connection
         mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
-                mJsonFileName, new SelfDownStreamCallBack());
+                mJsonFileName, mJsonFilePath, new SelfDownStreamCallBack());
         mDataTemplateSample.connect();
     }
 

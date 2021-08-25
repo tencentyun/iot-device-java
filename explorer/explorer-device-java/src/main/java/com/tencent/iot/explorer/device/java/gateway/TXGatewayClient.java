@@ -37,9 +37,9 @@ public class TXGatewayClient extends TXDataTemplateClient {
 
 
     public TXGatewayClient( String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
-                           MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
-                           final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
-        super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, jsonFileName,downStreamCallBack);
+                            MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
+                            final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, jsonFileName, jsonFilePath, downStreamCallBack);
     }
 
     /**

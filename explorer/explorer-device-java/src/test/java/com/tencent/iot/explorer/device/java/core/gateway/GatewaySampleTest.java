@@ -25,6 +25,7 @@ public class GatewaySampleTest {
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
     private static String mJsonFileName = "gateway.json";
+    private static String mJsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
 
     private static String mSubDev1ProductId = BuildConfig.TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID;
     private static String mSubDev1DeviceName = BuildConfig.TESTGATEWAYSAMPLE_SUB1_DEV_NAME;
@@ -102,7 +103,7 @@ public class GatewaySampleTest {
     @Test
     public void testGatewayConnect() {
         // Loggor.saveLogs("explorer/explorer-device-java.log"); //保存日志到文件
-        mGatewaySample = new GatewaySample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mSubDev1ProductId, mSubDev2ProductId);
+        mGatewaySample = new GatewaySample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mJsonFilePath, mSubDev1ProductId, mSubDev2ProductId);
 
         mGatewaySample.online();
 

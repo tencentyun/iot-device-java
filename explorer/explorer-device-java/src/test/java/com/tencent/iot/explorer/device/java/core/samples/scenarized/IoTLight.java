@@ -15,9 +15,10 @@ public class IoTLight {
     private static String mDevPriv = "";           // Priv String
 
     private final static String mJsonFileName = "gateway.json";
+    private final static String mJsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
     public static void main(String[] args) {
 
-        mLightSample = new LightSample(mBrokerURL, mProductID, mDevName, mDevPSK, mJsonFileName);
+        mLightSample = new LightSample(mBrokerURL, mProductID, mDevName, mDevPSK, mJsonFileName, mJsonFilePath);
         mLightSample.online();
 
     }

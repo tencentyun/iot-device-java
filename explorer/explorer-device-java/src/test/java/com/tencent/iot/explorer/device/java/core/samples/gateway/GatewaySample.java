@@ -44,7 +44,7 @@ public class GatewaySample {
 
     private String workDir = System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/";
 
-    public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
+    public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, final String jsonFilePath, String subDev1ProductId, String subDev2ProductId) {
 
         this.mDevPSK = devPSK;
         this.mSubDev1ProductId = subDev1ProductId;
@@ -52,7 +52,7 @@ public class GatewaySample {
         this.mDevCertName = devCertName;
         this.mDevKeyName = devKeyName;
         mConnection = new TXGatewayClient(brokerURL, productId, devName, devPSK,null,null,
-                                new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
+                new GatewaySampleMqttActionCallBack(), jsonFileName, jsonFilePath, new GatewaySampleDownStreamCallBack());
     }
 
     /**

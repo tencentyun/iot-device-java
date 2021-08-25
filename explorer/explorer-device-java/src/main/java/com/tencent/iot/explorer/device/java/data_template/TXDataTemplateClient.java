@@ -27,13 +27,14 @@ public class TXDataTemplateClient extends TXMqttConnection {
      * @param clientPersistence 消息永久存储
      * @param callBack          连接、消息发布、消息订阅回调接口
      * @param jsonFileName      数据模板描述文件
+     * @param jsonFilePath      数据模板描述文件路径
      * @param downStreamCallBack 下行数据接收回调函数
      */
     public TXDataTemplateClient( String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
-                                MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
-                                final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
+                                 final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TXDataTemplate(this,  productID,  deviceName, jsonFileName, downStreamCallBack);
+        this.mDataTemplate = new TXDataTemplate(this,  productID,  deviceName, jsonFileName, jsonFilePath, downStreamCallBack);
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 

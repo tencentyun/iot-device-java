@@ -54,19 +54,19 @@ public class LightSample {
     //light property
     public ConcurrentHashMap<String, Object> mProperty = null;
 
-    public LightSample( String brokerURL, String productId, String devName, String devCertName, String devKeyName, final String jsonFileName) {
+    public LightSample( String brokerURL, String productId, String devName, String devCertName, String devKeyName, final String jsonFileName, final String jsonFilePath) {
 
         this.mDevCertName = devCertName;
         this.mDevKeyName = devKeyName;
         //初始化模板数据
         initTemplateData();
-        mDataTemplateClient = new TXDataTemplateClient(  brokerURL, productId, devName, null,null,null, new LightSampleMqttActionCallBack(), jsonFileName, new LightSampleDownStreamCallBack());
+        mDataTemplateClient = new TXDataTemplateClient(  brokerURL, productId, devName, null,null,null, new LightSampleMqttActionCallBack(), jsonFileName, jsonFilePath, new LightSampleDownStreamCallBack());
     }
 
-    public LightSample( String brokerURL, String productId, String devName, String devPSK, final String jsonFileName) {
+    public LightSample( String brokerURL, String productId, String devName, String devPSK, final String jsonFileName, final String jsonFilePath) {
         //初始化模板数据
         initTemplateData();
-        mDataTemplateClient = new TXDataTemplateClient( brokerURL, productId, devName, devPSK,null,null, new LightSampleMqttActionCallBack(), jsonFileName, new LightSampleDownStreamCallBack());
+        mDataTemplateClient = new TXDataTemplateClient( brokerURL, productId, devName, devPSK,null,null, new LightSampleMqttActionCallBack(), jsonFileName, jsonFilePath, new LightSampleDownStreamCallBack());
     }
 
     /**

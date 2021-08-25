@@ -25,6 +25,7 @@ public class ProductAirconditioner {
 
     public TXGatewaySubdev mGatewaySubdev;
     private final static String mSubDev1JsonFileName = "subdev2.json";
+    private final static String mSubDev1JsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
     private static final Logger LOG = LoggerFactory.getLogger(ProductAirconditioner.class);
 
     /**上报周期*/
@@ -37,7 +38,7 @@ public class ProductAirconditioner {
     public ProductAirconditioner(TXGatewayClient connection,  String productId, String deviceName) {
         //初始化模板数据
         initTemplateData();
-        mGatewaySubdev = new TXGatewaySubdev(connection,  productId, deviceName, mSubDev1JsonFileName,
+        mGatewaySubdev = new TXGatewaySubdev(connection,  productId, deviceName, mSubDev1JsonFileName, mSubDev1JsonFilePath,
                 new ActionCallBack(), new DownStreamCallBack());
     }
 
