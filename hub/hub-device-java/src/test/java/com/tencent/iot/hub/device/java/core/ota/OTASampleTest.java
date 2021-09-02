@@ -142,6 +142,10 @@ public class OTASampleTest {
         }
     }
 
+    private static void disconnect() {
+        mqttconnection.disConnect(null);
+    }
+
     public static void main(String[] args) {
         LogManager.resetConfiguration();
         LOG.isDebugEnabled();
@@ -393,5 +397,10 @@ public class OTASampleTest {
         lock();
         assertTrue(otaSubscribeTopicSuccess);
         Loggor.debug(TAG, "checkFirmware subscribe ota");
+
+        disconnect();
+        lock();
+        assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
+        Loggor.debug(TAG, "after disconnect");
     }
 }
