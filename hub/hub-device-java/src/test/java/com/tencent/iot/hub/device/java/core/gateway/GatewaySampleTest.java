@@ -97,7 +97,7 @@ public class GatewaySampleTest {
 		mqttconnection.gatewaySubdevOffline(mSubProductID, mSubDevName);//切换子设备下线
 	}
 
-	private static void disconnect() {
+	private static void gatewayDisconnect() {
 		mqttconnection.disConnect(null);
 	}
 
@@ -322,5 +322,10 @@ public class GatewaySampleTest {
 		lock();
 		assertTrue(subdevOfflineSuccess);
 		Loggor.debug(TAG, "after gatewaySubdevOffline");
+
+		gatewayDisconnect();
+		lock();
+		Loggor.debug(TAG, "after disconnect");
+		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
 	}
 }
