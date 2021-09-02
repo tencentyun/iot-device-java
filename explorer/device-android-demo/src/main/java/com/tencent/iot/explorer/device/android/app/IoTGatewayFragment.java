@@ -206,6 +206,8 @@ public class IoTGatewayFragment extends Fragment {
      */
     private class setPropertyText extends Thread {
         public void run() {
+            this.setName(setPropertyText.class.getSimpleName());
+
             StringBuilder textInfo;
             while (!isInterrupted()) {
                 textInfo = new StringBuilder("subdev property:\r\n");

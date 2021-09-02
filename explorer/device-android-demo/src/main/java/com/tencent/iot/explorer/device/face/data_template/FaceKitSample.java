@@ -455,6 +455,8 @@ public class FaceKitSample {
         new Thread() {
             @Override
             public void run() {
+                this.setName("regWithFile");
+
                 YTSDKManager sdkMgr = new YTSDKManager(mContext.getAssets());//每个线程都必须使用单独的算法SDK实例, 这里为当前线程生成一份实例
                 //创建流水线运行过程所需的物料箱
                 StuffBox stuffBox = new StuffBox()

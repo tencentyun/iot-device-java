@@ -601,7 +601,7 @@ public class TXResourceImpl {
                 mDownloadThreadRunning = false;
             }
         });
-
+        mDownloadThread.setName("TXdownloadThread");
         mDownloadThread.start();
     }
 
