@@ -30,6 +30,7 @@ public class DataTemplateJson {
     public static final String TYPE_TIMESTAMP = "timestamp";
     public static final String TYPE_STRUCT = "struct";
     public static final String TYPE_ARRAY = "array";
+    public static final String TYPE_STRING_ENUM = "stringenum";
     private final ILog log;
 
     protected DataTemplateJson(ILog log) {
@@ -118,6 +119,16 @@ public class DataTemplateJson {
             } else if (type.equals(TYPE_ARRAY)) {
                 JSONObject arrayInfoJson = valueDescribeJson.getJSONObject("arrayInfo");
                 return ArrayCheckUtils.checkArrayValues(arrayInfoJson, value);
+            } else if (type.equals(TYPE_STRING_ENUM)) { //字符串枚举类型
+                if (value instanceof String) {
+                    JSONObject mapping = valueDescribeJson.getJSONObject("mapping");
+                    Iterator<String> it = mapping.keys();
+                    while (it.hasNext()) {
+                        if (value.equals(it.next())) {
+                            return Status.OK;
+                        }
+                    }
+                }
             } else {
                 log.error(TAG, "Invalid Data Template Json, please check and replace it!");
             }
