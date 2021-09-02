@@ -101,6 +101,10 @@ public class GatewaySample {
     }
 
     public Object addSubDev(String productId, String deviceName) {
+        if (mConnection.findSubdev(productId, deviceName) != null) {
+            return null;
+        }
+
         if(productId.equals(mSubDev1ProductId)) { //通过产品ID表示产品类型
             ProductLight subdev = new ProductLight(mConnection, mContext, productId, deviceName); //创建一个该类产品的设备
             mConnection.addSubdev(subdev.mGatewaySubdev); //添加子设备到网关
@@ -116,6 +120,10 @@ public class GatewaySample {
     }
 
     public void delSubDev(String productId, String deviceName) {
+        TXGatewaySubdev dev = mConnection.findSubdev(productId, deviceName);
+        if (dev != null) {
+            dev.destroy();
+        }
         mConnection.removeSubdev(productId, deviceName);
     }
 

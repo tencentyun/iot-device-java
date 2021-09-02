@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.app.scenarized.LightSample;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import java.util.Map;
@@ -89,6 +88,8 @@ public class IoTLightFragment extends Fragment {
      */
     private class setPropertyText extends Thread {
         public void run() {
+            this.setName(setPropertyText.class.getSimpleName());
+
             StringBuilder textInfo;
             while (!isInterrupted()) {
                 if(mLightSample.isOnline()) {

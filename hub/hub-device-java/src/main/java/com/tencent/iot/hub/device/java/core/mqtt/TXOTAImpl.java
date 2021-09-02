@@ -541,7 +541,6 @@ public class TXOTAImpl {
 		mDownloadThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
-
 				int tryTimes = 0;
 
 				do {
@@ -663,6 +662,7 @@ public class TXOTAImpl {
 			}
 		});
 
+		mDownloadThread.setName("TXDownloadThread");
 		mDownloadThread.start();
 	}
 

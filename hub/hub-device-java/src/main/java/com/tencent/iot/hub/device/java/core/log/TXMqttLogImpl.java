@@ -129,6 +129,8 @@ public class TXMqttLogImpl {
 
         @Override
         public void run() {
+            setName(UploaderToServer.class.getSimpleName());
+
             long nowCurrentMillis = System.currentTimeMillis();
             while (true) {
                 if (mUploadFlag || (logDeque.size() > DEQUE_SIZE - DEQUE_THRESHOLD)

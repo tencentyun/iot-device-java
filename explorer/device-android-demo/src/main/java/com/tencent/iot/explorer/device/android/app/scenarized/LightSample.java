@@ -294,6 +294,8 @@ public class LightSample {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
+            this.setName(reportPropertyPeriodically.class.getSimpleName());
+
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();
                 for(Map.Entry<String, Object> entry: mProperty.entrySet())

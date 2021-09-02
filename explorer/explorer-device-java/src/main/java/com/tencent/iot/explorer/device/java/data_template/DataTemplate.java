@@ -26,8 +26,8 @@ public class DataTemplate {
     private static final String TAG = DataTemplate.class.getSimpleName();
 
     //设备信息
-    public String mDeviceName;
-    public String mProductId;
+    public volatile String mDeviceName;
+    public volatile String mProductId;
 
     //上下行消息主题
     public String mPropertyDownStreamTopic;
@@ -40,6 +40,8 @@ public class DataTemplate {
     private String mActionUptreamTopic;
 
     private String mServiceDownStreamTopic;
+    private volatile boolean flag = false;
+    private Object lock = new Object();  // 控制线程的锁，用于及时感知关闭线程的动作
 
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
@@ -80,7 +82,15 @@ public class DataTemplate {
         this.mConnection = connection;
         this.mReplyWaitList = new ConcurrentHashMap<String, Long>();
         this.log = log;
+        flag = true;
         new DataTemplate.checkReplyTimeoutThread().start();
+    }
+
+    public void destroy() {
+        flag = false;
+        synchronized (lock) {
+            lock.notify();
+        }
     }
 
     private boolean isConnected() {
@@ -474,7 +484,9 @@ public class DataTemplate {
     private class checkReplyTimeoutThread extends Thread {
         @Override
         public void run() {
-            while (true) {
+            this.setName(mProductId + "-" + mDeviceName);
+
+            while (flag) {
                 Iterator<Map.Entry<String, Long>> entries = mReplyWaitList.entrySet().iterator();
                 while (entries.hasNext()) {
                     Map.Entry<String, Long> entry = entries.next();
@@ -483,12 +495,17 @@ public class DataTemplate {
                         mReplyWaitList.remove(entry.getKey());
                     }
                 }
-                try {
-                    Thread.sleep(mReplyWaitTimeout);
-                } catch (InterruptedException e) {
-                    log.error(TAG, "The thread has been interrupted");
+
+                synchronized (lock) {
+                    try {
+                        lock.wait(mReplyWaitTimeout);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
+            System.out.println("thread over");
         }
     }
 

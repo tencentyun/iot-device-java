@@ -82,6 +82,8 @@ public class TXMqttBindDevice {
         }
 
         public void run() {
+            this.setName(HttpPostThread.class.getSimpleName());
+
             StringBuffer serverRsp = new StringBuffer();
             try {
                 URL url = new URL(mBindDeviceUrl);
