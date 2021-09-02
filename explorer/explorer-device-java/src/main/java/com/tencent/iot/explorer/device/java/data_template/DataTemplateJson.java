@@ -93,6 +93,10 @@ public class DataTemplateJson {
                         ((Double) value).doubleValue() >= Double.parseDouble(valueDescribeJson.getString("min")) &&
                         ((Double) value).doubleValue() <= Double.parseDouble(valueDescribeJson.getString("max"))) {
                     return Status.OK;
+                } else if (value instanceof Integer &&
+                        (Integer) value >= Integer.parseInt(valueDescribeJson.getString("min")) &&
+                        (Integer) value <= Integer.parseInt(valueDescribeJson.getString("max"))) {
+                    return Status.OK;
                 }
             } else if (type.equals(TYPE_STRING)) { //字符串类型长度不能超过最大长度
                 if (value instanceof String &&
