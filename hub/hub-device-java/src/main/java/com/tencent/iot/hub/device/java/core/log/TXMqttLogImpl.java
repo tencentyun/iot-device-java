@@ -129,7 +129,7 @@ public class TXMqttLogImpl {
 
         @Override
         public void run() {
-            setName(UploaderToServer.class.getSimpleName().toLowerCase());
+            setName("tencent-" + UploaderToServer.class.getSimpleName().toLowerCase());
 
             long nowCurrentMillis = System.currentTimeMillis();
             while (true) {

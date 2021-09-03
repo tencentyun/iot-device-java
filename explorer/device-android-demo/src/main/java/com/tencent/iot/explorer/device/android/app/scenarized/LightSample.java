@@ -294,7 +294,7 @@ public class LightSample {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
-            this.setName(reportPropertyPeriodically.class.getSimpleName().toLowerCase());
+            this.setName("tencent-" + reportPropertyPeriodically.class.getSimpleName().toLowerCase());
 
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();

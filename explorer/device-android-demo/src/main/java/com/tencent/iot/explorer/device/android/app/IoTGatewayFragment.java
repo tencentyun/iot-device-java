@@ -206,7 +206,7 @@ public class IoTGatewayFragment extends Fragment {
      */
     private class setPropertyText extends Thread {
         public void run() {
-            this.setName(setPropertyText.class.getSimpleName().toLowerCase());
+            this.setName("tencent-" + setPropertyText.class.getSimpleName().toLowerCase());
 
             StringBuilder textInfo;
             while (!isInterrupted()) {

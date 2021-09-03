@@ -484,7 +484,7 @@ public class DataTemplate {
     private class checkReplyTimeoutThread extends Thread {
         @Override
         public void run() {
-            this.setName((checkReplyTimeoutThread.class.getSimpleName() + "-" + mProductId + "-" + mDeviceName).toLowerCase());
+            this.setName(String.format("tencent-%s-%s-%s",checkReplyTimeoutThread.class.getSimpleName(), mProductId, mDeviceName).toLowerCase());
 
             while (flag) {
                 Iterator<Map.Entry<String, Long>> entries = mReplyWaitList.entrySet().iterator();
