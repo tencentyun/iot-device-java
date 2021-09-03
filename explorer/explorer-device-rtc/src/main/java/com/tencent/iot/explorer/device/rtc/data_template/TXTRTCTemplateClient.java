@@ -55,6 +55,13 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
         return  this.mDataTemplate.subscribeTemplateTopic(topicId, qos);
     }
 
+    public Status disConnect(Object userContext) {
+        if (mDataTemplate != null) {
+            mDataTemplate.destroy();
+        }
+        return disConnect(0, userContext);
+    }
+
     /**
      * 取消订阅数据模板相关主题
      * @param topicId 主题ID
