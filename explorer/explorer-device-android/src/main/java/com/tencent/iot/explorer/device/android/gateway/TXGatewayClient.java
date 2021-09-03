@@ -60,10 +60,13 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return
      */
     public synchronized TXGatewaySubdev removeSubdev(String productId, String devName) {
-        if(null != findSubdev(productId, devName)) {
+        TXGatewaySubdev dev2Remove = findSubdev(productId, devName);
+        if (null != dev2Remove) {
+            // 发现存在子设备，在移除前尝试销毁相关资源
+            dev2Remove.destroy();
             return mSubdevs.remove(productId + devName);
         }
-        return  null;
+        return null;
     }
 
     public synchronized TXGatewaySubdev removeSubdev(TXGatewaySubdev subdev) {

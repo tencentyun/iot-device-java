@@ -505,7 +505,7 @@ public class DataTemplate {
                 }
             }
 
-            System.out.println("thread over");
+            System.out.println(getName() + " thread over");
         }
     }
 

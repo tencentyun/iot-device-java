@@ -120,10 +120,6 @@ public class GatewaySample {
     }
 
     public void delSubDev(String productId, String deviceName) {
-        TXGatewaySubdev dev = mConnection.findSubdev(productId, deviceName);
-        if (dev != null) {
-            dev.destroy();
-        }
         mConnection.removeSubdev(productId, deviceName);
     }
 
