@@ -132,7 +132,7 @@ public class TXMqttDynreg {
 
         @Override
         public void run() {
-            this.setName(HttpPostThread.class.getSimpleName());
+            this.setName(HttpPostThread.class.getSimpleName().toLowerCase());
 
             StringBuffer serverRsp = new StringBuffer();
             try {

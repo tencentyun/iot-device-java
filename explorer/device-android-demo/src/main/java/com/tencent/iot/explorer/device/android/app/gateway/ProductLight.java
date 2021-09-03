@@ -168,7 +168,7 @@ public class ProductLight {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
-            this.setName(reportPropertyPeriodically.class.getSimpleName());
+            this.setName(reportPropertyPeriodically.class.getSimpleName().toLowerCase());
 
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();

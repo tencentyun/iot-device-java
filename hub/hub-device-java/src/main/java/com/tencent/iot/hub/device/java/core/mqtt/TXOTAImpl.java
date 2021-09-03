@@ -662,7 +662,7 @@ public class TXOTAImpl {
 			}
 		});
 
-		mDownloadThread.setName("TXDownloadThread");
+		mDownloadThread.setName((TXOTAImpl.class.getSimpleName() + "-TXDownloadThread").toLowerCase());
 		mDownloadThread.start();
 	}
 
