@@ -76,6 +76,13 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
     }
 
+    public Status disConnect(Object userContext) {
+        if (mDataTemplate != null) {
+            mDataTemplate.destroy();
+        }
+        return disConnect(0, userContext);
+    }
+
     /**
      * 是否AI人脸识别 SDK 是否鉴权通过
      */
