@@ -28,7 +28,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerConstants.LLSyncGattServerType;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerConstants.LLSyncDeviceBindStatus;
 import static android.content.Context.BLUETOOTH_SERVICE;
 import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2Hex;
 import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.hexString2Decimal;
@@ -42,6 +45,7 @@ public class LLSyncGattServer {
     private String mProductId;
     private String mDeviceName;
     private String mMAC;
+    private LLSyncGattServerType mSyncType;
 
     private LLSyncGattServerCallback mCallback;
 
@@ -54,7 +58,7 @@ public class LLSyncGattServer {
 
 
     /**
-     * Instantiates a new LLSync gatt server.
+     * Instantiates a new LLSync Ble Wifi Combo gatt server.
      *
      * @param context    context
      * @param productId  the product id
@@ -67,8 +71,32 @@ public class LLSyncGattServer {
         this.mProductId = productId;
         this.mDeviceName = deviceName;
         this.mMAC = mac;
+        this.mSyncType = LLSyncGattServerType.BLE_WIFI_COMBO;
         this.mCallback = callback;
+        setUp();
+    }
 
+    /**
+     * Instantiates a new LLSync gatt server.
+     *
+     * @param context    context
+     * @param productId  the product id
+     * @param deviceName the device name
+     * @param mac        mac address eg: "FF:FF:FF:FF:FF:FF"
+     * @param syncType   llsync gatt server type  (ble only Or ble wifi combo)
+     * @param callback   callback for operation result
+     */
+    public LLSyncGattServer(Context context, String productId, String deviceName, String mac, LLSyncGattServerType syncType, LLSyncGattServerCallback callback) {
+        this.context = context;
+        this.mProductId = productId;
+        this.mDeviceName = deviceName;
+        this.mMAC = mac;
+        this.mSyncType = syncType;
+        this.mCallback = callback;
+        setUp();
+    }
+
+    private void setUp() {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 
@@ -94,14 +122,13 @@ public class LLSyncGattServer {
                 bluetoothAdapter.enable();
             } else {
                 Log.d(TAG, "Bluetooth enabled...starting services");
-                startAdvertising();
+                startAdvertising(mSyncType, LLSyncDeviceBindStatus.UNBIND);
                 startServer();
             }
         } else {
             onFailure("bellow android 5.0 is not support bluetooth");
         }
     }
-
 
     public void release() {
 
@@ -167,7 +194,7 @@ public class LLSyncGattServer {
      * Begin advertising over Bluetooth that this device is connectable
      * and supports the LLSync Service.
      */
-    private void startAdvertising() {
+    private void startAdvertising(LLSyncGattServerType syncType, LLSyncDeviceBindStatus bindStatus) {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             BluetoothAdapter bluetoothAdapter = mBluetoothManager.getAdapter();
@@ -186,18 +213,27 @@ public class LLSyncGattServer {
                     .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM)
                     .build();
 
+            byte[] manufacturerData;
+            UUID serviceUuid;
+            if (syncType == LLSyncGattServerType.BLE_WIFI_COMBO) {
+                manufacturerData = LLSyncProfile.bleWifiComboAdvertisingData(mProductId, mMAC);
+                serviceUuid = LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_16bitUUID;
+            } else { //LLSyncGattServerType.ONLY_BLE
+                manufacturerData = LLSyncProfile.bleOnlyAdvertisingData(mProductId, mMAC, bindStatus);
+                serviceUuid = LLSyncProfile.LLSYNC_BLE_ONLY_SERVICE_16bitUUID;
+            }
+
             AdvertiseData data = new AdvertiseData.Builder()
                     .setIncludeDeviceName(true)
                     .setIncludeTxPowerLevel(false)
-                    .addServiceUuid(new ParcelUuid(LLSyncProfile.LLSYNC_SERVICE_16bitUUID))
+                    .addServiceUuid(new ParcelUuid(serviceUuid))
                     .build();
 
             AdvertiseData scanResponse = new AdvertiseData.Builder()
                     .setIncludeTxPowerLevel(false)
                     .setIncludeDeviceName(false)
-                    .addManufacturerData(0xFEE7, LLSyncProfile.advertisingData(mProductId, mMAC))
+                    .addManufacturerData(0xFEE7, manufacturerData)
                     .build();
-
 
             mBluetoothLeAdvertiser
                     .startAdvertising(settings, data, scanResponse, mAdvertiseCallback);
@@ -217,6 +253,13 @@ public class LLSyncGattServer {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertiseCallback);
         } else {
             onFailure("bellow android 5.0 is not support bluetooth");
+        }
+
+        // Devices with a display should not go to sleep clear
+        if ( context instanceof Activity ) {
+            ((Activity) context).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            onFailure("context is not instanceif activity");
         }
     }
 
@@ -260,7 +303,7 @@ public class LLSyncGattServer {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                    .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                    .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                     .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
             deviceinfoCharacteristic.setValue(LLSyncProfile.getWifiInfoSuccess(isSuccess));
             mBluetoothGattServer.notifyCharacteristicChanged(e2device, deviceinfoCharacteristic, false);
@@ -345,7 +388,7 @@ public class LLSyncGattServer {
                 Log.i(TAG, "Write Device Info " + byte2Hex(value));
                 if (byte2Hex(value).equals("e0")) { //小程序APP通过LLDeviceInfo向设备下发信息获取指令。
                     BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                            .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                            .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                             .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
                     deviceinfoCharacteristic.setValue(LLSyncProfile.getDeviceInfo(mDeviceName));
                     mBluetoothGattServer.notifyCharacteristicChanged(device, deviceinfoCharacteristic, false);
@@ -359,7 +402,7 @@ public class LLSyncGattServer {
 
                     String wifiMode = byte2Hex(subBytes(value, 1, 1));
                     BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                            .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                            .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                             .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
                     deviceinfoCharacteristic.setValue(LLSyncProfile.setWifiModeSuccess(wifiMode.equals("01")));
                     mBluetoothGattServer.notifyCharacteristicChanged(device, deviceinfoCharacteristic, false);
@@ -376,7 +419,7 @@ public class LLSyncGattServer {
 
                 } else if (byte2Hex(value).equals("090000")) { //小程序APP通过LLDeviceInfo向设备下发设置mtu结果指令。
                     BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                            .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                            .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                             .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
                     deviceinfoCharacteristic.setValue(LLSyncProfile.setMTUSuccess());
                     mBluetoothGattServer.notifyCharacteristicChanged(device, deviceinfoCharacteristic, false);
@@ -410,7 +453,7 @@ public class LLSyncGattServer {
 
                 } else if (byte2Hex(value).equals("e3")) { //小程序APP通过LLDeviceInfo向设备下发请求连接wifi指令。
                     BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                            .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                            .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                             .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
                     deviceinfoCharacteristic.setValue(LLSyncProfile.connectWifiIsSuccess(this.ssid, true));
                     mBluetoothGattServer.notifyCharacteristicChanged(device, deviceinfoCharacteristic, false);
@@ -436,7 +479,7 @@ public class LLSyncGattServer {
                     }
 
                     BluetoothGattCharacteristic deviceinfoCharacteristic = mBluetoothGattServer
-                            .getService(LLSyncProfile.LLSYNC_SERVICE_UUID)
+                            .getService(LLSyncProfile.LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID)
                             .getCharacteristic(LLSyncProfile.LLSYNC_EVENT_CHARACTERISTIC_UUID);
                     deviceinfoCharacteristic.setValue(LLSyncProfile.bindAppIsSuccess(true));
                     mBluetoothGattServer.notifyCharacteristicChanged(device, deviceinfoCharacteristic, false);
