@@ -29,6 +29,7 @@ import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServer;
 import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerCallback;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerConstants.LLSyncGattServerType;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
@@ -236,7 +237,7 @@ public class TRTCMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mServer == null) {
-                    mServer = new LLSyncGattServer(TRTCMainActivity.this, mProductID, mDevName, "", new LLSyncGattServerCallback() {
+                    mServer = new LLSyncGattServer(TRTCMainActivity.this, mProductID, mDevName, "", LLSyncGattServerType.BLE_ONLY, new LLSyncGattServerCallback() {
                         @Override
                         public void onFailure(String errorMessage) {
                             Log.d(TAG, "LLSyncGattServer onFailure : " + errorMessage);

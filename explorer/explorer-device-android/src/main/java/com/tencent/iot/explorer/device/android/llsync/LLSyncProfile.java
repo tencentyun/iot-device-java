@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.util.UUID;
 
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerConstants.LLSyncDeviceBindStatus;
 import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.intToByteArray;
 
 public class LLSyncProfile {
@@ -16,28 +17,36 @@ public class LLSyncProfile {
     /* LLSYNC Version */
     public static String LLSYNC_VERSION = "2";
 
-    /* LLSYNC Service UUID */
-    public static UUID LLSYNC_SERVICE_16bitUUID                  = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
-    /* LLSYNC Service UUID */
-    public static UUID LLSYNC_SERVICE_UUID                       = UUID.fromString("0000fff0-65d0-4e20-b56a-e493541ba4e2");
+    /* LLSYNC BLE WIFI COMBO Service UUID */
+    public static UUID LLSYNC_BLE_WIFI_COMBO_SERVICE_16bitUUID   = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb");
+    /* LLSYNC BLE WIFI COMBO Service UUID */
+    public static UUID LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID        = UUID.fromString("0000fff0-65d0-4e20-b56a-e493541ba4e2");
+    /* LLSYNC BLE ONLY Service UUID */
+    public static UUID LLSYNC_BLE_ONLY_SERVICE_16bitUUID         = UUID.fromString("0000ffe0-0000-1000-8000-00805f9b34fb");
+    /* LLSYNC BLE ONLY Service UUID */
+    public static UUID LLSYNC_BLE_ONLY_SERVICE_UUID              = UUID.fromString("0000ffe0-65d0-4e20-b56a-e493541ba4e2");
     /* LLSYNC DEVICE INFO Characteristic UUID */
     public static UUID LLSYNC_DEVICE_INFO_CHARACTERISTIC_UUID    = UUID.fromString("0000ffe1-65d0-4e20-b56a-e493541ba4e2");
+    /* LLSYNC DATA Characteristic UUID */
+    public static UUID LLSYNC_DATA_CHARACTERISTIC_UUID           = UUID.fromString("0000ffe2-65d0-4e20-b56a-e493541ba4e2");
     /* LLSYNC EVENT Characteristic UUID */
     public static UUID LLSYNC_EVENT_CHARACTERISTIC_UUID          = UUID.fromString("0000ffe3-65d0-4e20-b56a-e493541ba4e2");
+    /* LLSYNC OTA Characteristic UUID */
+    public static UUID LLSYNC_OTA_CHARACTERISTIC_UUID            = UUID.fromString("0000ffe4-65d0-4e20-b56a-e493541ba4e2");
     /* LLSYNC CLIENT CONFIG Descriptor UUID */
     public static UUID LLSYNC_CLIENT_CONFIG_DESCRIPTOR_UUID      = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     /**
      * Return a configured {@link BluetoothGattService} instance for the
-     * LLSYNC Service.
+     * LLSYNC Ble Wifi Combo Service.
      */
-    public static BluetoothGattService createLLSyncService() {
+    public static BluetoothGattService createBleWifiComboLLSyncService() {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            BluetoothGattService service = new BluetoothGattService(LLSYNC_SERVICE_UUID,
+            BluetoothGattService service = new BluetoothGattService(LLSYNC_BLE_WIFI_COMBO_SERVICE_UUID,
                     BluetoothGattService.SERVICE_TYPE_PRIMARY);
 
-            // LLSYNC Info characteristic
+            // LLSYNC Device Info characteristic
             BluetoothGattCharacteristic deviceinfo = new BluetoothGattCharacteristic(LLSYNC_DEVICE_INFO_CHARACTERISTIC_UUID,
                     //write characteristic
                     BluetoothGattCharacteristic.PROPERTY_WRITE ,
@@ -62,7 +71,83 @@ public class LLSyncProfile {
         }
     }
 
-    public static byte[] advertisingData(String productId, String mac) {
+    /**
+     * Return a configured {@link BluetoothGattService} instance for the
+     * LLSYNC Ble Only Service.
+     */
+    public static BluetoothGattService createBleOnlyLLSyncService() {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            BluetoothGattService service = new BluetoothGattService(LLSYNC_BLE_ONLY_SERVICE_UUID,
+                    BluetoothGattService.SERVICE_TYPE_PRIMARY);
+
+            // LLSYNC Device Info characteristic
+            BluetoothGattCharacteristic deviceinfo = new BluetoothGattCharacteristic(LLSYNC_DEVICE_INFO_CHARACTERISTIC_UUID,
+                    //write characteristic
+                    BluetoothGattCharacteristic.PROPERTY_WRITE ,
+                    BluetoothGattCharacteristic.PERMISSION_WRITE);
+
+            // LLSYNC Data characteristic
+            BluetoothGattCharacteristic data = new BluetoothGattCharacteristic(LLSYNC_DATA_CHARACTERISTIC_UUID,
+                    //write characteristic
+                    BluetoothGattCharacteristic.PROPERTY_WRITE ,
+                    BluetoothGattCharacteristic.PERMISSION_WRITE);
+
+            // LLSYNC Event characteristic
+            BluetoothGattCharacteristic event = new BluetoothGattCharacteristic(LLSYNC_EVENT_CHARACTERISTIC_UUID,
+                    //support notify characteristic
+                    BluetoothGattCharacteristic.PROPERTY_NOTIFY,
+                    BluetoothGattCharacteristic.PERMISSION_READ);
+            BluetoothGattDescriptor configDescriptor = new BluetoothGattDescriptor(LLSYNC_CLIENT_CONFIG_DESCRIPTOR_UUID,
+                    //write descriptor
+                    BluetoothGattDescriptor.PERMISSION_WRITE);
+            event.addDescriptor(configDescriptor);
+
+            // LLSYNC OTA characteristic
+            BluetoothGattCharacteristic ota = new BluetoothGattCharacteristic(LLSYNC_OTA_CHARACTERISTIC_UUID,
+                    //write characteristic
+                    BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE,
+                    BluetoothGattCharacteristic.PERMISSION_WRITE);
+
+            service.addCharacteristic(deviceinfo);
+            service.addCharacteristic(data);
+            service.addCharacteristic(event);
+            service.addCharacteristic(ota);
+
+            return service;
+        } else {
+            return null;
+        }
+    }
+
+    public static byte[] bleOnlyAdvertisingData(String productId, String mac, LLSyncDeviceBindStatus bindStatus) {
+
+        Log.d(TAG, mac);
+
+        byte[] llsyncVersionAndBindStatus = new byte[0];
+        if (bindStatus == LLSyncDeviceBindStatus.UNBIND) {
+            llsyncVersionAndBindStatus = new byte[]{(byte) 0x20};
+        } else if (bindStatus == LLSyncDeviceBindStatus.BINDING) {
+            llsyncVersionAndBindStatus = new byte[]{(byte) 0x21};
+        } else { //bindStatus == LLSyncDeviceBindStatus.BINDED
+            llsyncVersionAndBindStatus = new byte[]{(byte) 0x22};
+        }
+
+        byte[] mac1 = {(byte) 0x74, (byte) 0x2A, (byte) 0xD2, (byte) 0x62, (byte) 0x3D, (byte) 0xF0};
+        byte[] productIdByte = productId.getBytes();
+        int rawAdvDataMidLen = llsyncVersionAndBindStatus.length + mac1.length + productIdByte.length;
+
+        byte[] rawAdvData = new byte[rawAdvDataMidLen];
+        int index = 0;
+        System.arraycopy(llsyncVersionAndBindStatus, 0, rawAdvData, index, llsyncVersionAndBindStatus.length);
+        index += llsyncVersionAndBindStatus.length;
+        System.arraycopy(mac1, 0, rawAdvData, index, mac1.length);
+        index += mac1.length;
+        System.arraycopy(productIdByte, 0, rawAdvData, index, productIdByte.length);
+        return rawAdvData;
+    }
+
+    public static byte[] bleWifiComboAdvertisingData(String productId, String mac) {
 
         Log.d(TAG, mac);
 
