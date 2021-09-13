@@ -5,7 +5,7 @@ public class Common {
     /**
      * 事件ID
      */
-    public static final String EVENT_UPDATE_RESULT_REPORT = "update_result_report";
+    public static final String EVENT_UPDATE_RESULT_REPORT = "_sys_update_result_report";
 
     /**
      * 事件类型
