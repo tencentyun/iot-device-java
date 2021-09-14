@@ -15,6 +15,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.RunnableScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.*;
@@ -23,6 +26,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 
 public class DataTemplate {
 
+    private static ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(5);
     private static final String TAG = DataTemplate.class.getSimpleName();
 
     //设备信息
@@ -40,8 +44,8 @@ public class DataTemplate {
     private String mActionUptreamTopic;
 
     private String mServiceDownStreamTopic;
-    private volatile boolean flag = false;
-    private Object lock = new Object();  // 控制线程的锁，用于及时感知关闭线程的动作
+    private Runnable checkRunnable = null;
+    private RunnableScheduledFuture<?> schedule;
 
     //下行消息回调函数
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
@@ -82,15 +86,30 @@ public class DataTemplate {
         this.mConnection = connection;
         this.mReplyWaitList = new ConcurrentHashMap<String, Long>();
         this.log = log;
-        flag = true;
-        new DataTemplate.checkReplyTimeoutThread().start();
+
+        checkRunnable = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(String.format("tencent-%s-%s run check task", mProductId, mDeviceName));
+                Iterator<Map.Entry<String, Long>> entries = mReplyWaitList.entrySet().iterator();
+                while (entries.hasNext()) {
+                    Map.Entry<String, Long> entry = entries.next();
+                    if (System.currentTimeMillis() - entry.getValue() > mReplyWaitTimeout) {
+                        DataTemplate.this.log.error(TAG, "Reply timeout. Client token:" + entry.getKey());
+                        mReplyWaitList.remove(entry.getKey());
+                    }
+                }
+            }
+        };
+
+        schedule = (RunnableScheduledFuture<?>) scheduledThreadPool.scheduleAtFixedRate(checkRunnable,0 , mReplyWaitTimeout, TimeUnit.MILLISECONDS);
     }
 
     public void destroy() {
-        flag = false;
-        synchronized (lock) {
-            lock.notify();
-        }
+        if (schedule == null || scheduledThreadPool == null) return;
+
+        boolean removeRet = scheduledThreadPool.remove(schedule);
+        System.out.println(String.format("tencent-%s-%s task removed %s", mProductId, mDeviceName, removeRet));
     }
 
     private boolean isConnected() {
@@ -476,37 +495,6 @@ public class DataTemplate {
         message.setPayload(object.toString().getBytes());
 
         return publishTemplateMessage(null, ACTION_UP_STREAM_TOPIC, message);
-    }
-
-    /**
-     * 检查回复是否超时
-     */
-    private class checkReplyTimeoutThread extends Thread {
-        @Override
-        public void run() {
-            this.setName(String.format("tencent-%s-%s-%s",checkReplyTimeoutThread.class.getSimpleName(), mProductId, mDeviceName).toLowerCase());
-
-            while (flag) {
-                Iterator<Map.Entry<String, Long>> entries = mReplyWaitList.entrySet().iterator();
-                while (entries.hasNext()) {
-                    Map.Entry<String, Long> entry = entries.next();
-                    if (System.currentTimeMillis() - entry.getValue() > mReplyWaitTimeout) {
-                        log.error(TAG, "Reply timeout. Client token:" + entry.getKey());
-                        mReplyWaitList.remove(entry.getKey());
-                    }
-                }
-
-                synchronized (lock) {
-                    try {
-                        lock.wait(mReplyWaitTimeout);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            System.out.println(getName() + " thread over");
-        }
     }
 
     /**

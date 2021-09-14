@@ -132,4 +132,8 @@ public class TXDataTemplateClient extends TXMqttConnection {
         super.messageArrived(topic, message);
         mDataTemplate.onMessageArrived(topic, message);
     }
+
+    public void destroy() {
+        mDataTemplate.destroy();
+    }
 }
