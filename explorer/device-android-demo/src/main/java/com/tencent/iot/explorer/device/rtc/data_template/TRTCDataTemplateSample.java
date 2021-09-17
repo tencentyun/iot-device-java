@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -18,11 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class TRTCDataTemplateSample {
     private static final String TAG = "TXDataTemplate";
@@ -111,6 +111,7 @@ public class TRTCDataTemplateSample {
         options.setConnectionTimeout(8);
         options.setKeepAliveInterval(240);
         options.setAutomaticReconnect(true);
+        options.setCleanSession(false);
 
         if (mDevPSK != null && mDevPSK.length() != 0){
             TXLog.i(TAG, "Using PSK");

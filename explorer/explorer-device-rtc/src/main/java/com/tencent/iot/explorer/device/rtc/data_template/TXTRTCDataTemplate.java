@@ -1,5 +1,11 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -17,16 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
 public class TXTRTCDataTemplate extends TXDataTemplate {
 
@@ -50,10 +47,6 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack);
         this.mConnection = connection;
         this.mTrtcCallBack = trtcCallBack;
-    }
-
-    private void checkStatusIsNotIdleReportResetStatus() {
-        propertyGetStatus("report", false);
     }
 
     /**
@@ -123,16 +116,6 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
                         if(Status.OK != status) {
                             TXLog.e(TAG, "property report failed!");
                         }
-                    }
-                }
-            } else if (method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
-                JSONObject data = jsonObj.getJSONObject("data").getJSONObject("reported");
-                if (data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS) && data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
-                    Integer videoCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
-                    Integer audioCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
-                    if (!mIsBusy &&(videoCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE || audioCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE)) {
-                        // 不在通话中，并且status状态不对  重置video和audio的status状态为0
-                        reportResetCallStatusProperty();
                     }
                 }
             }
@@ -262,15 +245,6 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         if(Status.OK != status) {
             TXLog.e(TAG, "property report failed!");
         }
-        if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) { //上报呼叫状态0时，防止上报不成功，延迟1秒后查询设备状态，不为0则再次上报状态
-            TimerTask task = new TimerTask(){
-                public void run(){
-                    checkStatusIsNotIdleReportResetStatus();
-                }
-            };
-            Timer timer = new Timer();
-            timer.schedule(task, 1000);
-        }
         return status;
     }
 
@@ -322,7 +296,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         objectString = objectString.replace("\\/", "/");
 
         MqttMessage message = new MqttMessage();
-        message.setQos(0);
+        message.setQos(1);
         message.setPayload(objectString.getBytes());
 
         return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
