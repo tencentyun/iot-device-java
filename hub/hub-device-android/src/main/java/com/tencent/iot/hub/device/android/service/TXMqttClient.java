@@ -583,7 +583,7 @@ public class TXMqttClient {
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onConnectCompleted(Status.valueOf(Status.class, status),
-                            reconnect, userContext, msg);
+                            reconnect, userContext, msg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
@@ -601,7 +601,7 @@ public class TXMqttClient {
                 TXLog.d(TAG, "onDisconnectCompleted, status[%s], msg[%s]", status, msg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onDisconnectCompleted(Status.valueOf(Status.class, status), userContext, msg);
+                    mMqttActionCallBack.onDisconnectCompleted(Status.valueOf(Status.class, status), userContext, msg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
@@ -611,7 +611,7 @@ public class TXMqttClient {
                 TXLog.d(TAG, "onPublishCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
@@ -621,7 +621,7 @@ public class TXMqttClient {
                 TXLog.d(TAG, "onSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
@@ -631,7 +631,7 @@ public class TXMqttClient {
                 TXLog.d(TAG, "onUnSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg);
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }

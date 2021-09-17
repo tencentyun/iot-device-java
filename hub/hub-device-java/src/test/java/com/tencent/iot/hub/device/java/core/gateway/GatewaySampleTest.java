@@ -154,7 +154,7 @@ public class GatewaySampleTest {
 	public static class callBack extends TXMqttActionCallBack {
 
 		@Override
-		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
@@ -204,7 +204,7 @@ public class GatewaySampleTest {
 		}
 
 		@Override
-		public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+		public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
@@ -212,7 +212,7 @@ public class GatewaySampleTest {
 		}
 
 		@Override
-		public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+		public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
@@ -221,7 +221,7 @@ public class GatewaySampleTest {
 		}
 
 		@Override
-		public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+		public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
@@ -234,7 +234,7 @@ public class GatewaySampleTest {
 		}
 
 		@Override
-		public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+		public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",

@@ -1,15 +1,16 @@
 package com.tencent.iot.hub.device.android.core.gateway;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
-import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.android.core.mqtt.TXAlarmPingSender;
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.gateway.TXGatewaySubdev;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
@@ -31,8 +32,6 @@ import java.util.HashMap;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 /**
  * 网关连接类
@@ -589,7 +588,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
             public void onSuccess(IMqttToken token) {
                 TXLog.i(TAG, "onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
-                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI);
+                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI, null);
                 // If the connection is established, subscribe the gateway operation topic
                 String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
                 int qos = TXMqttConstants.QOS1;
@@ -606,7 +605,7 @@ public class TXGatewayConnection  extends TXMqttConnection {
             public void onFailure(IMqttToken token, Throwable exception) {
                 TXLog.e(TAG, exception, "onFailure!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 

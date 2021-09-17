@@ -10,12 +10,12 @@ import com.tencent.iot.hub.device.java.service.interfaces.ITXOTAListener;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * mqtt远程服务客户端
@@ -418,18 +418,18 @@ public class TXMqttClient {
         mMqttActionListener = new ITXMqttActionListener() {
 
             @Override
-            public void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg) {
+            public void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg, Throwable cause) {
                 Loggor.error(TAG, String.format("onConnectCompleted, status[%s], reconnect[%b], msg[%s]", status, reconnect, msg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onConnectCompleted(Status.valueOf(Status.class, status),
-                            reconnect, userContext, msg);
+                            reconnect, userContext, msg, cause);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
 
             @Override
-            public void onConnectionLost(String cause)  {
+            public void onConnectionLost(Throwable cause)  {
                 Loggor.error(TAG, String.format("onConnectionLost, cause[%s]", cause));
                 if (null != mMqttActionCallBack) {
                     mMqttActionCallBack.onConnectionLost(new Throwable(cause));
@@ -437,41 +437,41 @@ public class TXMqttClient {
             }
 
             @Override
-            public void onDisconnectCompleted(String status, long userContextId, String msg) {
+            public void onDisconnectCompleted(String status, long userContextId, String msg, Throwable cause) {
                 Loggor.error(TAG, String.format("onDisconnectCompleted, status[%s], msg[%s]", status, msg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onDisconnectCompleted(Status.valueOf(Status.class, status), userContext, msg);
+                    mMqttActionCallBack.onDisconnectCompleted(Status.valueOf(Status.class, status), userContext, msg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
 
             @Override
-            public void onPublishCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
+            public void onPublishCompleted(String status, TXMqttToken token, long userContextId, String errMsg, Throwable cause) {
                 Loggor.error(TAG, String.format("onPublishCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onPublishCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, cause);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
 
             @Override
-            public void onSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
+            public void onSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg, Throwable cause) {
                 Loggor.error(TAG, String.format("onSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, cause);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }
 
             @Override
-            public void onUnSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg) {
+            public void onUnSubscribeCompleted(String status, TXMqttToken token, long userContextId, String errMsg, Throwable cause) {
                 Loggor.error(TAG, String.format("onUnSubscribeCompleted, status[%s], token[%s], errMsg[%s]", status, token, errMsg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
-                    mMqttActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg);
+                    mMqttActionCallBack.onUnSubscribeCompleted(Status.valueOf(Status.class, status), token.transToMqttToken(), userContext, errMsg, cause);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }

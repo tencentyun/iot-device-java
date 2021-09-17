@@ -1,15 +1,19 @@
 package com.tencent.iot.hub.device.android.core.mqtt;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Base64;
-import android.util.Log;
 
+import com.tencent.iot.hub.device.android.core.util.TXLog;
+import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.android.core.util.TXLog;
-import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
@@ -30,11 +34,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
 /**
  * MQTT 连接类
@@ -248,7 +247,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             public void onSuccess(IMqttToken token) {
                 TXLog.i(TAG, "onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
-                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI);
+                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI, null);
 
                 // 连接建立后，如果需要日志，则初始化日志功能
                 if (mMqttLogFlag) {
@@ -260,7 +259,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             public void onFailure(IMqttToken token, Throwable exception) {
                 TXLog.e(TAG, exception, "onFailure!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 
@@ -447,7 +446,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             }
         }
 
-        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI);
+        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI, null);
 
         //重新连接，处理离线日志，重新获取日志级别
         if (mMqttLogFlag) {
@@ -534,15 +533,15 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
             switch (command) {
                 case TXMqttConstants.PUBLISH:
-                    mActionCallBack.onPublishCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.PUBLISH_SUCCESS);
+                    mActionCallBack.onPublishCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.PUBLISH_SUCCESS, null);
                     break;
 
                 case TXMqttConstants.SUBSCRIBE:
                     int[] qos = ((MqttSuback) mqttWireMessage).getGrantedQos();
                     if (null != qos && qos.length >= 1 && qos[0] == 128) {
-                        mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), TXMqttConstants.SUBSCRIBE_FAIL);
+                        mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), TXMqttConstants.SUBSCRIBE_FAIL, new Throwable("qos don't support"));
                     } else {
-                        mActionCallBack.onSubscribeCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.SUBSCRIBE_SUCCESS);
+                        mActionCallBack.onSubscribeCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.SUBSCRIBE_SUCCESS, null);
 
                         if (mOTAImpl != null) {
                             mOTAImpl.onSubscribeCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.SUBSCRIBE_SUCCESS);
@@ -551,7 +550,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
                     break;
 
                 case TXMqttConstants.UNSUBSCRIBE:
-                    mActionCallBack.onUnSubscribeCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.UNSUBSCRIBE_SUCCESS);
+                    mActionCallBack.onUnSubscribeCompleted(Status.OK, token, token.getUserContext(), TXMqttConstants.UNSUBSCRIBE_SUCCESS, null);
                     break;
 
                 default:
@@ -565,13 +564,13 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         public void onFailure(IMqttToken token, Throwable exception) {
             switch (command) {
                 case TXMqttConstants.PUBLISH:
-                    mActionCallBack.onPublishCompleted(Status.ERROR, token, token.getUserContext(), exception.toString());
+                    mActionCallBack.onPublishCompleted(Status.ERROR, token, token.getUserContext(), exception.toString(), exception);
                     break;
                 case TXMqttConstants.SUBSCRIBE:
-                    mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString());
+                    mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString(), exception);
                     break;
                 case TXMqttConstants.UNSUBSCRIBE:
-                    mActionCallBack.onUnSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString());
+                    mActionCallBack.onUnSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString(), exception);
                     break;
                 default:
                     TXLog.e(TAG, "Unknown message on onFailure:" + token);

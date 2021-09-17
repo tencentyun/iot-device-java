@@ -17,8 +17,9 @@ public abstract class TXMqttActionCallBack {
      * @param reconnect true: 重新连接；false: 首次连接
      * @param userContext 用户上下文
      * @param msg 连接信息
+     * @param cause 连接失败原因，当Status.OK时，为null。
      */
-    public abstract void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg);
+    public abstract void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause);
 
     /**
      * MQTT 连接断开回调
@@ -33,8 +34,9 @@ public abstract class TXMqttActionCallBack {
      * @param status Status.OK: 断连成功；Status.ERROR: 断连失败
      * @param userContext 用户上下文
      * @param msg 详细信息
+     * @param cause 断连失败原因，当Status.OK时，为null。
      */
-    public abstract void onDisconnectCompleted(Status status, Object userContext, String msg);
+    public abstract void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause);
 
     /**
      * 发布消息完成回调
@@ -43,8 +45,9 @@ public abstract class TXMqttActionCallBack {
      * @param token 消息 token，包含消息内容结构体
      * @param userContext 用户上下文
      * @param msg 详细信息
+     * @param cause 发布消息失败原因，当Status.OK时，为null。
      */
-    public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+    public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
 
     }
 
@@ -55,8 +58,9 @@ public abstract class TXMqttActionCallBack {
      * @param token 消息 token，包含消息内容结构体
      * @param userContext 用户上下文
      * @param msg 详细信息
+     * @param cause 订阅主题失败原因，当Status.OK时，为null。
      */
-    public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext,  String msg) {
+    public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
 
     }
 
@@ -67,8 +71,9 @@ public abstract class TXMqttActionCallBack {
      * @param token 消息token，包含消息内容结构体
      * @param userContext 用户上下文
      * @param msg 详细信息
+     * @param cause 取消订阅主题失败原因，当Status.OK时，为null。
      */
-    public void onUnSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+    public void onUnSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
 
     }
 

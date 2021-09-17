@@ -119,7 +119,7 @@ public class Door {
     private class DoorMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             TXLog.i(TAG, "onConnectCompleted：" + msg);
 
             if (status.equals(Status.OK)) {
@@ -139,13 +139,13 @@ public class Door {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onDisconnectCompleted, status[%s], msg[%s]", status.name(), msg);
             TXLog.i(TAG, logInfo);
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onSubscribeCompleted, status[%s], message[%s]", status.name(), msg);
             if (Status.ERROR == status) {
                 TXLog.e(TAG, logInfo);
@@ -155,8 +155,8 @@ public class Door {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String msg) {
-            super.onPublishCompleted(status, token, userContext, msg);
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
+            super.onPublishCompleted(status, token, userContext, msg, cause);
         }
     }
 }

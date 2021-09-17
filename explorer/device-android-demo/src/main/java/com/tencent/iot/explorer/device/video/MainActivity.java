@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
     private TXMqttActionCallBack txMqttActionCallBack = new TXMqttActionCallBack() {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
             Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
             updateLog("在线");
@@ -416,14 +416,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             Log.e(TAG, "TXMqttActionCallBack onDisconnectCompleted");
             updateLog("离线 " + msg);
             VideoNativeInteface.getInstance().release();
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
             Log.e(TAG, "TXMqttActionCallBack onSubscribeCompleted status " + status);
             if (Status.OK != videoDataTemplateSample.propertyGetStatus("report", false)) {
                 Log.e(TAG, "property get status failed!");

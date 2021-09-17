@@ -2,7 +2,6 @@ package com.tencent.iot.explorer.device.android.gateway;
 
 import android.content.Context;
 import android.util.Base64;
-import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.android.mqtt.TXAlarmPingSender;
@@ -20,7 +19,6 @@ import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -436,7 +434,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
             public void onSuccess(IMqttToken token) {
                 TXLog.i(TAG, "onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
-                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI);
+                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI, null);
                 // If the connection is established, subscribe the gateway operation topic
                 String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
                 int qos = TXMqttConstants.QOS1;
@@ -448,7 +446,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
             public void onFailure(IMqttToken token, Throwable exception) {
                 TXLog.e(TAG, exception, "onFailure!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 

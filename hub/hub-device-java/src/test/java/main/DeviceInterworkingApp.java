@@ -43,7 +43,7 @@ public class DeviceInterworkingApp {
     private static class AirconditionerMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             System.out.println(msg);
 
             if (status.equals(Status.OK)) {
@@ -58,13 +58,13 @@ public class DeviceInterworkingApp {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onDisconnectCompleted, status[%s], msg[%s]", status.name(), msg);
             System.out.println(logInfo);
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onSubscribeCompleted, status[%s], message[%s]", status.name(), msg);
             if (Status.ERROR == status) {
                 System.out.println(logInfo);

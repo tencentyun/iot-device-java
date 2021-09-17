@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +16,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.iot.hub.device.java.core.httppublish.TXHTTPPulish;
-import com.tencent.iot.hub.device.java.core.httppublish.TXHttpPublishCallback;
-import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
-import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
+import androidx.fragment.app.Fragment;
+
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
+import com.tencent.iot.hub.device.java.core.httppublish.TXHTTPPulish;
+import com.tencent.iot.hub.device.java.core.httppublish.TXHttpPublishCallback;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.ConnectionState;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
@@ -48,7 +49,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -582,7 +582,7 @@ public class IoTMqttFragment extends Fragment {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -600,7 +600,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -611,7 +611,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -622,7 +622,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -637,7 +637,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();

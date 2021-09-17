@@ -1,7 +1,13 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
@@ -33,18 +39,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
 /**
  * MQTT 连接类
@@ -422,7 +418,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
                 Loggor.info(TAG, "onSuccess! hashcode: " + System.identityHashCode(this));
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
                 mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
-                        "connected to " + mServerURI);
+                        "connected to " + mServerURI, null);
                 // 连接建立后，如果需要日志，则初始化日志功能
                 if (mMqttLogFlag) {
                     initMqttLog(TAG);
@@ -433,7 +429,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
             public void onFailure(IMqttToken token, Throwable exception) {
                 Loggor.error(TAG,  exception + "onFailure!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 
@@ -508,7 +504,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
                     Loggor.error(TAG,  exception+"onFailure!");
                     setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
                     mActionCallBack.onConnectCompleted(Status.ERROR, true, asyncActionToken.getUserContext(),
-                            exception.toString());
+                            exception.toString(), exception);
                 }
             };
 
@@ -555,13 +551,13 @@ public class TXMqttConnection implements MqttCallbackExtended {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     setConnectingState(TXMqttConstants.ConnectStatus.kDisconnected);
                     mActionCallBack.onDisconnectCompleted(Status.OK, asyncActionToken.getUserContext(),
-                            "disconnected to " + mServerURI);
+                            "disconnected to " + mServerURI, null);
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable cause) {
                     mActionCallBack.onDisconnectCompleted(Status.ERROR, asyncActionToken.getUserContext(),
-                            cause.toString());
+                            cause.toString(), cause);
                 }
             };
 
@@ -1242,7 +1238,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
             }
         }
 
-        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI);
+        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI, null);
 
         //重新连接，处理离线日志，重新获取日志级别
         if (mMqttLogFlag) {
@@ -1385,17 +1381,17 @@ public class TXMqttConnection implements MqttCallbackExtended {
             switch (command) {
             case TXMqttConstants.PUBLISH:
                 mActionCallBack.onPublishCompleted(Status.OK, token, token.getUserContext(),
-                        TXMqttConstants.PUBLISH_SUCCESS);
+                        TXMqttConstants.PUBLISH_SUCCESS, null);
                 break;
 
             case TXMqttConstants.SUBSCRIBE:
                 int[] qos = ((MqttSuback) mqttWireMessage).getGrantedQos();
                 if (null != qos && qos.length >= 1 && qos[0] == 128) {
                     mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(),
-                            TXMqttConstants.SUBSCRIBE_FAIL);
+                            TXMqttConstants.SUBSCRIBE_FAIL, new Throwable("qos don't support"));
                 } else {
                     mActionCallBack.onSubscribeCompleted(Status.OK, token, token.getUserContext(),
-                            TXMqttConstants.SUBSCRIBE_SUCCESS);
+                            TXMqttConstants.SUBSCRIBE_SUCCESS, null);
 
                     if (mOTAImpl != null) {
                         mOTAImpl.onSubscribeCompleted(Status.OK, token, token.getUserContext(),
@@ -1406,7 +1402,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
 
             case TXMqttConstants.UNSUBSCRIBE:
                 mActionCallBack.onUnSubscribeCompleted(Status.OK, token, token.getUserContext(),
-                        TXMqttConstants.UNSUBSCRIBE_SUCCESS);
+                        TXMqttConstants.UNSUBSCRIBE_SUCCESS, null);
                 break;
 
             default:
@@ -1420,14 +1416,14 @@ public class TXMqttConnection implements MqttCallbackExtended {
         public void onFailure(IMqttToken token, Throwable exception) {
             switch (command) {
             case TXMqttConstants.PUBLISH:
-                mActionCallBack.onPublishCompleted(Status.ERROR, token, token.getUserContext(), exception.toString());
+                mActionCallBack.onPublishCompleted(Status.ERROR, token, token.getUserContext(), exception.toString(), exception);
                 break;
             case TXMqttConstants.SUBSCRIBE:
-                mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString());
+                mActionCallBack.onSubscribeCompleted(Status.ERROR, token, token.getUserContext(), exception.toString(), exception);
                 break;
             case TXMqttConstants.UNSUBSCRIBE:
                 mActionCallBack.onUnSubscribeCompleted(Status.ERROR, token, token.getUserContext(),
-                        exception.toString());
+                        exception.toString(), exception);
                 break;
             default:
                 Loggor.error(TAG,  "Unknown message on onFailure:" + token);
