@@ -1,7 +1,13 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.device.CA;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
@@ -33,18 +39,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_TID;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.TID_PREFIX;
 
 /**
  * MQTT 连接类
@@ -420,7 +416,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
                 Loggor.info(TAG, "onSuccess! hashcode: " + System.identityHashCode(this));
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
                 mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
-                        "connected to " + mServerURI);
+                        "connected to " + mServerURI, null);
                 // 连接建立后，如果需要日志，则初始化日志功能
                 if (mMqttLogFlag) {
                     initMqttLog(TAG);
@@ -431,7 +427,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
             public void onFailure(IMqttToken token, Throwable exception) {
                 Loggor.error(TAG,  exception + "onFailure!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 
@@ -506,7 +502,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
                     Loggor.error(TAG,  exception+"onFailure!");
                     setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
                     mActionCallBack.onConnectCompleted(Status.ERROR, true, asyncActionToken.getUserContext(),
-                            exception.toString());
+                            exception.toString(), exception);
                 }
             };
 
@@ -1198,7 +1194,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
             }
         }
 
-        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI);
+        mActionCallBack.onConnectCompleted(Status.OK, reconnect, null, "connected to " + serverURI, null);
 
         //重新连接，处理离线日志，重新获取日志级别
         if (mMqttLogFlag) {

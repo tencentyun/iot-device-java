@@ -583,7 +583,7 @@ public class TXMqttClient {
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onConnectCompleted(Status.valueOf(Status.class, status),
-                            reconnect, userContext, msg);
+                            reconnect, userContext, msg, null);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }

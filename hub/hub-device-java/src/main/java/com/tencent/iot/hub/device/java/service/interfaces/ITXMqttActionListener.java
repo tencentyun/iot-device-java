@@ -15,7 +15,7 @@ public interface ITXMqttActionListener {
      * @param reconnect true: 重新连接；false: 首次连接
      * @param msg 连接信息
      */
-    void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg);
+    void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg, Throwable cause);
 
     /**
      * MQTT连接断开回调

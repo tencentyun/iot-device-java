@@ -2,11 +2,9 @@ package com.tencent.iot.hub.device.android.app;
 
 import android.content.ComponentName;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import androidx.fragment.app.Fragment;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +12,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
 import com.tencent.iot.hub.device.android.app.service.RemoteRequest;
 import com.tencent.iot.hub.device.android.app.shadow.ShadowRequest;
+import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.android.service.TXMqttClient;
 import com.tencent.iot.hub.device.android.service.TXMqttClientOptions;
 import com.tencent.iot.hub.device.android.service.TXMqttConnectOptions;
 import com.tencent.iot.hub.device.android.service.TXMqttMessage;
 import com.tencent.iot.hub.device.android.service.TXShadowClient;
-import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
-import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -37,7 +37,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -523,7 +522,7 @@ public class IoTRemoteServiceFragment extends Fragment implements View.OnClickLi
 
         mMqttActionCallBack = new TXMqttActionCallBack() {
             @Override
-            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
                 String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                         status, reconnect, userContext, msg);
                 mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);

@@ -1,5 +1,7 @@
 package com.tencent.iot.hub.device.java.core.gateway;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
+
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXAlarmPingSender;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -13,7 +15,6 @@ import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -26,12 +27,9 @@ import org.slf4j.LoggerFactory;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SDK_VER;
 
 /**
  * 网关连接类
@@ -542,7 +540,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 				Loggor.info(TAG, "onSuccess!");
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
 				mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(),
-						"connected to " + mServerURI);
+						"connected to " + mServerURI, null);
 				// If the connection is established, subscribe the gateway
 				// operation topic
 				String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
@@ -556,7 +554,7 @@ public class TXGatewayConnection extends TXMqttConnection {
 			public void onFailure(IMqttToken token, Throwable exception) {
 				Loggor.error(TAG, "onFailure!" + exception);
 				setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-				mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+				mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
 			}
 		};
 

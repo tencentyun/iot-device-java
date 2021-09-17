@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.rtc;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -64,11 +69,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
 public class TRTCMainActivity extends AppCompatActivity {
 
@@ -570,7 +570,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

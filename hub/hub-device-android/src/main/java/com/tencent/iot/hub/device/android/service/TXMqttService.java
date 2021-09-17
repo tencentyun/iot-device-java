@@ -1,19 +1,24 @@
 package com.tencent.iot.hub.device.android.service;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
@@ -30,12 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
-
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
 
 /**
  * MQTT 远程服务，如需将 MQTT 功能运行在独立进程中时，使用 TXMqttService 开启服务；
@@ -672,7 +671,7 @@ public class TXMqttService extends Service {
 
         mMqttActionCallBack = new TXMqttActionCallBack() {
             @Override
-            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
                 if (null == mMqttActionListener) {
                     TXLog.d(TAG, "ITXMqttActionListener instance is null!");
                     return;

@@ -10,12 +10,12 @@ import com.tencent.iot.hub.device.java.service.interfaces.ITXOTAListener;
 import com.tencent.iot.hub.device.java.service.interfaces.ITXShadowActionListener;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * mqtt远程服务客户端
@@ -418,12 +418,12 @@ public class TXMqttClient {
         mMqttActionListener = new ITXMqttActionListener() {
 
             @Override
-            public void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg) {
+            public void onConnectCompleted(String status, boolean reconnect, long userContextId, String msg, Throwable cause) {
                 Loggor.error(TAG, String.format("onConnectCompleted, status[%s], reconnect[%b], msg[%s]", status, reconnect, msg));
                 if (null != mMqttActionCallBack) {
                     Object userContext = mUserContextMap.get(Long.valueOf(userContextId));
                     mMqttActionCallBack.onConnectCompleted(Status.valueOf(Status.class, status),
-                            reconnect, userContext, msg);
+                            reconnect, userContext, msg, cause);
                     mUserContextMap.remove(Long.valueOf(userContextId));
                 }
             }

@@ -18,7 +18,7 @@ public abstract class TXMqttActionCallBack {
      * @param userContext 用户上下文
      * @param msg 连接信息
      */
-    public abstract void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg);
+    public abstract void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause);
 
     /**
      * MQTT 连接断开回调

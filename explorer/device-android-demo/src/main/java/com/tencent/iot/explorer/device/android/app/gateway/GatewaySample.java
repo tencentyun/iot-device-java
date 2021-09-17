@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.android.app.gateway;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -20,11 +25,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class GatewaySample {
     private static final String TAG = "TXGatewaySample";
@@ -186,7 +186,7 @@ public class GatewaySample {
     private class GatewaySampleMqttActionCallBack extends TXMqttActionCallBack {
         /**初次连接成功则订阅相关主题*/
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if(Status.OK == status && !reconnect) { //初次连接订阅主题,重连后会自动订阅主题
                 if (Status.OK != mConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
                     TXLog.e(TAG, "subscribeTopic: subscribe property down stream topic failed!");

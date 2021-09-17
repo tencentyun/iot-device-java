@@ -1,12 +1,10 @@
 package com.tencent.iot.hub.device.java.core.shadow;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -18,11 +16,13 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.utils.Loggor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 影子连接类
@@ -686,7 +686,7 @@ public class TXShadowConnection {
 
 	private class ShadowUponMqttCallBack extends TXMqttActionCallBack {
 		@Override
-		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
 			Loggor.debug(TAG, String.format("onConnectCompleted, status[%s], reconnect[%b], msg[%s]", status, reconnect, msg));
 			if (Status.OK == status) {
 				Loggor.debug(TAG,  "******subscribe topic:" + OPERATION_RESULT_TOPIC);

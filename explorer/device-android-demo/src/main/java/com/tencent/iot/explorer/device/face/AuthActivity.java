@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,6 +12,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tencent.cloud.ai.fr.RegWithFileActivity;
 import com.tencent.cloud.ai.fr.business.thread.AIThreadPool;
@@ -319,7 +319,7 @@ public class AuthActivity extends AppCompatActivity {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

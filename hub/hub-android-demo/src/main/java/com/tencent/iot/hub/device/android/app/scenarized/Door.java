@@ -119,7 +119,7 @@ public class Door {
     private class DoorMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             TXLog.i(TAG, "onConnectCompleted：" + msg);
 
             if (status.equals(Status.OK)) {
