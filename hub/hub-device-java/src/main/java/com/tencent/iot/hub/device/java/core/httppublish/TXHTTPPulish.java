@@ -104,7 +104,7 @@ public class TXHTTPPulish {
 
         @Override
         public void run() {
-            this.setName("tencent-" + HttpPostThread.class.getSimpleName().toLowerCase());
+            this.setName("tencent-publish-msg-http-post-thread");
 
             StringBuffer serverRsp = new StringBuffer();
             try {

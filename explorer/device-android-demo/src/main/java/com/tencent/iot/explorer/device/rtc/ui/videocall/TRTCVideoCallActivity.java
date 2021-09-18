@@ -520,7 +520,7 @@ public class TRTCVideoCallActivity extends AppCompatActivity implements NetWorkS
         // 初始化成员变量
         mTRTCCalling = new TRTCCallingImpl(this);
         mTRTCCalling.setTRTCCallingDelegate(mTRTCCallingDelegate);
-        mTimeHandlerThread = new HandlerThread("time-count-thread");
+        mTimeHandlerThread = new HandlerThread("tencent-time-count-thread");
         mTimeHandlerThread.start();
         mTimeHandler = new Handler(mTimeHandlerThread.getLooper());
         // 初始化从外界获取的数据

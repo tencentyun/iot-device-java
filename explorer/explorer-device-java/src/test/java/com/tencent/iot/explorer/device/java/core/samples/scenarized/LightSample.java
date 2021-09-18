@@ -252,7 +252,7 @@ public class LightSample {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
-            this.setName("tencent-" + reportPropertyPeriodically.class.getSimpleName().toLowerCase());
+            this.setName("tencent-sample-light-report-property-periodically-thread");
 
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();

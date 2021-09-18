@@ -601,7 +601,7 @@ public class TXResourceImpl {
                 mDownloadThreadRunning = false;
             }
         });
-        mDownloadThread.setName(String.format("tencent-%s-TXdownloadThread", TXResourceImpl.class.getSimpleName()).toLowerCase());
+        mDownloadThread.setName("tencent-resource-imp-download-thread");
         mDownloadThread.start();
     }
 

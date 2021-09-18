@@ -662,7 +662,7 @@ public class TXOTAImpl {
 			}
 		});
 
-		mDownloadThread.setName(String.format("tencent-%s-TXDownloadThread", TXOTAImpl.class.getSimpleName()).toLowerCase());
+		mDownloadThread.setName("tencent-ota-imp-download-thread");
 		mDownloadThread.start();
 	}
 

@@ -128,7 +128,7 @@ public class ProductAirconditioner {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
-            this.setName("tencent-" + reportPropertyPeriodically.class.getSimpleName().toLowerCase());
+            this.setName("tencent-sample-air-report-property-periodically-thread");
 
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();

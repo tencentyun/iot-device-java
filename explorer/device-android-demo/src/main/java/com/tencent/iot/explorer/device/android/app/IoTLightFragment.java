@@ -88,7 +88,7 @@ public class IoTLightFragment extends Fragment {
      */
     private class setPropertyText extends Thread {
         public void run() {
-            this.setName("tencent-" + setPropertyText.class.getSimpleName().toLowerCase());
+            this.setName("tencent-sample-light-set-property-thread");
 
             StringBuilder textInfo;
             while (!isInterrupted()) {

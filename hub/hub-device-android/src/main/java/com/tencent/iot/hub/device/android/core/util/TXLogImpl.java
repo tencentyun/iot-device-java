@@ -304,7 +304,7 @@ public class TXLogImpl implements TXLog.LogImp {
                 return;
             }
 
-            new Thread("QLogInitThread") {
+            new Thread("tencent-log-imp-init-thread") {
                 @Override
                 public void run() {
                     try {
@@ -316,7 +316,7 @@ public class TXLogImpl implements TXLog.LogImp {
                         deleteExpiredLogs(System.currentTimeMillis());
                         initLogFile(System.currentTimeMillis());
 
-                        takeThread.setName("logWriteThread");
+                        takeThread.setName("tencent-log-write-thread");
                         takeThread.start();
                         retryInitHandler.removeCallbacks(initRunnable);
                     } catch (Exception e) {

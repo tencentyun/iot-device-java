@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +27,14 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 
 public class DataTemplate {
 
-    private static ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(5);
+    private static ScheduledThreadPoolExecutor scheduledThreadPool = new ScheduledThreadPoolExecutor(5, new ThreadFactory() {
+        private final AtomicInteger counter = new AtomicInteger();
+        @Override
+        public Thread newThread(Runnable r) {
+            final String threadName = String.format("tencent-pool-data-template-thread-%d", counter.incrementAndGet());
+            return new Thread(r, threadName);
+        }
+    });
     private static final String TAG = DataTemplate.class.getSimpleName();
 
     //设备信息

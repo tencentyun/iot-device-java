@@ -82,7 +82,7 @@ public class TXMqttBindDevice {
         }
 
         public void run() {
-            this.setName("tencent-" + HttpPostThread.class.getSimpleName().toLowerCase());
+            this.setName("tencent-bind-device-http-post-thread");
 
             StringBuffer serverRsp = new StringBuffer();
             try {
