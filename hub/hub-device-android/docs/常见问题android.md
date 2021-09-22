@@ -34,7 +34,7 @@ onConnectionLost回调已断开连接（32109），表示设备已断开连接�
 
 #### 如果设备离线，之后又重新上线，是否能收到离线中发送的消息。
 
-连接的时候需要设置。MqttConnectOptions中setCleanSession为false，并且发送的消息为QoS1，重新上线订阅过Topic后即可收到累积的消息，且存储消息但设备最多150条，最多存储24小时。
+连接的时候需要设置。MqttConnectOptions中setCleanSession为false，并且发送的消息为QoS1，重新上线订阅过Topic后即可收到累积的消息，设备最多存储消息150条，最多存储24小时。
 
 #### 调用sdk连接时，抛出错误代理程序不可用（3） 。
 
