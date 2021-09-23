@@ -249,9 +249,9 @@ public class TRTCMainActivity extends AppCompatActivity {
                             printLogInfo(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password, mLogInfoText);
                             WifiUtils.connectWifiApByNameAndPwd(TRTCMainActivity.this, ssid, password, new WifiUtils.WifiConnectCallBack() {
                                 @Override
-                                public void connnectResult(boolean connectResult) {
-                                    Log.d(TAG, "WifiUtils connnectResult: " + connectResult);
-                                    printLogInfo(TAG, "WifiUtils connnectResult: " + connectResult, mLogInfoText);
+                                public void connectResult(boolean connectResult) {
+                                    Log.d(TAG, "WifiUtils connectResult: " + connectResult);
+                                    printLogInfo(TAG, "WifiUtils connectResult: " + connectResult, mLogInfoText);
                                     if (!connectResult) {
                                         mServer.noticeAppConnectWifiIsSuccess(false);
                                     } else {

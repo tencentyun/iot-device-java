@@ -68,8 +68,8 @@
 | findSubdev    | 查找子设备（根据产品ID和设备名称） |
 | removeSubdev  | 删除子设备                         |
 | addSubdev     | 添加子设备                         |
-| subdevOffline | 上线子设备                         |
-| subdevOnline  | 下线子设备                         |
+| subdevOffline | 下线子设备                         |
+| subdevOnline  | 上线子设备                         |
 | setSubdevStatus  | 设置子设备状态             |
 | subscribeSubDevTopic  | 订阅数据模板相关主题         |
 | unSubscribeSubDevTopic  | 取消订阅数据模板相关主题         |

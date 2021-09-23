@@ -46,8 +46,8 @@ LLSync蓝牙辅助配网主要用于通过 BLE 给同时具有 BLE + Wi-Fi 能�
 
                 WifiUtils.connectWifiApByNameAndPwd(TRTCMainActivity.this, ssid, password, new WifiUtils.WifiConnectCallBack() {
                     @Override
-                    public void connnectResult(boolean connectResult) {
-                        Log.d(TAG, "WifiUtils connnectResult connectResult: " + connectResult);
+                    public void connectResult(boolean connectResult) {
+                        Log.d(TAG, "WifiUtils connectResult connectResult: " + connectResult);
                         TimerTask task = new TimerTask(){
                             public void run(){
                                 if (connectResult) {
@@ -126,7 +126,7 @@ I/LLSyncGattServer: ssid: L-004; pwd: iot2021$
 D/TRTCMainActivity: LLSyncGattServer requestConnectWifi ssid: L-004; password: iot123456
 I/WifiUtils: newNetworkId is:8
 I/WifiUtils: 切换到指定wifi成功
-D/TRTCMainActivity: WifiUtils connnectResult connectResult: true
+D/TRTCMainActivity: WifiUtils connectResult connectResult: true
 I/TXMQTT_1.1.0: Start connecting to tcp://Z52SO5W5OT.iotcloud.tencentdevices.com:1883
 I/TRTCMainActivity: onConnectCompleted, status[OK], reconnect[false], userContext[MQTTRequest{requestType='connect', requestId=0}], msg[connected to tcp://Z52SO5W5OT.iotcloud.tencentdevices.com:1883]
 I/LLSyncGattServer: notify getWifiInfoSuccess e1000100

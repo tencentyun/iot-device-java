@@ -68,8 +68,8 @@
 | findSubdev    | 查找子设备（根据产品ID和设备名称） |
 | removeSubdev  | 删除子设备                         |
 | addSubdev     | 添加子设备                         |
-| subdevOffline | 上线子设备                         |
-| subdevOnline  | 下线子设备                         |
+| subdevOffline | 下线子设备                         |
+| subdevOnline  | 上线子设备                         |
 
 #### TXGatewaySubdev
 

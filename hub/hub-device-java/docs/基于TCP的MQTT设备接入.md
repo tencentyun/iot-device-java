@@ -55,7 +55,7 @@ private static String mDevPriv = "";           // 填写 设备私钥文件内�
 
 #### 运行示例程序进行 MQTT 认证连接
 
-运行 [MqttSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java) 的main函数，调用connnect()使设备上线。示例代码如下：
+运行 [MqttSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/MqttSampleTest.java) 的main函数，调用connect()使设备上线。示例代码如下：
 ```
 private static void connect() {
     try {

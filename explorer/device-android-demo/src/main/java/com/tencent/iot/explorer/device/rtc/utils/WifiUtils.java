@@ -79,7 +79,7 @@ public class WifiUtils {
 
 
     public interface WifiConnectCallBack {
-        void connnectResult(boolean connectResult);
+        void connectResult(boolean connectResult);
     }
 
     /**
@@ -101,7 +101,7 @@ public class WifiUtils {
             int newNetworkId = mWifiManager.addNetwork(wifiNewConfiguration);
             if (newNetworkId == -1) {
                 Log.i(TAG, "操作失败,需要您到手机wifi列表中取消对设备连接的保存");
-                callBack.connnectResult(false);
+                callBack.connectResult(false);
                 return;
             }
             Log.i(TAG, "newNetworkId is:" + newNetworkId);
@@ -112,17 +112,17 @@ public class WifiUtils {
             boolean enableNetwork = mWifiManager.enableNetwork(newNetworkId, true);
             if (!enableNetwork) {
                 Log.i(TAG, "切换到指定wifi失败");
-                callBack.connnectResult(false);
+                callBack.connectResult(false);
                 return;
             }
             Log.i(TAG, "切换到指定wifi成功");
-            callBack.connnectResult(true);
+            callBack.connectResult(true);
         } else {
             boolean isOpenWifi = mWifiManager.isWifiEnabled();
             if (!isOpenWifi) {
                 Log.i(TAG, "用户需要打开wifi开关");
                 context.startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
-                callBack.connnectResult(false);
+                callBack.connectResult(false);
                 return;
             }
             NetworkSpecifier specifier =
@@ -147,14 +147,14 @@ public class WifiUtils {
                     // do success processing here..
                     Log.i(TAG, "onAvailable success");
                     Log.i(TAG, "network" + network.toString());
-                    callBack.connnectResult(true);
+                    callBack.connectResult(true);
                 }
 
                 @Override
                 public void onUnavailable() {
                     // do failure processing here..
                     Log.i(TAG, "onUnavailable fail");
-                    callBack.connnectResult(false);
+                    callBack.connectResult(false);
                 }
             };
             connectivityManager.requestNetwork(request, networkCallback);
