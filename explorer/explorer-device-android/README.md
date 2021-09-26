@@ -17,7 +17,7 @@
 * 在控制台上创建项目产品设备，具体步骤请参考官网 [用户指南-项目管理](https://cloud.tencent.com/document/product/1081/40290)、 [用户指南-产品定义](https://cloud.tencent.com/document/product/1081/34739)、 [用户指南-设备调试](https://cloud.tencent.com/document/product/1081/34741)。
 
 ## SDK接入指南
-SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [编译环境及SDK接入说明](docs/编译环境及SDK接入说明.md)
+SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [编译环境及SDK接入说明](docs/zh/编译环境及SDK接入说明.md)
 
 ## 下载IoT Explorer Android-SDK Demo示例代码
 下载[仓库](../..)下完整代码，IoT Explorer Android-SDK Demo示例代码在 [device-android-demo](../device-android-demo) 的module下。
@@ -27,22 +27,22 @@ SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参
 ## 功能文档
 调用API接口可以参考以下对应功能示例Demo的使用。
 
-* [控制设备上下线](docs/控制设备上下线.md)
-* [订阅与取消订阅 Topic 主题](docs/订阅与取消订阅%20Topic%20主题.md)
-* [属性上报](docs/属性上报.md)
-* [获取设备最新上报信息](docs/获取设备最新上报信息.md)
-* [设备信息上报](docs/设备信息上报.md)
-* [清除控制](docs/清除控制.md)
-* [事件上报以及多事件上报](docs/事件上报以及多事件上报.md)
-* [检查固件更新](docs/检查固件更新.md)
-* [网关使用示例](docs/网关使用示例.md)
-* [LLSync蓝牙辅助配网](docs/LLSync蓝牙辅助配网.md)
+* [控制设备上下线](docs/zh/控制设备上下线.md)
+* [订阅与取消订阅 Topic 主题](docs/zh/订阅与取消订阅%20Topic%20主题.md)
+* [属性上报](docs/zh/属性上报.md)
+* [获取设备最新上报信息](docs/zh/获取设备最新上报信息.md)
+* [设备信息上报](docs/zh/设备信息上报.md)
+* [清除控制](docs/zh/清除控制.md)
+* [事件上报以及多事件上报](docs/zh/事件上报以及多事件上报.md)
+* [检查固件更新](docs/zh/检查固件更新.md)
+* [网关使用示例](docs/zh/网关使用示例.md)
+* [LLSync蓝牙辅助配网](docs/zh/LLSync蓝牙辅助配网.md)
 
 ## 第三方服务接入指引
 * [IoT Explorer人脸识别 Android SDK开发指南](../explorer-device-face/README.md)
 
 ## SDK API及参数说明
-SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](docs/SDK%20API及参数说明.md)
+SDK API接口及参数说明请参考docs目录下的[SDK API及参数说明](docs/zh/SDK%20API及参数说明.md)
 
 ## 常见问题
-常见问题请参考docs目录下的[常见问题android](docs/常见问题android.md)
+常见问题请参考docs目录下的[常见问题android](docs/zh/常见问题android.md)

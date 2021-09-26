@@ -13,7 +13,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入人脸识别离线SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/编译环境及SDK接入说明.md)
+如果不需要接入人脸识别离线SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/zh/编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
