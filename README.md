@@ -1,3 +1,5 @@
+简体中文 | [English](./PRELIM__README 6_EN-US.md)
+
 # 产品介绍
 
 本仓库中包含两个产品：腾讯云物联网通信（IoT Hub） 和 腾讯云物联网开发平台（IoT Explorer） ，分别包含 Java 和 Android 两种 SDK 。
