@@ -1,4 +1,4 @@
-简体中文 | [English](./PRELIM__README 6_EN-US.md)
+简体中文 | [English](./PRELIM__README%206_EN-US.md)
 
 # 产品介绍
 
