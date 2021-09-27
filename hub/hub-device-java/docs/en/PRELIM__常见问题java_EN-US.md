@@ -26,7 +26,7 @@ The log of successful dynamic registration in the SDK returns `I/TXMQTT: Dynamic
 
 #### Can I register multiple devices at a time through APIs?
 
-Currently, the SDKs for Android and Java do not support batch dynamic registration. For more information, please see [Dynamic Registration API Description](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-device-android/docs/%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C.md).
+Currently, the SDKs for Android and Java do not support batch dynamic registration. For more information, please see [Dynamic Registration API Description](../../../hub-device-android/docs/en/PRELIM__动态注册_EN-US.md).
 
 #### The SDK that runs on Java 1.1.0 doesn't send ping messages, causing device disconnection. What should I do?
 
@@ -39,7 +39,7 @@ Close Android Studio. Open the `bin` directory in the Android Studio installatio
 
 #### How do I set the server root certificate?
 
-For connection in a public cloud, you don't need to set the CA certificate, as the SDK will use the default CA certificate; for connection in a private cloud, you can refer to the CA certificate customization section in [Self-Built Server Connection](Self-Built-Server-Connection.md).
+For connection in a public cloud, you don't need to set the CA certificate, as the SDK will use the default CA certificate; for connection in a private cloud, you can refer to the CA certificate customization section in [Self-Built Server Connection](PRELIM__自建服务器接入_EN-US.md).
 
 #### I entered the device identity information triplet but received the error message `Proxy unavailable (3)` during connection. What should I do?
 

@@ -36,7 +36,7 @@ private static String mDevPriv = "";           // Enter the device private key f
 
 ## Running demo to try out connecting to MQTT over WebSocket
 
-Please enter `mProductID` (product ID), `mDevName` (device name), and `mDevPSK` (device key) in `WebsocketMqttSampleTest.java` as instructed in [Device Connection Through MQTT over TCP](../../hub-device-java/docs/Device-Connection-Through-MQTT-over-TCP.md) first.
+Please enter `mProductID` (product ID), `mDevName` (device name), and `mDevPSK` (device key) in `WebsocketMqttSampleTest.java` as instructed in [Device Connection Through MQTT over TCP](../../../hub-device-java/docs/en/PRELIM__基于TCP的MQTT设备接入_EN-US.md) first.
 
 Run the `main` function in [WebsocketMqttSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/mqtt/WebsocketMqttSampleTest.java) and call `websocketConnect()` for authenticated connection to MQTT over WebSocket. Below is the sample code:
 ```

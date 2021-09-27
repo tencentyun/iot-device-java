@@ -10,7 +10,7 @@ The IoT Hub platform supports MQTT communication over WebSocket, so that devices
 
 ## Running demo to try out connecting to MQTT over WebSocket
 
-Please enter `PRODUCT_ID` (product ID), `DEVICE_NAME` (device name), and `DEVICE_PSK` (device key) in `app-config.json` as instructed in [Device Connection Through MQTT over TCP](../../../hub-device-android/docs/Device-Connection-Through-MQTT-over-TCP.md).
+Please enter `PRODUCT_ID` (product ID), `DEVICE_NAME` (device name), and `DEVICE_PSK` (device key) in `app-config.json` as instructed in [Device Connection Through MQTT over TCP](../../../hub-device-android/docs/en/PRELIM__基于TCP的MQTT设备接入_EN-US.md).
 
 Run the demo and click **Connect to MQTT (over WebSocket)** in the basic feature module for authenticated connection to MQTT. Below is the sample code:
 ```

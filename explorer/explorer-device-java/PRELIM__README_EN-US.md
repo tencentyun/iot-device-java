@@ -18,7 +18,7 @@ The IoT Explorer device SDK for Java works with the device data template defined
 The SDK supports remote Maven dependencies and local source code dependencies. For more information on how to connect, please see [SDK Connection Description](docs/en/PRELIM__SDK接入说明_EN-US.md).
 
 ## Downloading the sample code of IoT Explorer SDK for Java demo
-Download the complete code in the [repository](../..). The sample code of the IoT Explorer SDK for Java demo is in the [explorer-device-java/src/test/java](../explorer-device-java/src/test/java) directory.
+Download the complete code in the [repository](https://github.com/tencentyun/iot-device-java). The sample code of the IoT Explorer SDK for Java demo is in the [explorer-device-java/src/test/java](../explorer-device-java/src/test/java) directory.
 
 ## Feature documentation
 For more information on how to call the APIs, please see the demos of the following corresponding features.

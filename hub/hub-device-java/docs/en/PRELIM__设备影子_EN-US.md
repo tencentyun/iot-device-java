@@ -21,7 +21,7 @@ As an intermediary, device shadow can effectively implement two-way data sync be
 
 ## Entering parameters for authenticating device for connection
 
-Edit the parameter configuration information in the [unit_test_config.json](../src/test/resources/unit_test_config.json) file in the demo.
+Edit the parameter configuration information in the [unit_test_config.json](../../src/test/resources/unit_test_config.json) file in the demo.
 ```
 {
   "TESTSHADOWSAMPLE_PRODUCT_ID":         "",
@@ -32,11 +32,11 @@ Edit the parameter configuration information in the [unit_test_config.json](../s
 
 You need to enter the `TESTSHADOWSAMPLE_PRODUCT_ID` (product ID), `TESTSHADOWSAMPLE_DEVICE_NAME` (device name), and `TESTSHADOWSAMPLE_DEVICE_PSK` (device key) parameters of a key-authenticated device in `unit_test_config.json`.
 
-If certificate authentication is used, in addition to entering the `TESTSHADOWSAMPLE_PRODUCT_ID` (product ID) and `TESTSHADOWSAMPLE_DEVICE_NAME` (device name) in `unit_test_config.json`, you also need to set `mDevPSK` (device key) to `null` in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java), place the certificate and private key in the [resources](../src/test/resources/) folder, and enter the `mCertFilePath` (device certificate file name) and `mPrivKeyFilePath` (device private key file name).
+If certificate authentication is used, in addition to entering the `TESTSHADOWSAMPLE_PRODUCT_ID` (product ID) and `TESTSHADOWSAMPLE_DEVICE_NAME` (device name) in `unit_test_config.json`, you also need to set `mDevPSK` (device key) to `null` in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java), place the certificate and private key in the [resources](../../src/test/resources/) folder, and enter the `mCertFilePath` (device certificate file name) and `mPrivKeyFilePath` (device private key file name).
 
 ## Running demo to try out connecting device shadow to IoT Hub
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java) to authenticate the device for connection to the cloud. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java) to authenticate the device for connection to the cloud. Below is the sample code:
 
 ```
 public static void main(String[] args) {
@@ -156,7 +156,7 @@ enum ConnectStatus {
 
 ## Trying out disconnecting device shadow
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `closeConnect()`. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `closeConnect()`. Below is the sample code:
 ```
 private static void closeConnect() {
     try {
@@ -178,7 +178,7 @@ The following logcat log represents the process in which the device successfully
 
 ## Trying out registering device attribute
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `registerProperty()` to create a `DeviceProperty` attribute instance, add it to the attribute array, and wait for it to be uploaded and updated. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `registerProperty()` to create a `DeviceProperty` attribute instance, add it to the attribute array, and wait for it to be uploaded and updated. Below is the sample code:
 ```
 private static void registerProperty() {
     try {
@@ -203,7 +203,7 @@ The above method will maintain an `mDevicePropertyList` list of `DeviceProperty`
 
 ## Trying out regularly updating device shadow
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `update()` to update the device attribute information once every 10 seconds in the demo. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `update()` to update the device attribute information once every 10 seconds in the demo. Below is the sample code:
 ```
 private static void update() {
     try {
@@ -243,7 +243,7 @@ As can be seen from the above log, when you click **Regularly Update Device Shad
 
 ## Trying out getting device document
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `getDeviceDocument()` to pull the latest document of the device shadow. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `getDeviceDocument()` to pull the latest document of the device shadow. Below is the sample code:
 ```
 private static void getDeviceDocument() {
     try {
@@ -268,9 +268,9 @@ As can be seen from the above log, when you click **Get Device Document**, the d
 
 ## Trying out subscribing to topic
 
-Before running the demo, you need to configure the topic to be subscribed to as the `SHADOW_TEST_TOPIC` (topic permission) in the [app-config.json](../../hub-android-demo/src/main/assets/app-config.json) file. For more information on how to generate a topic, please see [Device Connection Through MQTT over TCP](../../hub-device-android/docs/Device-Connection-Through-MQTT-over-TCP.md).
+Before running the demo, you need to configure the topic to be subscribed to as the `SHADOW_TEST_TOPIC` (topic permission) in the [app-config.json](../../../hub-android-demo/src/main/assets/app-config.json) file. For more information on how to generate a topic, please see [Device Connection Through MQTT over TCP](../../../hub-device-android/docs/en/PRELIM__基于TCP的MQTT设备接入_EN-US.md).
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `subscribeTopic()` to subscribe to a device topic. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `subscribeTopic()` to subscribe to a device topic. Below is the sample code:
 ```
 private static void subscribeTopic() {
     try {
@@ -299,7 +299,7 @@ The following logcat log represents the process in which the device subscribes t
 
 A device can unsubscribe from a previously subscribed topic.
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `unSubscribeTopic()` to unsubscribe. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `unSubscribeTopic()` to unsubscribe. Below is the sample code:
 ```
 private static void unSubscribeTopic() {
     try {
@@ -324,9 +324,9 @@ The following logcat log represents the process in which the device unsubscribes
 
 ## Trying out publishing to topic
 
-Before running the demo, you need to configure the topic to be published to as `mTestTopic` (topic permission) in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). For more information on how to generate a topic, please see [Device Connection Through MQTT over TCP](../../hub-device-android/docs/Device-Connection-Through-MQTT-over-TCP.md).
+Before running the demo, you need to configure the topic to be published to as `mTestTopic` (topic permission) in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). For more information on how to generate a topic, please see [Device Connection Through MQTT over TCP](../../../hub-device-android/docs/en/PRELIM__基于TCP的MQTT设备接入_EN-US.md).
 
-Run the `main` function in [ShadowSampleTest.java](../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `publishTopic()` to publish to a device topic. Below is the sample code:
+Run the `main` function in [ShadowSampleTest.java](../../src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java). After the device is connected, call `publishTopic()` to publish to a device topic. Below is the sample code:
 ```
 private static void publishTopic() {
     try {

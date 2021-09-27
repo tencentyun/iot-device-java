@@ -14,11 +14,11 @@ To try out the features, you need to create products and devices as instructed i
 
 ## Compiling and running demo
 
-Download the sample code of the IoT Hub SDK for Java demo, prepare the development environment, and check the dependencies of the SDK. For more information on how to develop a device shadow, please see [Device Interconnection](../../hub-device-java/docs/Device-Interconnection.md#Compiling-and-running-demo), [Device Shadow](https://cloud.tencent.com/document/product/634/11918), and [Device Shadow Data Flow](https://cloud.tencent.com/document/product/634/14072).
+Download the sample code of the IoT Hub SDK for Java demo, prepare the development environment, and check the dependencies of the SDK. For more information on how to develop a device shadow, please see [Device Interconnection](../../../hub-device-java/docs/en/PRELIM__设备互通_EN-US.md#Compiling-and-running-demo), [Device Shadow](https://cloud.tencent.com/document/product/634/11918), and [Device Shadow Data Flow](https://cloud.tencent.com/document/product/634/14072).
 
 ## Entering parameters for authenticating device for connection
 
-Please enter the required parameters in the [ShadowSampleTest.java](../../hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java) file.
+Please enter the required parameters in the [ShadowSampleTest.java](../../../hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java) file.
 
 ```
 public class ShadowSampleTest {
@@ -31,7 +31,7 @@ Key authentication is used as an example here.
 
 ## Reporting device status information
 
-Run [ShadowSampleTest.java](../../hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java), initialize `mShadowConnection`, and connect the device shadow to MQTT through authenticated connection. The device shadow updates the device attribute information by calling the `update` API, subscribing to its own `$shadow/operation/result/${productId}/${deviceName}` topic first, and then publishing the attribute information to be reported through the `$shadow/operation/${productId}/${deviceName}` topic. Below is the sample code:
+Run [ShadowSampleTest.java](../../../hub-device-java/src/test/java/com/tencent/iot/hub/device/java/core/shadow/ShadowSampleTest.java), initialize `mShadowConnection`, and connect the device shadow to MQTT through authenticated connection. The device shadow updates the device attribute information by calling the `update` API, subscribing to its own `$shadow/operation/result/${productId}/${deviceName}` topic first, and then publishing the attribute information to be reported through the `$shadow/operation/${productId}/${deviceName}` topic. Below is the sample code:
 
 ```
 public static void main(String[] args) {

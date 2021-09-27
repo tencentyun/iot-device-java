@@ -131,7 +131,7 @@ public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, O
 public void onMessageReceived(final String topic, final MqttMessage message) {}
 ```
 
-`TXDataTemplateDownStreamCallBack` is the callback for downstream message processing. The prerequisite for receiving the following callbacks is for the device to subscribe to the relevant data template topics after it is connected. For more information, please see [Subscribing to and Unsubscribing from Topic](../docs/Subscribing-to-and-Unsubscribing-from-Topic.md).
+`TXDataTemplateDownStreamCallBack` is the callback for downstream message processing. The prerequisite for receiving the following callbacks is for the device to subscribe to the relevant data template topics after it is connected. For more information, please see [Subscribing to and Unsubscribing from Topic](../../docs/en/PRELIM__订阅与取消订阅%20Topic%20主题_EN-US.md).
 ```
 /**
  * Reply callbacks for attribute reporting, device information reporting, control clearing, event reporting, and multi-event reporting
