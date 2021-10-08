@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -215,21 +217,16 @@ public class AuthActivity extends AppCompatActivity {
 
     private void connect() {
         SharedPreferences settings = getSharedPreferences("config", Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(BROKER_URL, mBrokerURL);
-        editor.putString(PRODUCT_ID, mProductID);
-        editor.putString(DEVICE_NAME, mDevName);
-        editor.putString(DEVICE_PSK, mDevPSK);
-        editor.commit();
-
         mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
         mProductID = settings.getString(PRODUCT_ID, mProductID);
         mDevName = settings.getString(DEVICE_NAME, mDevName);
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
-
-        FaceKitSample.getInstance().init(getApplicationContext(), mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
-        FaceKitSample.getInstance().connect();
+        if (TextUtils.isEmpty(mProductID) || TextUtils.isEmpty(mDevName) || TextUtils.isEmpty(mDevPSK)) {
+            Toast.makeText(this, "请配置正确的ProductID/DeviceName/DevicePSK，然后重试", Toast.LENGTH_LONG).show();
+        } else {
+            FaceKitSample.getInstance().init(getApplicationContext(), mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
+            FaceKitSample.getInstance().connect();
+        }
     }
 
     /**

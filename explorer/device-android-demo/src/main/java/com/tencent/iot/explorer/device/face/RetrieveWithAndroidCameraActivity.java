@@ -138,6 +138,7 @@ public class RetrieveWithAndroidCameraActivity extends AppCompatActivity {
             .addStep(new PreprocessStep(PreprocessStep.IN_RAW_FRAME_GROUP))
             .addStep(new TrackStep())
             .addStep(new PickBestStep(TrackStep.OUT_COLOR_FACE))
+            .addStep(new ColorLiveTaskStep(PickBestStep.OUT_PICK_OK_FACES))
             .addStep(new AbsStep<StuffBox>() {
                 @Override
                 protected boolean onProcess(StuffBox stuffBox) {
@@ -147,7 +148,8 @@ public class RetrieveWithAndroidCameraActivity extends AppCompatActivity {
             })
             .submit()
             .onThread(AIThreadPool.instance().getHeavyThread())
-            .addStep(new ExtractFeatureStep(TrackStep.OUT_COLOR_FACE))//提取人脸特征, TrackStep.OUT_COLOR_FACE 提取全部人脸特征, PickBestStep.OUT_PICK_OK_FACES: 提取最佳脸特征
+            .addStep(new GlassesDetectorStep(ColorLiveTaskStep.OUT_COLOR_LIVE_OK))
+            .addStep(new ExtractFeatureStep(GlassesDetectorStep.OUT_GLASS_OK_NEXT))//提取人脸特征, TrackStep.OUT_COLOR_FACE 提取全部人脸特征, PickBestStep.OUT_PICK_OK_FACES: 提取最佳脸特征
             .addStep(new RetrievalStep(ExtractFeatureStep.OUT_FACE_FEATURES))//搜索人脸特征
             .addStep(new AbsStep<StuffBox>() {
                 @Override
