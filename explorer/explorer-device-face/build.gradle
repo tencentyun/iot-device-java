@@ -133,7 +133,7 @@ dependencies {
     if (findProject(':explorer:explorer-device-android') != null) {
         api project(':explorer:explorer-device-android')
     }
-    api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.3.2.156-SNAPSHOT'
+    api 'com.tencent.iot.thirdparty.android:ai-face-sdk:6.3.2.156'
 }
 
 signing {
