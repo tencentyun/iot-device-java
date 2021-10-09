@@ -12,11 +12,13 @@ import com.tencent.cloud.ai.fr.business.heavystep.GlassesDetectorStep;
 import com.tencent.cloud.ai.fr.business.heavystep.QualityProStep;
 import com.tencent.cloud.ai.fr.business.heavystep.RegStep;
 import com.tencent.cloud.ai.fr.business.heavystep.SaveFeaturesToFileStep;
+import com.tencent.cloud.ai.fr.business.job.AsyncJobBuilder;
 import com.tencent.cloud.ai.fr.business.job.StuffBox;
 import com.tencent.cloud.ai.fr.business.job.SyncJobBuilder;
 import com.tencent.cloud.ai.fr.business.lightstep.PickBestStep;
 import com.tencent.cloud.ai.fr.business.lightstep.PreprocessStep;
 import com.tencent.cloud.ai.fr.business.lightstep.TrackStep;
+import com.tencent.cloud.ai.fr.business.thread.AIThreadPool;
 import com.tencent.cloud.ai.fr.pipeline.AbsJob;
 import com.tencent.cloud.ai.fr.pipeline.AbsStep;
 import com.tencent.cloud.ai.fr.sdksupport.YTSDKManager;
@@ -411,15 +413,29 @@ public class FaceKitSample {
             @Override
             public void onFeatureDelete(String featureId, String resourceName) {
                 TXLog.e(TAG, "onFeatureDelete:" + resourceName);
-
-                String[] featureIds = new String[1];
-                featureIds[0] = resourceName;
-                float[] cvtTable = YTFaceRetrieval.loadConvertTable(mContext.getAssets(), "models/face-feature-v705/cvt_table_1vN_705.txt");
-                YTFaceRetrieval mYTFaceRetriever = new YTFaceRetrieval(cvtTable, FACE_FEAT_LENGTH);
-                int code = mYTFaceRetriever.deleteFeatures(featureIds);
-                if (code != 0) {
-                    Log.w(TAG, resourceName + "deleteFeatures() code=" + code);
-                }
+                //人脸删除流水线 1、删除内存中的人脸  2、删除本地人脸数据
+                AsyncJobBuilder.PipelineBuilder deletePipelineBuilder = new AsyncJobBuilder.PipelineBuilder()
+                        .onThread(AIThreadPool.instance().getHeavyThread())
+                        .addStep(new AbsStep<StuffBox>("DeleteFaceTask") {
+                            @Override
+                            protected boolean onProcess(StuffBox stuffBox) {
+                                int i = stuffBox.getCurrentThreadSdkManager().mYTFaceRetriever.deleteFeatures(new String[]{resourceName});
+                                return true;
+                            }
+                        })
+                        .addStep(new AbsStep<StuffBox>() {
+                            @Override
+                            protected boolean onProcess(StuffBox stuffBox) {
+                                File file = new File("/sdcard/FaceLibrary/" + resourceName + ".txt");
+                                if (file.exists()) {
+                                    file.delete();
+                                }
+                                return true;
+                            }
+                        }).submit();
+                StuffBox stuffBox = new StuffBox();//创建流水线运行过程所需的物料箱
+                //synthesizeNotRecycle合成的流水线任务不会丢弃，适合必须要执行的任务
+                new AsyncJobBuilder(stuffBox, deletePipelineBuilder).synthesizeNotRecycle(/*合成流水线任务*/).launch(/*执行任务*/);
             }
 
             @Override
