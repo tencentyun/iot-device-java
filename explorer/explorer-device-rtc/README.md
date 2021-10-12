@@ -221,7 +221,7 @@ explorer-device-android TXMqttConnection 类 的接口
 
 时序图：
 
-![UserCallDeviceUML](media/UserCallDeviceUML.png)
+![UserCallDeviceUML](media/UserCallDeviceUML.jpg)
 
 1. 连连APP/小程序 在控制面板页面中点击 视频呼叫。
 
@@ -251,18 +251,22 @@ TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSpon
 接到此消息后需要调用
 ``` 
 TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
-``` 
+```
 
 6、连连APP/小程序 和 设备端 进行视频通话。
 
 7、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
 ``` 
 TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
-``` 
+```
 
 **连连APP/小程序 音频呼叫 Android设备端 流程和视频呼叫类似，注意修改对应的呼叫类型**
 
 ### Android设备端 视频呼叫 连连APP/小程序
+
+时序图：
+
+![UserCallDeviceUML](media/DeviceCallUserUML.jpg)
 
 1、设备端点击视频呼叫，需要调用
 ```
@@ -279,13 +283,13 @@ TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, agent, userId);//�
 接到此消息后需要调用
 ``` 
 TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
-``` 
+```
 
 4、连连APP/小程序 和 设备端 进行视频通话。
 
 5、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
 ``` 
 TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
-``` 
+```
 
 **Android设备端 音频呼叫 连连APP/小程序 流程和视频呼叫类似，注意修改对应的呼叫类型**
