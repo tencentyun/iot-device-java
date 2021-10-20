@@ -54,7 +54,9 @@ jobs:
 #      - name: Test with Gradle
 #        run: ./gradlew test
       - name: Build with Gradle
-        run: ./gradlew build -x test
+        run: |
+          sed -i '/snapshots/, +d' build.gradle
+          ./gradlew build -x test
       - name: Publish aar and jar to Maven
         run: ./gradlew publish
       - name: Archive the apks
