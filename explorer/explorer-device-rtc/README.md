@@ -4,6 +4,7 @@
      *  [explorer-device-android SDK 设计说明](#explorer-device-android-SDK-设计说明)
      *  [explorer-device-rtc SDK 设计说明](#explorer-device-rtc-SDK-设计说明)
      *  [explorer-device-rtc SDK 回调callback 设计说明](#explorer-device-rtc-SDK-回调callback-设计说明)
+     *  [explorer-device-rtc SDK 自定义音频数据](#explorer-device-rtc-SDK-自定义音频数据)
   * [通话流程梳理](#通话流程梳理)
 
 # IoT Explorer RTC Android SDK开发指南
@@ -193,6 +194,38 @@ TXTRTCCallBack 授权回调callback说明如下：
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
 ```
+
+### explorer-device-rtc SDK 自定义音频数据
+#### 1. 启用音频自定义采集模式
+> 调用TRTCCloud的`enableCustomAudioCapture(boolean enable)`方法即可开启音频自定义采集模式
+
+> 开启该模式后，SDK不再运行原有的音频采集流程，即不再继续从麦克风采集音频数据，而是只保留音频编码和发送能力。您需要通过`sendCustomAudioData`不断地向 SDK 发送自己采集的音频数据。
+
+#### 2. 发送自定义音频数据
+调用TRTCCloud的`sendCustomAudioData(TRTCCloudDef.TRTCAudioFrame frame)`
+
+参数`TRTCAudioFrame`推荐下列填写方式（其他字段不需要填写）：
+* audioFormat：音频数据格式，仅支持 TRTCAudioFrameFormatPCM。
+* data：音频帧 buffer。音频帧数据只支持 PCM 格式，支持[5ms ~ 100ms]帧长，推荐使用 20ms 帧长，长度计算方法：【48000采样率、单声道的帧长度：48000 × 0.02s × 1 × 16bit = 15360bit = 1920字节】。
+* sampleRate：采样率，支持：16000、24000、32000、44100、48000。
+* channel：声道数（如果是立体声，数据是交叉的），单声道：1； 双声道：2。
+* timestamp：时间戳，单位为毫秒（ms），请使用音频帧在采集时被记录下来的时间戳。
+
+#### 3. 代码示例
+```
+//启用音频自定义采集模式
+mTRTCCloud.enableCustomAudioCapture(true);
+...
+//发送自定义音频数据
+TRTCCloudDef.TRTCAudioFrame trtcAudioFrame = new TRTCCloudDef.TRTCAudioFrame();
+trtcAudioFrame.data = data;
+trtcAudioFrame.sampleRate = sampleRate;
+trtcAudioFrame.channel = channel;
+trtcAudioFrame.timestamp = timestamp;
+mTRTCCloud.sendCustomAudioData(trtcAudioFrame);
+```
+
+参考文档：[自定义采集](https://cloud.tencent.com/document/product/647/34066) [接口API](https://cloud.tencent.com/document/product/647/32267#.E8.87.AA.E5.AE.9A.E4.B9.89.E9.87.87.E9.9B.86.E5.92.8C.E8.87.AA.E5.AE.9A.E4.B9.89.E6.B8.B2.E6.9F.93)
 
 ## 设备与用户绑定说明
 
