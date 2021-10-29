@@ -243,6 +243,18 @@ public class MQTTSample {
         mMqttConnection.gatewaySubdevReportVer(version);
     }
 
+    public void subscribeNTPTopic() {
+        // QOS等级
+        int qos = TXMqttConstants.QOS1;
+        // 用户上下文（请求实例）
+        MQTTRequest mqttRequest = new MQTTRequest("subscribeNTPTopic", requestID.getAndIncrement());
+        mMqttConnection.subscribeNTPTopic(qos, mqttRequest);
+    }
+
+    public void getNTPService() {
+        mMqttConnection.getNTPService();
+    }
+
     public void initOTA() {
         TXLog.e(TAG, "path2Store " + path2Store);
         mMqttConnection.initOTA(path2Store, oTACallBack);

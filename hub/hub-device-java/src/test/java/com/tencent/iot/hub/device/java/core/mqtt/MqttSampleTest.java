@@ -152,6 +152,18 @@ public class MqttSampleTest {
 		mqttconnection.subscribeBroadcastTopic(TXMqttConstants.QOS1, mqttRequest);
 	}
 
+	public void subscribeNTPTopic() {
+		// QOS等级
+		int qos = TXMqttConstants.QOS1;
+		// 用户上下文（请求实例）
+		MQTTRequest mqttRequest = new MQTTRequest("subscribeNTPTopic", requestID.getAndIncrement());
+		mqttconnection.subscribeNTPTopic(qos, mqttRequest);
+	}
+
+	public void getNTPService() {
+		mqttconnection.getNTPService();
+	}
+
 	private static void deviceLog() {
 		mqttconnection.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
 		mqttconnection.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
@@ -223,6 +235,9 @@ public class MqttSampleTest {
 				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("broadcast/rxd")) { // broadcast Topic成功
 					subscribeBroadCastTopicSuccess = true;
 					unlock();
+				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("sys/operation")) { // broadcast Topic成功
+					subscribeNTPTopicSuccess = true;
+					unlock();
 				}
 			}
 		}
@@ -244,6 +259,10 @@ public class MqttSampleTest {
 		public void onMessageReceived(final String topic, final MqttMessage message) {
 			String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
 			Loggor.debug(TAG, logInfo);
+			if (message.toString().contains("\"type\":\"get\"") && message.toString().contains("ntptime")) {
+				getNTPServiceSuccess = true;
+				unlock();
+			}
 		}
 	}
 
@@ -369,6 +388,8 @@ public class MqttSampleTest {
 	private static boolean unSubscribeTopicSuccess = false;
 	private static boolean subscribeRRPCTopicSuccess = false;
 	private static boolean subscribeBroadCastTopicSuccess = false;
+	private static boolean subscribeNTPTopicSuccess = false;
+	private static boolean getNTPServiceSuccess = false;
 
 	private static void lock() {
 		latch = new CountDownLatch(COUNT);
@@ -415,6 +436,16 @@ public class MqttSampleTest {
 		lock();
 		assertTrue(subscribeBroadCastTopicSuccess);
 		Loggor.debug(TAG, "after subscribeBroadCastTopic");
+
+		subscribeNTPTopic();
+		lock();
+		assertTrue(subscribeNTPTopicSuccess);
+		Loggor.debug(TAG, "after subscribeNTPTopic");
+
+		getNTPService();
+		lock();
+		assertTrue(getNTPServiceSuccess);
+		Loggor.debug(TAG, "after getNTPService");
 
 		disconnect();
 		lock();

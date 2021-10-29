@@ -54,6 +54,8 @@ public class TXMqttConnection implements MqttCallbackExtended {
     private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
     private static final String HMAC_SHA_256 = "HmacSHA256";
     private static final String PRODUCT_CONFIG_PREFIX = "$config/operation/result/";
+    private static final String NTP_OPERATION_RES_PREFIX = "$sys/operation/result/";
+    private static final String NTP_OPERATION_PREFIX = "$sys/operation/";
     static { Loggor.setLogger(logger); }
     private String subDevVersion = "0.0"; // 未设置，则默认当前的版本是 0.0  用于上报版本号
     /**
@@ -1150,6 +1152,48 @@ public class TXMqttConnection implements MqttCallbackExtended {
             return Status.MQTT_NO_CONN;
         }
         return Status.OK;
+    }
+
+    /**
+     * 发布请求 NTP 服务
+     *
+     * @return 操作结果 {@link Status}
+     */
+    public Status getNTPService() {
+
+        String topic = NTP_OPERATION_PREFIX + mProductId + "/" + mDeviceName;
+
+        MqttMessage message = new MqttMessage();
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("type", "get");
+
+            JSONArray timeArray = new JSONArray();
+            timeArray.put("time");
+
+            jsonObject.put("resource", timeArray);
+        } catch (JSONException e) {
+
+        }
+
+        message.setQos(0);
+        message.setPayload(jsonObject.toString().getBytes());
+
+        Status status = this.publish(topic, message, null);
+        return status;
+    }
+
+    /**
+     * 订阅 NTP Topic, 结果通过回调函数通知，topic 格式: $sys/operation/result/${ProductId}/${DeviceName}/+
+     *
+     * @param qos QOS 等级
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
+     */
+    public Status subscribeNTPTopic(final int qos, Object userContext) {
+        String topic = NTP_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
+        return subscribe(topic, qos, userContext);
     }
 
     /**

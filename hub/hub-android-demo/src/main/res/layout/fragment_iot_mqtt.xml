@@ -227,6 +227,24 @@
             android:text="@string/report_sub_dev_version" />
     </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/subscribe_ntp_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/subscribe_ntp_topic" />
+                <Button
+                    android:id="@+id/get_ntp_service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/get_ntp_service" />
+            </LinearLayout>
+
     </LinearLayout>
     </ScrollView>
 

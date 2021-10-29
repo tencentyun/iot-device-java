@@ -42,4 +42,6 @@
     <string name="get_dev_doc">获取设备文档</string>
     <string name="timely_update_dev_shadow">定时更新设备影子</string>
     <string name="request_permission_first">必要权限申请失败</string>
+    <string name="subscribe_ntp_topic">订阅NTP主题</string>
+    <string name="get_ntp_service">获取NTP时间</string>
 </resources>

@@ -108,6 +108,9 @@ public class IoTMqttFragment extends Fragment {
     private Button mConcernRemoteConfigBtn;
     private Button mReportSubDevVersionBtn;
 
+    private Button mSubscribeNTPTopicBtn;
+    private Button mGetNTPServiceBtn;
+
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = BuildConfig.PRODUCT_ID;
@@ -518,6 +521,20 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.reportSubDevVersion("0.0");
             }
         });
+
+        mSubscribeNTPTopicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.subscribeNTPTopic();
+            }
+        });
+
+        mGetNTPServiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.getNTPService();
+            }
+        });
         return view;
     }
 
@@ -548,6 +565,8 @@ public class IoTMqttFragment extends Fragment {
         mGetRemoteConfigBtn = view.findViewById(R.id.get_remote_config);
         mConcernRemoteConfigBtn = view.findViewById(R.id.concern_remote_config);
         mReportSubDevVersionBtn = view.findViewById(R.id.report_sub_dev_version);
+        mSubscribeNTPTopicBtn = view.findViewById(R.id.subscribe_ntp_topic);
+        mGetNTPServiceBtn = view.findViewById(R.id.get_ntp_service);
 
     }
 
