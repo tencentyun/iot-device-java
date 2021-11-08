@@ -1,4 +1,4 @@
-[简体中文](././README.md) | English
+[简体中文](../../README.md) | English
 
 * [IoT Explorer Face Recognition SDK for Android Development Guide](#IoT-Explorer-Face-Recognition-SDK-for-Android-Development-Guide)
   * [How to import](#How-to-import)
@@ -15,7 +15,7 @@ This document describes how to connect the Offline Face Recognition SDK for Andr
 
 - SDK integration
 
-If you don't need to connect the Offline Face Recognition SDK and only need to connect the `explorer-device-android` SDK, please see [Compilation Environment and SDK Connection Description.md](../explorer-device-android/docs/en/PRELIM__编译环境及SDK接入说明_EN-US.md).
+If you don't need to connect the Offline Face Recognition SDK and only need to connect the `explorer-device-android` SDK, please see [Compilation Environment and SDK Connection Description.md](../../../explorer-device-android/docs/en/PRELIM__编译环境及SDK接入说明_EN-US.md).
 
  -  Remotely build a Gradle project through the official SDK
 
@@ -48,7 +48,7 @@ If you don't need to connect the Offline Face Recognition SDK and only need to c
     }
     ```
  -  Depend on the local SDK source code for build
-    Modify the **[build.gradle](../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-face](../explorer-device-face) source code. Below is the sample code:
+    Modify the **[build.gradle](../../../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-face](../../../explorer-device-face) source code. Below is the sample code:
     
      ```gr
     dependencies {
@@ -62,7 +62,7 @@ Build from the local `explorer-device-android` and `explorer-device-face` SDK so
 
 ### explorer-device-android SDK design description
 
-For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
+For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../../../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
 
 ### explorer-device-face SDK design description
 

@@ -1,4 +1,4 @@
-[简体中文](././README.md) | English
+[简体中文](../../README.md) | English
 
 * [IoT Explorer RTC SDK for Android Development Guide](#IoT-Explorer-RTC-SDK-for-Android-Development-Guide)
   * [How to import](#How-to-import)
@@ -16,7 +16,7 @@ This document describes how to connect the TRTC SDK for Android to the IoT Explo
 
 - SDK integration
 
-If you don't need to connect the TRTC SDK and only need to connect the `explorer-device-android` SDK, please see [Compilation Environment and SDK Connection Description.md](../explorer-device-android/docs/en/PRELIM__编译环境及SDK接入说明_EN-US.md).
+If you don't need to connect the TRTC SDK and only need to connect the `explorer-device-android` SDK, please see [Compilation Environment and SDK Connection Description.md](../../../explorer-device-android/docs/en/PRELIM__编译环境及SDK接入说明_EN-US.md).
 
  -  Remotely build a Gradle project through the official SDK
 
@@ -49,7 +49,7 @@ If you don't need to connect the TRTC SDK and only need to connect the `explorer
     }
     ```
  -  Depend on the local SDK source code for build
-    Modify the **[build.gradle](../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-rtc](../explorer-device-rtc) source code. Below is the sample code:
+    Modify the **[build.gradle](../../../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-rtc](../../../explorer-device-rtc) source code. Below is the sample code:
     
      ```gr
     dependencies {
@@ -63,7 +63,7 @@ Build from the local `explorer-device-android` and `explorer-device-rtc` SDK sou
 
 ### explorer-device-android SDK design description
 
-For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
+For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../../../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
 
 ### explorer-device-rtc SDK design description
 
@@ -223,7 +223,7 @@ The **Tencent IoT Link application/mini program** can be used to scan the QR cod
 
 Sequence diagram:
 
-![UserCallDeviceUML](media/UserCallDeviceUML.png)
+![UserCallDeviceUML](../../media/UserCallDeviceUML.jpg)
 
 1. On the IoT Link application/mini program, the caller clicks **Make Video Call** in the control panel.
 

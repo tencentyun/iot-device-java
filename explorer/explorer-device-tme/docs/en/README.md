@@ -1,4 +1,4 @@
-[简体中文](././README.md) | English
+[简体中文](../../README.md) | English
 
 * [IoT Explorer TME SDK for Android Development Guide](#IoT-Explorer-TME-SDK-for-Android-Development-Guide)
   * [How to import](#How-to-import)
@@ -154,7 +154,7 @@ public class MyApplication extends Application {
 
 ### explorer-device-android SDK design description
 
-For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
+For more information on explorer-device-android SDK, please see [SDK API and Parameter Descriptions.md](../../../explorer-device-android/docs/en/PRELIM__SDK%20API及参数说明_EN-US.md).
 
 ### explorer-device-tme SDK design description
 
