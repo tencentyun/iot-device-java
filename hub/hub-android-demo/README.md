@@ -1,3 +1,5 @@
+简体中文 | [English](docs/en/README.md)
+
 ## 概述
 
 该演示Demo通过四个tab页面演示了[HUB Android SDK](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-android) 基础功能和个别使用场景

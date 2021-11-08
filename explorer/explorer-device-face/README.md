@@ -1,3 +1,5 @@
+简体中文 | [English](docs/en/README.md)
+
 * [IoT Explorer人脸识别 Android SDK开发指南](#IoT-Explorer人脸识别-Android-SDK开发指南)
   * [引用方式](#引用方式)
   * [API说明](#API说明)

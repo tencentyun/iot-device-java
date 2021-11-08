@@ -1,3 +1,5 @@
+[简体中文](././README.md) | English
+
 ## Overview
 This demo provides four entries: `IOT DEMO` shows the basic features and use cases of the [IoT Explorer Device SDK for Android](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android); `IOT AI FACE Demo` shows the simple use of [IoT Explorer Device Face Recognition SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face); `IOT TRTC DEMO` shows the simple use of [IoT Explorer Device RTC SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-rtc); and `IOT TME DEMO` shows the simple use of [IoT Explorer Device TME SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-tme).
 演示了[Explorer Device Face SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face)的简单应用; `IOT TRTC DEMO`演示[Explorer Device RTC SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-rtc)的简单应用; `IOT TME DEMO`演示[Explorer Device TME SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-tme)的简单应用.

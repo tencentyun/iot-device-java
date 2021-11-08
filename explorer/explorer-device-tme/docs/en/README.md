@@ -1,3 +1,5 @@
+[简体中文](././README.md) | English
+
 * [IoT Explorer TME SDK for Android Development Guide](#IoT-Explorer-TME-SDK-for-Android-Development-Guide)
   * [How to import](#How-to-import)
   * [API description](#API-description)
@@ -14,7 +16,7 @@ This document describes how to connect the KuGou ecosystem solution SDK of Tence
 
 1. SDK integration
  - Depend on the local SDK source code for build
-    Modify the **[build.gradle](../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-tme](../explorer-device-tme) source code. Below is the sample code:
+    Modify the **[build.gradle](../../../device-android-demo/build.gradle)** of the application module to make it dependent on the [explorer-device-tme](../..) source code. Below is the sample code:
 
     ```gr
     dependencies {
@@ -148,7 +150,7 @@ public class MyApplication extends Application {
 |:-|:-|:-|
 | positionMs | int | Playback progress in milliseconds |
 
-**For more information, please see **[IoT Explorer Demo](../device-android-demo/src/main/java/com/tencent/iot/explorer/device/tme/TmeMainActivity.java).
+**For more information, please see **[IoT Explorer Demo](../../../device-android-demo/src/main/java/com/tencent/iot/explorer/device/tme/TmeMainActivity.java).
 
 ### explorer-device-android SDK design description
 

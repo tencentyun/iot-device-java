@@ -1,3 +1,5 @@
+[简体中文](././README.md) | English
+
 ## Overview
 
 This demo shows the basic features and use cases of the [IoT Hub SDK for Android](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-android) through four tab pages.
