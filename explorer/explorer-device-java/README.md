@@ -20,7 +20,7 @@
 SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [SDK接入说明](docs/zh/SDK接入说明.md)
 
 ## 下载IoT Explorer Java-SDK Demo示例代码
-下载[仓库](../..)下完整代码，IoT Explorer Java-SDK Demo示例代码在 [explorer-device-java/src/test/java](../explorer-device-java/src/test/java) 目录下。
+下载[仓库](../../)下完整代码，IoT Explorer Java-SDK Demo示例代码在 [explorer-device-java/src/test/java](../explorer-device-java/src/test/java) 目录下。
 
 ## 功能文档
 调用API接口可以参考以下对应功能示例Demo的使用。

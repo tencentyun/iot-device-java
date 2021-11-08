@@ -21,7 +21,7 @@ The IoT Hub device SDK for Android relies on a secure and powerful data channel 
 The SDK supports remote Maven dependencies and local source code dependencies. For more information on how to connect, please see [Compilation Environment and SDK Connection Description](../../docs/en/PRELIM__编译环境及SDK接入说明_EN-US.md).
 
 ## Downloading the sample code of IoT Hub SDK for Android demo
-Download the complete code in the [repository](../../../..). The sample code of the IoT Hub SDK for Android demo is in the [hub-android-demo](../../../hub-android-demo) module.
+Download the complete code in the [repository](../../../../). The sample code of the IoT Hub SDK for Android demo is in the [hub-android-demo](../../../hub-android-demo) module.
 
 Download the [installation package](https://github.com/tencentyun/iot-device-android/wiki/下载安装).
 

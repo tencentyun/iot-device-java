@@ -2,7 +2,7 @@
 
 ## Overview
 
-This demo shows the basic features and use cases of the [IoT Hub SDK for Android](https://github.com/tencentyun/iot-device-java/tree/master/hub/hub-device-android) through four tab pages.
+This demo shows the basic features and use cases of the [IoT Hub SDK for Android](../../../hub-device-android) through four tab pages.
 ## Demo Entry Diagram
 ```
 ├── Demo
@@ -16,7 +16,7 @@ This demo shows the basic features and use cases of the [IoT Hub SDK for Android
 ### Basic feature
 This page contains three sections from top to bottom: **parameter settings section**, **feature operation section**, and **log output section**.
 1. Parameter settings section
-    * It provides the input box for the drop-down options `key` and `value` (which are optional here). You can set them in [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/hub/hub-android-demo/src/main/assets/app-config.json).
+    * It provides the input box for the drop-down options `key` and `value` (which are optional here). You can set them in [app-config.json](../../src/main/assets/app-config.json).
 2. Feature operation section
     * It offers the following operations: connection to/disconnection from MQTT, dynamic registration, topic-related operations (subscribing to/unsubscribing from/publishing to topic and subscribing to RRPC/broadcast topics), subdevice connection/disconnection, check for firmware update, log-related operations, subdevice binding/unbinding, device topological relationship query, and WebSocket-related operations.
     * Note: to use other features in the feature operation section, you must click **Connect to MQTT** and wait until the log output section print out `onConnectComplete, status[ok]`.

@@ -22,7 +22,7 @@ The IoT Explorer device SDK for Android works with the device data template defi
 The SDK supports remote Maven dependencies and local source code dependencies. For more information on how to connect, please see [Compilation Environment and SDK Connection Description](PRELIM__编译环境及SDK接入说明_EN-US.md).
 
 ## Downloading the sample code of IoT Explorer SDK for Android demo
-Download the complete code in the [repository](../../../..). The sample code of the IoT Explorer SDK for Android demo is in the [device-android-demo](../../../device-android-demo) module.
+Download the complete code in the [repository](../../../../). The sample code of the IoT Explorer SDK for Android demo is in the [device-android-demo](../../../device-android-demo) module.
 
 Download the [installation package](https://github.com/tencentyun/iot-device-android/wiki/下载安装).
 

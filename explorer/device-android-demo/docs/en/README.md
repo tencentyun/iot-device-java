@@ -1,8 +1,7 @@
 [简体中文](../../README.md) | English
 
 ## Overview
-This demo provides four entries: `IOT DEMO` shows the basic features and use cases of the [IoT Explorer Device SDK for Android](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android); `IOT AI FACE Demo` shows the simple use of [IoT Explorer Device Face Recognition SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face); `IOT TRTC DEMO` shows the simple use of [IoT Explorer Device RTC SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-rtc); and `IOT TME DEMO` shows the simple use of [IoT Explorer Device TME SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-tme).
-演示了[Explorer Device Face SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face)的简单应用; `IOT TRTC DEMO`演示[Explorer Device RTC SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-rtc)的简单应用; `IOT TME DEMO`演示[Explorer Device TME SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-tme)的简单应用.
+This demo provides four entries: `IOT DEMO` shows the basic features and use cases of the [IoT Explorer Device SDK for Android](../../../explorer-device-android); `IOT AI FACE Demo` shows the simple use of [IoT Explorer Device Face Recognition SDK](../../../explorer-device-face); `IOT TRTC DEMO` shows the simple use of [IoT Explorer Device RTC SDK](../../../explorer-device-rtc); and `IOT TME DEMO` shows the simple use of [IoT Explorer Device TME SDK](../../../explorer-device-tme).
 ## Demo Entry Diagram
 ```
 ├── Demo
@@ -17,7 +16,7 @@ This demo shows the basic features of the IoT Explorer device SDK for Android th
 ### Data template
 This page contains three sections from top to bottom: **parameter settings section**, **feature operation section**, and **log output section**.
 1. Parameter settings section
-    * It provides the input box for the drop-down options `key` and `value` (which are optional here). You can set them in [app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/explorer/device-android-demo/src/main/assets/app-config.json).
+    * It provides the input box for the drop-down options `key` and `value` (which are optional here). You can set them in [app-config.json](../../src/main/assets/app-config.json).
 2. Feature operation section
     * It offers the following operations: device connection/disconnection, topic-related operations (such as subscribing to/unsubscribing from topic), attribute reporting, status update, device information reporting, control clearing, event reporting, and check for firmware update.
     * Note: to use other features in the feature operation section, you must click **Connect Device** and wait until the log output section prints out `onConnectComplete, status[ok]`.
