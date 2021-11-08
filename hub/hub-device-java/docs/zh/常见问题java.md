@@ -81,3 +81,15 @@ log4j.appender.file.layout = org.apache.log4j.PatternLayout
 log4j.appender.file.layout.ConversionPattern = %d{HH:mm:ss,SSS} [%t] %-5p %c{1} %L %x - %m%n
 ```
 以上示例会将SDK日志文件保存在hub/hub-device-java.log文件中
+
+#### 设备连接broker时，报以下异常：MqttException (0) - java.net.UnknownHostException: ${PRODUCT_ID}.iotcloud.tencentdevices.com]是什么问题？
+
+检查设备网络是否正常，该异常是设备没网导致
+
+#### 设备连接broker时，报broker unavailable错误
+
+该错属于broker服务器报错，确认broker服务器是否宕机
+
+#### 动态注册时，报Certificate not valid until ${日期} 错
+
+该错出现的原因是设备本机时间不正确，请检查设备本机的时间是否正确
