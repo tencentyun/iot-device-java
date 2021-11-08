@@ -1,3 +1,5 @@
+[简体中文](././README.md) | English
+
 * [IoT Explorer Device SDK for Android](#IoT-Explorer-Device-SDK-for-Android)
   * [Prerequisites](#Prerequisites)
   * [SDK connection guide](#SDK-connection-guide)

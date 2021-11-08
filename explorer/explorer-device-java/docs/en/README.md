@@ -1,3 +1,5 @@
+[简体中文](././README.md) | English
+
 * [IoT Explorer Device SDK for Java](#IoT-Explorer-Device-SDK-for-Java)
   * [Prerequisites](#Prerequisites)
   * [Project configuration](#Project-configuration)
