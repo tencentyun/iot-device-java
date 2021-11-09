@@ -29,7 +29,7 @@ The development environment used in this demo is as follows:
 
 #### Checking SDK dependencies
 
-Source code dependencies are used in the demo. You can also add dependencies in Maven. For more information, please see [Project configuration](../../../hub-device-java/PRELIM__README_EN-US.md#Project-configuration).
+Source code dependencies are used in the demo. You can also add dependencies in Maven. For more information, please see [Project configuration](../../../hub-device-java/docs/en/README.md#Project-configuration).
 
 ## Entering parameters for authenticating device for connection
 

@@ -25,7 +25,7 @@ For more information on how to manipulate the topic permissions, please see [Per
 
 ## Compiling and running demo
 
-[Downloading the sample code of IoT Hub SDK for Android demo](../../PRELIM__README_EN-US.md#Downloading-the-sample-code-of-IoT-Hub-SDK-for-Android-demo)
+[Downloading the sample code of IoT Hub SDK for Android demo](README.md#Downloading-the-sample-code-of-IoT-Hub-SDK-for-Android-demo)
 
 #### Entering parameters for authenticating device for connection
 Edit the configuration information in the [app-config.json](../../../hub-android-demo/src/main/assets/app-config.json) file.

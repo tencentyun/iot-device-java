@@ -15,7 +15,7 @@ Before connecting devices to the SDK, you need to create project products and de
 
 ## Compiling and running demo
 
-[Downloading the sample code of IoT Explorer SDK for Android demo](../../PRELIM__README_EN-US.md#Downloading-the-sample-code-of-IoT-Explorer-SDK-for-Android-demo)
+[Downloading the sample code of IoT Explorer SDK for Android demo](README.md#Downloading-the-sample-code-of-IoT-Explorer-SDK-for-Android-demo)
 
 #### Entering parameters for authenticating device for connection
 Edit the parameter configuration information in the [app-config.json](../../../device-android-demo/src/main/assets/app-config.json) file.

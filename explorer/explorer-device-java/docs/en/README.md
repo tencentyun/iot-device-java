@@ -3,7 +3,7 @@
 * [IoT Explorer Device SDK for Java](#IoT-Explorer-Device-SDK-for-Java)
   * [Prerequisites](#Prerequisites)
   * [Project configuration](#Project-configuration)
-  * [Downloading the sample code of IoT Explorer SDK for Java demo](#Downloading-the-sample-code-of IoT-Explorer-SDK-for-Java-demo)
+  * [Downloading the sample code of IoT Explorer SDK for Java demo](#Downloading-the-sample-code-of-IoT-Explorer-SDK-for-Java-demo)
   * [Feature documentation](#Feature-documentation)
   * [SDK API description](#SDK-API-description)
 

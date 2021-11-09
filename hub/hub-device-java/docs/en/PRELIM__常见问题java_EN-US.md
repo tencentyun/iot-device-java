@@ -10,7 +10,7 @@ Please check whether the corresponding Maven dependency address and version of t
 
 #### Is there a demo for IoT Hub?
 
-For the Java demo, please see [Feature documentation](../../PRELIM__README_EN-US.md#Feature-documentation).
+For the Java demo, please see [Feature documentation](README.md#Feature-documentation).
 
 #### What do I need to enter for `mProductID`, `mDevName`, and `mDevPSK` in the Java demo?
 

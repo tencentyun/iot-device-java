@@ -25,7 +25,7 @@ For more information on how to manipulate the topic permissions, please see [Per
 
 ## Compiling and running demo
 
-[Downloading the sample code of IoT Hub SDK for Java demo](../../PRELIM__README_EN-US.md#Downloading-the-sample-code-of-IoT-Hub-SDK-for-Java-demo)
+[Downloading the sample code of IoT Hub SDK for Java demo](README.md#Downloading-the-sample-code-of-IoT-Hub-SDK-for-Java-demo)
 
 #### Entering parameters for authenticating device for connection
 Edit the parameter configuration information in the [unit_test_config.json](../../src/test/resources/unit_test_config.json) file in the demo.

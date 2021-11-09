@@ -15,7 +15,7 @@ Before connecting devices to the SDK, you need to create project products and de
 
 ## Compiling and running demo
 
-Download the [sample code of IoT Explorer SDK for Java demo](../../PRELIM__README_EN-US.md#Downloading-the-sample-code-of-IoT-Explorer-SDK-for-Java-demo).
+Download the [sample code of IoT Explorer SDK for Java demo](README.md#Downloading-the-sample-code-of-IoT-Explorer-SDK-for-Java-demo).
 
 #### Key authentication for connection
 
