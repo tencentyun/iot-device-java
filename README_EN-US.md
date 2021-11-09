@@ -1,4 +1,4 @@
-[简体中文](./README.md) | English
+[简体中文](https://github.com/tencentyun/iot-device-java) | English
 
 # Product Overview
 
@@ -10,9 +10,9 @@ Tencent Cloud Internet of Things Hub (IoT Hub) aims to provide a secure, stable,
 
 This repository provides the IoT Hub device SDK. You can securely connect Java-enabled devices to IoT Hub by connecting their drivers to the SDK or connect Android-enabled devices to IoT Hub by integrating the SDK into them.
 
-* [IoT Hub Device SDK for Java](hub/hub-device-java/docs/en/README.md)
+* [IoT Hub Device SDK for Java](hub/hub-device-java/docs/en)
 
-* [IoT Hub Device SDK for Android](hub/hub-device-android/docs/en/README.md)
+* [IoT Hub Device SDK for Android](hub/hub-device-android/docs/en)
 
 ## IoT Explorer SDKs for Java and Android
 
@@ -20,9 +20,9 @@ Tencent Cloud Internet of Things Explorer (IoT Explorer) provides device manufac
 
 This repository provides the IoT Explorer device SDK. You can securely connect Java-enabled devices to IoT Explorer by connecting their drivers to the SDK or connect Android-enabled devices to IoT Explorer by integrating the SDK into them.
 
-* [IoT Explorer Device SDK for Java](explorer/explorer-device-java/docs/en/README.md)
+* [IoT Explorer Device SDK for Java](explorer/explorer-device-java/docs/en)
 
-* [IoT Explorer Device SDK for Android](explorer/explorer-device-android/docs/en/README.md)
+* [IoT Explorer Device SDK for Android](explorer/explorer-device-android/docs/en)
 
 ## Domain names involved in SDKs
 

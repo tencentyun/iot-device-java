@@ -1,4 +1,4 @@
-[简体中文](../../README.md) | English
+[简体中文](../../../hub-device-java) | English
 
 * [IoT Hub Device SDK for Java](#IoT-Hub-Device-SDK-for-Java)
   * [Prerequisites](#Prerequisites)
@@ -23,7 +23,7 @@ The IoT Hub device SDK for Java relies on a secure and powerful data channel to 
 The SDK supports remote Maven dependencies and local source code dependencies. For more information on how to connect, please see [SDK Connection Description](PRELIM__SDK接入说明_EN-US.md).
 
 ## Downloading the sample code of IoT Hub SDK for Java demo
-Download the complete code in the [repository](../../../../). The sample code of the IoT Hub SDK for Java demo is in the [hub-device-java](../../../hub-device-java/src/test) module.
+Download the complete code in the [repository](https://github.com/tencentyun/iot-device-java). The sample code of the IoT Hub SDK for Java demo is in the [hub-device-java](../../../hub-device-java/src/test) module.
 
 
 ## Feature documentation

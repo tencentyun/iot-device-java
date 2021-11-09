@@ -1,4 +1,4 @@
-简体中文 | [English](docs/en/README.md)
+简体中文 | [English](docs/en)
 
 * [IoT Explorer RTC Android SDK开发指南](#IoT-Explorer-RTC-Android-SDK开发指南)
   * [引用方式](#引用方式)

@@ -1,4 +1,4 @@
-[简体中文](../../README.md) | English
+[简体中文](../../../explorer-device-rtc) | English
 
 * [IoT Explorer RTC SDK for Android Development Guide](#IoT-Explorer-RTC-SDK-for-Android-Development-Guide)
   * [How to import](#How-to-import)

@@ -1,4 +1,4 @@
-简体中文 | [English](docs/en/README.md)
+简体中文 | [English](docs/en)
 
 * [腾讯云物联网通信设备端 IoT Hub Java-SDK](#腾讯云物联网通信设备端-IoT-Hub-Java-SDK)
   * [前提条件](#前提条件)
@@ -23,7 +23,7 @@
 SDK支持远程maven依赖，以及本地源码依赖，详细接入步骤请参考 [SDK接入说明](docs/zh/SDK接入说明.md)
 
 ## 下载IoT Hub Java-SDK Demo示例代码
-下载[仓库](../../)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](../hub-device-java/src/test) 的module下。
+下载[仓库](https://github.com/tencentyun/iot-device-java)下完整代码，IoT Hub Java-SDK Demo示例代码在 [hub-device-java](../hub-device-java/src/test) 的module下。
 
 
 ## 功能文档

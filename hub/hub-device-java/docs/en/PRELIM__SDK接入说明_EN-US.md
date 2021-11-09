@@ -73,4 +73,4 @@
 
 **SDK for Java source code**
 
-If you want to develop a project through code integration, you can download the SDK for Java source code from [GitHub](../../../../).
+If you want to develop a project through code integration, you can download the SDK for Java source code from [GitHub](../../../hub-device-java).

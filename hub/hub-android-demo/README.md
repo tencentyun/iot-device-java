@@ -1,4 +1,4 @@
-简体中文 | [English](docs/en/README.md)
+简体中文 | [English](docs/en)
 
 ## 概述
 

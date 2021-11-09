@@ -10,9 +10,9 @@
 
 该仓库提供了 IoT Hub 设备端SDK，设备厂商可以通过SDK，由java语言开发设备接入驱动，或者集成到Android系统设备上，将设备安全的接入到腾讯云物联网通信平台。
 
-* [腾讯云物联网通信（IoT Hub）设备端 Java-SDK](hub/hub-device-java/README.md)
+* [腾讯云物联网通信（IoT Hub）设备端 Java-SDK](hub/hub-device-java)
 
-* [腾讯云物联网通信（IoT Hub）设备端 Android-SDK](hub/hub-device-android/README.md)
+* [腾讯云物联网通信（IoT Hub）设备端 Android-SDK](hub/hub-device-android)
 
 ## 腾讯云物联网开发平台（IoT Explorer）Java 和 Android SDK
 
@@ -20,9 +20,9 @@
 
 该仓库提供了 IoT Explorer 设备端SDK，用户可以通过SDK，由java语言开发设备接入驱动，或者集成到Android系统设备上，将设备安全的接入到腾讯云物联网开发平台。
 
-* [腾讯云物联网开发平台（IoT Explorer）设备端 Java-SDK](explorer/explorer-device-java/README.md)
+* [腾讯云物联网开发平台（IoT Explorer）设备端 Java-SDK](explorer/explorer-device-java)
 
-* [腾讯云物联网开发平台（IoT Explorer）设备端 Android-SDK](explorer/explorer-device-android/README.md)
+* [腾讯云物联网开发平台（IoT Explorer）设备端 Android-SDK](explorer/explorer-device-android)
 
 ## SDK涉及到的域名
 

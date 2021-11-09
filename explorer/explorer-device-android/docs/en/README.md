@@ -1,4 +1,4 @@
-[简体中文](../../README.md) | English
+[简体中文](../../../explorer-device-android) | English
 
 * [IoT Explorer Device SDK for Android](#IoT-Explorer-Device-SDK-for-Android)
   * [Prerequisites](#Prerequisites)
@@ -22,7 +22,7 @@ The IoT Explorer device SDK for Android works with the device data template defi
 The SDK supports remote Maven dependencies and local source code dependencies. For more information on how to connect, please see [Compilation Environment and SDK Connection Description](PRELIM__编译环境及SDK接入说明_EN-US.md).
 
 ## Downloading the sample code of IoT Explorer SDK for Android demo
-Download the complete code in the [repository](../../../../). The sample code of the IoT Explorer SDK for Android demo is in the [device-android-demo](../../../device-android-demo) module.
+Download the complete code in the [repository](https://github.com/tencentyun/iot-device-java). The sample code of the IoT Explorer SDK for Android demo is in the [device-android-demo](../../../device-android-demo) module.
 
 Download the [installation package](https://github.com/tencentyun/iot-device-android/wiki/下载安装).
 
@@ -41,7 +41,7 @@ For more information on how to call the APIs, please see the demos of the follow
 * [Network Configuration Through Bluetooth LLSync](PRELIM__LLSync蓝牙辅助配网_EN-US.md)
 
 ## Third-party service connection guide
-* [IoT Explorer Face Recognition SDK for Android Development Guide](../../../explorer-device-face/docs/en/README.md)
+* [IoT Explorer Face Recognition SDK for Android Development Guide](../../../explorer-device-face/docs/en)
 
 ## SDK API and parameter descriptions
 For the SDK API and parameter descriptions, please see [SDK API and Parameter Descriptions](PRELIM__SDK%20API及参数说明_EN-US.md) in the `docs` directory.

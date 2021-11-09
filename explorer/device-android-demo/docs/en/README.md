@@ -1,4 +1,4 @@
-[简体中文](../../README.md) | English
+[简体中文](../../../device-android-demo) | English
 
 ## Overview
 This demo provides four entries: `IOT DEMO` shows the basic features and use cases of the [IoT Explorer Device SDK for Android](../../../explorer-device-android); `IOT AI FACE Demo` shows the simple use of [IoT Explorer Device Face Recognition SDK](../../../explorer-device-face); `IOT TRTC DEMO` shows the simple use of [IoT Explorer Device RTC SDK](../../../explorer-device-rtc); and `IOT TME DEMO` shows the simple use of [IoT Explorer Device TME SDK](../../../explorer-device-tme).

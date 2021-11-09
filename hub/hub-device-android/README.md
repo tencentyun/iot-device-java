@@ -1,4 +1,4 @@
-简体中文 | [English](docs/en/README.md)
+简体中文 | [English](docs/en)
 
 * [腾讯云物联网通信设备端 IoT Hub Android-SDK](#腾讯云物联网通信设备端-IoT-Hub-Android-SDK)
   * [前提条件](#前提条件)
@@ -21,7 +21,7 @@
 SDK 支持远程 maven 依赖，以及本地源码依赖，详细接入步骤请参考[编译环境及SDK接入说明](docs/zh/编译环境及SDK接入说明.md)
 
 ## 下载IoT Hub Android-SDK Demo示例代码
-下载[仓库](../../)下完整代码，IoT Hub Android-SDK Demo 示例代码在 [hub-android-demo](../hub-android-demo) 的 module 下。
+下载[仓库](/)下完整代码，IoT Hub Android-SDK Demo 示例代码在 [hub-android-demo](../hub-android-demo) 的 module 下。
 
 [Demo apk 安装包下载](https://github.com/tencentyun/iot-device-android/wiki/下载安装)
 
