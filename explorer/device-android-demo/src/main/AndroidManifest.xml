@@ -10,9 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 绑定设备的授权方式需要读取机器序列号 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <!-- llsync蓝牙辅助配网需要连接指定WiFi，添加WiFi权限 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
@@ -46,6 +44,8 @@
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.video.MainActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.video.RecordVideoActivity" />
         <activity
             android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />

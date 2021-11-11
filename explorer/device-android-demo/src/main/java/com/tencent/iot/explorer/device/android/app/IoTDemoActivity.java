@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.face.AuthActivity;
 import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
+import com.tencent.iot.explorer.device.video.MainActivity;
+import com.tencent.iot.explorer.device.video.RecordVideoActivity;
 
 import java.io.File;
 
@@ -26,6 +28,7 @@ public class IoTDemoActivity extends AppCompatActivity {
     private Button mIoTAiFaceBtn;
     private Button mIoTTrtcBtn;
     private Button mIoTTmeBtn;
+    private Button mIoTVideoBtn;
 
     private static final String TAG = IoTDemoActivity.class.getSimpleName();
 
@@ -33,7 +36,8 @@ public class IoTDemoActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_PHONE_STATE
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.CAMERA
     };
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -62,6 +66,12 @@ public class IoTDemoActivity extends AppCompatActivity {
         mIoTAiFaceBtn = findViewById(R.id.iot_ai_face);
         mIoTTrtcBtn = findViewById(R.id.iot_trtc);
         mIoTTmeBtn = findViewById(R.id.iot_tme);
+        mIoTVideoBtn = findViewById(R.id.btn_iot_video);
+
+        mIoTVideoBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(IoTDemoActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
 
         mIoTDemoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
