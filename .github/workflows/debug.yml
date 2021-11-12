@@ -61,7 +61,14 @@ jobs:
           rb=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           rc=$(git rev-parse --short HEAD)
           sed -i "s#xxx#$rb+git.$rc#g" config.gradle
+      - name: NDK Cache
+        id: ndk-cache
+        uses: actions/cache@v2
+        with:
+          path: ${ANDROID_HOME}/ndk
+          key: ndk-cache-22.0.7026061
       - name: Setup NDK
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
       - name: Update SDK Version
         run: bash .github/scripts/updateVersionCodeForSnapshot.sh
