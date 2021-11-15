@@ -20,6 +20,7 @@ env:
   IOT_SONATYPE_USERNAME: ${{ secrets.IOT_SONATYPE_USERNAME }}
   IOT_SONATYPE_PASSWORD: ${{ secrets.IOT_SONATYPE_PASSWORD }}
   GPG_DECRYPT_PASSPHRASE: ${{ secrets.GPG_DECRYPT_PASSPHRASE }}
+  IOT_WECOM_CID_ROBOT_KEY: ${{ secrets.IOT_WECOM_CID_ROBOT_KEY }}
 
 jobs:
   build:
@@ -95,3 +96,13 @@ jobs:
           fir publish $hubApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
         env:
           IOT_FIRIM_API_TOKEN: ${{ secrets.IOT_FIRIM_API_TOKEN }}
+      - name: Report success result to wecom
+        if: ${{ success() }}
+        run: |
+          echo success!!!
+          bash .github/scripts/send_result_to_wecom.sh ${{ github.event.repository.name }} success
+      - name: Report fail result to wecom
+        if: ${{ failure() }}
+        run: |
+          echo fail!!!
+          bash .github/scripts/send_result_to_wecom.sh ${{ github.event.repository.name }} fail
