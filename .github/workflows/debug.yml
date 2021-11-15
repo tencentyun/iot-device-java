@@ -66,7 +66,7 @@ jobs:
         id: ndk-cache
         uses: actions/cache@v2
         with:
-          path: ${ANDROID_HOME}/ndk
+          path: ${ANDROID_HOME}/ndk/22.0.7026061
           key: ndk-cache-22.0.7026061
       - name: Setup NDK
         if: steps.ndk-cache.outputs.cache-hit != 'true'
