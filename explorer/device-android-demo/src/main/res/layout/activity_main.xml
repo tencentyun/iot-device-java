@@ -5,20 +5,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/sample_text"
+    <LinearLayout
+        android:id="@+id/layout_item_1"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:text="Hello World!"
-        android:textSize="40dp"
-        android:textAlignment="center"
-        android:textDirection="firstStrong"
-        android:gravity="center"
-        android:visibility="gone"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_qrcode"
+            android:layout_marginTop="20dp"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:background="#f1f1f1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_broker_url"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:hint="私有化请输入BrokerURL" />
+
+            <EditText
+                android:id="@+id/et_productId"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:hint="请输入productId" />
+
+            <EditText
+                android:id="@+id/et_deviceName"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:hint="请输入deviceName" />
+
+            <EditText
+                android:id="@+id/et_devicePsk"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:inputType="text"
+                android:textSize="16sp"
+                android:hint="请输入devicePsk" />
+
+            <Button
+                android:id="@+id/qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:visibility="gone"
+                android:text="生成二维码" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_item_2"
+        app:layout_constraintTop_toBottomOf="@id/layout_item_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/connect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="设备上线" />
+
+        <Button
+            android:id="@+id/disconnect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="设备下线" />
+
+        <Button
+            android:id="@+id/btn_start_voip"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="开始通话"
+            android:layout_weight="0.5"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_log"
+        app:layout_constraintTop_toBottomOf="@id/layout_item_2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

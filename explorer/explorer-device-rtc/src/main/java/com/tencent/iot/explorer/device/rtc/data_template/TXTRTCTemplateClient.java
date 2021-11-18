@@ -38,6 +38,11 @@ public class TXTRTCTemplateClient extends TXMqttConnection {
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
+    public TXTRTCTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
+                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack) {
+        super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+    }
+
     /**
      * 是否已经连接物联网开发平台
      */
