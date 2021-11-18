@@ -61,14 +61,14 @@ jobs:
           export KEY_ID_OF_SIGN=$IOT_GPG_KEYNAME
           export PASSWORD_OF_SIGN=$IOT_GPG_PASSPHRASE
           sh .github/scripts/updateValuesForSign.sh
-      - name: NDK Cache
-        id: ndk-cache
-        uses: actions/cache@v2
-        with:
-          path: ${ANDROID_HOME}/ndk/22.0.7026061
-          key: ndk-cache-22.0.7026061
+#      - name: NDK Cache
+#        id: ndk-cache
+#        uses: actions/cache@v2
+#        with:
+#          path: ${ANDROID_HOME}/ndk/22.0.7026061
+#          key: ndk-cache-22.0.7026061
       - name: Setup NDK
-        if: steps.ndk-cache.outputs.cache-hit != 'true'
+#        if: steps.ndk-cache.outputs.cache-hit != 'true'
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
 #      - name: Test with Gradle
 #        run: ./gradlew test
