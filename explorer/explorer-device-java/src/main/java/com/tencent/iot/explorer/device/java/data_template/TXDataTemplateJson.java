@@ -12,6 +12,7 @@ import com.tencent.iot.explorer.device.java.utils.ReadFile;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 
 class TXDataTemplateJson extends DataTemplateJson {
@@ -24,6 +25,35 @@ class TXDataTemplateJson extends DataTemplateJson {
         if (Status.OK != registerDataTemplateJson( jsonFileName, jsonFilePath)) {
             LOG.info("TXDataTemplateJson: construct json failed!");
         }
+    }
+
+    TXDataTemplateJson(FileInputStream fis) {
+        super(CUSTOM_LOG);
+        if (Status.OK != registerDataTemplateJson(fis)) {
+            LOG.info("TXDataTemplateJson: construct json failed!");
+        }
+    }
+
+    private Status registerDataTemplateJson(FileInputStream fis) {
+        if (fis != null) {
+            try {
+                String s = ReadFile.readJsonFromStream(fis);
+                JSONObject json = new JSONObject(s);
+                this.mPropertyJson = json.getJSONArray("properties");
+                this.mEventJson = json.getJSONArray("events");
+                this.mActionJson = json.getJSONArray("actions");
+                LOG.info("registerDataTemplateJson: propertyJson" + mPropertyJson);
+                LOG.info("registerDataTemplateJson: eventJson" + mEventJson);
+                LOG.info("registerDataTemplateJson: actionJson" + mActionJson);
+            } catch (JSONException t) {
+                LOG.error("Json file format is invalid!." + t);
+                return Status.ERROR;
+            }
+        } else {
+            LOG.error("param fis is null");
+            return Status.ERROR;
+        }
+        return Status.OK;
     }
 
     /**

@@ -4,6 +4,8 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
+import java.io.FileInputStream;
+
 public class TXGatewaySubdev extends TXDataTemplate {
     public static final String TAG = "TXGatewaySubdev";
     //设备信息
@@ -25,6 +27,23 @@ public class TXGatewaySubdev extends TXDataTemplate {
     public TXGatewaySubdev(TXGatewayClient connection,  String productId, String deviceName, final String jsonFileName, final String jsonFilePath,
                            TXGatewaySubdevActionCallBack actionCallBack, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(connection, productId, deviceName, jsonFileName, jsonFilePath, downStreamCallBack);
+        this.mDeviceName = deviceName;
+        this.mProductId = productId;
+        this.mStat = Status.SUBDEV_STAT_INIT;
+        this.mActionCallBack = actionCallBack;
+    }
+
+    /**
+     * @param connection        网关设备连接句柄
+     * @param productId         产品名
+     * @param deviceName        设备名，唯一
+     * @param jsonFileStream    数据模板文件流
+     * @param actionCallBack    上下线回调
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXGatewaySubdev(TXGatewayClient connection,  String productId, String deviceName, FileInputStream jsonFileStream,
+                           TXGatewaySubdevActionCallBack actionCallBack, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(connection, productId, deviceName, jsonFileStream, downStreamCallBack);
         this.mDeviceName = deviceName;
         this.mProductId = productId;
         this.mStat = Status.SUBDEV_STAT_INIT;

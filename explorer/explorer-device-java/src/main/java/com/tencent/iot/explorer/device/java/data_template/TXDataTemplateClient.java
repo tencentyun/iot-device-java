@@ -12,6 +12,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+
 
 public class TXDataTemplateClient extends TXMqttConnection {
     //数据模板
@@ -35,6 +37,24 @@ public class TXDataTemplateClient extends TXMqttConnection {
                                  final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         this.mDataTemplate = new TXDataTemplate(this,  productID,  deviceName, jsonFileName, jsonFilePath, downStreamCallBack);
+        this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
+    }
+
+    /**
+     * @param productID         产品名
+     * @param deviceName        设备名，唯一
+     * @param secretKey         密钥
+     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+     * @param clientPersistence 消息永久存储
+     * @param callBack          连接、消息发布、消息订阅回调接口
+     * @param jsonFileStream    数据模板文件流
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXDataTemplateClient(String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
+                                MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
+                                FileInputStream jsonFileStream, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+        this.mDataTemplate = new TXDataTemplate(this,  productID,  deviceName, jsonFileStream, downStreamCallBack);
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
