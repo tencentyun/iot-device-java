@@ -45,8 +45,8 @@ _sys_video_call_status为1（手机同意接听），为0（拒绝接听）
 
 ### 4.1. 请求手机通话接口
 
-- 若App同意通话请求, 设备要上报物模型 _sys_video_call_status 状态 1
-- 若App拒绝通话请求, 设备要上报物模型 _sys_video_call_status 状态 0
+- 若App同意通话请求, 设备会收到IOT云发出给设备的mqtt控制消息，其中 _sys_video_call_status 状态 1
+- 若App拒绝通话请求, 设备会收到IOT云发出给设备的mqtt控制消息，其中 _sys_video_call_status 状态 0，当收到该消息时，设备还需参考4.2步骤report _sys_video_call_status 状态 0，将设备状态置为空闲。
 
 设备端上报MQTT消息事例
 ```json
