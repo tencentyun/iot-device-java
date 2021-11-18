@@ -117,6 +117,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
+    implementation 'com.alibaba:fastjson:1.2.73'
 
     //刷新
     api 'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
