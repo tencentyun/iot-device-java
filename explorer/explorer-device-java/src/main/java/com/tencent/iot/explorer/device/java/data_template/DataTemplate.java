@@ -51,7 +51,7 @@ public class DataTemplate {
     private String mActionDownStreamTopic;
     private String mActionUptreamTopic;
 
-    private String mServiceDownStreamTopic;
+    protected String mServiceDownStreamTopic;
     private Runnable checkRunnable = null;
     private RunnableScheduledFuture<?> schedule;
 

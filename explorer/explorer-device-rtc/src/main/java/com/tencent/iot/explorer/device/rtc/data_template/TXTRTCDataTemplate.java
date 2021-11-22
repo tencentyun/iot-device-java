@@ -25,6 +25,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_UNBIND_DEVICE;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
@@ -335,6 +336,31 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
             onPropertyMessageArrivedCallBack(message);
         } else if (topic.equals(TOPIC_ACTION_DOWN_PREFIX + mProductId + "/" + mDeviceName)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(mServiceDownStreamTopic)) {
+            onServiceMessageArrivedCallBack(message);
+        }
+    }
+
+    /**
+     * 服务下行消息 处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            if (method != null && method.equals(METHOD_UNBIND_DEVICE)) {
+                //清理 _sys_call_userlist 属性
+                JSONObject property = new JSONObject();
+                property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST, "[]");
+                if (Status.OK != propertyReport(property, null)) {
+                    TXLog.e(TAG,  "clear userlist failed.");
+                } else {
+                    TXLog.d(TAG,  "clear userlist success.");
+                }
+            }
+        } catch (Exception e) {
+            TXLog.e(TAG,  "onServiceMessageArrivedCallBack: invalid message:" + message);
         }
     }
 }
