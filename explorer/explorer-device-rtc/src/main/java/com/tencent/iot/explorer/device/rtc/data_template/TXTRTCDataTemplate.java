@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.rtc.data_template;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
@@ -37,6 +38,14 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
     private static AtomicInteger requestID = new AtomicInteger(0);
     private boolean mIsBusy = false; //trtc设备是否空闲
     private String mCurrentCallingUserid = ""; //当前呼叫trtc设备的userId
+
+    public String getCurrentCallingUserid() {
+        return mCurrentCallingUserid;
+    }
+
+    public void setCurrentCallingUserid(String currentCallingUserid) {
+        this.mCurrentCallingUserid = currentCallingUserid;
+    }
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
@@ -142,7 +151,7 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         }
     }
 
-    private Status reportExtraInfoRejectUserId(String rejectUserId) {
+    public Status reportExtraInfoRejectUserId(String rejectUserId) {
         JSONObject property = new JSONObject();
 
         if (TextUtils.isEmpty(rejectUserId)) {
@@ -164,6 +173,14 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
             TXLog.e(TAG, "property report failed!");
         }
         return status;
+    }
+
+    public void setBusy(boolean mIsBusy) {
+        this.mIsBusy = mIsBusy;
+    }
+
+    public boolean isBusy() {
+        return mIsBusy;
     }
 
     /**
@@ -216,6 +233,76 @@ public class TXTRTCDataTemplate extends TXDataTemplate {
         JSONObject property = new JSONObject();
 
         if (userId.equals("null") && params != null && params.length() != 0) {
+            //检查构造是否符合json文件中的定义
+            if(Status.OK != checkPropertyJson(property)){
+                TXLog.e(TAG, "propertyReport: invalid property json!");
+                return Status.PARAMETER_INVALID;
+            }
+            property = params;
+        }
+        try {
+            mIsBusy = callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE;
+            mCurrentCallingUserid = mIsBusy ? userId : "";
+            if (callType == TRTCCalling.TYPE_VIDEO_CALL) { //video
+                property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
+                if (!userId.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                }
+                if (!agent.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
+                }
+                String extraInfo = ""; //预留 额外信息 _sys_extra_info
+                if (!extraInfo.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
+                }
+            } else if (callType == TRTCCalling.TYPE_AUDIO_CALL) { //audio
+                property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
+                if (!userId.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                }
+                if (!agent.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
+                }
+                String extraInfo = ""; //预留 额外信息 _sys_extra_info
+                if (!extraInfo.equals("")) {
+                    property.put(TXTRTCDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
+                }
+            } else {
+                return Status.ERR_JSON_CONSTRUCT;
+            }
+        } catch (JSONException e) {
+            TXLog.e(TAG, "Construct property json failed!");
+            return Status.ERROR;
+        }
+
+        Status status = sysPropertyReport(property, null);
+        if(Status.OK != status) {
+            TXLog.e(TAG, "property report failed!");
+        }
+        if (callStatus == TRTCCallStatus.TYPE_IDLE_OR_REFUSE) { //上报呼叫状态0时，防止上报不成功，延迟1秒后查询设备状态，不为0则再次上报状态
+            TimerTask task = new TimerTask(){
+                public void run(){
+                    checkStatusIsNotIdleReportResetStatus();
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(task, 1000);
+        }
+        return status;
+    }
+
+    /**
+     * 上报实时音视频类设备呼叫属性
+     * @param callStatus 呼叫状态 0 - 空闲或拒绝呼叫  1 - 进行呼叫  2 - 通话中
+     * @param callType 邀请类型 1-语音通话，2-视频通话
+     * @param userId 被呼叫用户id json字符串
+     * @param agent 代理方
+     * @return 结果
+     */
+    public Status reportCallStatusPropertyWithExtra(Integer callStatus, Integer callType, String userId, String agent, JSONObject params) {
+        JSONObject property = new JSONObject();
+
+        if (params != null && params.length() != 0) {
             //检查构造是否符合json文件中的定义
             if(Status.OK != checkPropertyJson(property)){
                 TXLog.e(TAG, "propertyReport: invalid property json!");

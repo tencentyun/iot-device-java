@@ -272,6 +272,7 @@ public class RecordThread extends Thread {
     }
 
     private void sendOriAudioData(ByteBuffer outputBuffer) {
+        Log.e(TAG, "sendOriAudioData");
         try {
             byte[] bytes = new byte[outputBuffer.remaining()];
             outputBuffer.get(bytes, 0, bytes.length);
@@ -305,6 +306,12 @@ public class RecordThread extends Thread {
     }
 
     private void storeOriVideoData(ByteBuffer outputBuffer, MediaCodec.BufferInfo videoInfo) {
+        Log.e(TAG, "storeOriVideoData");
+        if (recordParam != null &&
+                recordParam.getRecorderType() != VideoCalling.TYPE_VIDEO_CALL) {
+            return;
+        }
+        Log.e(TAG, "send video info");
         try {
             byte[] bytes = new byte[outputBuffer.remaining()];
             outputBuffer.get(bytes, 0, bytes.length);
