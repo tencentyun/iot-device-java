@@ -3,13 +3,11 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
 import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
-import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCDataTemplate;
 import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCTemplateClient;
-import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -17,10 +15,11 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class TXVideoTemplateClient extends TXTRTCTemplateClient {
+    private String TAG = TXVideoTemplateClient.class.getSimpleName();
     //数据模板
     private TXVideoDataTemplate mDataTemplate;
     //属性下行topic
@@ -28,16 +27,16 @@ public class TXVideoTemplateClient extends TXTRTCTemplateClient {
 
     public TXVideoTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                  MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, TXTRTCCallBack trtcCallBack) {
+                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, TXVideoCallBack trtcCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName);
+        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, trtcCallBack);
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
-    public TXVideoTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
-                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack) {
+    public TXVideoTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, String jsonFileName, DisconnectedBufferOptions bufferOpts,
+                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack, TXVideoCallBack trtcCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, "");
+        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, trtcCallBack);
     }
 
     /**
@@ -64,6 +63,22 @@ public class TXVideoTemplateClient extends TXTRTCTemplateClient {
         return disConnect(0, userContext);
     }
 
+    public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent, JSONObject params) {
+        if (params == null) {
+            params = new JSONObject();
+        }
+        try {
+            params.put(TXVideoDataTemplateConstants.PROPERTY_SYS_CALLER_ID, mDataTemplate.mProductId + "/" + mDataTemplate.mDeviceName);
+            params.put(TXVideoDataTemplateConstants.PROPERTY_SYS_CALLED_ID, userId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return Status.PARAMETER_INVALID;
+        }
+        Log.e("XXX", "params " + params.toString());
+        Status ret = mDataTemplate.reportCallStatusPropertyWithExtra(callStatus, callType, userId, agent, params);
+        return ret;
+    }
+
     /**
      * 取消订阅数据模板相关主题
      * @param topicId 主题ID
@@ -73,18 +88,9 @@ public class TXVideoTemplateClient extends TXTRTCTemplateClient {
         return this.mDataTemplate.unSubscribeTemplateTopic(topicId);
     }
 
-    /**
-     * 获取状态
-     * @param type 类型
-     * @param showmeta 是否携带showmeta
-     * @return 结果
-     */
-    public Status propertyGetStatus(String type, boolean showmeta) {
-        return mDataTemplate.propertyGetStatus(type, showmeta);
-    }
 
     public Status reportXp2pInfo(String p2pInfo) {
-        Log.e("XXX", "reportXp2pInfo p2pInfo " + p2pInfo);
+        Log.e(TAG, "reportXp2pInfo p2pInfo " + p2pInfo);
         return mDataTemplate.reportXp2pInfo(p2pInfo);
     }
 
@@ -104,6 +110,6 @@ public class TXVideoTemplateClient extends TXTRTCTemplateClient {
      */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
-        Log.e("XXX", "----- connectComplete ");
+        Log.e(TAG, "----- connectComplete ");
     }
 }

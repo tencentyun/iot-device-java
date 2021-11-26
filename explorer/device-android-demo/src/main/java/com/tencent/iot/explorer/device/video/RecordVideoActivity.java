@@ -1,9 +1,15 @@
 package com.tencent.iot.explorer.device.video;
 
+import android.app.Instrumentation;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.widget.Button;
@@ -11,8 +17,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
@@ -36,10 +45,22 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
+    private PhoneInfo phoneInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent inetnt = getIntent();
+        if (inetnt != null) {
+            Log.e("XXX", "ssssss");
+            Bundle bundle = inetnt.getBundleExtra(PhoneInfo.TAG);
+            if (bundle != null) {
+                String jsonStr = bundle.getString(PhoneInfo.TAG);
+                Log.e("XXX", "xxxxxxxxxxx jsonStr " + jsonStr);
+                phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
+            }
+        }
         setContentView(R.layout.activity_record_video);
         cameraView = findViewById(R.id.cameraView);
         btnSwitch = findViewById(R.id.btnSwitch);
@@ -48,18 +69,20 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoRecorder.attachCameraView(cameraView);
         playView.setSurfaceTextureListener(this);
 
-        btnRecord.setOnClickListener(v -> {
-            if (isRecord) {
-                stopRecord();
-                btnRecord.setText("Record");
-            } else {
-                startRecord();
-                btnRecord.setText("Stop");
-            }
-            isRecord = !isRecord;
-        });
+//        btnRecord.setOnClickListener(v -> {
+//            if (isRecord) {
+//                stopRecord();
+//                btnRecord.setText("Record");
+//            } else {
+//                startRecord();
+//                btnRecord.setText("Stop");
+//            }
+//            isRecord = !isRecord;
+//        });
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
+        startRecord();
+        registVideoOverBrodcast();
     }
 
     private XP2PCallback xP2PCallback = (data, len) -> {
@@ -88,6 +111,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregistVideoOverBrodcast();
         cameraView.closeCamera();
         videoRecorder.cancel();
         videoRecorder.stop();
@@ -149,5 +173,46 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         player.prepareAsync();
         player.start();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            if (phoneInfo != null) {
+                bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+            }
+            intent.putExtra(PhoneInfo.TAG, bundle);
+            setResult(RESULT_OK, intent);
+            Log.e("XXX", "------------- finish");
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    BroadcastReceiver recevier = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
+            if (refreshTag != 9){
+                Log.e("XXX", "------------- backcode finish");
+                new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+
+            }
+        }
+    };
+
+    private void registVideoOverBrodcast() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(RecordVideoActivity.this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.CART_BROADCAST");
+        broadcastManager.registerReceiver(recevier, intentFilter);
+    }
+
+    private void unregistVideoOverBrodcast() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(RecordVideoActivity.this);
+        broadcastManager.unregisterReceiver(recevier);
     }
 }

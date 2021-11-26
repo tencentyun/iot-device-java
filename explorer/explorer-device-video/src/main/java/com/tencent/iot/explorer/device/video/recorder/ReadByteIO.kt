@@ -3,7 +3,7 @@ package com.tencent.iot.explorer.device.video.recorder
 import android.util.Log
 import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
-import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.LinkedBlockingQueue
 
 class ReadByteIO private constructor(): IAndroidIO {
 
@@ -22,7 +22,7 @@ class ReadByteIO private constructor(): IAndroidIO {
     }
 
     private var TAG = ReadByteIO::class.java.simpleName
-    private var flvData = LinkedBlockingDeque<Byte>()  // 内存队列，用于缓存获取到的裸流数据
+    private var flvData = LinkedBlockingQueue<Byte>()  // 内存队列，用于缓存获取到的裸流数据
 
     private fun takeFirstWithLen(len : Int): ByteArray {  // 取 byte 数据用于界面渲染
         var byteList = ByteArray(len)
@@ -60,6 +60,8 @@ class ReadByteIO private constructor(): IAndroidIO {
     }
 
     override fun close(): Int {
+        Log.d(TAG, "flvData cleared")
+        flvData.clear()
         return 0
     }
 }
