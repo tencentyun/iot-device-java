@@ -93,16 +93,119 @@
             android:layout_height="wrap_content"
             android:text="开始通话"
             android:layout_weight="0.5"
+            android:visibility="gone"
             />
 
     </LinearLayout>
 
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/to_call_user_id"
+        android:singleLine="true"
+        app:layout_constraintTop_toBottomOf="@id/layout_item_2"
+        />
+
     <TextView
         android:id="@+id/tv_log"
-        app:layout_constraintTop_toBottomOf="@id/layout_item_2"
-        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/to_call_user_id"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_layout"
+        app:layout_constraintStart_toStartOf="parent"
         />
+
+    <LinearLayout
+        android:id="@+id/btn_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_log"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/audio_call"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="音频呼叫" />
+
+        <Button
+            android:id="@+id/video_call"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="视频呼叫" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/call_btn_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_layout"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/call_user_id"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/call_type"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/accept_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="接受通话请求" />
+
+            <Button
+                android:id="@+id/reject_call"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="拒接" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/calling_layout"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="呼叫中"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

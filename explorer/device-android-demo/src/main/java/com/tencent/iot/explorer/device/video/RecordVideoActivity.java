@@ -1,9 +1,16 @@
 package com.tencent.iot.explorer.device.video;
 
+import android.app.Instrumentation;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.widget.Button;
@@ -11,8 +18,11 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
@@ -36,10 +46,21 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
+    private volatile PhoneInfo phoneInfo;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent inetnt = getIntent();
+        if (inetnt != null) {
+            Bundle bundle = inetnt.getBundleExtra(PhoneInfo.TAG);
+            if (bundle != null) {
+                String jsonStr = bundle.getString(PhoneInfo.TAG);
+                phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
+            }
+        }
         setContentView(R.layout.activity_record_video);
         cameraView = findViewById(R.id.cameraView);
         btnSwitch = findViewById(R.id.btnSwitch);
@@ -48,29 +69,17 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoRecorder.attachCameraView(cameraView);
         playView.setSurfaceTextureListener(this);
 
-        btnRecord.setOnClickListener(v -> {
-            if (isRecord) {
-                stopRecord();
-                btnRecord.setText("Record");
-            } else {
-                startRecord();
-                btnRecord.setText("Stop");
-            }
-            isRecord = !isRecord;
-        });
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
-    }
-
-    private XP2PCallback xP2PCallback = (data, len) -> {
-        ReadByteIO.Companion.getInstance().addLast(data);
-    };
-
-    private void stopRecord() {
-        videoRecorder.stop();
+        registVideoOverBrodcast();
+//        startRecord();
     }
 
     private void startRecord() {
+        if (phoneInfo != null) {
+            videoRecorder.start(phoneInfo.getCallType(), onRecordListener);
+            return;
+        }
         videoRecorder.start(onRecordListener);
     }
 
@@ -85,15 +94,38 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         super.onPause();
     }
 
+    private XP2PCallback xP2PCallback = new XP2PCallback() {
+
+        @Override
+        public void avDataRecvHandle(byte[] data, int len) {
+            ReadByteIO.Companion.getInstance().addLast(data);
+        }
+
+        @Override
+        public void avDataMsgHandle(int type, String msg) {
+            Log.e(TAG, "avDataMsgHandle type " + type);
+            if (type == 0) {
+                Log.e(TAG, "start send video data");
+                handler.post(() -> startRecord());
+
+            } else if (type == 1) {
+                Log.e(TAG, "this call over");
+                new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+            }
+        }
+    };
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregistVideoOverBrodcast();
         cameraView.closeCamera();
         videoRecorder.cancel();
         videoRecorder.stop();
         if (player != null) {
             player.stop();
         }
+        ReadByteIO.Companion.getInstance().close();
     }
 
     private void showSaveState(boolean save) {
@@ -149,5 +181,43 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         player.prepareAsync();
         player.start();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            if (phoneInfo != null) {
+                bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+            }
+            intent.putExtra(PhoneInfo.TAG, bundle);
+            setResult(RESULT_OK, intent);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    BroadcastReceiver recevier = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
+            if (refreshTag == 9){
+                new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+            }
+        }
+    };
+
+    private void registVideoOverBrodcast() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(RecordVideoActivity.this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.CART_BROADCAST");
+        broadcastManager.registerReceiver(recevier, intentFilter);
+    }
+
+    private void unregistVideoOverBrodcast() {
+        LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(RecordVideoActivity.this);
+        broadcastManager.unregisterReceiver(recevier);
     }
 }

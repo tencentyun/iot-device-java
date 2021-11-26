@@ -3,6 +3,8 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaRecorder;
+import android.util.Log;
+
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.base.EGLTextureView;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
@@ -19,6 +21,7 @@ public class VideoRecorder {
     private RecordThread recordThread; // 实际获取视频流、音频流的线程
     private OnRecordListener onRecordListener; // 记录过程回调
     private CameraView cameraView; // 摄像头预览的内容
+    private int recorderType = VideoCalling.TYPE_VIDEO_CALL;
 
     // 获取实际的摄像头预览对象
     public void attachCameraView(CameraView cameraView) {
@@ -38,6 +41,11 @@ public class VideoRecorder {
 
     public int start(OnRecordListener onRecordListener) {
         return start(640, 360, "", onRecordListener);
+    }
+
+    public int start(int recorderType, OnRecordListener onRecordListener) {
+        this.recorderType = recorderType;
+        return start(onRecordListener);
     }
 
     public int start(int width, int height, String path, OnRecordListener onRecordListener) {
@@ -70,7 +78,7 @@ public class VideoRecorder {
         VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder()
                 .setSize(width, height).build();
 
-        RecordParam recordParam = new RecordParam(path);
+        RecordParam recordParam = new RecordParam(recorderType, path);
 
         RecordThreadParam recordThreadParam = new RecordThreadParam();
         recordThreadParam.setAudioEncodeParam(audioEncodeParam);
