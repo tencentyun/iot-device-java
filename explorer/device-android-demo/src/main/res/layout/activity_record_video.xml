@@ -9,23 +9,43 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/btnSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
         android:text="Switch"
         android:textAllCaps="false" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <Button
         android:id="@+id/btnRecord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="64dp"
+        android:layout_margin="40dp"
         android:text="Record"
+        android:visibility="gone"
         android:textAllCaps="false" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/v_play"
+        android:layout_alignBottom="@id/v_play"
+        android:layout_alignLeft="@id/v_play"
+        android:layout_alignRight="@id/v_play"
+        android:background="@color/black_000000"
+        />
+    <TextureView
+        android:id="@+id/v_play"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="150dp"
+        android:layout_height="200dp"/>
 </RelativeLayout>
