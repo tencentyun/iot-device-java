@@ -33,6 +33,10 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 
 此问题很可能是填写了错误的ProductSecret，建议和云控制台上设备信息比对检查下调用动态注册时传入的三个参数，productId，deviceName，ProductSecret。
 
+#### 配置了固件升级任务后，但部份设备离线，这些离线的设备，后面再上线时是否能收到这次的升级任务？
+
+离线的设备，后面再上线时，初始化一下OTA（TXMqttConnection initOTA），再上报一下它的当前版本（TXMqttConnection reportCurrentFirmwareVersion）就可以收到这一次的升级任务。
+
 #### 如何保存SDK的日志以及SDK日志的存放路径是什么？
 
 在使用我们的SDK功能API前调用以下方法即可保存SDK日志：
