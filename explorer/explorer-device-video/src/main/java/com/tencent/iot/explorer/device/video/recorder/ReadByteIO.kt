@@ -2,10 +2,11 @@ package com.tencent.iot.explorer.device.video.recorder
 
 import android.util.Log
 import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils
+import kotlinx.coroutines.*
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
 import java.util.concurrent.LinkedBlockingQueue
 
-class ReadByteIO private constructor(): IAndroidIO {
+class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidIO {
 
     companion object {
         private var instance: ReadByteIO? = null
@@ -23,8 +24,15 @@ class ReadByteIO private constructor(): IAndroidIO {
 
     private var TAG = ReadByteIO::class.java.simpleName
     private var flvData = LinkedBlockingQueue<Byte>()  // 内存队列，用于缓存获取到的裸流数据
+    @Volatile
+    private var chaseFrameThreadStarted = false
+    @Volatile
+    var chaseFrame = false  // 默认不开启追帧功能
+    var chaseFrameRate = 1000L // 默认的追帧扫描频率
+    var chaseFrameThreshold = 6000L // 默认的触发追帧的阈值
 
-    private fun takeFirstWithLen(len : Int): ByteArray {  // 取 byte 数据用于界面渲染
+    // 从队列头部取数据
+    private fun takeFirstWithLen(len : Int): ByteArray {
         var byteList = ByteArray(len)
         for (i in 0 until len) {
             byteList[i] = flvData.take()
@@ -33,28 +41,46 @@ class ReadByteIO private constructor(): IAndroidIO {
         return byteList
     }
 
+    // 队列尾部增加新的数据
     @Synchronized
     fun addLast(bytes: ByteArray): Boolean {
-
         var tmpList:List<Byte> = bytes.toList()
-        Log.e(TAG, "tmpList size " + tmpList.size)
-        Log.e(TAG, "bytes ${ByteUtils.bytesToHex(bytes)}")
         return flvData.addAll(tmpList)
     }
 
+    // 追帧线程
+    private fun startChaseFrameThread() {
+        if (!chaseFrame) return  // 直接跳出开启追帧的逻辑
+
+        if (!chaseFrameThreadStarted) {
+            Log.d(TAG, "chase frame thread started")
+            launch {
+                while (this@ReadByteIO != null) {
+                    delay(chaseFrameRate) // 每两秒检查一次
+                    if (flvData.size > chaseFrameThreshold) { // 发现缓存的数据大于阈值，触发一次追帧动作
+                        flvData.clear()
+                        Log.d(TAG, "${this@ReadByteIO} chase frame successed")
+                    }
+                }
+                flvData.clear() // 当前的扫描线程不在运行的时候，清空缓存数据
+            }
+            chaseFrameThreadStarted = true
+        }
+    }
+
     override fun open(url: String?): Int {
-        flvData.clear()
         if (url == URL_SUFFIX) {
             Log.d(TAG, "recv stream opened")
             return 1
         }
-        Log.d(TAG, "recv stream open failed")
+        Log.e(TAG, "recv stream open failed")
         return -1
     }
 
     override fun read(buffer: ByteArray?, size: Int): Int {
         var tmpBytes = takeFirstWithLen(size) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, size)
+        startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
         return size
     }
 
@@ -63,8 +89,12 @@ class ReadByteIO private constructor(): IAndroidIO {
     }
 
     override fun close(): Int {
-        Log.d(TAG, "flvData cleared")
-        flvData.clear()
+        cancel()
         return 0
+    }
+
+    fun reset() {
+        flvData.clear()
+        instance = null
     }
 }

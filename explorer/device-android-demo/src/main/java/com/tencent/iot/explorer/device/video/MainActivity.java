@@ -1,7 +1,6 @@
 package com.tencent.iot.explorer.device.video;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,14 +27,12 @@ import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.entity.DeviceConnectCondition;
 import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
-import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.explorer.device.video.recorder.VideoCallStatus;
 import com.tencent.iot.explorer.device.video.recorder.VideoCalling;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
-import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -46,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     public static final String devFileName = "device.json";
+    private static String USER_ID = "callUserId";
     private ImageView qrImg;
     private EditText brokerUrlEt;
     private EditText productIdEt;
@@ -53,11 +50,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText devPskEt;
     private Button online;
     private Button offline;
-    private Button startVoip;
     private Button videoCall;
     private Button audioCall;
     private Button accpetCall;
     private Button rejectCall;
+    private Button hangUp;
     private LinearLayout callActionLayout;
     private RelativeLayout callingLayout;
     private TextView callerUserId;
@@ -70,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
+    private int callUserType = VideoCalling.TYPE_AUDIO_CALL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +92,9 @@ public class MainActivity extends AppCompatActivity {
         logTv.setMovementMethod(ScrollingMovementMethod.getInstance());
         online = findViewById(R.id.connect);
         offline = findViewById(R.id.disconnect);
-        startVoip = findViewById(R.id.btn_start_voip);
+        hangUp = findViewById(R.id.btn_hang_up);
 //        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
+        toCalledUserId.setText(getUserId());
 
         DeviceConnectCondition values = getDeviceConnectCondition();
         if (values != null) {
@@ -105,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         callingLayout.setOnClickListener(v -> { });
+        hangUp.setOnClickListener(v -> {
+            callingLayout.setVisibility(View.GONE);
+            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, callUserType, callerUserId.getText().toString(), defaultAgent);
+            callingTimer.cancel();
+        });
 
         accpetCall.setOnClickListener(v -> {
             int value = Integer.valueOf(callType.getText().toString());
@@ -123,11 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 timer.cancel();
             } catch (Exception e) { }
             callActionLayout.setVisibility(View.GONE);
-        });
-
-        startVoip.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, RecordVideoActivity.class);
-            startActivityForResult(intent, 2);
         });
 
         online.setOnClickListener(v -> {
@@ -153,19 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String userId = toCalledUserId.getText().toString();
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_CALLING, VideoCalling.TYPE_VIDEO_CALL, userId, defaultAgent);
-
-            runOnUiThread(() -> callingLayout.setVisibility(View.VISIBLE));
-            TimerTask task = new TimerTask(){
-                public void run(){
-                    //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消
-                    runOnUiThread(() -> callingLayout.setVisibility(View.GONE));
-                    videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, VideoCalling.TYPE_VIDEO_CALL, userId, defaultAgent);
-                }
-            };
-            callingTimer = new Timer();
-            callingTimer.schedule(task, 15000);
+            callUser(VideoCalling.TYPE_VIDEO_CALL);
         });
 
         audioCall.setOnClickListener( v -> {
@@ -173,19 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String userId = toCalledUserId.getText().toString();
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_CALLING, VideoCalling.TYPE_AUDIO_CALL, userId, defaultAgent);
-
-            runOnUiThread(() -> callingLayout.setVisibility(View.VISIBLE));
-            TimerTask task = new TimerTask(){
-                public void run(){
-                    //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消
-                    runOnUiThread(() -> callingLayout.setVisibility(View.GONE));
-                    videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, VideoCalling.TYPE_AUDIO_CALL, userId, defaultAgent);
-                }
-            };
-            callingTimer = new Timer();
-            callingTimer.schedule(task, 15000);
+            callUser(VideoCalling.TYPE_AUDIO_CALL);
         });
     }
 
@@ -209,6 +184,23 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 //    };
+
+    private void callUser(int callOtherUserType) {
+        callUserType = callOtherUserType;
+        String userId = toCalledUserId.getText().toString();
+        videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_CALLING, callOtherUserType, userId, defaultAgent);
+
+        runOnUiThread(() -> callingLayout.setVisibility(View.VISIBLE));
+        TimerTask task = new TimerTask(){
+            public void run(){
+                //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消
+                runOnUiThread(() -> callingLayout.setVisibility(View.GONE));
+                videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, callOtherUserType, userId, defaultAgent);
+            }
+        };
+        callingTimer = new Timer();
+        callingTimer.schedule(task, 15000);
+    }
 
     private void updateLog(String msg) {
         handler.post(() -> logTv.setText(logTv.getText().toString() + "\n" + msg));
@@ -339,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
             DeviceConnectCondition condtion = new DeviceConnectCondition(productIdEt.getText().toString(), devNameEt.getText().toString(), devPskEt.getText().toString());
             handler.post(() -> initVideoModeul(condtion));
             saveDeviceConnectCondition(condtion);
+            saveUserId(toCalledUserId.getText().toString());
         }
 
         @Override
@@ -365,6 +358,20 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(DeviceConnectCondition.TAG, JSON.toJSONString(deviceConnectCondition));
         editor.commit();
+    }
+
+    private void saveUserId(String userId) {
+        SharedPreferences sp = getSharedPreferences(USER_ID, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(USER_ID, userId);
+        editor.commit();
+    }
+
+    private String getUserId() {
+        DeviceConnectCondition ret = null;
+        SharedPreferences sp = getSharedPreferences(USER_ID, MODE_PRIVATE);
+        String userId = sp.getString(USER_ID, "");
+        return userId;
     }
 
     private DeviceConnectCondition getDeviceConnectCondition() {

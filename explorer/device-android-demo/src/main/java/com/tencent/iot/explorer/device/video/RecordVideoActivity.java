@@ -39,10 +39,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private String TAG = RecordVideoActivity.class.getSimpleName();
     private CameraView cameraView;
     private Button btnSwitch;
-    private Button btnRecord;
     private final VideoRecorder videoRecorder = new VideoRecorder();
     private String path = ""; // 保存 MP4 文件的路径
-    private volatile boolean isRecord = false;
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
@@ -64,7 +62,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         setContentView(R.layout.activity_record_video);
         cameraView = findViewById(R.id.cameraView);
         btnSwitch = findViewById(R.id.btnSwitch);
-        btnRecord = findViewById(R.id.btnRecord);
         playView = findViewById(R.id.v_play);
         videoRecorder.attachCameraView(cameraView);
         playView.setSurfaceTextureListener(this);
@@ -72,7 +69,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         registVideoOverBrodcast();
-//        startRecord();
+        ReadByteIO.Companion.getInstance().reset();
     }
 
     private void startRecord() {
@@ -110,7 +107,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
             } else if (type == 1) {
                 Log.e(TAG, "this call over");
-                new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                }
             }
         }
     };
@@ -204,7 +203,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         public void onReceive(Context context, Intent intent) {
             int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
             if (refreshTag == 9){
-                new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                }
             }
         }
     };

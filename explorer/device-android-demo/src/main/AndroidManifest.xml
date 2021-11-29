@@ -45,7 +45,8 @@
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
         <activity android:name="com.tencent.iot.explorer.device.video.MainActivity" />
-        <activity android:name="com.tencent.iot.explorer.device.video.RecordVideoActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.video.RecordVideoActivity"
+            android:launchMode="singleTop"/>
         <activity
             android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
