@@ -1,8 +1,8 @@
-package com.tencent.iot.explorer.device.rtc.data_template.model;
+package com.tencent.iot.explorer.device.common.stateflow.entity;
 
 public class RoomKey {
     private int appId = 0;
-    private int callType = TRTCCalling.TYPE_AUDIO_CALL;
+    private int callType = CallingType.TYPE_AUDIO_CALL;
     private String roomId = "";
     public String userId = "";
     public String userSig = "";

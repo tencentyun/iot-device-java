@@ -24,8 +24,8 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.IntentParams;
-import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingDelegate;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCallingParamsCallback;
@@ -34,7 +34,6 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.UserInfo;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingImpl;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayout;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayoutManager;
-import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
 import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.trtc.TRTCCloudDef;
 

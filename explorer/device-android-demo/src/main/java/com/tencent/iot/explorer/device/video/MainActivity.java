@@ -22,14 +22,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
-import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
+import com.tencent.iot.explorer.device.common.stateflow.CallState;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.entity.DeviceConnectCondition;
 import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
-import com.tencent.iot.explorer.device.video.recorder.VideoCallStatus;
-import com.tencent.iot.explorer.device.video.recorder.VideoCalling;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
-    private int callUserType = VideoCalling.TYPE_AUDIO_CALL;
+    private int callUserType = CallingType.TYPE_AUDIO_CALL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,13 +106,13 @@ public class MainActivity extends AppCompatActivity {
         callingLayout.setOnClickListener(v -> { });
         hangUp.setOnClickListener(v -> {
             callingLayout.setVisibility(View.GONE);
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, callUserType, callerUserId.getText().toString(), defaultAgent);
+            videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, callUserType, callerUserId.getText().toString(), defaultAgent);
             callingTimer.cancel();
         });
 
         accpetCall.setOnClickListener(v -> {
             int value = Integer.valueOf(callType.getText().toString());
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
+            videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
             try {
                 timer.cancel();
             } catch (Exception e){}
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         rejectCall.setOnClickListener(v -> {
             int value = Integer.valueOf(callType.getText().toString());
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
+            videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
             try {
                 timer.cancel();
             } catch (Exception e) { }
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
-            callUser(VideoCalling.TYPE_VIDEO_CALL);
+            callUser(CallingType.TYPE_VIDEO_CALL);
         });
 
         audioCall.setOnClickListener( v -> {
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
-            callUser(VideoCalling.TYPE_AUDIO_CALL);
+            callUser(CallingType.TYPE_AUDIO_CALL);
         });
     }
 
@@ -188,14 +188,14 @@ public class MainActivity extends AppCompatActivity {
     private void callUser(int callOtherUserType) {
         callUserType = callOtherUserType;
         String userId = toCalledUserId.getText().toString();
-        videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_CALLING, callOtherUserType, userId, defaultAgent);
+        videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_CALLING, callOtherUserType, userId, defaultAgent);
 
         runOnUiThread(() -> callingLayout.setVisibility(View.VISIBLE));
         TimerTask task = new TimerTask(){
             public void run(){
                 //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消
                 runOnUiThread(() -> callingLayout.setVisibility(View.GONE));
-                videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, callOtherUserType, userId, defaultAgent);
+                videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, callOtherUserType, userId, defaultAgent);
             }
         };
         callingTimer = new Timer();
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                 callingLayout.setVisibility(View.GONE);
             });
             Utils.sendVideoOverBroadcast(MainActivity.this);
-            videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, callType, userid, agent);
+            videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, callType, userid, agent);
 
         }
 
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPhoneCall(String userid, String agent, Integer callType) {
         Log.e(TAG, "callType " + callType);
-        videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_ON_THE_PHONE, callType, userid, agent);
+        videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, callType, userid, agent);
         Intent intent = new Intent(MainActivity.this, RecordVideoActivity.class);
         Bundle bundle = new Bundle();
         PhoneInfo phoneInfo = new PhoneInfo();
@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "jsonStr " + jsonStr);
                 PhoneInfo phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
                 if (phoneInfo == null) return;
-                videoDataTemplateSample.reportCallStatusProperty(VideoCallStatus.TYPE_IDLE_OR_REFUSE, phoneInfo.getCallType(), phoneInfo.getUserid(), phoneInfo.getAgent());
+                videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, phoneInfo.getCallType(), phoneInfo.getUserid(), phoneInfo.getAgent());
             }
         }
     }

@@ -3,11 +3,9 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.iot.explorer.device.common.stateflow.TXCallTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
-import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
-import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
-import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCTemplateClient;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -18,7 +16,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class TXVideoTemplateClient extends TXTRTCTemplateClient {
+public class TXVideoTemplateClient extends TXCallTemplateClient {
     private String TAG = TXVideoTemplateClient.class.getSimpleName();
     //数据模板
     private TXVideoDataTemplate mDataTemplate;

@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
-import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
-import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCDataTemplate;
-import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
-import com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants;
+import com.tencent.iot.explorer.device.common.stateflow.CallState;
+import com.tencent.iot.explorer.device.common.stateflow.TXCallDataTemplate;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -23,7 +23,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
-public class TXVideoDataTemplate extends TXTRTCDataTemplate {
+public class TXVideoDataTemplate extends TXCallDataTemplate {
     private String TAG = TXVideoDataTemplate.class.getSimpleName();
 
     // Mqtt 连接
@@ -115,37 +115,37 @@ public class TXVideoDataTemplate extends TXTRTCDataTemplate {
             if (method.equals(METHOD_PROPERTY_CONTROL)){ //
                 JSONObject params = jsonObj.getJSONObject("params");
                 if (videoCallBack != null) {
-                    if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS)) {
-                        Integer callStatus = params.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
+                    if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS)) {
+                        Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
                         String userid = "";
-                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID);
+                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
+                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
                         String userAgent = "";
-                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
-                            userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
+                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
+                            userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
                         if (isBusy() && !getCurrentCallingUserid().equals(userid)) { //非当前设备的通话用户的请求忽略
-                            if (callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
+                            if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
                             return;
                         }
-                        convertData2Callback(callStatus, userid, userAgent, TRTCCalling.TYPE_VIDEO_CALL);
-                    } else if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
-                        Integer callStatus = params.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
+                        convertData2Callback(callStatus, userid, userAgent, CallingType.TYPE_VIDEO_CALL);
+                    } else if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
+                        Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
                         String userid = "";
-                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_USERID);
+                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
+                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
                         String userAgent = "";
-                        if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT)) {
-                            userAgent = params.getString(TXTRTCDataTemplateConstants.PROPERTY_SYS_AGENT);
+                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
+                            userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
                         if (isBusy() && !getCurrentCallingUserid().equals(userid)) { //非当前设备的通话用户的请求忽略
-                            if (callStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
+                            if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
                             return;
                         }
-                        convertData2Callback(callStatus, userid, userAgent, TRTCCalling.TYPE_AUDIO_CALL);
-                    } else if (params.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST)) {
+                        convertData2Callback(callStatus, userid, userAgent, CallingType.TYPE_AUDIO_CALL);
+                    } else if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST)) {
                         //上报下接收到的 userlist
                         Status status = sysPropertyReport(params, null);
                         if(Status.OK != status) {
@@ -155,10 +155,10 @@ public class TXVideoDataTemplate extends TXTRTCDataTemplate {
                 }
             } else if (method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
                 JSONObject data = jsonObj.getJSONObject("data").getJSONObject("reported");
-                if (data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS) && data.has(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
-                    Integer videoCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
-                    Integer audioCallStatus = data.getInt(TXTRTCDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
-                    if (!isBusy() &&(videoCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE || audioCallStatus != TRTCCallStatus.TYPE_IDLE_OR_REFUSE)) {
+                if (data.has(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS) && data.has(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
+                    Integer videoCallStatus = data.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
+                    Integer audioCallStatus = data.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
+                    if (!isBusy() &&(videoCallStatus != CallState.TYPE_IDLE_OR_REFUSE || audioCallStatus != CallState.TYPE_IDLE_OR_REFUSE)) {
                         // 不在通话中，并且status状态不对  重置video和audio的status状态为0
                         reportResetCallStatusProperty();
                     }
@@ -171,23 +171,23 @@ public class TXVideoDataTemplate extends TXTRTCDataTemplate {
     }
 
     private void convertData2Callback(int callStatus, String userid, String userAgent, int callType) {
-        if (isBusy() && callStatus == VideoCallStatus.TYPE_CALLING && getCurrentCallingUserid().equals(userid)) {  // 对方接受了通话请求
+        if (isBusy() && callStatus == CallState.TYPE_CALLING && getCurrentCallingUserid().equals(userid)) {  // 对方接受了通话请求
             Log.e(TAG, "accpet call userid " + userid);
             videoCallBack.onUserAccept(userid, userAgent, callType);
             setBusy(true);
             setCurrentCallingUserid(userid);  // 接受当前通话才会替换新的 userId
 
-        } else if (!isBusy() && callStatus == VideoCallStatus.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) { // 来了一通新的通话求
+        } else if (!isBusy() && callStatus == CallState.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) { // 来了一通新的通话求
             Log.e(TAG, "a new call userid " + userid);
             videoCallBack.onNewCall(userid, userAgent, callType);
             setBusy(true); // 新的通话不替换 userId
 
-        } else if (isBusy() && callStatus == VideoCallStatus.TYPE_IDLE_OR_REFUSE && getCurrentCallingUserid().equals(userid)) { // 当前通话结束
+        } else if (isBusy() && callStatus == CallState.TYPE_IDLE_OR_REFUSE && getCurrentCallingUserid().equals(userid)) { // 当前通话结束
             Log.e(TAG, "call over userid " + userid);
             videoCallBack.onCallOver(userid, userAgent, callType);
         }
 
-        if (callStatus == VideoCallStatus.TYPE_IDLE_OR_REFUSE) {
+        if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
             setBusy(false);
             setCurrentCallingUserid("");
         }
