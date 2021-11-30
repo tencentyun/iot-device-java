@@ -2,13 +2,13 @@ package com.tencent.iot.explorer.device.video.recorder.param;
 
 import android.text.TextUtils;
 
-import com.tencent.iot.explorer.device.video.recorder.VideoCalling;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 
 public class RecordParam {
 
     private String storePath; // 存储路径， null 或者 "" 不保存录像，其他则保存录像
 
-    private int recorderType = VideoCalling.TYPE_AUDIO_CALL; // VideoCalling
+    private int recorderType = CallingType.TYPE_AUDIO_CALL; // VideoCalling
 
     public int getRecorderType() {
         return recorderType;

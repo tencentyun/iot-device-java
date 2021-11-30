@@ -1,7 +1,6 @@
 package com.tencent.iot.explorer.device.video.recorder;
 
 public interface TXVideoDataTemplateConstants {
-
     /**
      * sys property
      */

@@ -3,8 +3,8 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaRecorder;
-import android.util.Log;
 
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.base.EGLTextureView;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
@@ -21,7 +21,7 @@ public class VideoRecorder {
     private RecordThread recordThread; // 实际获取视频流、音频流的线程
     private OnRecordListener onRecordListener; // 记录过程回调
     private CameraView cameraView; // 摄像头预览的内容
-    private int recorderType = VideoCalling.TYPE_VIDEO_CALL;
+    private int recorderType = CallingType.TYPE_VIDEO_CALL;
 
     // 获取实际的摄像头预览对象
     public void attachCameraView(CameraView cameraView) {

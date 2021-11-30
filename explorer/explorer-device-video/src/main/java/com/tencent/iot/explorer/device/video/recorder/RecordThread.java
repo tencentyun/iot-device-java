@@ -12,6 +12,7 @@ import android.view.Surface;
 import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSONObject;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.CameraParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
@@ -308,7 +309,7 @@ public class RecordThread extends Thread {
     private void storeOriVideoData(ByteBuffer outputBuffer, MediaCodec.BufferInfo videoInfo) {
         Log.e(TAG, "storeOriVideoData");
         if (recordParam != null &&
-                recordParam.getRecorderType() != VideoCalling.TYPE_VIDEO_CALL) {
+                recordParam.getRecorderType() != CallingType.TYPE_VIDEO_CALL) {
             return;
         }
         Log.e(TAG, "send video info");

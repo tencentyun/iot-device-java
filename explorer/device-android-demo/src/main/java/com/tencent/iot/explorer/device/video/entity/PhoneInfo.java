@@ -1,11 +1,11 @@
 package com.tencent.iot.explorer.device.video.entity;
 
-import com.tencent.iot.explorer.device.video.recorder.VideoCalling;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 
 public class PhoneInfo {
     public static String TAG = PhoneInfo.class.getSimpleName();
 
-    private int callType = VideoCalling.TYPE_UNKNOWN;
+    private int callType = CallingType.TYPE_UNKNOWN;
     private String userid = "";
     private String agent = "";
 
