@@ -9,6 +9,7 @@ import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.TXCallDataTemplate;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -38,8 +39,9 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
      * @param deviceName 设备名，唯一
      * @param jsonFileName 数据模板描述文件
      */
-    public TXVideoDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName, TXVideoCallBack videoCallBack) {
-        super(context, connection, productId, deviceName, jsonFileName, null, videoCallBack);
+    public TXVideoDataTemplate(Context context, TXMqttConnection connection, String productId, String deviceName, String jsonFileName,
+                               TXDataTemplateDownStreamCallBack downStreamCallBack, TXVideoCallBack videoCallBack) {
+        super(context, connection, productId, deviceName, jsonFileName, downStreamCallBack, videoCallBack);
         this.mConnection = connection;
         this.videoCallBack = videoCallBack;
     }
@@ -99,6 +101,7 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
 
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
+        super.onMessageArrived(topic, message);
         if (topic.equals(mPropertyDownStreamTopic)) {
             onPropertyMessageArrivedCallBack(message);
         } else if (topic.equals(TOPIC_ACTION_DOWN_PREFIX + mProductId + "/" + mDeviceName)) {

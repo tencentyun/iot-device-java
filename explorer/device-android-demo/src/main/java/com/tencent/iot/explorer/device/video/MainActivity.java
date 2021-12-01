@@ -25,6 +25,8 @@ import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.entity.DeviceConnectCondition;
@@ -34,9 +36,17 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -136,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             }
             videoDataTemplateSample = new VideoDataTemplateSample(MainActivity.this,
                     null, productIdEt.getText().toString(), devNameEt.getText().toString(),
-                    devPskEt.getText().toString(), jsonFileName, txMqttActionCallBack, videoCallBack);
+                    devPskEt.getText().toString(), jsonFileName, txMqttActionCallBack, videoCallBack, downStreamCallBack);
             videoDataTemplateSample.connect();
         });
 
@@ -184,6 +194,65 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 //    };
+
+    private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
+
+        @Override
+        public void onReplyCallBack(String msg) {
+            Log.d(TAG, "reply received : " + msg);
+        }
+
+        @Override
+        public void onGetStatusReplyCallBack(JSONObject data) {
+            Log.d(TAG, "onGetStatusReplyCallBack " + data.toString());
+            autofillUserId(data);
+        }
+
+        @Override
+        public JSONObject onControlCallBack(JSONObject msg) {
+            Log.d(TAG, "onControlCallBack " + msg);
+            return null;
+        }
+
+        @Override
+        public JSONObject onActionCallBack(String actionId, JSONObject params) {
+            Log.d(TAG, "onActionCallBack " + actionId + " received, input:" + params);
+            return null;
+        }
+
+        @Override
+        public void onUnbindDeviceCallBack(String msg) {
+            Log.d(TAG, "onUnbindDeviceCallBack " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            Log.d(TAG, "onBindDeviceCallBack " + msg);
+        }
+    };
+
+    private void autofillUserId(JSONObject data) {
+        try {
+            JSONObject property = data.getJSONObject("reported");
+            if (property.has(PROPERTY_SYS_CALL_USERLIST)) {
+                String userList = property.getString(PROPERTY_SYS_CALL_USERLIST);
+                JSONArray userArrayList = new JSONArray(userList);
+                if (userArrayList != null && userArrayList.length() > 0) {
+                    JSONObject userJson = (JSONObject) userArrayList.get(userArrayList.length() - 1);
+                    UserEntity user = new UserEntity();
+                    if (userJson.has(PROPERTY_SYS_CALL_USERLIST_USERID)) {
+                        user.setUserid(userJson.getString(PROPERTY_SYS_CALL_USERLIST_USERID));
+                    } else { //没有获取到UserID
+                        user.setUserid("");
+                    }
+
+                    runOnUiThread(() -> toCalledUserId.setText(user.getUserid()));
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void callUser(int callOtherUserType) {
         callUserType = callOtherUserType;
@@ -345,6 +414,14 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "TXMqttActionCallBack onDisconnectCompleted");
             updateLog("离线 " + msg);
             VideoNativeInteface.getInstance().release();
+        }
+
+        @Override
+        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+            Log.e(TAG, "TXMqttActionCallBack onSubscribeCompleted status " + status);
+            if (Status.OK != videoDataTemplateSample.propertyGetStatus("report", false)) {
+                Log.e(TAG, "property get status failed!");
+            }
         }
     };
 

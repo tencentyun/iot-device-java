@@ -25,14 +25,14 @@ public class TXVideoTemplateClient extends TXCallTemplateClient {
                                  MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                                  final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, TXVideoCallBack trtcCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, trtcCallBack);
+        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, null, trtcCallBack);
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
 
     public TXVideoTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, String jsonFileName, DisconnectedBufferOptions bufferOpts,
-                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack, TXVideoCallBack trtcCallBack) {
+                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack, TXDataTemplateDownStreamCallBack downStreamCallBack, TXVideoCallBack trtcCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, trtcCallBack);
+        this.mDataTemplate = new TXVideoDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack, trtcCallBack);
     }
 
     /**
