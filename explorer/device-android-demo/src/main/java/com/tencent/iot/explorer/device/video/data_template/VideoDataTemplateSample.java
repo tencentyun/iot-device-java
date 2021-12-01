@@ -1,10 +1,12 @@
 package com.tencent.iot.explorer.device.video.data_template;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCTemplateClient;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
@@ -34,6 +36,7 @@ public class VideoDataTemplateSample {
     private Context mContext;
     private TXMqttActionCallBack mMqttActionCallBack;
     private TXVideoCallBack mTrtcCallBack;
+    private TXDataTemplateDownStreamCallBack downStreamCallBack;
 
     /**
      * MQTT连接实例
@@ -45,7 +48,7 @@ public class VideoDataTemplateSample {
      */
     private static AtomicInteger requestID = new AtomicInteger(0);
 
-    public VideoDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPsk, String jsonFileName, TXMqttActionCallBack mqttActionCallBack, TXVideoCallBack trtcCallBack) {
+    public VideoDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPsk, String jsonFileName, TXMqttActionCallBack mqttActionCallBack, TXVideoCallBack trtcCallBack, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         this.mContext = context;
         this.mBrokerURL = brokerURL;
         this.mProductID = productId;
@@ -54,13 +57,14 @@ public class VideoDataTemplateSample {
         this.mJsonFileName = jsonFileName;
         this.mMqttActionCallBack = mqttActionCallBack;
         this.mTrtcCallBack = trtcCallBack;
+        this.downStreamCallBack = downStreamCallBack;
     }
 
     /**
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXVideoTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, mJsonFileName, null,null, mMqttActionCallBack, mTrtcCallBack);
+        mMqttConnection = new TXVideoTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, mJsonFileName, null, null, mMqttActionCallBack, downStreamCallBack, mTrtcCallBack);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
         options.setKeepAliveInterval(240);
@@ -87,6 +91,10 @@ public class VideoDataTemplateSample {
     public void disconnect() {
         TXMqttRequest mqttRequest = new TXMqttRequest("disconnect", requestID.getAndIncrement());
         mMqttConnection.disConnect(mqttRequest);
+    }
+
+    public Status propertyGetStatus(String type, boolean showmeta) {
+        return mMqttConnection.propertyGetStatus(type, showmeta);
     }
 
     public Status reportXp2pInfo(String p2pInfo) {
