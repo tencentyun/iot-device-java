@@ -66,39 +66,6 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
         return status;
     }
 
-    /**
-     * 系统属性上报， 不检查构造是否符合 json 文件中的定义
-     * @param property 属性的 json
-     * @param metadata 属性的 metadata，目前只包含各个属性对应的时间戳
-     * @return 结果
-     */
-    private Status sysPropertyReport(JSONObject property, JSONObject metadata) {
-        // 不检查构造是否符合 json 文件中的定义
-
-        // 构造发布信息
-        JSONObject object = new JSONObject();
-        String clientToken =  mProductId + mDeviceName + String.valueOf(requestID.getAndIncrement());
-        try {
-            object.put("method", METHOD_PROPERTY_REPORT);
-            object.put("clientToken", clientToken);
-            object.put("timestamp", System.currentTimeMillis());
-            object.put("params", property);
-            if (null != metadata)
-                object.put("metadata", metadata);
-        } catch (Exception e) {
-            TXLog.e(TAG, "propertyReport: failed!" );
-            return Status.ERR_JSON_CONSTRUCT;
-        }
-        String objectString = object.toString();
-        objectString = objectString.replace("\\/", "/");
-
-        MqttMessage message = new MqttMessage();
-        message.setQos(0);
-        message.setPayload(objectString.getBytes());
-
-        return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
-    }
-
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
@@ -109,7 +76,8 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
         }
     }
 
-    private void onPropertyMessageArrivedCallBack(MqttMessage message){
+    @Override
+    public void onPropertyMessageArrivedCallBack(MqttMessage message){
         TXLog.d(TAG, "property down stream message received " + message);
         //根据method进行相应处理
         try {

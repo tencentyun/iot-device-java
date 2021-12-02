@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
@@ -65,6 +67,11 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         playView = findViewById(R.id.v_play);
         videoRecorder.attachCameraView(cameraView);
         playView.setSurfaceTextureListener(this);
+        if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
+            cameraView.setVisibility(View.INVISIBLE);
+            btnSwitch.setVisibility(View.GONE);
+            playView.setVisibility(View.INVISIBLE);
+        }
 
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);

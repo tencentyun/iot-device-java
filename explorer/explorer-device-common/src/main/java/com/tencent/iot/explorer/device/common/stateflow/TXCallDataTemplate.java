@@ -65,86 +65,8 @@ public class TXCallDataTemplate extends TXDataTemplate {
      * TRTC属性下行消息处理
      * @param message 消息内容
      */
-    private void onPropertyMessageArrivedCallBack(MqttMessage message){
+    public void onPropertyMessageArrivedCallBack(MqttMessage message){
         TXLog.d(TAG, "property down stream message received " + message);
-        //根据method进行相应处理
-        try {
-            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
-            String method = jsonObj.getString("method");
-            if (method.equals(METHOD_PROPERTY_CONTROL)){ //
-                JSONObject params = jsonObj.getJSONObject("params");
-                if (mTrtcCallBack != null) {
-                    if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS)) {
-                        Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
-                        String userid = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
-                        }
-                        String userAgent = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
-                            userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
-                        }
-                        if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
-                            if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
-                            return;
-                        }
-                        if (!mIsBusy || callStatus != CallState.TYPE_CALLING) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_VIDEO_CALL);
-                        }
-                        if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
-                            mIsBusy = false;
-                            mCurrentCallingUserid = "";
-                        } else {
-                            mIsBusy = true;
-                            mCurrentCallingUserid = userid;
-                        }
-                    } else if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
-                        Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
-                        String userid = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
-                        }
-                        String userAgent = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
-                            userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
-                        }
-                        if (mIsBusy && !mCurrentCallingUserid.equals(userid)) { //非当前设备的通话用户的请求忽略
-                            if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {reportExtraInfoRejectUserId(userid);}
-                            return;
-                        }
-                        if (!mIsBusy || callStatus != CallState.TYPE_CALLING) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_AUDIO_CALL);
-                        }
-                        if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
-                            mIsBusy = false;
-                            mCurrentCallingUserid = "";
-                        } else {
-                            mIsBusy = true;
-                            mCurrentCallingUserid = userid;
-                        }
-                    } else if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST)) {
-                        //上报下接收到的userlist
-                        Status status = sysPropertyReport(params, null);
-                        if(Status.OK != status) {
-                            TXLog.e(TAG, "property report failed!");
-                        }
-                    }
-                }
-            } else if (method.equals(METHOD_PROPERTY_GET_STATUS_REPLY)) {
-                JSONObject data = jsonObj.getJSONObject("data").getJSONObject("reported");
-                if (data.has(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS) && data.has(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
-                    Integer videoCallStatus = data.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
-                    Integer audioCallStatus = data.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
-                    if (!mIsBusy &&(videoCallStatus != CallState.TYPE_IDLE_OR_REFUSE || audioCallStatus != CallState.TYPE_IDLE_OR_REFUSE)) {
-                        // 不在通话中，并且status状态不对  重置video和audio的status状态为0
-                        reportResetCallStatusProperty();
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-            TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
-        }
     }
 
     public Status reportExtraInfoRejectUserId(String rejectUserId) {
@@ -354,7 +276,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
      * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
      * @return 结果
      */
-    private Status sysPropertyReport(JSONObject property, JSONObject metadata) {
+    public Status sysPropertyReport(JSONObject property, JSONObject metadata) {
         //不检查构造是否符合json文件中的定义
 
         //构造发布信息
@@ -384,10 +306,5 @@ public class TXCallDataTemplate extends TXDataTemplate {
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
-        if(topic.equals(mPropertyDownStreamTopic)) {
-            onPropertyMessageArrivedCallBack(message);
-        } else if (topic.equals(TOPIC_ACTION_DOWN_PREFIX + mProductId + "/" + mDeviceName)) {
-            onActionMessageArrivedCallBack(message);
-        }
     }
 }
