@@ -70,7 +70,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
             cameraView.setVisibility(View.INVISIBLE);
             btnSwitch.setVisibility(View.GONE);
-            playView.setVisibility(View.INVISIBLE);
+//            playView.setVisibility(View.INVISIBLE);
         }
 
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
@@ -165,9 +165,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void play() {
         player = new IjkMediaPlayer();
         player.reset();
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100);
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 100 * 1024);
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
+        if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
+        } else {
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 100 * 1024);
+        }
+//        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "threads", 1);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "sync-av-start", 0);
