@@ -346,6 +346,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onAutoRejectCall(String userid, String agent, Integer callType) {
+            updateLog("拒绝通话请求 userid " + userid + ", agent " + agent + ", callType " + callType);
+
+        }
+
+        @Override
         public void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType) { }
         @Override
         public void trtcJoinRoomCallBack(RoomKey room) {}

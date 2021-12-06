@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.TXCallTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -72,6 +73,10 @@ public class TXVideoTemplateClient extends TXCallTemplateClient {
         }
 
         Status ret = mDataTemplate.reportCallStatusPropertyWithExtra(callStatus, callType, userId, agent, params);
+        if (callStatus == CallState.TYPE_IDLE_OR_REFUSE && mDataTemplate instanceof TXVideoDataTemplate) {
+            Log.e(TAG, "CallState: TYPE_IDLE_OR_REFUSE, clear aceeptCallInfo");
+            ((TXVideoDataTemplate) mDataTemplate).aceeptCallInfo.clear(); // 主动挂断电话，清理已接听电话的标记
+        }
         return ret;
     }
 

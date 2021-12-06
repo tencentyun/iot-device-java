@@ -16,6 +16,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
@@ -31,6 +35,7 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
     private TXMqttConnection mConnection;
     private static AtomicInteger requestID = new AtomicInteger(0);
     private TXVideoCallBack videoCallBack;
+    protected Set<String> aceeptCallInfo = new CopyOnWriteArraySet<>();
 
     /**
      * @param context 用户上下文（这个参数在回调函数时透传给用户）
@@ -142,11 +147,17 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
     }
 
     private void convertData2Callback(int callStatus, String userid, String userAgent, int callType) {
+        Log.e(TAG, "convertData2Callback callStatus " + callStatus + ", userid " + userid + ", userAgent " + userAgent + ", callType " + callType);
         if (isBusy() && callStatus == CallState.TYPE_CALLING && getCurrentCallingUserid().equals(userid)) {  // 对方接受了通话请求
             Log.e(TAG, "accpet call userid " + userid);
+            String userTag = "" + isBusy() + callStatus + userid + userAgent;
+            Log.e(TAG, "accpet call userTag " + userTag);
+            if (aceeptCallInfo.contains(userTag)) return; // 完全相同的通话接听事件，没有挂断之前只触发一次
+            Log.e(TAG, "accpet call userTag convertData2Callback");
             videoCallBack.onUserAccept(userid, userAgent, callType);
             setBusy(true);
             setCurrentCallingUserid(userid);  // 接受当前通话才会替换新的 userId
+            aceeptCallInfo.add(userTag);
 
         } else if (!isBusy() && callStatus == CallState.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) { // 来了一通新的通话求
             Log.e(TAG, "a new call userid " + userid);
@@ -156,6 +167,12 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
         } else if (isBusy() && callStatus == CallState.TYPE_IDLE_OR_REFUSE && getCurrentCallingUserid().equals(userid)) { // 当前通话结束
             Log.e(TAG, "call over userid " + userid);
             videoCallBack.onCallOver(userid, userAgent, callType);
+            aceeptCallInfo.clear(); // 清理对应的通话事件
+
+        } else if (isBusy() && callStatus == CallState.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) {
+            Log.e(TAG, "auto reject call " + userid);
+            reportExtraInfoRejectUserId(userid);
+            videoCallBack.onAutoRejectCall(userid, userAgent, callType);
         }
 
         if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {

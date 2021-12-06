@@ -169,7 +169,7 @@ public class RecordThread extends Thread {
             MediaFormat format = MediaFormat.createVideoFormat(videoEncodeParam.getMime(), videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);//MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
             format.setInteger(MediaFormat.KEY_FRAME_RATE, videoEncodeParam.getFrameRate());
-            format.setInteger(MediaFormat.KEY_BIT_RATE, 22500);
+            format.setInteger(MediaFormat.KEY_BIT_RATE, 250000);
             format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, videoEncodeParam.getiFrameInterval());
             format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
 

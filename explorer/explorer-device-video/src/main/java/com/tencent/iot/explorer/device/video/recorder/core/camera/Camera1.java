@@ -89,7 +89,11 @@ public class Camera1 implements ICamera {
             if (displayOrientation < 0) {
                 displayOrientation = CameraUtils.getDisplayOrientation(activity, cameraIndex);
             }
-            camera.setDisplayOrientation(displayOrientation);
+            try {
+                camera.setDisplayOrientation(displayOrientation);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             camera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
                 @Override
                 public void onPreviewFrame(byte[] data, Camera camera) {
