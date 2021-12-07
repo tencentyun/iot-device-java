@@ -1,6 +1,7 @@
 package com.tencent.iot.explorer.device.video.recorder
 
 import android.util.Log
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType
 import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils
 import kotlinx.coroutines.*
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
@@ -30,6 +31,7 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
     var chaseFrame = false  // 默认不开启追帧功能
     var chaseFrameRate = 1000L // 默认的追帧扫描频率
     var chaseFrameThreshold = 6000L // 默认的触发追帧的阈值
+    var playType = CallingType.TYPE_VIDEO_CALL
 
     // 从队列头部取数据
     private fun takeFirstWithLen(len : Int): ByteArray {
@@ -78,10 +80,14 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
     }
 
     override fun read(buffer: ByteArray?, size: Int): Int {
-        var tmpBytes = takeFirstWithLen(size) // 阻塞式读取
-        System.arraycopy(tmpBytes, 0, buffer, 0, size)
+        var readLen = size
+        if (playType == CallingType.TYPE_AUDIO_CALL) {
+            readLen = 700
+        }
+        var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
+        System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
         startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
-        return size
+        return readLen
     }
 
     override fun seek(offset: Long, whence: Int): Long {

@@ -56,13 +56,6 @@
                 android:textSize="16sp"
                 android:hint="请输入devicePsk" />
 
-            <Button
-                android:id="@+id/qrcode"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:visibility="gone"
-                android:text="生成二维码" />
-
         </LinearLayout>
 
     </LinearLayout>

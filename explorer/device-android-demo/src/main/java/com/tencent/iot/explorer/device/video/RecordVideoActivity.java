@@ -77,6 +77,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         registVideoOverBrodcast();
         ReadByteIO.Companion.getInstance().reset();
+        ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
     }
 
     private void startRecord() {
