@@ -1,8 +1,7 @@
-package com.tencent.iot.explorer.device.video.recorder;
 
+package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.util.Log;
-
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.common.stateflow.CallState;
@@ -11,32 +10,26 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
-
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
-
 public class TXVideoDataTemplate extends TXCallDataTemplate {
     private String TAG = TXVideoDataTemplate.class.getSimpleName();
-
     // Mqtt 连接
     private TXMqttConnection mConnection;
     private static AtomicInteger requestID = new AtomicInteger(0);
     private TXVideoCallBack videoCallBack;
     protected Set<String> aceeptCallInfo = new CopyOnWriteArraySet<>();
-
     /**
      * @param context 用户上下文（这个参数在回调函数时透传给用户）
      * @param connection 连接实例
@@ -50,7 +43,6 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
         this.mConnection = connection;
         this.videoCallBack = videoCallBack;
     }
-
     /**
      * 上报重置设备呼叫属性 为空闲
      * @return 结果
@@ -63,24 +55,20 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
             TXLog.e(TAG, "Construct property json failed!");
             return Status.ERROR;
         }
-
         Status status = sysPropertyReport(property, null);
         if(Status.OK != status) {
             TXLog.e(TAG, "property report failed!");
         }
         return status;
     }
-
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
         if (topic.equals(mPropertyDownStreamTopic)) {
             onPropertyMessageArrivedCallBack(message);
         } else if (topic.equals(TOPIC_ACTION_DOWN_PREFIX + mProductId + "/" + mDeviceName)) {
-
         }
     }
-
     @Override
     public void onPropertyMessageArrivedCallBack(MqttMessage message){
         TXLog.d(TAG, "property down stream message received " + message);
@@ -140,12 +128,10 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
                     }
                 }
             }
-
         } catch (Exception e) {
             TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
     }
-
     private void convertData2Callback(int callStatus, String userid, String userAgent, int callType) {
         Log.e(TAG, "convertData2Callback callStatus " + callStatus + ", userid " + userid + ", userAgent " + userAgent + ", callType " + callType);
         if (isBusy() && callStatus == CallState.TYPE_CALLING && getCurrentCallingUserid().equals(userid)) {  // 对方接受了通话请求
@@ -158,23 +144,19 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
             setBusy(true);
             setCurrentCallingUserid(userid);  // 接受当前通话才会替换新的 userId
             aceeptCallInfo.add(userTag);
-
         } else if (!isBusy() && callStatus == CallState.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) { // 来了一通新的通话求
             Log.e(TAG, "a new call userid " + userid);
             videoCallBack.onNewCall(userid, userAgent, callType);
             setBusy(true); // 新的通话不替换 userId
-
         } else if (isBusy() && callStatus == CallState.TYPE_IDLE_OR_REFUSE && getCurrentCallingUserid().equals(userid)) { // 当前通话结束
             Log.e(TAG, "call over userid " + userid);
             videoCallBack.onCallOver(userid, userAgent, callType);
             aceeptCallInfo.clear(); // 清理对应的通话事件
-
         } else if (isBusy() && callStatus == CallState.TYPE_CALLING && !getCurrentCallingUserid().equals(userid)) {
             Log.e(TAG, "auto reject call " + userid);
             reportExtraInfoRejectUserId(userid);
             videoCallBack.onAutoRejectCall(userid, userAgent, callType);
         }
-
         if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
             setBusy(false);
             setCurrentCallingUserid("");
