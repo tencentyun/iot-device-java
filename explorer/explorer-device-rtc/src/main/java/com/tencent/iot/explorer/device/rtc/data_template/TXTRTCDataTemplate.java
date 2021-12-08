@@ -1,12 +1,15 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.OnCall;
 import com.tencent.iot.explorer.device.common.stateflow.TXCallDataTemplate;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
@@ -17,6 +20,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplat
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
@@ -99,6 +103,12 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
                             userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
+
+                        CallExtraInfo tmp = getCallExtraInfo(params);
+                        if (tmp != null && !TextUtils.isEmpty(tmp.getCalledId())) {
+                            userid = tmp.getCalledId();
+                        }
+
                         String userAgent = "";
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
@@ -108,7 +118,7 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                             return;
                         }
                         if (!isBusy() || callStatus != CallState.TYPE_CALLING) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_VIDEO_CALL);
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_VIDEO_CALL, getCallExtraInfo(params));
                         }
                         if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
                             setBusy(false);
@@ -123,6 +133,12 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
                             userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
                         }
+
+                        CallExtraInfo tmp = getCallExtraInfo(params);
+                        if (tmp != null && !TextUtils.isEmpty(tmp.getCalledId())) {
+                            userid = tmp.getCalledId();
+                        }
+
                         String userAgent = "";
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
@@ -132,7 +148,7 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                             return;
                         }
                         if (!isBusy() || callStatus != CallState.TYPE_CALLING) {
-                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_AUDIO_CALL);
+                            mTrtcCallBack.onGetCallStatusCallBack(callStatus, userid, userAgent, CallingType.TYPE_AUDIO_CALL, getCallExtraInfo(params));
                         }
                         if (callStatus == CallState.TYPE_IDLE_OR_REFUSE) {
                             setBusy(false);
@@ -164,6 +180,29 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
         } catch (Exception e) {
             TXLog.e(TAG, "onPropertyMessageArrivedCallBack: invalid message: " + message);
         }
+    }
+
+    private CallExtraInfo getCallExtraInfo(JSONObject param) {
+        String callerId = null;
+        String calledId = null;
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID)) {
+            try {
+                callerId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID)) {
+            try {
+                calledId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        CallExtraInfo ret = new CallExtraInfo(callerId, calledId);
+        return ret;
     }
 
     @Override

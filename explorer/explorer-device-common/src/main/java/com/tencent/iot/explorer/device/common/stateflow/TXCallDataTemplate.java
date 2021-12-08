@@ -134,7 +134,8 @@ public class TXCallDataTemplate extends TXDataTemplate {
             if (callType == CallingType.TYPE_VIDEO_CALL) { //video
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -143,10 +144,12 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -155,6 +158,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }
@@ -205,6 +209,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -213,10 +218,13 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -225,6 +233,8 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }

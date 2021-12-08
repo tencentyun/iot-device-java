@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.CallState;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -352,7 +353,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType) { }
+        public void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) { }
+
         @Override
         public void trtcJoinRoomCallBack(RoomKey room) {}
     };
