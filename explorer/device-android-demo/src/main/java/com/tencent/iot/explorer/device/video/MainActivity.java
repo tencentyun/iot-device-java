@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.CallState;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -211,6 +212,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
             Log.d(TAG, "onControlCallBack " + msg);
+
+            try {
+                JSONObject result = new JSONObject();
+                result.put("code",0);
+                result.put("status", "video is ok");
+                return result;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -311,15 +321,19 @@ public class MainActivity extends AppCompatActivity {
     private TXVideoCallBack videoCallBack = new TXVideoCallBack() {
 
         @Override
-        public void onNewCall(String userid, String agent, Integer callType) {
+        public void onNewCall(String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) {
             // 收到新的童话请求
-            updateLog("一个通话请求 userid " + userid + ", agent " + agent + ", callType " + callType);
+            String info = String.format("一个通话请求 callerId %s, calledId %s, agent %s, callType %d",
+                    callExtraInfo.getCallerId(), callExtraInfo.getCalledId(), agent, callType);
+            updateLog(info);
             showNewCall(userid, callType);
         }
 
         @Override
-        public void onUserAccept(String userid, String agent, Integer callType) {
-            updateLog("用户接受通话请求 userid " + userid + ", agent " + agent + ", callType " + callType);
+        public void onUserAccept(String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) {
+            String info = String.format("对方接受通话请求 callerId %s, calledId %s, agent %s, callType %d",
+                    callExtraInfo.getCallerId(), callExtraInfo.getCalledId(), agent, callType);
+            updateLog(info);
             // 对端接受通话请求
             try {
                 callingTimer.cancel();
@@ -331,28 +345,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onCallOver(String userid, String agent, Integer callType) {
+        public void onCallOver(String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) {
             // 通话结束
-            updateLog("通话结束 userid " + userid + ", agent " + agent + ", callType " + callType);
+            String info = String.format("通话结束 callerId %s, calledId %s, agent %s, callType %d",
+                    callExtraInfo.getCallerId(), callExtraInfo.getCalledId(), agent, callType);
+            updateLog(info);
+            Log.e("XXX", "aaa 1");
             try {
                 callingTimer.cancel();
+                Log.e("XXX", "aaa 2");
             } catch (Exception e){}
             handler.post(() -> {
+                Log.e("XXX", "aaa 3");
                 callingLayout.setVisibility(View.GONE);
+                Log.e("XXX", "aaa 4");
             });
             Utils.sendVideoOverBroadcast(MainActivity.this);
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, callType, userid, agent);
-
         }
 
         @Override
-        public void onAutoRejectCall(String userid, String agent, Integer callType) {
+        public void onAutoRejectCall(String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) {
             updateLog("拒绝通话请求 userid " + userid + ", agent " + agent + ", callType " + callType);
-
         }
 
         @Override
-        public void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType) { }
+        public void onGetCallStatusCallBack(Integer callStatus, String userid, String agent, Integer callType, CallExtraInfo callExtraInfo) { }
+
         @Override
         public void trtcJoinRoomCallBack(RoomKey room) {}
     };
