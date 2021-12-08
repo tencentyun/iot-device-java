@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -34,9 +35,17 @@ public class TXCallDataTemplate extends TXDataTemplate {
     private static AtomicInteger requestID = new AtomicInteger(0);
     private boolean mIsBusy = false; //trtc设备是否空闲
     private String mCurrentCallingUserid = ""; //当前呼叫trtc设备的userId
-
+    private volatile boolean isCallOther = false;
     public String getCurrentCallingUserid() {
         return mCurrentCallingUserid;
+    }
+
+    public boolean isCallOther() {
+        return isCallOther;
+    }
+
+    public void setCallOther(boolean callOther) {
+        isCallOther = callOther;
     }
 
     public void setCurrentCallingUserid(String currentCallingUserid) {
@@ -128,13 +137,14 @@ public class TXCallDataTemplate extends TXDataTemplate {
             }
             property = params;
         }
+
         try {
             mIsBusy = callStatus != CallState.TYPE_IDLE_OR_REFUSE;
             mCurrentCallingUserid = mIsBusy ? userId : "";
             if (callType == CallingType.TYPE_VIDEO_CALL) { //video
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -143,10 +153,11 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -158,6 +169,19 @@ public class TXCallDataTemplate extends TXDataTemplate {
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }
+
+            if (isCallOther) {  // 主叫以后的请求
+                if (!userId.equals("")) {
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
+                }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+            } else { // 被叫以后的请求
+                if (!userId.equals("")) {
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, String.format("%s/%s", mProductId, mDeviceName));
+                }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, userId);
+            }
+
         } catch (JSONException e) {
             TXLog.e(TAG, "Construct property json failed!");
             return Status.ERROR;
@@ -203,9 +227,6 @@ public class TXCallDataTemplate extends TXDataTemplate {
             mCurrentCallingUserid = mIsBusy ? userId : "";
             if (callType == CallingType.TYPE_VIDEO_CALL) { //video
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
-                if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
-                }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
                 }
@@ -213,11 +234,9 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
-                if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
-                }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
                 }
@@ -225,8 +244,21 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
+            }
+
+            if (isCallOther) {  // 主叫以后的请求
+                if (!userId.equals("")) {
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
+                }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+            } else { // 被叫以后的请求
+                if (!userId.equals("")) {
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, String.format("%s/%s", mProductId, mDeviceName));
+                }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, userId);
             }
         } catch (JSONException e) {
             TXLog.e(TAG, "Construct property json failed!");
@@ -306,5 +338,28 @@ public class TXCallDataTemplate extends TXDataTemplate {
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
+    }
+
+    public CallExtraInfo getCallExtraInfo(JSONObject param) {
+        String callerId = null;
+        String calledId = null;
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID)) {
+            try {
+                callerId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID)) {
+            try {
+                calledId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        CallExtraInfo ret = new CallExtraInfo(callerId, calledId);
+        return ret;
     }
 }
