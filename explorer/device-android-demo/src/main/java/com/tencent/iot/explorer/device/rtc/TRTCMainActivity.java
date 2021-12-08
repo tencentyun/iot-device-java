@@ -30,6 +30,7 @@ import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServer;
 import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerCallback;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
@@ -88,19 +89,21 @@ public class TRTCMainActivity extends AppCompatActivity {
     private EditText mProductIdEditText;
     private EditText mDevNameEditText;
     private EditText mDevPSKEditText;
+    private EditText toCallIdText;
     private Button mGenerateQRCodeBtn;
 
     private TextView mLogInfoText;
 
     private RecyclerView mRecyclerView = null;
     private UserListAdapter mAdapter = null;
-    private ArrayList<UserEntity> mDatas = null;
+    private ArrayList<UserEntity> mDatas = new ArrayList<>();
 
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = BuildConfig.SUB_PRODUCT_ID;
     private String mDevName = BuildConfig.SUB_DEV_NAME;
     private String mDevPSK  = BuildConfig.SUB_DEV_PSK; //若使用证书验证，设为null
+    private String m2CallId = "";
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
@@ -116,6 +119,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private final static String PRODUCT_ID = "product_id";
     private final static String DEVICE_NAME = "dev_name";
     private final static String DEVICE_PSK = "dev_psk";
+    private final static String TO_CALL_ID = "toCallId";
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -156,6 +160,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         mAudioCallBtn = findViewById(R.id.select_audio_call);
         mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
+        toCallIdText = findViewById(R.id.to_call_id);
 
         mBrokerURLEditText = findViewById(R.id.et_broker_url);
         mProductIdEditText = findViewById(R.id.et_productId);
@@ -182,7 +187,12 @@ public class TRTCMainActivity extends AppCompatActivity {
         mProductID = settings.getString(PRODUCT_ID, mProductID);
         mDevName = settings.getString(DEVICE_NAME, mDevName);
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+        m2CallId = settings.getString(TO_CALL_ID, m2CallId);
         editor.commit();
+
+        if (!TextUtils.isEmpty(m2CallId)) {
+            toCallIdText.setText(m2CallId);
+        }
 
         if (!TextUtils.isEmpty(mBrokerURL)) {
             mBrokerURLEditText.setText(mBrokerURL);
@@ -213,6 +223,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 editor.putString(PRODUCT_ID, mProductID);
                 editor.putString(DEVICE_NAME, mDevName);
                 editor.putString(DEVICE_PSK, mDevPSK);
+                editor.putString(TO_CALL_ID, toCallIdText.getText().toString());
                 editor.commit();
                 if (mDataTemplateSample != null) {
                     return;
@@ -435,8 +446,8 @@ public class TRTCMainActivity extends AppCompatActivity {
             //do something 如果是userlist，刷新展示用户列表
             try {
                 JSONObject property = data.getJSONObject("reported");
+                mDatas.clear();
                 if (property.has(PROPERTY_SYS_CALL_USERLIST)) {
-                    mDatas = new ArrayList<UserEntity>();
                     String userList = property.getString(PROPERTY_SYS_CALL_USERLIST);
                     JSONArray userArrayList = new JSONArray(userList);
                     for (int i = 0; i < userArrayList.length(); i++) {
@@ -454,16 +465,21 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                         mDatas.add(user);
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 设置适配器，刷新展示用户列表
-                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    });
-
                 }
+
+                if (!TextUtils.isEmpty(toCallIdText.getText().toString())) {
+                    UserEntity lastUser = new UserEntity();
+                    lastUser.setUserid(toCallIdText.getText().toString());
+                    mDatas.add(lastUser);
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 设置适配器，刷新展示用户列表
+                        mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -473,6 +489,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         public JSONObject onControlCallBack(JSONObject msg) {
             Log.d(TAG, "control down stream message received : " + msg);
             //do something 如果是userlist，刷新展示用户列表
+            mDatas.clear();
             if (msg.has(PROPERTY_SYS_CALL_USERLIST)) {
                 try {
                     mDatas = new ArrayList<UserEntity>();
@@ -493,20 +510,27 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                         mDatas.add(user);
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 设置适配器，刷新展示用户列表
-                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
+
+            if (!TextUtils.isEmpty(toCallIdText.getText().toString())) {
+                UserEntity lastUser = new UserEntity();
+                lastUser.setUserid(toCallIdText.getText().toString());
+                mDatas.add(lastUser);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // 设置适配器，刷新展示用户列表
+                    mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            });
+
             //output
             try {
                 JSONObject result = new JSONObject();
@@ -668,7 +692,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private class TRTCCallBack extends TXTRTCCallBack {
 
         @Override
-        public void onGetCallStatusCallBack(Integer callStatus, final String userid, final String agent, Integer callType) {
+        public void onGetCallStatusCallBack(Integer callStatus, final String userid, final String agent, Integer callType, CallExtraInfo callExtraInfo) {
             if (callStatus == 1) { //表示被呼叫了
                 mCallMobileNumber = 0;
                 mCallType = callType;
