@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -134,7 +135,8 @@ public class TXCallDataTemplate extends TXDataTemplate {
             if (callType == CallingType.TYPE_VIDEO_CALL) { //video
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -143,10 +145,12 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -155,6 +159,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }
@@ -205,6 +210,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -213,10 +219,13 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
                 if (!userId.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID,userId);
+                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID, userId);
                 }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
@@ -225,6 +234,8 @@ public class TXCallDataTemplate extends TXDataTemplate {
                 if (!extraInfo.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_EXTRA_INFO,extraInfo);
                 }
+                property.put(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID, String.format("%s/%s", mProductId, mDeviceName));
+
             } else {
                 return Status.ERR_JSON_CONSTRUCT;
             }
@@ -306,5 +317,28 @@ public class TXCallDataTemplate extends TXDataTemplate {
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
+    }
+
+    public CallExtraInfo getCallExtraInfo(JSONObject param) {
+        String callerId = null;
+        String calledId = null;
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID)) {
+            try {
+                callerId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLER_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (param.has(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID)) {
+            try {
+                calledId = param.getString(TXCallDataTemplateConstants.PROPERTY_SYS_CALLED_USERID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        CallExtraInfo ret = new CallExtraInfo(callerId, calledId);
+        return ret;
     }
 }
