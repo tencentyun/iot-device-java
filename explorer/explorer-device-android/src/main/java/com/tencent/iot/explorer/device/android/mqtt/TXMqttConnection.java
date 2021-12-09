@@ -9,6 +9,9 @@ import android.util.Base64;
 
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLog;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
@@ -99,6 +102,49 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack) {
         super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
         this.mContext = context;
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     */
+    public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack) {
+        super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+        this.mContext = context;
+        this.mMqttLogFlag = mqttLogFlag;
+        this.mMqttLogCallBack = logCallBack;
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 url
+     */
+    public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl) {
+        super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
+        this.mContext = context;
+        this.mMqttLogFlag = mqttLogFlag;
+        this.mMqttLogCallBack = logCallBack;
     }
 
 
@@ -212,6 +258,11 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
                 TXLog.i(TAG, "onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
                 mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI, null);
+
+                // 连接建立后，如果需要日志，则初始化日志功能
+                if (mMqttLogFlag) {
+                    initMqttLog(TAG);
+                }
             }
 
             @Override
@@ -250,6 +301,75 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
+     * 初始化日志上传功能
+     *
+     * @param tag 日志标记
+     */
+    protected void initMqttLog(final String tag) {
+        if (mMqttLog == null) {
+            if (mLogUrl != null) {
+                this.mMqttLog = new TXMqttLog(this, mLogUrl);
+            } else {
+                this.mMqttLog = new TXMqttLog(this);
+            }
+        }
+
+        if (Status.OK != mMqttLog.initMqttLog()){
+            TXLog.i(tag,"Init MqttLog failed!" );
+        }
+    }
+
+    /**
+     * 生成一条设备日志
+     *
+     * @param logLevel 日志级别：
+     *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
+     *                 错误：TXMqttLogConstants.LEVEL_ERROR
+     *                 警告：TXMqttLogConstants.LEVEL_WARN
+     *                 通知：TXMqttLogConstants.LEVEL_INFO
+     *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+     * @param tag 日志标记
+     * @param format 日志格式
+     * @param obj 日志内容
+     */
+    public void mLog(int logLevel, final String tag,final String format, final Object... obj) {
+        if( mMqttLog != null) {
+            if( !(mMqttLog.saveMqttLog(logLevel, tag, format, obj))) {
+                TXLog.w(tag, "Save %s Level Log failed!", TXMqttLog.level_str[logLevel] );
+            }
+        }
+    }
+
+    /**
+     * 生成一条设备日志
+     *
+     * @param logLevel 日志级别：
+     *                 MQTT错误：TXMqttLogConstants.LEVEL_FATAL
+     *                 错误：TXMqttLogConstants.LEVEL_ERROR
+     *                 警告：TXMqttLogConstants.LEVEL_WARN
+     *                 通知：TXMqttLogConstants.LEVEL_INFO
+     *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+     * @param tag 日志标记
+     * @param msg 日志内容
+     */
+    public void mLog(int logLevel, final String tag, final String msg) {
+        if( mMqttLog != null) {
+            if( !(mMqttLog.saveMqttLog(logLevel, tag, msg))) {
+                TXLog.w(tag, "Save %s Level Log failed!", TXMqttLog.level_str[logLevel] );
+            }
+        }
+    }
+
+    /**
+     * 触发一次日志上传
+     */
+    public void uploadLog() {
+        if(mMqttLog != null) {
+            mMqttLog.uploadMqttLog();
+        }
+    }
+
+    /**
      * 设备绑定App下发的token
      * @return 生成的绑定设备的二维码字符串;
      */
@@ -276,4 +396,40 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         return publish(TOPIC_SERVICE_UP_PREFIX + mProductId + "/" + mDeviceName, message, null);
     }
 
+    @Override
+    public void connectComplete(boolean reconnect, String serverURI) {
+        super.connectComplete(reconnect, serverURI);
+
+        //重新连接，处理离线日志，重新获取日志级别
+        if (mMqttLogFlag) {
+            initMqttLog(TAG);
+        }
+    }
+
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+        super.messageArrived(topic, message);
+        //判断获取日志等级
+        if (mMqttLog != null) {
+            if (topic.startsWith("$" + TXMqttLogConstants.LOG)) {
+                String jsonStr = new String(message.getPayload());
+
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+
+                    if (jsonObj.has(TXMqttLogConstants.LOG_LEVEL)) {
+                        int logLevel = jsonObj.getInt(TXMqttLogConstants.LOG_LEVEL);
+                        mMqttLog.setMqttLogLevel(logLevel);
+                        uploadLog();
+                        TXLog.d(TAG, "******Set mqttLogLevel to " + logLevel);
+                        return;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            TXLog.d(TAG, "******Get mqttLogLevel failed ");
+        }
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
@@ -37,6 +38,27 @@ public class TXDataTemplateClient extends TXMqttConnection {
                                 MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
+        this.mDataTemplate = new TXDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack);
+        this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
+    }
+
+    /**
+     * @param context           用户上下文（这个参数在回调函数时透传给用户）
+     * @param productID         产品名
+     * @param deviceName        设备名，唯一
+     * @param secretKey         密钥
+     * @param bufferOpts        发布消息缓存buffer，当发布消息时MQTT连接非连接状态时使用
+     * @param clientPersistence 消息永久存储
+     * @param mqttLogFlag       是否开启日志功能
+     * @param logCallBack       日志回调 {@link TXMqttLogCallBack}
+     * @param callBack          连接、消息发布、消息订阅回调接口
+     * @param jsonFileName      数据模板描述文件
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXDataTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
+                                MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack,
+                                final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, mqttLogFlag, logCallBack, callBack);
         this.mDataTemplate = new TXDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack);
         this.mPropertyDownStreamTopic = mDataTemplate.mPropertyDownStreamTopic;
     }
