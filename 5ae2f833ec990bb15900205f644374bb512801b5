@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7baf9724_b57a1c9e",
+        "filename": "explorer/explorer-device-common/src/main/java/com/tencent/iot/explorer/device/common/stateflow/TXCallDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-12-13T08:30:20Z",
+      "side": 1,
+      "message": "这个try catch和下面的合并一下？",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a0b2b9a9_ca4e48dc",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-12-13T08:30:20Z",
+      "side": 1,
+      "message": "getCallExtraInfo(params)这个是上面的153行的CallExtraInfo tmp么？",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "078951db_1301a65a",
+        "filename": "explorer/explorer-device-video/src/main/java/com/tencent/iot/explorer/device/video/recorder/TXVideoDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2021-12-13T08:30:20Z",
+      "side": 1,
+      "message": "这种log，比较难理解是想表示啥意思。",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
