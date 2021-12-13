@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "198480a3_ac0144ba",
+        "filename": "explorer/explorer-device-common/src/main/java/com/tencent/iot/explorer/device/common/stateflow/TXCallDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-12-13T09:00:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7baf9724_b57a1c9e",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0b2b9a9_ca4e48dc",
         "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
         "patchSetId": 9
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "2ee6bc51_1b9d071e",
+        "filename": "explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/rtc/data_template/TXTRTCDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-12-13T09:00:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a0b2b9a9_ca4e48dc",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "078951db_1301a65a",
         "filename": "explorer/explorer-device-video/src/main/java/com/tencent/iot/explorer/device/video/recorder/TXVideoDataTemplate.java",
         "patchSetId": 9
@@ -50,6 +86,24 @@
       "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05581acf_fe3bdfac",
+        "filename": "explorer/explorer-device-video/src/main/java/com/tencent/iot/explorer/device/video/recorder/TXVideoDataTemplate.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2021-12-13T09:00:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "078951db_1301a65a",
+      "revId": "5ae2f833ec990bb15900205f644374bb512801b5",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
