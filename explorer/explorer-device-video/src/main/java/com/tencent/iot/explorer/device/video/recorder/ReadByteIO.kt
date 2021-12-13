@@ -83,6 +83,8 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
         var readLen = size
         if (playType == CallingType.TYPE_AUDIO_CALL) {
             readLen = 700
+        } else if (playType == CallingType.TYPE_AUDIO_CALL) {
+            readLen = 1024 * 2
         }
         var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)

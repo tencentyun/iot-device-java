@@ -352,7 +352,8 @@ public class MainActivity extends AppCompatActivity {
             try {
                 callingTimer.cancel();
             } catch (Exception e){}
-            runOnUiThread(() -> { callActionLayout.setVisibility(View.GONE); });
+            runOnUiThread(() -> { callActionLayout.setVisibility(View.GONE);
+                callingLayout.setVisibility(View.GONE); });
             Utils.sendVideoOverBroadcast(MainActivity.this);
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, callType, userid, agent);
         }
