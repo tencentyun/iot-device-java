@@ -48,6 +48,7 @@ jobs:
       - name: Fix SDKs Version
         run: |
           rtt=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "curr_tag=$rtt" >> $GITHUB_ENV
           rt=${rtt#*v}
           rc=$(git rev-parse --short HEAD)
           sed -i 's#def version.*#def version = \"'$rt'\"#g' config.gradle
@@ -72,9 +73,12 @@ jobs:
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
 #      - name: Test with Gradle
 #        run: ./gradlew test
-      - name: Build with Gradle
+      - name: Remove snapshot dependency
+        if: ${{!contains(env.curr_tag, 'beta')}}
         run: |
           sed -i '/snapshots/, +d' build.gradle
+      - name: Build with Gradle
+        run: |
           ./gradlew build -x test
       - name: Publish aar and jar to Maven
         run: ./gradlew publish
