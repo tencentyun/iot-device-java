@@ -41,6 +41,7 @@ dependencies {
     api 'com.squareup.picasso:picasso:2.71828'
     api 'com.alibaba:fastjson:1.2.73'
     api project(':explorer:explorer-media-common')
+    //xxxapi project(':explorer:explorer//xxx-media-common')
 }
 
 task androidJavadocs(type: Javadoc) {

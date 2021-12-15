@@ -83,9 +83,16 @@ jobs:
           sed -i '/snapshots/, +d' build.gradle
       - name: Build with Gradle
         run: |
-          ./gradlew build -x test
+          ./gradlew build -x test -x :explorer:device-android-demo:build
       - name: Publish aar and jar to Maven
         run: ./gradlew publish
+      - name: Build Demo App
+        run: |
+          rm -rf explorer/explorer-device-video/src/main/java/com/tencent/iot/explorer/device/common/stateflow/*
+          rm -rf explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/common/stateflow/*
+          sed -i 's#//xxx##g' explorer/explorer-device-rtc/build.gradle
+          sed -i 's#//xxx##g' explorer/explorer-device-video/build.gradle
+          ./gradlew :explorer:device-android-demo:build
       - name: Archive the apks
         uses: actions/upload-artifact@v2
         with:

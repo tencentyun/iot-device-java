@@ -54,6 +54,7 @@ dependencies {
     api 'com.tencent.iot.thirdparty.android:ijkplayer-java:1.0.1'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-armv7a:1.0.1'
     api project(':explorer:explorer-media-common')
+    //xxxapi project(':explorer:explorer//xxx-media-common')
     if (findProject(':explorer:explorer-device-android') != null) {
         implementation project(':explorer:explorer-device-android')
     }
