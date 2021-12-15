@@ -53,8 +53,8 @@ dependencies {
     api 'com.tencent.iot.thirdparty.android:xp2p-device-sdk:2.3.1-SNAPSHOT'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-java:1.0.1'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-armv7a:1.0.1'
-    if (findProject(':explorer:explorer-device-common') != null) {
-        api project(':explorer:explorer-device-common')
+    if (findProject(':explorer:explorer-media-common') != null) {
+        api project(':explorer:explorer-media-common')
     }
     if (findProject(':explorer:explorer-device-android') != null) {
         implementation project(':explorer:explorer-device-android')
