@@ -24,6 +24,10 @@ jobs:
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/hub-device-java/unit_test_config.json.asc > hub/hub-device-java/src/test/resources/unit_test_config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/explorer-device-java/unit_test_config.json.asc > explorer/explorer-device-java/src/test/resources/unit_test_config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/sdk/secring.gpg.asc > secring.gpg
+          cp -r explorer/explorer-media-common/src/main/java/* explorer/explorer-device-rtc/src/main/java/
+          cp -r explorer/explorer-media-common/src/main/java/* explorer/explorer-device-video/src/main/java/
+          sed -i '/explorer-media-common/, +d' explorer/explorer-device-rtc/build.gradle
+          sed -i '/explorer-media-common/, +d' explorer/explorer-device-video/build.gradle
           sh .github/scripts/updateValuesForTme.sh
         env:
           GIT_ACCESS_TOKEN: ${{ secrets.IOT_GITHUB_ACCESS_TOKEN }}
