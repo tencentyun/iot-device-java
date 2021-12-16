@@ -389,6 +389,9 @@ public class TXGatewayClient extends TXDataTemplateClient {
         }
     }
 
+    /*
+     * 连接 MQTT 服务器，无需设置 username 和 password，内部会自动填充
+     */
     @Override
     public synchronized Status connect(MqttConnectOptions options, Object userContext) {
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {

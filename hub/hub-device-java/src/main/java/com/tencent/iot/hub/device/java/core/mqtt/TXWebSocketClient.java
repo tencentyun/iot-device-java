@@ -80,9 +80,9 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
     }
 
     /**
-     * 设置连接配置
+     * 设置连接配置，无需设置 username 和 password，内部会自动填充
      *
-     * @param mqttConnectOptions {@link MqttConnectOptions}
+     * @param mqttConnectOptions 连接参数 {@link MqttConnectOptions}
      */
     public void setMqttConnectOptions(MqttConnectOptions mqttConnectOptions) {
         this.conOptions = mqttConnectOptions;

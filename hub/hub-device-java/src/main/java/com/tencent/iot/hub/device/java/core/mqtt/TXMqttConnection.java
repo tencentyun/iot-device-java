@@ -367,7 +367,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
-     * 连接 MQTT 服务器，结果通过回调函数通知
+     * 连接 MQTT 服务器，结果通过回调函数通知，无需设置 username 和 password，内部会自动填充
      *
      * @param options 连接参数
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
