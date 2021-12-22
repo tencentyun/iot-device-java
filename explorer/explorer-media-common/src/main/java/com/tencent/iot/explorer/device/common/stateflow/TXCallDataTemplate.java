@@ -335,6 +335,16 @@ public class TXCallDataTemplate extends TXDataTemplate {
         return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);
     }
 
+    // 用于 cpp 层调用 java 层 的上报属性接口
+    Status sysCppPropertyReport(String msg, String method, String token) {
+        TXLog.e(TAG, "sysCppPropertyReport msg " + msg + ", method " + method);
+        MqttMessage message = new MqttMessage();
+        message.setQos(0);
+        message.setPayload(msg.getBytes());
+
+        return publishTemplateMessage(token, PROPERTY_UP_STREAM_TOPIC, message);
+    }
+
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
