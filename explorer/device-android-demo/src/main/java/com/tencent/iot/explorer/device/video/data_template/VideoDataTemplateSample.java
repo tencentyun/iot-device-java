@@ -105,6 +105,10 @@ public class VideoDataTemplateSample {
         return mMqttConnection.reportCallStatusProperty(callStatus, callType, userId, agent, null);
     }
 
+    public Status sysCppPropertyReport(String msg, String method, String token) {
+        return mMqttConnection.sysCppPropertyReport(msg, method, token);
+    }
+
     /**
      * 订阅主题
      *

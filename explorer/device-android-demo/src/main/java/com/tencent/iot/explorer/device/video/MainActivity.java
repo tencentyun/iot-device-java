@@ -32,10 +32,12 @@ import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.entity.DeviceConnectCondition;
 import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
+import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.json.JSONArray;
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         online = findViewById(R.id.connect);
         offline = findViewById(R.id.disconnect);
         hangUp = findViewById(R.id.btn_hang_up);
-//        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
+        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         toCalledUserId.setText(getUserId());
 
         DeviceConnectCondition values = getDeviceConnectCondition();
@@ -175,26 +177,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private XP2PCallback xP2PCallback = new XP2PCallback() {
-//
-//        @Override
-//        public void avDataRecvHandle(byte[] data, int len) {
-//            ReadByteIO.Companion.getInstance().addLast(data);
-//        }
-//
-//        @Override
-//        public void avDataMsgHandle(int type, String msg) {
-//            Log.e(TAG, "avDataMsgHandle type " + type);
-//            if (type == 0) {
-//                Log.e(TAG, "start send video data");
-//                Utils.sendVideoBroadcast(MainActivity.this, 1);
-//
-//            } else if (type == 1) {
-//                Log.e(TAG, "this call over");
-//                Utils.sendVideoBroadcast(MainActivity.this, 2);
-//            }
-//        }
-//    };
+    private XP2PCallback xP2PCallback = new XP2PCallback() {
+
+        @Override
+        public void avDataRecvHandle(byte[] data, int len) {
+            ReadByteIO.Companion.getInstance().addLast(data);
+        }
+
+        @Override
+        public void avDataMsgHandle(int type, String msg) {
+            Log.e(TAG, "avDataMsgHandle type " + type);
+            if (type == 0) {
+                Log.e(TAG, "start send video data");
+                Utils.sendVideoBroadcast(MainActivity.this, 0);
+
+            } else if (type == 1) {
+                Log.e(TAG, "this call over");
+                Utils.sendVideoBroadcast(MainActivity.this, 1);
+            } else if (type == 2) {
+                Log.e(TAG, "type " + type + ", msg " + msg);
+//                videoDataTemplateSample.sysCppPropertyReport();
+            }
+        }
+    };
 
     private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
 

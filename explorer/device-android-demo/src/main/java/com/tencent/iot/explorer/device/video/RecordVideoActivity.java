@@ -29,8 +29,6 @@ import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
-import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
-import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.IOException;
 
@@ -74,7 +72,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
 
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
-        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
+//        VideoManager.getInstance().setCallback(xP2PCallback);
         registVideoOverBrodcast();
         ReadByteIO.Companion.getInstance().reset();
         ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
@@ -99,28 +97,28 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         super.onPause();
     }
 
-    private XP2PCallback xP2PCallback = new XP2PCallback() {
-
-        @Override
-        public void avDataRecvHandle(byte[] data, int len) {
-            ReadByteIO.Companion.getInstance().addLast(data);
-        }
-
-        @Override
-        public void avDataMsgHandle(int type, String msg) {
-            Log.e(TAG, "avDataMsgHandle type " + type);
-            if (type == 0) {
-                Log.e(TAG, "start send video data");
-                handler.post(() -> startRecord());
-
-            } else if (type == 1) {
-                Log.e(TAG, "this call over");
-                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
-                }
-            }
-        }
-    };
+//    private XP2PCallback xP2PCallback = new XP2PCallback() {
+//
+//        @Override
+//        public void avDataRecvHandle(byte[] data, int len) {
+//            ReadByteIO.Companion.getInstance().addLast(data);
+//        }
+//
+//        @Override
+//        public void avDataMsgHandle(int type, String msg) {
+//            Log.e(TAG, "avDataMsgHandle type " + type);
+//            if (type == 0) {
+//                Log.e(TAG, "start send video data");
+//                handler.post(() -> startRecord());
+//
+//            } else if (type == 1) {
+//                Log.e(TAG, "this call over");
+//                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+//                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+//                }
+//            }
+//        }
+//    };
 
     @Override
     protected void onDestroy() {
@@ -215,6 +213,14 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         public void onReceive(Context context, Intent intent) {
             int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
             if (refreshTag == 9){
+                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                }
+            } else if (refreshTag == 0) {
+                Log.e(TAG, "start send video data");
+                handler.post(() -> startRecord());
+            } else if (refreshTag == 1) {
+                Log.e(TAG, "this call over");
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
                     new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
                 }

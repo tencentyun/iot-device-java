@@ -124,6 +124,10 @@ public class TXCallTemplateClient extends TXMqttConnection {
         return mDataTemplate.propertyClearControl();
     }
 
+    public Status sysCppPropertyReport(String msg, String method, String token) {
+        return mDataTemplate.sysCppPropertyReport(msg, method, token);
+    }
+
     /**
      * 单个事件上报
      * @param eventId 事件ID
