@@ -716,7 +716,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     mCallMobileNumber--;
                 }
                 if (mCallMobileNumber == 0) {
-                    TRTCUIManager.getInstance().callMobile = false;
+//                    TRTCUIManager.getInstance().callMobile = false;
                     if (TRTCUIManager.getInstance().isCalling && TRTCUIManager.getInstance().callingUserId.equals("")) { //当前正显示音视频通话页面，finish掉
                         TimerTask task = new TimerTask(){
                             public void run(){
@@ -743,7 +743,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     TRTCUIManager.getInstance().joinRoom(mCallType, "", room);
-                    TRTCUIManager.getInstance().callMobile = false;
+//                    TRTCUIManager.getInstance().callMobile = false;
                 }
             });
         }
