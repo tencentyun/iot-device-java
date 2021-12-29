@@ -164,6 +164,15 @@ public class TXShadowConnection {
     }
 
     /**
+     * 设置日志Flag
+     *
+     * @param value
+     */
+    public void setMqttLogFlag(Boolean value) {
+        mTXShadowConn.setMqttLogFlag(value);
+    }
+
+    /**
      * 与云端建立连接，结果通过回调函数通知
      *
      * @param options 连接参数 {@link MqttConnectOptions}
