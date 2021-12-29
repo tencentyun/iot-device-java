@@ -111,6 +111,15 @@ public class TXMqttConnection implements MqttCallbackExtended {
     protected TXMqttLog mMqttLog = null;
 
     /**
+     * 设置日志Flag
+     *
+     * @param value
+     */
+    public void setMqttLogFlag(Boolean value) {
+        this.mMqttLogFlag = value;
+    }
+
+    /**
      * 设置日志回调
      *
      * @param mMqttLogCallBack {@link TXMqttLogCallBack}
