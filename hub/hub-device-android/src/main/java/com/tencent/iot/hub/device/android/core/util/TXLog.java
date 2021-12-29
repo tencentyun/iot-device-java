@@ -192,6 +192,24 @@ public class TXLog {
         v(tag, msg, (Object[]) null);
     }
 
+    private static String formateContent(final String format, final Object... obj) {
+        String log = "";
+        try {
+            log = obj == null ? format : String.format(format, obj);
+        } catch (Exception e) {
+            if (obj != null) {
+                log = format + obj.toString();
+            } else {
+                log = format;
+            }
+        }
+
+        if (log == null) {
+            log = "";
+        }
+        return log;
+    }
+
     /**
      * 打印日志级别 FATAL 的日志
      *
@@ -201,7 +219,7 @@ public class TXLog {
      */
     public static void f(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_FATAL >= logImp.getLogLevel()) {
-            final String log = obj == null ? format : String.format(format, obj);
+            final String log = formateContent(format, obj);
             logImp.logF(tag, "", "", 0, Process.myPid(), Thread.currentThread().getId(), Looper.getMainLooper().getThread().getId(), log);
         }
     }
@@ -215,10 +233,7 @@ public class TXLog {
      */
     public static void e(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.e(tag, log);
 
@@ -235,10 +250,7 @@ public class TXLog {
      */
     public static void w(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_WARNING >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.w(tag, log);
 
@@ -255,10 +267,7 @@ public class TXLog {
      */
     public static void i(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_INFO >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.i(tag, log);
 
@@ -275,10 +284,7 @@ public class TXLog {
      */
     public static void d(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_DEBUG >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.d(tag, log);
 
@@ -295,10 +301,7 @@ public class TXLog {
      */
     public static void v(String tag, final String format, final Object... obj) {
         if (logImp != null && LEVEL_VERBOSE >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.v(tag, log);
 
@@ -316,10 +319,7 @@ public class TXLog {
      */
     public static void e(String tag, Throwable tr, final String format, final Object... obj) {
         if (logImp != null && LEVEL_ERROR >= logImp.getLogLevel()) {
-            String log = obj == null ? format : String.format(format, obj);
-            if (log == null) {
-                log = "";
-            }
+            String log = formateContent(format, obj);
 
             Log.e(tag, log, tr);
 
