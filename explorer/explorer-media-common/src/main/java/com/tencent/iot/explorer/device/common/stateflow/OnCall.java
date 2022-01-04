@@ -3,6 +3,8 @@ package com.tencent.iot.explorer.device.common.stateflow;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 
+import org.json.JSONObject;
+
 public abstract class OnCall {
 
     /**
@@ -22,4 +24,13 @@ public abstract class OnCall {
      * @param room
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
+
+    /**
+     * 获取用户头像结果
+     *
+     * @param code  0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param errorMsg 0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param avatarList userId对应用户头像 json
+     */
+    public abstract void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList);
 }

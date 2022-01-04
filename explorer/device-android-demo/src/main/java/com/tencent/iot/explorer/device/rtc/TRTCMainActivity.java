@@ -747,6 +747,11 @@ public class TRTCMainActivity extends AppCompatActivity {
                 }
             });
         }
+
+        @Override
+        public void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList) {
+
+        }
     }
 
     @Override

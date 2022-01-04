@@ -1,8 +1,13 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_GET_USER_AVATAR_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
+
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
@@ -20,13 +25,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplat
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 
 public class TXTRTCDataTemplate extends TXCallDataTemplate {
     private String TAG = TXTRTCDataTemplate.class.getSimpleName();
@@ -197,6 +196,18 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                         reportResetCallStatusProperty();
                     }
                 }
+            } else if (method.equals(METHOD_GET_USER_AVATAR_REPLY)) {
+                if (jsonObj.has("code")) {
+                    Integer code = jsonObj.getInt("code");
+                    String errorMsg = jsonObj.getString("status");
+                    if (code == 0 && jsonObj.has("response")) {
+                        JSONObject avatarList = jsonObj.getJSONObject("response").getJSONObject("data");
+                        mTrtcCallBack.trtcGetUserAvatarCallBack(code, errorMsg, avatarList);
+                    } else {
+                        mTrtcCallBack.trtcGetUserAvatarCallBack(code, errorMsg, null);
+                    }
+                }
+
             }
 
         } catch (Exception e) {
