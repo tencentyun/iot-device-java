@@ -1,17 +1,8 @@
 package com.tencent.iot.explorer.device.rtc.utils;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkRequest;
-import android.net.NetworkSpecifier;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.net.wifi.WifiNetworkSpecifier;
-import android.os.PatternMatcher;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -95,69 +86,25 @@ public class WifiUtils {
             return;
         }
         WifiManager mWifiManager = (WifiManager) context.getSystemService(WIFI_SERVICE);
-        //Andorid10.以下
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q) {
-            WifiConfiguration wifiNewConfiguration = createWifiInfo(wifiApName, password);//使用wpa2的wifi加密方式
-            int newNetworkId = mWifiManager.addNetwork(wifiNewConfiguration);
-            if (newNetworkId == -1) {
-                Log.i(TAG, "操作失败,需要您到手机wifi列表中取消对设备连接的保存");
-                callBack.connectResult(false);
-                return;
-            }
-            Log.i(TAG, "newNetworkId is:" + newNetworkId);
-            // 如果wifi权限没打开（1、先打开wifi，2，使用指定的wifi
-            if (!mWifiManager.isWifiEnabled()) {
-                mWifiManager.setWifiEnabled(true);
-            }
-            boolean enableNetwork = mWifiManager.enableNetwork(newNetworkId, true);
-            if (!enableNetwork) {
-                Log.i(TAG, "切换到指定wifi失败");
-                callBack.connectResult(false);
-                return;
-            }
-            Log.i(TAG, "切换到指定wifi成功");
-            callBack.connectResult(true);
-        } else {
-            boolean isOpenWifi = mWifiManager.isWifiEnabled();
-            if (!isOpenWifi) {
-                Log.i(TAG, "用户需要打开wifi开关");
-                context.startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
-                callBack.connectResult(false);
-                return;
-            }
-            NetworkSpecifier specifier =
-                    new WifiNetworkSpecifier.Builder()
-                            .setSsidPattern(new PatternMatcher(wifiApName, PatternMatcher.PATTERN_PREFIX))
-                            .setWpa2Passphrase(password)
-                            .build();
-
-            NetworkRequest request =
-                    new NetworkRequest.Builder()
-                            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-                            .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                            .setNetworkSpecifier(specifier)
-                            .build();
-
-            ConnectivityManager connectivityManager = (ConnectivityManager)
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(Network network) {
-                    // do success processing here..
-                    Log.i(TAG, "onAvailable success");
-                    Log.i(TAG, "network" + network.toString());
-                    callBack.connectResult(true);
-                }
-
-                @Override
-                public void onUnavailable() {
-                    // do failure processing here..
-                    Log.i(TAG, "onUnavailable fail");
-                    callBack.connectResult(false);
-                }
-            };
-            connectivityManager.requestNetwork(request, networkCallback);
+        WifiConfiguration wifiNewConfiguration = createWifiInfo(wifiApName, password);//使用wpa2的wifi加密方式
+        int newNetworkId = mWifiManager.addNetwork(wifiNewConfiguration);
+        if (newNetworkId == -1) {
+            Log.i(TAG, "操作失败,需要您到手机wifi列表中取消对设备连接的保存");
+            callBack.connectResult(false);
+            return;
         }
+        Log.i(TAG, "newNetworkId is:" + newNetworkId);
+        // 如果wifi权限没打开（1、先打开wifi，2，使用指定的wifi
+        if (!mWifiManager.isWifiEnabled()) {
+            mWifiManager.setWifiEnabled(true);
+        }
+        boolean enableNetwork = mWifiManager.enableNetwork(newNetworkId, true);
+        if (!enableNetwork) {
+            Log.i(TAG, "切换到指定wifi失败");
+            callBack.connectResult(false);
+            return;
+        }
+        Log.i(TAG, "切换到指定wifi成功");
+        callBack.connectResult(true);
     }
 }
