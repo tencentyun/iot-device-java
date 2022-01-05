@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.common.stateflow;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_GET_USER_AVATAR;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_UP_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
+
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -13,18 +18,15 @@ import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStre
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
 public class TXCallDataTemplate extends TXDataTemplate {
     private String TAG = TXCallDataTemplate.class.getSimpleName();
@@ -356,5 +358,38 @@ public class TXCallDataTemplate extends TXDataTemplate {
 
         CallExtraInfo ret = new CallExtraInfo(callerId, calledId);
         return ret;
+    }
+
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(ArrayList userIdsArray) {
+
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        JSONObject params = new JSONObject();
+        JSONArray array = new JSONArray();
+        String clientToken = mProductId + mDeviceName + UUID.randomUUID().toString();
+        try {
+            object.put("method", METHOD_GET_USER_AVATAR);
+            object.put("clientToken", clientToken);
+            object.put("timestamp", System.currentTimeMillis());
+            for (int i = 0; i < userIdsArray.size(); i++) {
+                String userId = (String) userIdsArray.get(i);
+                array.put(userId);
+            }
+            params.put("user_id_list", array);
+            object.put("params", params);
+        } catch (Exception e) {
+            TXLog.e(TAG, "appBindToken: failed!");
+            return Status.ERR_JSON_CONSTRUCT;
+        }
+
+        MqttMessage message = new MqttMessage();
+        message.setQos(1); //qos 1
+        message.setPayload(object.toString().getBytes());
+        return mConnection.publish(TOPIC_SERVICE_UP_PREFIX + mProductId + "/" + mDeviceName, message, null);
     }
 }

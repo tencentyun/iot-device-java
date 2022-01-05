@@ -84,6 +84,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private Button mStartAdvBtn;
     private Button mAudioCallBtn;
     private Button mVideoCallBtn;
+    private Button mGetAvatarBtn;
 
     private EditText mBrokerURLEditText;
     private EditText mProductIdEditText;
@@ -157,6 +158,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         mConnectBtn = findViewById(R.id.connect);
         mCloseConnectBtn = findViewById(R.id.close_connect);
         mStartAdvBtn = findViewById(R.id.start_adv);
+        mGetAvatarBtn = findViewById(R.id.get_avatar);
         mAudioCallBtn = findViewById(R.id.select_audio_call);
         mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
@@ -292,6 +294,21 @@ public class TRTCMainActivity extends AppCompatActivity {
             }
         });
 
+        mGetAvatarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataTemplateSample == null)
+                    return;
+                ArrayList userIdsArray = getUserIdsArray();
+                if (userIdsArray.size() == 0) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "暂未和用户绑定", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
+                mDataTemplateSample.getUserAvatar(userIdsArray);
+            }
+        });
+
         mVideoCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -362,6 +379,15 @@ public class TRTCMainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private ArrayList getUserIdsArray() {
+        ArrayList<String> userIds = new ArrayList<String>();
+        for (int i = 0; i < mDatas.size(); i++) {
+            UserEntity user = mDatas.get(i);
+            userIds.add(user.getUserid());
+        }
+        return userIds;
     }
 
     private String selectedUserIds() {
@@ -746,6 +772,23 @@ public class TRTCMainActivity extends AppCompatActivity {
 //                    TRTCUIManager.getInstance().callMobile = false;
                 }
             });
+        }
+
+        @Override
+        public void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList) {
+            if (code == 0) {
+                for (int i = 0; i < mDatas.size(); i++) {
+                    UserEntity user = mDatas.get(i);
+                    try {
+                        String imgUrl = avatarList.getString(user.getUserid());
+                        printLogInfo(TAG, "userId: " + user.getUserid() + " imgUrl: " + imgUrl, mLogInfoText);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                printLogInfo(TAG, "trtcGetUserAvatarCallBack error code : " + code + "errorMsg: " + errorMsg, mLogInfoText);
+            }
         }
     }
 

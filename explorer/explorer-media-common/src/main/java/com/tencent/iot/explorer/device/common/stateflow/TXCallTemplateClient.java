@@ -15,6 +15,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class TXCallTemplateClient extends TXMqttConnection {
     //数据模板
     public TXCallDataTemplate mDataTemplate;
@@ -142,6 +144,16 @@ public class TXCallTemplateClient extends TXMqttConnection {
      */
     public Status eventsPost(JSONArray events) {
         return mDataTemplate.eventsPost(events);
+    }
+
+
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(ArrayList userIdsArray) {
+        return mDataTemplate.getUserAvatar(userIdsArray);
     }
 
     /**
