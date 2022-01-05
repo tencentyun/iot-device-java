@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView logTv;
     private EditText toCalledUserId;
     private String jsonFileName = "video_watch.json";
-    private VideoDataTemplateSample videoDataTemplateSample = null;
+    private volatile VideoDataTemplateSample videoDataTemplateSample = null;
     private Handler handler = new Handler();
     private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     null, productIdEt.getText().toString(), devNameEt.getText().toString(),
                     devPskEt.getText().toString(), jsonFileName, txMqttActionCallBack, videoCallBack, downStreamCallBack);
             videoDataTemplateSample.connect();
+            Log.e("XXX", "videoDataTemplateSample "+ videoDataTemplateSample);
         });
 
         offline.setOnClickListener(v -> {
@@ -307,7 +308,8 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                    if (!TextUtils.isEmpty(xp2pInfo)) {
+                    if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+                        Log.e("XXX", "11 videoDataTemplateSample "+ videoDataTemplateSample);
                         Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
                         Log.e(TAG, "reportCallStatusProperty status " + status);
                         break;
