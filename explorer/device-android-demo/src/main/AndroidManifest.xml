@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tencent.iot.explorer.device.android.app">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -13,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- llsync蓝牙辅助配网需要连接指定WiFi，添加WiFi权限 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:name=".App"
@@ -24,7 +26,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.tencent.iot.explorer.device.tme.TmeConfigActivity"/>
+        <activity
+            android:name=".WiFiActivity"
+            android:exported="false" />
+        <activity android:name="com.tencent.iot.explorer.device.tme.TmeConfigActivity" />
         <activity android:name="com.tencent.iot.explorer.device.tme.TmeMainActivity" />
         <activity android:name=".IoTDemoActivity">
             <intent-filter>

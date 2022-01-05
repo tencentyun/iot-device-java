@@ -121,7 +121,9 @@ public class WifiUtils {
             boolean isOpenWifi = mWifiManager.isWifiEnabled();
             if (!isOpenWifi) {
                 Log.i(TAG, "用户需要打开wifi开关");
-                context.startActivity(new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY));
+                Intent intent = new Intent(Settings.Panel.ACTION_INTERNET_CONNECTIVITY);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                context.getApplicationContext().startActivity(intent);
                 callBack.connectResult(false);
                 return;
             }
