@@ -172,6 +172,13 @@ TXTRTCTemplateClient 继承自 TXMqttConnection 类
      * @return 发送请求成功时返回Status.OK;
      */
     public Status eventsPost(JSONArray events)
+    
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(JSONArray userIdsArray)
 ```
 
 ### explorer-device-rtc SDK 回调callback 设计说明
@@ -195,6 +202,15 @@ TXTRTCCallBack 授权回调callback说明如下：
      * @param room
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
+    
+    /**
+     * 获取用户头像结果
+     *
+     * @param code  0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param errorMsg 0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param avatarList userId对应用户头像 json
+     */
+    public abstract void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList);
 ```
 
 ### explorer-device-rtc SDK 自定义音频数据
