@@ -1,8 +1,14 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_GET_USER_AVATAR_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
@@ -20,13 +26,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplat
 import com.tencent.iot.hub.device.java.core.common.Status;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_ACTION;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
 
 public class TXTRTCDataTemplate extends TXCallDataTemplate {
     private String TAG = TXTRTCDataTemplate.class.getSimpleName();
@@ -204,6 +204,35 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
         }
     }
 
+    /**
+     * 服务下行消息 处理
+     * @param message 消息内容
+     */
+    private void onServiceMessageArrivedCallBack(MqttMessage message){
+        TXLog.d(TAG, "service down stream message received : " + message);
+        try {
+            JSONObject jsonObj = new JSONObject(new String(message.getPayload()));
+            String method = jsonObj.getString("method");
+            //下发获取绑定用户头像消息处理
+            if (method.equals(METHOD_GET_USER_AVATAR_REPLY)) {
+                if (jsonObj.has("code")) {
+                    Integer code = jsonObj.getInt("code");
+                    String errorMsg = jsonObj.getString("status");
+                    if (code == 0 && jsonObj.has("response")) {
+                        JSONObject avatarList = jsonObj.getJSONObject("response").getJSONObject("data");
+                        mTrtcCallBack.trtcGetUserAvatarCallBack(code, errorMsg, avatarList);
+                    } else {
+                        mTrtcCallBack.trtcGetUserAvatarCallBack(code, errorMsg, null);
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            TXLog.e(TAG,   "onServiceMessageArrivedCallBack: invalid message:" + message);
+        }
+    }
+
     @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
@@ -211,6 +240,8 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
             onPropertyMessageArrivedCallBack(message);
         } else if (topic.equals(TOPIC_ACTION_DOWN_PREFIX + mProductId + "/" + mDeviceName)) {
             onActionMessageArrivedCallBack(message);
+        } else if (topic.equals(TOPIC_SERVICE_DOWN_PREFIX + mProductId + "/"  + mDeviceName)) {
+            onServiceMessageArrivedCallBack(message);
         }
     }
 

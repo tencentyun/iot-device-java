@@ -371,7 +371,8 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
     /**
      * 设备绑定App下发的token
-     * @return 生成的绑定设备的二维码字符串;
+     * @param token 设备绑定App下发的token
+     * @return 设备绑定App下发的token，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
      */
     public Status appBindToken(String token) {
 

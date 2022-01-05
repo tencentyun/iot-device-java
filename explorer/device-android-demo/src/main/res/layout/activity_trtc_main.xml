@@ -92,7 +92,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="LLSync配网" />
+            android:text="蓝牙配网" />
+
+        <Button
+            android:id="@+id/get_avatar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="获取头像" />
 
     </LinearLayout>
 

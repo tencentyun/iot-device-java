@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.rtc.data_template;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -18,11 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class TRTCDataTemplateSample {
     private static final String TAG = "TXDataTemplate";
@@ -98,6 +98,15 @@ public class TRTCDataTemplateSample {
      */
     public Status appBindToken(String token) {
         return mMqttConnection.appBindToken(token);
+    }
+
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(JSONArray userIdsArray) {
+        return mMqttConnection.getUserAvatar(userIdsArray);
     }
 
     /**

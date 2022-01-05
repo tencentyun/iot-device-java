@@ -144,6 +144,16 @@ public class TXCallTemplateClient extends TXMqttConnection {
         return mDataTemplate.eventsPost(events);
     }
 
+
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(JSONArray userIdsArray) {
+        return mDataTemplate.getUserAvatar(userIdsArray);
+    }
+
     /**
      * 消息到达回调函数
      * @param topic   消息主题
