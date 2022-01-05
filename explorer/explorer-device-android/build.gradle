@@ -137,6 +137,10 @@ dependencies {
     if (findProject(':explorer:explorer-device-java') != null) {
         api project(path: ':explorer:explorer-device-java')
     }
+
+    if (findProject(':hub:hub-device-android') != null) {
+        api project(path: ':hub:hub-device-android')
+    }
 }
 
 signing {
