@@ -29,6 +29,7 @@ public class IoTDemoActivity extends AppCompatActivity {
     private Button mIoTTrtcBtn;
     private Button mIoTTmeBtn;
     private Button mIoTVideoBtn;
+    private Button mIoTWiFiBtn;
 
     private static final String TAG = IoTDemoActivity.class.getSimpleName();
 
@@ -67,6 +68,7 @@ public class IoTDemoActivity extends AppCompatActivity {
         mIoTTrtcBtn = findViewById(R.id.iot_trtc);
         mIoTTmeBtn = findViewById(R.id.iot_tme);
         mIoTVideoBtn = findViewById(R.id.btn_iot_video);
+        mIoTWiFiBtn = findViewById(R.id.btn_wifi);
 
         mIoTVideoBtn.setOnClickListener(v -> {
             Intent intent = new Intent(IoTDemoActivity.this, VideoEntryActivity.class);
@@ -104,6 +106,13 @@ public class IoTDemoActivity extends AppCompatActivity {
                     Toast.makeText(IoTDemoActivity.this, "请线下联系", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+            }
+        });
+
+        mIoTWiFiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(IoTDemoActivity.this, WiFiActivity.class));
             }
         });
     }
