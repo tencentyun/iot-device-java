@@ -1,0 +1,280 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28d16518_560d3a53",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "WiFiActivity.class.getSimpleName() 可以获取到类名",
+      "range": {
+        "startLine": 59,
+        "startChar": 38,
+        "endLine": 59,
+        "endChar": 52
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "39f8b850_bbbec6d5",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "多处使用的变量，存在并发的而可能性，可以使用 volatile 关键字控制并发，注释该关键字的使用场景",
+      "range": {
+        "startLine": 97,
+        "startChar": 20,
+        "endLine": 97,
+        "endChar": 39
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a598457e_3ba548fa",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "前后存在线程 sleep，如果主线程 sleep，对后续操作是否存在影响，如果子线程，是否可以不需要 sleep",
+      "range": {
+        "startLine": 258,
+        "startChar": 28,
+        "endLine": 260,
+        "endChar": 47
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa850753_69c60653",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "回到对象没有判空，如果传下来的是 null，这里的回调会 crash，下述几个回调存在同样问题",
+      "range": {
+        "startLine": 48,
+        "startChar": 16,
+        "endLine": 48,
+        "endChar": 41
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "12a45309_3a3a84db",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "每次调用该几口都会重新初始化一个 handler，是不是可以使用一个变量来代替，避免不必要的初始化",
+      "range": {
+        "startLine": 107,
+        "startChar": 19,
+        "endLine": 107,
+        "endChar": 32
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b5d0365e_8c90ab6b",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "这里是字符串匹配，匹配的是异常信息字符串，是否存在对应的错误码",
+      "range": {
+        "startLine": 111,
+        "startChar": 20,
+        "endLine": 111,
+        "endChar": 98
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "72c5fa77_28e26544",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "这里的 tag, 使用内部变量是否会更合理 \nprivate String TAG \u003d WiFiHostpotUtil.class.getSimpleName()",
+      "range": {
+        "startLine": 139,
+        "startChar": 26,
+        "endLine": 139,
+        "endChar": 42
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3a3b11af_efe7fa3f",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "直接使用 Exception 是否就可以了，不同的异常并没有发现有区别处理",
+      "range": {
+        "startLine": 175,
+        "startChar": 21,
+        "endLine": 175,
+        "endChar": 124
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6097f8fd_9f0fc9c9",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "这两个抽象类是不是可以分别使用两个类来处理，就不需要加 static 前缀了",
+      "range": {
+        "startLine": 185,
+        "startChar": 3,
+        "endLine": 217,
+        "endChar": 5
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ad1a3f89_4eb4fbea",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/utils/WifiUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "回到对象没有判空",
+      "range": {
+        "startLine": 108,
+        "startChar": 8,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "51e5df59_8d76a34c",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/softAp/SoftApConfigWiFi.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "线程只开启，没有结束，没有自动结束的时机\n端口绑定存在失败的可能，一个端口多次绑定就会失败（多个线程并发绑定的场景），调用该接口的人无法感知端口是否绑定成功，会等待回调内容",
+      "range": {
+        "startLine": 58,
+        "startChar": 10,
+        "endLine": 58,
+        "endChar": 29
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd35d0f6_511cc237",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/softAp/SoftApConfigWiFi.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000004
+      },
+      "writtenOn": "2022-01-10T07:26:13Z",
+      "side": 1,
+      "message": "使用单独的一个类是否会更好",
+      "range": {
+        "startLine": 123,
+        "startChar": 10,
+        "endLine": 123,
+        "endChar": 22
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
