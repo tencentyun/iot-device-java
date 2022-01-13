@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.video;
+package com.tencent.iot.explorer.device.video.call;
 
 import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
@@ -24,7 +24,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
-import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;

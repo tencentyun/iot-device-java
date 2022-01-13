@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <!-- llsync蓝牙辅助配网需要连接指定WiFi，添加WiFi权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- llsync蓝牙辅助配网需要连接指定WiFi，添加WiFi权限 -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
     <application
@@ -24,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.tencent.iot.explorer.device.tme.TmeConfigActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.video.VideoEntryActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.tme.TmeConfigActivity" />
         <activity android:name="com.tencent.iot.explorer.device.tme.TmeMainActivity" />
         <activity android:name=".IoTDemoActivity">
             <intent-filter>
@@ -33,20 +33,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <receiver android:name="com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver">
             <intent-filter>
-                <!--检测网络变化的acton-->
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+
+                <!-- 检测网络变化的acton -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
         <activity android:name=".IoTMainActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
-        <activity android:name="com.tencent.iot.explorer.device.video.MainActivity" />
-        <activity android:name="com.tencent.iot.explorer.device.video.RecordVideoActivity"
-            android:launchMode="singleTop"/>
+        <activity android:name="com.tencent.iot.explorer.device.video.call.MainActivity" />
+        <activity
+            android:name="com.tencent.iot.explorer.device.video.call.RecordVideoActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name="com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />

@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.video.entity;
+package com.tencent.iot.explorer.device.video.call.entity;
 
 import android.text.TextUtils;
 

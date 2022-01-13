@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.video;
+package com.tencent.iot.explorer.device.video.call;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package com.tencent.iot.explorer.device.video;
+package com.tencent.iot.explorer.device.video.call;
 
 import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
 import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
@@ -32,9 +32,9 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
-import com.tencent.iot.explorer.device.video.data_template.VideoDataTemplateSample;
-import com.tencent.iot.explorer.device.video.entity.DeviceConnectCondition;
-import com.tencent.iot.explorer.device.video.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.data_template.VideoDataTemplateSample;
+import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
+import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;

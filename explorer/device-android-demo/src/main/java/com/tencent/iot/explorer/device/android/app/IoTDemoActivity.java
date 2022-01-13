@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.face.AuthActivity;
 import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
-import com.tencent.iot.explorer.device.video.MainActivity;
-import com.tencent.iot.explorer.device.video.RecordVideoActivity;
+import com.tencent.iot.explorer.device.video.VideoEntryActivity;
+import com.tencent.iot.explorer.device.video.call.MainActivity;
 
 import java.io.File;
 
@@ -69,7 +69,7 @@ public class IoTDemoActivity extends AppCompatActivity {
         mIoTVideoBtn = findViewById(R.id.btn_iot_video);
 
         mIoTVideoBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(IoTDemoActivity.this, MainActivity.class);
+            Intent intent = new Intent(IoTDemoActivity.this, VideoEntryActivity.class);
             startActivity(intent);
         });
 

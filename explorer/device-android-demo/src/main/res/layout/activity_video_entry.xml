@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:layout_marginHorizontal="50dp"
+    android:orientation="vertical">
+        <Button
+            android:id="@+id/iot_video_call"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="IoT Video Call" />
+
+        <Button
+            android:layout_marginTop="50dp"
+            android:id="@+id/iot_video_push_stream"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="IoT Video Push Stream" />
+
+</LinearLayout>

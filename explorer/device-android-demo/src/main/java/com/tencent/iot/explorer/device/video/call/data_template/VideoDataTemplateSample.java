@@ -1,14 +1,10 @@
-package com.tencent.iot.explorer.device.video.data_template;
+package com.tencent.iot.explorer.device.video.call.data_template;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
-import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCTemplateClient;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoTemplateClient;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -16,7 +12,6 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
