@@ -23,7 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.tencent.iot.explorer.device.video.VideoEntryActivity"/>
+        <activity android:name="com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.video.VideoEntryActivity" />
         <activity android:name="com.tencent.iot.explorer.device.tme.TmeConfigActivity" />
         <activity android:name="com.tencent.iot.explorer.device.tme.TmeMainActivity" />
         <activity android:name=".IoTDemoActivity">
