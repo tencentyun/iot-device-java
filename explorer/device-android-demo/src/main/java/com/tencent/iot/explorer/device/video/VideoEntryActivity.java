@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.video.call.MainActivity;
+import com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
