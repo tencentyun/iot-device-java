@@ -107,6 +107,10 @@ publishing {
                 dependencyNode.appendNode('groupId', "com.tencent.iot.explorer")
                 dependencyNode.appendNode('artifactId', "explorer-device-java")
                 dependencyNode.appendNode('version', "${rootProject.ext.sdk.version}")
+
+                dependencyNode.appendNode('groupId', "com.tencent.iot.hub")
+                dependencyNode.appendNode('artifactId', "hub-device-android")
+                dependencyNode.appendNode('version', "${rootProject.ext.sdk.version}")
             }
         }
     }
