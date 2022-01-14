@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c81dc35d_71c0fa79",
+        "filename": "explorer/explorer-device-android/build.gradle",
+        "patchSetId": 6
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2022-01-14T06:25:04Z",
+      "side": 1,
+      "message": "这块会把hub-device-java依赖一遍，上面的explorer-device-java也会把hub-device-java引一遍，不确定这块会不会有问题\n\n本地这样引用可以跑通，线上打出的版本没有把hub-device-android的pom文件打进去，线上的版本hub-device-android应该传递不进去",
+      "range": {
+        "startLine": 141,
+        "startChar": 4,
+        "endLine": 143,
+        "endChar": 5
+      },
+      "revId": "8dc8964ca220a7e01532d89de5561fd4dd034fbf",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
