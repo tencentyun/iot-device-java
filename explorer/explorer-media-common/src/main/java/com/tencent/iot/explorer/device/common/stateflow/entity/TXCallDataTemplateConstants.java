@@ -7,7 +7,6 @@ public interface TXCallDataTemplateConstants {
      */
     String PROPERTY_SYS_VIDEO_CALL_STATUS = "_sys_video_call_status";
     String PROPERTY_SYS_AUDIO_CALL_STATUS = "_sys_audio_call_status";
-    String PROPERTY_SYS_USERID = "_sys_userid";
     String PROPERTY_SYS_CALLED_USERID = "_sys_called_id";
     String PROPERTY_SYS_CALLER_USERID = "_sys_caller_id";
     String PROPERTY_SYS_CALL_USERLIST = "_sys_call_userlist";

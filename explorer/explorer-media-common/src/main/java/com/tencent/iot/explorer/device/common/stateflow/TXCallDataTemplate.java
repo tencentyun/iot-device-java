@@ -144,9 +144,6 @@ public class TXCallDataTemplate extends TXDataTemplate {
             mCurrentCallingUserid = mIsBusy ? userId : "";
             if (callType == CallingType.TYPE_VIDEO_CALL) { //video
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS,callStatus);
-                if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
-                }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
                 }
@@ -157,9 +154,6 @@ public class TXCallDataTemplate extends TXDataTemplate {
 
             } else if (callType == CallingType.TYPE_AUDIO_CALL) { //audio
                 property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS,callStatus);
-                if (!userId.equals("")) {
-                    property.put(TXCallDataTemplateConstants.PROPERTY_SYS_USERID, userId);
-                }
                 if (!agent.equals("")) {
                     property.put(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT,agent);
                 }

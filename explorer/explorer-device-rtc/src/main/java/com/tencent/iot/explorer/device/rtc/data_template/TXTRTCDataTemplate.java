@@ -102,9 +102,6 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                     if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_VIDEO_CALL_STATUS);
                         String userid = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
-                        }
 
                         if (!isBusy() && callStatus == CallState.TYPE_CALLING) {
                             setCallOther(false);
@@ -142,9 +139,6 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                     } else if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS)) {
                         Integer callStatus = params.getInt(TXCallDataTemplateConstants.PROPERTY_SYS_AUDIO_CALL_STATUS);
                         String userid = "";
-                        if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_USERID)) {
-                            userid = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_USERID);
-                        }
 
                         if (!isBusy() && callStatus == CallState.TYPE_CALLING) {
                             setCallOther(false);
