@@ -1,5 +1,11 @@
 package com.tencent.iot.explorer.device.android.llsync;
 
+import static android.content.Context.BLUETOOTH_SERVICE;
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2Hex;
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.hexString2Decimal;
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.subBytes;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -19,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.WindowManager;
@@ -28,11 +33,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static android.content.Context.BLUETOOTH_SERVICE;
-import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2Hex;
-import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.hexString2Decimal;
-import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.subBytes;
 
 public class LLSyncGattServer {
 
@@ -277,6 +277,7 @@ public class LLSyncGattServer {
      * Callback to receive information about the advertisement process.
      */
 
+    @SuppressLint("NewApi")
     private AdvertiseCallback mAdvertiseCallback = new AdvertiseCallback() {
         @Override
         public void onStartSuccess(AdvertiseSettings settingsInEffect) {
@@ -293,6 +294,7 @@ public class LLSyncGattServer {
      * Callback to handle incoming requests to the GATT server.
      * All read/write requests for characteristics and descriptors are handled here.
      */
+    @SuppressLint("NewApi")
     private BluetoothGattServerCallback mGattServerCallback = new BluetoothGattServerCallback() {
 
         @Override
@@ -318,7 +320,7 @@ public class LLSyncGattServer {
             }
         }
 
-        @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @SuppressLint("NewApi")
         @Override
         public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset,
                                                 BluetoothGattCharacteristic characteristic) {
@@ -335,7 +337,7 @@ public class LLSyncGattServer {
         private String ssid = "";
         private String pwd = "";
 
-        @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @SuppressLint("NewApi")
         @Override
         public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite,
                                                  boolean responseNeeded, int offset, byte[] value) {
@@ -466,7 +468,7 @@ public class LLSyncGattServer {
             }
         }
 
-        @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @SuppressLint("NewApi")
         @Override
         public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset,
                                             BluetoothGattDescriptor descriptor) {
@@ -493,7 +495,7 @@ public class LLSyncGattServer {
             }
         }
 
-        @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+        @SuppressLint("NewApi")
         @Override
         public void onDescriptorWriteRequest(BluetoothDevice device, int requestId,
                                              BluetoothGattDescriptor descriptor,
