@@ -67,9 +67,9 @@ public class WiFiActivity extends AppCompatActivity implements View.OnClickListe
 
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
-    private String mProductID = BuildConfig.SUB_PRODUCT_ID;
-    private String mDevName = BuildConfig.SUB_DEV_NAME;
-    private String mDevPSK  = BuildConfig.SUB_DEV_PSK; //若使用证书验证，设为null
+    private String mProductID = BuildConfig.PRODUCT_ID;
+    private String mDevName = BuildConfig.DEVICE_NAME;
+    private String mDevPSK  = BuildConfig.DEVICE_PSK; //若使用证书验证，设为null
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
