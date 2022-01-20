@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.android.app.R;
 
@@ -25,8 +26,8 @@ public class PushStreamActivity extends AppCompatActivity {
     private final String devFileName = "device.json";
     private final String flvFileName = "p2p_test_file.flv";
     private final String recvFileName = "talk_recv.flv";
-    private final String csAACFileName = "stereo_44100_128kbps.aac";
-    private final String csVideoFileName = "video_h264_640_360_ip_30fps.h264";
+    public static final String csAACFileName = "stereo_44100_128kbps.aac";
+    public static final String csVideoFileName = "video_h264_640_360_ip_30fps.h264";
     private final String cseScript = "event_test_script.txt";
     private final String csePicture = "pic";
 
@@ -37,11 +38,27 @@ public class PushStreamActivity extends AppCompatActivity {
         FileOutputStream fileOutputStream = null;
 
         String path = getFilesDir().getAbsolutePath();
+        String filePath = path;
+        if (!filePath.endsWith("/")) {
+            filePath += "/";
+        }
         Log.d(TAG, "path is " + path);
         copyFileFromAssets(getApplicationContext(), devFileName);
         copyFileFromAssets(getApplicationContext(), flvFileName);
-        copyFileFromAssets(getApplicationContext(), csAACFileName);
-        copyFileFromAssets(getApplicationContext(), csVideoFileName);
+//        copyFileFromAssets(getApplicationContext(), csAACFileName);
+//        copyFileFromAssets(getApplicationContext(), csVideoFileName);
+        File csAACFile = new File(filePath + csAACFileName);
+        File csVideoFile = new File(filePath + csVideoFileName);
+        Log.e("XXX", "csAACFile file len " + csAACFile.length());
+        Log.e("XXX", "csVideoFile file len " + csVideoFile.length());
+        if (!csAACFile.exists()) {
+            Toast.makeText(this, "请先在双向通话中录制音频文件", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!csVideoFile.exists()) {
+            Toast.makeText(this, "请先在双向通话中录制视频文件", Toast.LENGTH_SHORT).show();
+            return;
+        }
         copyFileFromAssets(getApplicationContext(), cseScript);
         copyDirFromAssets(getApplicationContext(), csePicture);
 
