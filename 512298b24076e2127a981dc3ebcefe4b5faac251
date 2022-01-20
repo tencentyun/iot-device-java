@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ea604ace_6a1b1931",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "28d16518_560d3a53",
+      "range": {
+        "startLine": 59,
+        "startChar": 38,
+        "endLine": 59,
+        "endChar": 52
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "39f8b850_bbbec6d5",
         "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
         "patchSetId": 6
@@ -45,6 +69,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "35752a78_ddb8c0db",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "39f8b850_bbbec6d5",
+      "range": {
+        "startLine": 97,
+        "startChar": 20,
+        "endLine": 97,
+        "endChar": 39
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "dd50cda6_1d463031",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/WiFiActivity.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "a598457e_3ba548fa",
+      "range": {
+        "startLine": 258,
+        "startChar": 28,
+        "endLine": 260,
+        "endChar": 47
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa850753_69c60653",
         "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
         "patchSetId": 6
@@ -91,6 +163,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f72d53d1_0a586422",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "aa850753_69c60653",
+      "range": {
+        "startLine": 48,
+        "startChar": 16,
+        "endLine": 48,
+        "endChar": 41
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "77bc865d_fd1d45b8",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "12a45309_3a3a84db",
+      "range": {
+        "startLine": 107,
+        "startChar": 19,
+        "endLine": 107,
+        "endChar": 32
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b5d0365e_8c90ab6b",
         "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
         "patchSetId": 6
@@ -137,6 +257,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "abd52d06_db5a7035",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "该exception没有对应的错误码，故用了字符串匹配",
+      "parentUuid": "b5d0365e_8c90ab6b",
+      "range": {
+        "startLine": 111,
+        "startChar": 20,
+        "endLine": 111,
+        "endChar": 98
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "4a965d1b_0dbb7980",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "72c5fa77_28e26544",
+      "range": {
+        "startLine": 139,
+        "startChar": 26,
+        "endLine": 139,
+        "endChar": 42
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a3b11af_efe7fa3f",
         "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
         "patchSetId": 6
@@ -183,6 +351,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "16293b24_32bac59f",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "3a3b11af_efe7fa3f",
+      "range": {
+        "startLine": 175,
+        "startChar": 21,
+        "endLine": 175,
+        "endChar": 124
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -209,6 +401,30 @@
     },
     {
       "key": {
+        "uuid": "884ba1e7_a5c1e3fa",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/android/app/utils/WiFiHostpotUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "6097f8fd_9f0fc9c9",
+      "range": {
+        "startLine": 185,
+        "startChar": 3,
+        "endLine": 217,
+        "endChar": 5
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad1a3f89_4eb4fbea",
         "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/utils/WifiUtils.java",
         "patchSetId": 6
@@ -229,6 +445,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a96e374f_a5078fb4",
+        "filename": "explorer/device-android-demo/src/main/java/com/tencent/iot/explorer/device/rtc/utils/WifiUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "84行有对callback判空",
+      "parentUuid": "ad1a3f89_4eb4fbea",
+      "range": {
+        "startLine": 108,
+        "startChar": 8,
+        "endLine": 108,
+        "endChar": 16
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     },
     {
       "key": {
@@ -255,6 +495,30 @@
     },
     {
       "key": {
+        "uuid": "48a59cec_a7ee205f",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/softAp/SoftApConfigWiFi.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "51e5df59_8d76a34c",
+      "range": {
+        "startLine": 58,
+        "startChar": 10,
+        "endLine": 58,
+        "endChar": 29
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd35d0f6_511cc237",
         "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/softAp/SoftApConfigWiFi.java",
         "patchSetId": 6
@@ -275,6 +539,30 @@
       "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
       "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66e07cfd_d12b2d0f",
+        "filename": "explorer/explorer-device-android/src/main/java/com/tencent/iot/explorer/device/android/softAp/SoftApConfigWiFi.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-01-20T04:47:18Z",
+      "side": 1,
+      "message": "Done,已在最新patchset修改。",
+      "parentUuid": "bd35d0f6_511cc237",
+      "range": {
+        "startLine": 123,
+        "startChar": 10,
+        "endLine": 123,
+        "endChar": 22
+      },
+      "revId": "512298b24076e2127a981dc3ebcefe4b5faac251",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": false
     }
   ]
 }
