@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.video.recorder;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.MediaRecorder;
+import android.text.TextUtils;
 
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
@@ -46,6 +47,40 @@ public class VideoRecorder {
     public int start(int recorderType, OnRecordListener onRecordListener) {
         this.recorderType = recorderType;
         return start(onRecordListener);
+    }
+
+    public int startRecord(String path, String audioName, String videoName) {
+        if (recordThread == null) {// 没有开启采集线程
+            return ErrorCode.ERROR_INSTANCE;
+        }
+        if (TextUtils.isEmpty(path) || TextUtils.isEmpty(audioName) || TextUtils.isEmpty(videoName)) { // 没有正确的保存路径
+            return ErrorCode.ERROR_PARAM;
+        }
+        if (recordThread.isStartStore()) { // 正在保存本地文件
+            return ErrorCode.ERROR_STATE;
+        }
+        recordThread.setStorePath(path);
+        recordThread.setAudioName(audioName);
+        recordThread.setVideoName(videoName);
+        return recordThread.startStore(true);
+    }
+
+    public int stopRecord() {
+        if (recordThread == null) { // 没有开启采集线程
+            return ErrorCode.ERROR_INSTANCE;
+        }
+        if (!recordThread.isStartStore()) { // 没有处于录像状态
+            return ErrorCode.ERROR_STATE;
+        }
+        recordThread.startStore(false);
+        return ErrorCode.SUCCESS;
+    }
+
+    public boolean isRecord() {
+        if (recordThread == null) {
+            return false;
+        }
+        return recordThread.isStartStore();
     }
 
     public int start(int width, int height, String path, OnRecordListener onRecordListener) {
@@ -96,7 +131,7 @@ public class VideoRecorder {
         recordThread = new RecordThread(recordThreadParam);
         recordThread.setOnRecordListener(onRecordListener);
         recordThread.start();
-        return 0;
+        return ErrorCode.SUCCESS;
     }
 
     public void cancel() {
@@ -112,6 +147,8 @@ public class VideoRecorder {
 
     private void stopRecordThread() {
         if (recordThread != null) {
+            if (isRecord()) stopRecord();
+
             recordThread.stopRecord();
             recordThread = null;
         }

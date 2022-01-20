@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.android.app.R;
 
@@ -23,28 +23,33 @@ public class PushStreamActivity extends AppCompatActivity {
     }
 
     private final String devFileName = "device.json";
-    private final String flvFileName = "p2p_test_file.flv";
-    private final String recvFileName = "talk_recv.flv";
-    private final String csAACFileName = "stereo_44100_128kbps.aac";
-    private final String csVideoFileName = "video_h264_640_360_ip_30fps.h264";
+    public static final String csAACFileName = "audio_sample44100_stereo_96kbps.aac";
+    public static final String csVideoFileName = "video_size640x360_gop50_fps25.h264";
     private final String cseScript = "event_test_script.txt";
-    private final String csePicture = "pic";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_push_stream);
-        FileOutputStream fileOutputStream = null;
 
         String path = getFilesDir().getAbsolutePath();
+        String filePath = path;
+        if (!filePath.endsWith("/")) {
+            filePath += "/";
+        }
         Log.d(TAG, "path is " + path);
         copyFileFromAssets(getApplicationContext(), devFileName);
-        copyFileFromAssets(getApplicationContext(), flvFileName);
-        copyFileFromAssets(getApplicationContext(), csAACFileName);
-        copyFileFromAssets(getApplicationContext(), csVideoFileName);
+        File csAACFile = new File(filePath + csAACFileName);
+        File csVideoFile = new File(filePath + csVideoFileName);
+        if (!csAACFile.exists()) {
+            Toast.makeText(this, "请先在双向通话中录制音频文件", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!csVideoFile.exists()) {
+            Toast.makeText(this, "请先在双向通话中录制视频文件", Toast.LENGTH_SHORT).show();
+            return;
+        }
         copyFileFromAssets(getApplicationContext(), cseScript);
-        copyDirFromAssets(getApplicationContext(), csePicture);
-
         nativeDemo(path);
     }
 
@@ -55,21 +60,29 @@ public class PushStreamActivity extends AppCompatActivity {
                 File file = new File(savePath);
                 file.mkdirs();// 如果文件夹不存在，则递归
                 for (String fileName : fileNames) {
-                    copyFilesFromAssets2(context, assetsPath + "/" + fileName,
-                            savePath + "/" + fileName);
+                    File opFile = new File(savePath + "/" + fileName);
+                    if (opFile.isDirectory()) {  // 路径就递归
+                        copyFilesFromAssets2(context, assetsPath + "/" + fileName,
+                                savePath + "/" + fileName);
+                    } else { // 文件就拷贝
+                        if (!opFile.exists()) {
+                            opFile.createNewFile();
+                        } else {
+                            continue;
+                        }
+                        InputStream is = context.getAssets().open(assetsPath + "/" + fileName);
+                        FileOutputStream fos = new FileOutputStream(opFile);
+                        byte[] buffer = new byte[1024];
+                        int byteCount = 0;
+                        while ((byteCount = is.read(buffer)) > 0) {// 循环从输入流读取
+                            // buffer字节
+                            fos.write(buffer, 0, byteCount);// 将读取的输入流写入到输出流
+                        }
+                        fos.flush();// 刷新缓冲区
+                        is.close();
+                        fos.close();
+                    }
                 }
-            } else {// 如果是文件
-                InputStream is = context.getAssets().open(assetsPath);
-                FileOutputStream fos = new FileOutputStream(new File(savePath));
-                byte[] buffer = new byte[1024];
-                int byteCount = 0;
-                while ((byteCount = is.read(buffer)) != -1) {// 循环从输入流读取
-                    // buffer字节
-                    fos.write(buffer, 0, byteCount);// 将读取的输入流写入到输出流
-                }
-                fos.flush();// 刷新缓冲区
-                is.close();
-                fos.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,9 +100,15 @@ public class PushStreamActivity extends AppCompatActivity {
         Log.d(TAG, "Create file " + absFileName);
 
         File f = new File(absFileName);
-        if ((fileName.equals(devFileName) == false) && f.exists()) {
+        if (f.exists()) {
             Log.d(TAG, "file " + absFileName + " exist");
             return;
+        } else if (!f.exists()) {
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         try {

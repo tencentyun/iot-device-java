@@ -85,8 +85,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="开始通话"
-            android:layout_weight="0.5"
             android:visibility="gone"
+            android:layout_weight="0.5"
             />
 
     </LinearLayout>
