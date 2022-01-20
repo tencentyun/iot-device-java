@@ -22,6 +22,7 @@ import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -52,7 +53,15 @@ public class RecordThread extends Thread {
     private boolean isStopRecord = false;   // 主动停止记录
     private boolean isCancelRecord = false;  // 取消记录
     private boolean storeMP4 = false;  // 是否保存混合音频视频的 MP4 文件
-
+    private volatile boolean startStore = false; // 临时保存，true 开始保存
+    private String storePath = "";
+    private String audioName = "";
+    private String videoName = "";
+    private volatile FileOutputStream storeAudioDataStream;
+    private volatile FileOutputStream storeVideoDataStream;
+    private volatile boolean hasIDR = false;
+    private File videoDataFile;
+    private File audioDataFile;
     // 记录视频裸流的临时文件，调试使用
     private String path = "/mnt/sdcard/videoTest.flv";
     private File videoTmpFile = new File(path);
@@ -76,6 +85,85 @@ public class RecordThread extends Thread {
         samplingFrequencyIndexMap.put(12000, 9);
         samplingFrequencyIndexMap.put(11025, 10);
         samplingFrequencyIndexMap.put(8000, 11);
+    }
+
+    // 先设置保存路径再设置该参数才会生效
+    protected int startStore(boolean startStore) {
+        if (!startStore) { // 结束录像
+            this.startStore = startStore;
+            try {
+                if (storeAudioDataStream != null) {
+                    storeAudioDataStream.close();
+                }
+                if (storeVideoDataStream != null) {
+                    storeVideoDataStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                storeAudioDataStream = null;
+                storeVideoDataStream = null;
+            }
+            return ErrorCode.SUCCESS;
+        }
+
+        // 开始录像
+        if (!storePath.endsWith("/")) {
+            storePath = storePath + "/";
+        }
+
+        audioDataFile = new File(storePath + audioName);
+        videoDataFile = new File(storePath + videoName);
+        if (audioDataFile.exists()) {
+            audioDataFile.delete();
+        }
+        if (videoDataFile.exists()) {
+            videoDataFile.delete();
+        }
+
+        try {
+            hasIDR = false;
+            audioDataFile.createNewFile();
+            videoDataFile.createNewFile();
+            storeAudioDataStream = new FileOutputStream(audioDataFile, true);
+            storeVideoDataStream = new FileOutputStream(videoDataFile, true);
+            this.startStore = startStore;
+            return ErrorCode.SUCCESS;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return ErrorCode.ERROR_FILE_NOT_FOUND;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ErrorCode.ERROR_IO;
+        }
+    }
+
+    protected boolean isStartStore() {
+        return this.startStore;
+    }
+
+    protected void setAudioName(String audioName) {
+        this.audioName = audioName;
+    }
+
+    protected String getAudioName() {
+        return this. audioName;
+    }
+
+    protected void setVideoName(String videoName) {
+        this.videoName = videoName;
+    }
+
+    protected String getVideoName() {
+        return this.videoName;
+    }
+
+    protected void setStorePath(String storePath) {
+         this.storePath = storePath;
+    }
+
+    protected String getStorePath() {
+        return this.storePath;
     }
 
     // 记录过程回调
@@ -281,6 +369,11 @@ public class RecordThread extends Thread {
             System.arraycopy(bytes, 0, dataBytes, 7, bytes.length);
             addADTStoPacket(dataBytes, dataBytes.length);
             if (dataBytes != null && storeVideoStream != null) {
+                if (startStore && storeAudioDataStream != null) {
+                    storeAudioDataStream.write(dataBytes);
+                    storeAudioDataStream.flush();
+                }
+
                 if (isStopRecord || isCancelRecord) return;
                 storeVideoStream.write(dataBytes);
                 storeVideoStream.flush();
@@ -330,8 +423,19 @@ public class RecordThread extends Thread {
                     System.arraycopy(sps, 0, dataBytes, 0, sps.length);
                     System.arraycopy(pps, 0, dataBytes, sps.length, pps.length);
                     System.arraycopy(bytes, 0, dataBytes, pps.length + sps.length, bytes.length);
+
+                    if (startStore && storeVideoDataStream != null) {
+                        storeVideoDataStream.write(dataBytes);
+                        storeVideoDataStream.flush();
+                        hasIDR = true;
+                    }
                     getInstance().sendFrameData(dataBytes, System.currentTimeMillis(), seq);
                 } else {
+
+                    if (startStore && storeVideoDataStream != null && hasIDR) { // 等待存在 IDR 帧以后，再开始添加 P 帧
+                        storeVideoDataStream.write(bytes);
+                        storeVideoDataStream.flush();
+                    }
                     getInstance().sendFrameData(bytes, System.currentTimeMillis(), seq);
                 }
                 seq++;

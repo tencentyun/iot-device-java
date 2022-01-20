@@ -25,8 +25,8 @@ public class PushStreamActivity extends AppCompatActivity {
     private final String devFileName = "device.json";
     private final String flvFileName = "p2p_test_file.flv";
     private final String recvFileName = "talk_recv.flv";
-    private final String csAACFileName = "stereo_44100_128kbps.aac";
-    private final String csVideoFileName = "video_h264_640_360_ip_30fps.h264";
+    public static final String csAACFileName = "stereo_44100_128kbps.aac";
+    public static final String csVideoFileName = "video_h264_640_360_ip_30fps.h264";
     private final String cseScript = "event_test_script.txt";
     private final String csePicture = "pic";
 
