@@ -104,6 +104,10 @@ public class MainActivity extends AppCompatActivity {
         online = findViewById(R.id.connect);
         offline = findViewById(R.id.disconnect);
         hangUp = findViewById(R.id.btn_hang_up);
+        Button passBtn = findViewById(R.id.btn_start_voip);
+        passBtn.setOnClickListener(v -> {
+            startPhoneCall("123", "123", CallingType.TYPE_VIDEO_CALL);
+        });
 //        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         toCalledUserId.setText(getUserId());
 
