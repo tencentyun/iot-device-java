@@ -142,7 +142,13 @@ public class TXAlarmPingSender implements MqttPingSender {
 
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
             wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag);
-            wakelock.acquire();
+            try { // 唤醒锁获取失败，抛出权限异常，同时避免后续的释放过程
+                wakelock.acquire();
+            } catch (Exception e) {
+                TXLog.e(TAG, "wakelock without permission.WAKE_LOCK return");
+                e.printStackTrace();
+                return;
+            }
 
             // Assign new callback to token to execute code after PingResq
             // arrives. Get another wakelock even receiver already has one,
