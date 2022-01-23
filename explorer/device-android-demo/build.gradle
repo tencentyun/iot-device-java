@@ -23,7 +23,7 @@ android {
 
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi', 'armeabi-v7a'
+            abiFilters "armeabi-v7a", "arm64-v8a"
             ndkVersion '22.0.7026061'
         }
 
@@ -49,7 +49,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-//            path "CMakeLists.txt"
+            path "src/main/cpp/CMakeLists.txt"
         }
     }
 
