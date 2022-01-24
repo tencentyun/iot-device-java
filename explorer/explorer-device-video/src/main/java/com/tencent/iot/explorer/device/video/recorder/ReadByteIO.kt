@@ -82,10 +82,12 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
     override fun read(buffer: ByteArray?, size: Int): Int {
         var readLen = size
         if (playType == CallingType.TYPE_AUDIO_CALL) {
-            readLen = 700
+            readLen = 256
         } else if (playType == CallingType.TYPE_AUDIO_CALL) {
-            readLen = 1024 * 2
+            readLen = 256
         }
+        readLen = 256
+
         var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
         startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
