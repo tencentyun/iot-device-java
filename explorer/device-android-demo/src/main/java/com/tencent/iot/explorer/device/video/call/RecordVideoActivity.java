@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.SurfaceTexture;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -32,6 +35,9 @@ import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -48,6 +54,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private TextureView playView;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
+    private boolean mEndPlayerTime;
+    private boolean mEndStreamTime;
+    private long mStartPlayerTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +101,12 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     protected void onResume() {
         super.onResume();
         cameraView.openCamera();
+
+        try {
+            outStream = new FileOutputStream(saveFile);
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
     }
 
     @Override
@@ -99,10 +114,27 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         super.onPause();
     }
 
+    File sdCardDir = Environment.getExternalStorageDirectory();//获取SDCard目录
+    File saveFile = new File(sdCardDir, "raw_av.flv");
+
+    FileOutputStream outStream = null;
+
     private XP2PCallback xP2PCallback = new XP2PCallback() {
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void avDataRecvHandle(byte[] data, int len) {
+            try {
+                outStream.write(data);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            if (mEndStreamTime == false) {
+                mEndStreamTime = true;
+                long endTime = System.currentTimeMillis()-mStartPlayerTime;
+                Log.e("XXX", "onSurfaceTextureUpdated ===>" + endTime);
+            }
+
             ReadByteIO.Companion.getInstance().addLast(data);
         }
 
@@ -118,6 +150,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
                     new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
                 }
+            } else if (type == 2) {
+                Log.e(TAG, "=============================ttt.");
             }
         }
     };
@@ -133,6 +167,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             player.stop();
         }
         ReadByteIO.Companion.getInstance().close();
+        if(outStream!=null){
+            try {
+                outStream.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 
     private void showSaveState(boolean save) {
@@ -161,7 +202,15 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {return false; }
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+        if (mEndPlayerTime == false) {
+            mEndPlayerTime = true;
+            long endTime = System.currentTimeMillis()-mStartPlayerTime;
+            Log.e("XXX", "onSurfaceTextureUpdated111 ===>" + endTime);
+        }
+
+    }
 
     private void play() {
         player = new IjkMediaPlayer();
@@ -193,6 +242,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         player.prepareAsync();
         player.start();
+
+        mStartPlayerTime = System.currentTimeMillis();
+//        Log.e("XXX", "play start at " + mStartPlayerTime);
     }
 
     @Override
