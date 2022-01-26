@@ -31,7 +31,7 @@ public class VideoEntryActivity extends AppCompatActivity {
         });
         //设备端推流
         mVideoPushStreamBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(VideoEntryActivity.this, MainActivity.class);
+            Intent intent = new Intent(VideoEntryActivity.this, PushStreamActivity.class);
             startActivity(intent);
         });
     }

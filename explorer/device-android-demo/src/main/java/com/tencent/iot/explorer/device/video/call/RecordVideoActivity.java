@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
@@ -42,17 +43,18 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private CameraView cameraView;
     private Button btnSwitch;
     private final VideoRecorder videoRecorder = new VideoRecorder();
-    private String path = ""; // 保存 MP4 文件的路径
+    private String path; // 保存源文件的路径
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
+    private Button recordBtn;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        path = getFilesDir().getAbsolutePath();
         Intent inetnt = getIntent();
         if (inetnt != null) {
             Bundle bundle = inetnt.getBundleExtra(PhoneInfo.TAG);
@@ -62,6 +64,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             }
         }
         setContentView(R.layout.activity_record_video);
+        recordBtn = findViewById(R.id.btnRecord);
+        recordBtn.setText("Record \n path:"  + path);
         cameraView = findViewById(R.id.cameraView);
         btnSwitch = findViewById(R.id.btnSwitch);
         playView = findViewById(R.id.v_play);
@@ -78,6 +82,21 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         registVideoOverBrodcast();
         ReadByteIO.Companion.getInstance().reset();
         ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
+        recordBtn.setOnClickListener(v-> {
+            if (videoRecorder == null) return;
+
+            if (videoRecorder.isRecord()) {
+                videoRecorder.stopRecord();
+                Toast.makeText(this, "停止录像", Toast.LENGTH_SHORT).show();
+            } else {
+                int ret = videoRecorder.startRecord(path, PushStreamActivity.csAACFileName, PushStreamActivity.csVideoFileName);
+                if (ret == 0) {
+                    Toast.makeText(this, "开始录像", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "开启录像失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void startRecord() {

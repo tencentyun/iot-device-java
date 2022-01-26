@@ -23,7 +23,7 @@ static void *thd_fn(void *arg) {
 }
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_example_ivdemo_MainActivity_nativeDemo(
+Java_com_tencent_iot_explorer_device_video_push_1stream_PushStreamActivity_nativeDemo(
         JNIEnv* env,
         jobject /* this */,
         jstring dir) {
