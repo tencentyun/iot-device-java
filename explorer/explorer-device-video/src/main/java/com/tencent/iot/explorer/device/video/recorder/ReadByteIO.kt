@@ -88,6 +88,8 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
         } else {  // 未知类型
             readLen = 256
         }
+        readLen = 128
+
         var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
         startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
