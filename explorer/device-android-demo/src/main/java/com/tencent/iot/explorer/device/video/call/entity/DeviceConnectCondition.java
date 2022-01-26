@@ -6,9 +6,9 @@ public class DeviceConnectCondition {
     public static String TAG = DeviceConnectCondition.class.getSimpleName();
 
     private String brokeUrl = "";
-    private String productId = "";
-    private String devName = "";
-    private String devPsk = "";
+    private String productId = "8BW0MQZZU2";
+    private String devName = "whalen_device_0";
+    private String devPsk = "SfQQTV0lcJu+0Kote6a79A==";
 
     public DeviceConnectCondition(String productId, String devName, String devPsk) {
         this.productId = productId;

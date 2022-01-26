@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/whalensun/Documents/work_code_from_gerrit/iot-device-android/explorer/device-android-demo/.cxx/cmake/debug/arm64-v8a'
+ninja: no work to do.

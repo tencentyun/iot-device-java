@@ -6,7 +6,7 @@
     <TextureView
         android:id="@+id/v_play"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/btnSwitch"
@@ -33,12 +33,11 @@
 
     <com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView
         android:id="@+id/cameraView"
-        android:layout_centerInParent="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
         android:layout_width="150dp"
         android:layout_height="200dp"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp" />
 </RelativeLayout>

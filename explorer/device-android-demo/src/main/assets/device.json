@@ -1,10 +1,10 @@
 {
   "auth_mode": "KEY",
-  "productId": "YOUR_PRODUCT_ID",
+  "productId": "8BW0MQZZU2",
   "productSecret": "YOUR_PRODUCT_SECRET",
-  "deviceName": "YOUR_DEVICE_NAME",
+  "deviceName": "whalen_device_0",
   "key_deviceinfo": {
-    "deviceSecret": "YOUR_DEVICE_PSK"
+    "deviceSecret": "SfQQTV0lcJu+0Kote6a79A=="
   },
   "cert_deviceinfo": {
     "devCertFile": "YOUR_DEVICE_CERT_FILE_NAME",

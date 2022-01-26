@@ -1,0 +1,7 @@
+Executable : /Users/whalensun/Library/Android/sdk/cmake/3.10.2.4988404/bin/ninja
+arguments : 
+-C
+/Users/whalensun/Documents/work_code_from_gerrit/iot-device-android/explorer/device-android-demo/.cxx/cmake/debug/arm64-v8a
+native-lib
+jvmArgs : 
+
