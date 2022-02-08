@@ -19,7 +19,7 @@ buildscript {
 
 ext {
 
-    mqttJavaSdkVer = '1.1.0'
+    mqttJavaSdkVer = '1.2.5'
 
 }
 
