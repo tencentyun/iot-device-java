@@ -14,7 +14,7 @@ public class SignForMqttTest {
     @Test
     public void testMqttSign() {
         try {
-            System.out.println(SignForMqttTest("YourProductId","YourDeviceName","YourPsk"));
+            System.out.println(SignForMqttTest("YourProductId","YourDeviceName","YourDevicePsk"));
             assertTrue(true);
         } catch (Exception e) {
             e.printStackTrace();
