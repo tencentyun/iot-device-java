@@ -13,6 +13,7 @@ import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.util.Base64;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.core.websocket.WebsocketClientManager;
 import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -1299,6 +1300,26 @@ public class TXMqttConnection implements MqttCallbackExtended {
             //TODO：数据格式暂不确定
             Map<String, String> replyMessage = new HashMap<>();
             publishRRPCToCloud(null, processId, replyMessage);
+        }
+
+        if (topic != null && topic.contains("sys/operation/result/")) {
+            String jsonStr = new String(message.getPayload());
+
+            try {
+                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                if (jsonObj.has("type")) {
+                    String type = jsonObj.getString("type");
+                    if (type.equals("ssh")) {
+                        Integer ssh_switch = jsonObj.getInt("switch");
+                        if (ssh_switch == 1) {
+                            WebsocketClientManager.getInstance().createSocketClient(mProductId, mDeviceName, mSecretKey);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         mLastReceivedMessageId = message.getId();
