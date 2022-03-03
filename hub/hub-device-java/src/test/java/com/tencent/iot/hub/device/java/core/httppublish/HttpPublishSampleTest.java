@@ -28,7 +28,8 @@ public class HttpPublishSampleTest {
 
     private static String mProductID = BuildConfig.TESTOTASAMPLE_PRODUCT_ID;
     private static String mDevName = BuildConfig.TESTOTASAMPLE_DEVICE_NAME;
-    private static String mDevPSK = BuildConfig.TESTOTASAMPLE_DEVICE_PSK;
+    private static String mDevPSK = BuildConfig.TESTOTASAMPLE_DEVICE_PSK; //密钥类型设备的psk
+    private static String mDevPrivateKey = ""; //证书类型设备的私钥文件内容
 
     static {
         Loggor.setLogger(LOG);
@@ -66,7 +67,10 @@ public class HttpPublishSampleTest {
             e.printStackTrace();
         }
         String topic = String.format("%s/%s/data", mProductID, mDevName);
+        // 密钥类型设备
         TXHTTPPulish httpPulish = new TXHTTPPulish(mProductID, mDevPSK, mDevName, new SelfHttpPublishCallback());
+        // 证书类型设备
+        // TXHTTPPulish httpPulish = new TXHTTPPulish(mProductID, mDevPrivateKey, mDevPrivateKey, new SelfHttpPublishCallback());
         if (httpPulish.doHttpPublish(topic, property, 0)) {
             Loggor.debug(TAG, "http publish OK!");
         } else {
