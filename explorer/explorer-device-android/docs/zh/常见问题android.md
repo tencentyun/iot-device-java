@@ -33,6 +33,10 @@ PRODUCT_ID，DEVICE_NAME，DEVICE_PSK对应的填写的参数请参考 [基于TC
 
 此问题很可能是填写了错误的ProductSecret，建议和云控制台上设备信息比对检查下调用动态注册时传入的三个参数，productId，deviceName，ProductSecret。
 
+#### 动态注册回调onFailedDynreg 错误信息为{"Error":"InvalidParameterValue","Message":"X-Tc-Timestamp error"},如何排查
+
+此问题很可能是设备系统时间不正确，请检查系统时间与实际的时间是否不一致。
+
 #### 配置了固件升级任务后，但部份设备离线，这些离线的设备，后面再上线时是否能收到这次的升级任务？
 
 离线的设备，后面再上线时，初始化一下OTA（TXMqttConnection initOTA），再上报一下它的当前版本（TXMqttConnection reportCurrentFirmwareVersion）就可以收到这一次的升级任务。
