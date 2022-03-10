@@ -53,6 +53,19 @@ public class TXCallDataTemplate extends TXDataTemplate {
         this.mCurrentCallingUserid = currentCallingUserid;
     }
 
+    public boolean isContainCurrentCallingUserid(String id) {
+        if (mCurrentCallingUserid.isEmpty()) {
+            return false;
+        }
+        String[] currentCallingIds = mCurrentCallingUserid.split(";");
+        for (String currentCallingId : currentCallingIds) {
+            if (currentCallingId.equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）
      * @param connection

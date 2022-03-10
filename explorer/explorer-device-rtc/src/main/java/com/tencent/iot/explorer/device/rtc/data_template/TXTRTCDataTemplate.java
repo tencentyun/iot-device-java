@@ -120,7 +120,7 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
-                        if (isBusy() && !getCurrentCallingUserid().equals(userid)) { //非当前设备的通话用户的请求忽略
+                        if (isBusy() && !isContainCurrentCallingUserid(userid)) { //非当前设备的通话用户的请求忽略
                             if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {
                                 reportExtraInfoRejectUserId(userid);
                             }
@@ -157,7 +157,7 @@ public class TXTRTCDataTemplate extends TXCallDataTemplate {
                         if (params.has(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT)) {
                             userAgent = params.getString(TXCallDataTemplateConstants.PROPERTY_SYS_AGENT);
                         }
-                        if (isBusy() && !getCurrentCallingUserid().equals(userid)) { //非当前设备的通话用户的请求忽略
+                        if (isBusy() && !isContainCurrentCallingUserid(userid)) { //非当前设备的通话用户的请求忽略
                             if (callStatus != CallState.TYPE_IDLE_OR_REFUSE) {
                                 reportExtraInfoRejectUserId(userid);
                             }
