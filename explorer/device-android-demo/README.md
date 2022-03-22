@@ -9,6 +9,8 @@
 │   ├── IOT AI FACE DEMO
 │   ├── IOT TRTC DEMO
 │   ├── IOT TME DEMO
+│   ├── IOT VIDEO DEMO
+│   ├── IOT CONFIGWIFI DEMO
 ```
 
 ## IOT Demo
@@ -68,4 +70,26 @@
 
 3. 如何进入预发或体验环境
     * 在`设备信息配置页面`的`Broker Url`输入框中输入环境对应的Broker Url
+
+## IOT VIDEO DEMO
+
+### IOT VIDEO CALL
+该Demo包含：`设备信息配置`、`设备上下线`、`音视频呼叫`；该Demo主要演示`腾讯连连App`与设备进行双向音视频通话的场景
+
+1. 设备信息配置
+    * 填写设备三元组信息（产品ID、设备名称、设备密钥）
+
+2. 设备上下线
+    * 可以点击`设备上线`按钮使设备上线、点击`设备下线`按钮使设备下线
+
+3. 音视频呼叫
+    * 在`设备上下线`按钮上方的输入栏内输入腾讯连连的用户ID
+    * 点击音频呼叫或者视频呼叫
+
+### IOT VIDEO PUSH STREAM
+待补充
+
+## IOT CONFIGWIFI DEMO
+待补充
+
 
