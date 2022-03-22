@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54282c8d_cef5aab6",
+        "filename": "hub/hub-device-java/src/main/java/com/tencent/iot/hub/device/java/core/httppublish/TXHTTPPulish.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 1000005
+      },
+      "writtenOn": "2022-03-22T02:12:54Z",
+      "side": 1,
+      "message": "我们有时间的时候可以把这些工具方法抽离一下。",
+      "revId": "a8883b9982dfb1229a297e25198f576c7d12df9d",
+      "serverId": "bfd29338-1d98-4536-875c-f9d1fff7ae29",
+      "unresolved": true
+    }
+  ]
+}
