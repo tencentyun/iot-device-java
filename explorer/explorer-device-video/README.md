@@ -49,11 +49,23 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 
 2、发送音频数据 VideoNativeInteface#sendAudioData(byte[] dataBytes, long pts, long seq)
 
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| dataBytes | byte[] | 音频数据 |
+| pts| long | pts |
+| seq | long | 音频数据包的序号 |
+
 | 返回值 | 描述 |
 |:-|:-|
 | int | 错误码 |
 
 3、发送视频数据 VideoNativeInteface#sendFrameData(byte[] dataBytes, long pts, long seq)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| dataBytes | byte[] | 视频数据 |
+| pts| long | pts |
+| seq | long | 视频数据包的序号 |
 
 | 返回值 | 描述 |
 |:-|:-|
