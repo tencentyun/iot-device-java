@@ -7,6 +7,7 @@
      *  [explorer-device-video SDK 设计说明](#explorer-device-video-SDK-设计说明)
      *  [explorer-device-video SDK 回调callback 设计说明](#explorer-device-video-SDK-回调callback-设计说明)
      *  [错误码](#错误码)
+  * [设备与App交互流程](#设备与App交互流程])
 
 # IoT Explorer Video Android SDK开发指南
 
@@ -24,7 +25,7 @@
     }
     ```
     注：Demo示例工程使用的是 依赖本地 explorer-device-video 的 sdk源码 构建方式。
- 
+
  -  gradle工程集成正式版SDK
      在module目录下的build.gradle中添加如下依赖，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本：
      ```
@@ -33,11 +34,11 @@
          implementation 'com.tencent.iot.explorer:explorer-device-video:x.x.x'
      }
      ```
- 
+
  -  gradle工程集成snapshot版SDK
- 
+
      > 建议使用正式版SDK，SNAPSHOT版本会静默更新，使用存在风险
- 
+
      在工程的build.gradle中配置仓库url
      ``` gr
      allprojects {
@@ -50,7 +51,7 @@
          }
      }
      ```
-     
+
      在应用模块的build.gradle中配置，具体版本号可参考 [Latest release](https://github.com/tencentyun/iot-device-java/releases) 版本，末位+1
      ``` gr
      dependencies {
@@ -157,3 +158,10 @@ XP2PCallback 回调callback说明如下：
 | IV_ERR_AVT_MALLOC_BUFFER_FAILED|  -307   | 分配的内存失败                           |
 | IV_ERR_AVT_FAILED             |  -308    | 音视频传输和对讲模块运行错误                |
 | IV_ERR_DEVICE_OFFLINE          |  -901  |  设备处于离线状态              |
+
+
+## 设备与App交互流程
+
+[App呼叫设备](docs/呼叫流程/App呼设备.md)
+
+[设备呼叫App](docs/呼叫流程/设备呼App.md)
