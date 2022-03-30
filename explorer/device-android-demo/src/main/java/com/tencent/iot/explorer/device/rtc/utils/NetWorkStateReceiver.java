@@ -12,6 +12,7 @@ import com.tencent.iot.explorer.device.android.utils.TXLog;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.net.ConnectivityManager.TYPE_ETHERNET;
 import static android.net.ConnectivityManager.TYPE_MOBILE;
 import static android.net.ConnectivityManager.TYPE_WIFI;
 
@@ -46,18 +47,20 @@ public class NetWorkStateReceiver extends BroadcastReceiver {
             NetworkInfo wifiNetworkInfo = connMgr.getNetworkInfo(TYPE_WIFI);
             //获取移动数据连接的信息
             NetworkInfo dataNetworkInfo = connMgr.getNetworkInfo(TYPE_MOBILE);
-            if (wifiNetworkInfo.isConnected() && dataNetworkInfo.isConnected()) {
+            //获取以太网连接的信息
+            NetworkInfo ethernetNetworkInfo = connMgr.getNetworkInfo(TYPE_ETHERNET);
+            TXLog.i(TAG, String.format("WIFI是否连接:%b,以太网是否连接:%b,移动数据是否连接:%b,",
+                    wifiNetworkInfo != null && wifiNetworkInfo.isConnected(),
+                    ethernetNetworkInfo != null && ethernetNetworkInfo.isConnected(),
+                    dataNetworkInfo != null && dataNetworkInfo.isConnected()));
+            if (wifiNetworkInfo != null && wifiNetworkInfo.isConnected()) {
                 connected = true;
-                TXLog.i(TAG, "WIFI已连接,移动数据已连接");
-            } else if (wifiNetworkInfo.isConnected() && !dataNetworkInfo.isConnected()) {
+            } else if (ethernetNetworkInfo != null && ethernetNetworkInfo.isConnected()) {
                 connected = true;
-                TXLog.i(TAG, "WIFI已连接,移动数据已断开");
-            } else if (!wifiNetworkInfo.isConnected() && dataNetworkInfo.isConnected()) {
+            } else if (dataNetworkInfo != null && dataNetworkInfo.isConnected()) {
                 connected = true;
-                TXLog.i(TAG, "WIFI已断开,移动数据已连接");
             } else {
                 connected = false;
-                TXLog.i(TAG, "WIFI已断开,移动数据已断开");
             }
             //API大于23时使用下面的方式进行网络监听
         } else {
