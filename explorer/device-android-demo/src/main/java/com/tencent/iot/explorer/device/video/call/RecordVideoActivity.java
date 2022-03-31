@@ -51,15 +51,16 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
+    private Button hangupBtn;
     private ReadByteIO io;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         path = getFilesDir().getAbsolutePath();
-        Intent inetnt = getIntent();
-        if (inetnt != null) {
-            Bundle bundle = inetnt.getBundleExtra(PhoneInfo.TAG);
+        Intent intent = getIntent();
+        if (intent != null) {
+            Bundle bundle = intent.getBundleExtra(PhoneInfo.TAG);
             if (bundle != null) {
                 String jsonStr = bundle.getString(PhoneInfo.TAG);
                 phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
@@ -67,6 +68,10 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         setContentView(R.layout.activity_record_video);
         recordBtn = findViewById(R.id.btnRecord);
+        hangupBtn = findViewById(R.id.btn_hang_up);
+        hangupBtn.setOnClickListener(v -> {
+            new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+        });
         recordBtn.setText("Record \n path:"  + path);
         cameraView = findViewById(R.id.cameraView);
         btnSwitch = findViewById(R.id.btnSwitch);

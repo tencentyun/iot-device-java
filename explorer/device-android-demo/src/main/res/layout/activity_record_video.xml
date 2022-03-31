@@ -29,6 +29,16 @@
         android:text="Record"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/btn_hang_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnRecord"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:text="挂断"
+        android:textAllCaps="false" />
+
 
     <com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView
         android:id="@+id/cameraView"
