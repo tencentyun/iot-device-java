@@ -7,21 +7,23 @@ import kotlinx.coroutines.*
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
 import java.util.concurrent.LinkedBlockingQueue
 
-class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidIO {
+class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
-    companion object {
-        private var instance: ReadByteIO? = null
-        var URL_SUFFIX = "recv_data_online"
+//    companion object {
+//        private var instance: ReadByteIO? = null
+//        var URL_SUFFIX = "recv_data_online"
+//
+//        @Synchronized
+//        fun getInstance(): ReadByteIO {
+//            instance?.let {
+//                return it
+//            }
+//            instance = ReadByteIO()
+//            return instance!!
+//        }
+//    }
 
-        @Synchronized
-        fun getInstance(): ReadByteIO {
-            instance?.let {
-                return it
-            }
-            instance = ReadByteIO()
-            return instance!!
-        }
-    }
+    var URL_SUFFIX = "recv_data_online"
 
     private var TAG = ReadByteIO::class.java.simpleName
     private var flvData = LinkedBlockingQueue<Byte>()  // 内存队列，用于缓存获取到的裸流数据
@@ -39,15 +41,16 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
         for (i in 0 until len) {
             byteList[i] = flvData.take()
         }
-        Log.e(TAG, "takeFirstWithLen " + ByteUtils.bytesToHex(byteList))
+        Log.e(TAG, "*****************takeFirstWithLen " + len + " flvData.len " + flvData.size)
         return byteList
     }
 
     // 队列尾部增加新的数据
-    @Synchronized
     fun addLast(bytes: ByteArray): Boolean {
         var tmpList:List<Byte> = bytes.toList()
-        return flvData.addAll(tmpList)
+        var test = flvData.addAll(tmpList)
+        Log.e(TAG, "==== addLast return " + test)
+        return test
     }
 
     // 追帧线程
@@ -72,14 +75,15 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
 
     override fun open(url: String?): Int {
         if (url == URL_SUFFIX) {
-            Log.d(TAG, "recv stream opened")
+            Log.d(TAG, "===========recv stream opened")
             return 1
         }
-        Log.e(TAG, "recv stream open failed")
+        Log.e(TAG, "=========recv stream open failed")
         return -1
     }
 
     override fun read(buffer: ByteArray?, size: Int): Int {
+        Log.e(TAG, "***************** read " + size + " buffer.len " + buffer?.size)
         var readLen = size
         if (playType == CallingType.TYPE_AUDIO_CALL) { // 音频
             readLen = 256
@@ -88,8 +92,7 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
         } else {  // 未知类型
             readLen = 256
         }
-        readLen = 128
-
+        readLen = 256
         var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
         startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
@@ -107,6 +110,6 @@ class ReadByteIO private constructor(): CoroutineScope by MainScope(), IAndroidI
 
     fun reset() {
         flvData.clear()
-        instance = null
+//        instance = null
     }
 }

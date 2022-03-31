@@ -30,6 +30,7 @@ import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
+import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
@@ -42,7 +43,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private String TAG = RecordVideoActivity.class.getSimpleName();
     private CameraView cameraView;
     private Button btnSwitch;
-    private final VideoRecorder videoRecorder = new VideoRecorder();
+    private VideoRecorder videoRecorder = new VideoRecorder();
     private String path; // 保存源文件的路径
     private IjkMediaPlayer player;
     private Surface surface;
@@ -50,6 +51,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
+    private ReadByteIO io;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,8 +82,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         registVideoOverBrodcast();
-        ReadByteIO.Companion.getInstance().reset();
-        ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
+        io = new ReadByteIO();
+        io.reset();
+        io.setPlayType(phoneInfo.getCallType());
         recordBtn.setOnClickListener(v-> {
             if (videoRecorder == null) return;
 
@@ -122,7 +125,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
         @Override
         public void avDataRecvHandle(byte[] data, int len) {
-            ReadByteIO.Companion.getInstance().addLast(data);
+            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
+            io.addLast(data);
         }
 
         @Override
@@ -151,7 +155,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         if (player != null) {
             player.stop();
         }
-        ReadByteIO.Companion.getInstance().close();
+        io.close();
     }
 
     private void showSaveState(boolean save) {
@@ -202,9 +206,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "ijkio,crypto,file,http,https,tcp,tls,udp");
 
         player.setSurface(this.surface);
-        player.setAndroidIOCallback(ReadByteIO.Companion.getInstance());
+        player.setAndroidIOCallback(io);
 
-        Uri uri = Uri.parse("ijkio:androidio:" + ReadByteIO.Companion.getURL_SUFFIX());
+        Uri uri = Uri.parse("ijkio:androidio:" + io.getURL_SUFFIX());
         try {
             player.setDataSource(uri.toString());
         } catch (IOException e) {
