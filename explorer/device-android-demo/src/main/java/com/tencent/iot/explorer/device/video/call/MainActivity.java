@@ -122,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         accpetCall.setOnClickListener(v -> {
+            if (videoDataTemplateSample == null) {
+                return;
+            }
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -132,6 +135,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         rejectCall.setOnClickListener(v -> {
+            if (videoDataTemplateSample == null) {
+                return;
+            }
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
             try {
