@@ -237,7 +237,7 @@ public class RecordThread extends Thread {
         audioRecord = new AudioRecord(micParam.getAudioSource(), micParam.getSampleRateInHz(), micParam.getChannelConfig(), micParam.getAudioFormat(), bufferSizeInBytes);
         try {
             audioCodec = MediaCodec.createEncoderByType(audioEncodeParam.getMime());
-            MediaFormat format = MediaFormat.createAudioFormat(audioEncodeParam.getMime(), micParam.getSampleRateInHz(), 2);
+            MediaFormat format = MediaFormat.createAudioFormat(audioEncodeParam.getMime(), micParam.getSampleRateInHz(), 1);
             format.setInteger(MediaFormat.KEY_BIT_RATE, audioEncodeParam.getBitRate());
             format.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
             format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, audioEncodeParam.getMaxInputSize());
@@ -377,7 +377,7 @@ public class RecordThread extends Thread {
                 if (isStopRecord || isCancelRecord) return;
                 storeVideoStream.write(dataBytes);
                 storeVideoStream.flush();
-                getInstance().sendAudioData(dataBytes, System.currentTimeMillis(), audioSeq);
+                getInstance().sendAudioData(dataBytes, System.currentTimeMillis(), audioSeq, 0);
                 audioSeq++;
             }
         } catch (IOException e) {
@@ -387,8 +387,8 @@ public class RecordThread extends Thread {
 
     private void addADTStoPacket(byte[] packet, int packetLen) {
         int profile = 2;  // AAC LC
-        int chanCfg = 2;  // CPE
-        int freqIdx = samplingFrequencyIndexMap.get(44100);
+        int chanCfg = 1;  // CPE
+        int freqIdx = samplingFrequencyIndexMap.get(8000);
         // filled in ADTS data
         packet[0] = (byte) 0xFF;
         packet[1] = (byte) 0xF9;
@@ -429,14 +429,14 @@ public class RecordThread extends Thread {
                         storeVideoDataStream.flush();
                         hasIDR = true;
                     }
-                    getInstance().sendFrameData(dataBytes, System.currentTimeMillis(), seq);
+                    getInstance().sendVideoData(dataBytes, System.currentTimeMillis(), seq, 0);
                 } else {
 
                     if (startStore && storeVideoDataStream != null && hasIDR) { // 等待存在 IDR 帧以后，再开始添加 P 帧
                         storeVideoDataStream.write(bytes);
                         storeVideoDataStream.flush();
                     }
-                    getInstance().sendFrameData(bytes, System.currentTimeMillis(), seq);
+                    getInstance().sendVideoData(bytes, System.currentTimeMillis(), seq, 0);
                 }
                 seq++;
             }

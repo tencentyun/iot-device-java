@@ -98,8 +98,8 @@ public class VideoRecorder {
 
         MicParam micParam = new MicParam.Builder()
                 .setAudioSource(MediaRecorder.AudioSource.MIC)
-                .setSampleRateInHz(44100) // 采样率
-                .setChannelConfig(AudioFormat.CHANNEL_IN_STEREO)
+                .setSampleRateInHz(8000) // 采样率
+                .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
