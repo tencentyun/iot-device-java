@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
@@ -30,12 +31,15 @@ import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class RecordVideoActivity2 extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener {
 
-    private String TAG = RecordVideoActivity2.class.getSimpleName();
+    private static final String TAG = RecordVideoActivity2.class.getSimpleName();
+    private static final int MAX_CONNECT_NUM = 4;
     private CameraView cameraView;
     private Button btnSwitch;
     private Button btnStop;
@@ -46,6 +50,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private ReadByteIO io;
+    private final HashMap<Integer, Boolean> visitors = new HashMap<>(4);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +83,9 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         io = new ReadByteIO();
         io.reset();
         io.setPlayType(phoneInfo.getCallType());
+        for (int i = 0; i < MAX_CONNECT_NUM; i++) {
+            visitors.put(i, false);
+        }
     }
 
     private void startRecord() {
@@ -109,11 +117,18 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
 
         @Override
         public void avDataMsgHandle(int type, String msg) {
-            Log.e(TAG, "avDataMsgHandle type " + type);
+            Log.e(TAG, "====avDataMsgHandle type: " + type + " msg: " + msg);
+            JSONObject obj = JSON.parseObject(msg);
+            int visitorId = -1;
+            if (obj != null) {
+                visitorId = obj.getIntValue("visitor");
+            }
             if (type == 0) {
+                visitors.put(visitorId, true);
                 Log.e(TAG, "start send video data");
                 handler.post(() -> startRecord());
             } else if (type == 1) {
+                visitors.put(visitorId, false);
                 Log.e(TAG, "this call over");
             }
         }
@@ -202,12 +217,20 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
 
     @Override
     public void onAudioEncoded(byte[] datas, long pts, long seq) {
-        VideoNativeInteface.getInstance().sendAudioData(datas, System.currentTimeMillis(), seq, 0);
+        for (int i = 0; i < MAX_CONNECT_NUM; i++) {
+            if (visitors.get(i)) {
+                VideoNativeInteface.getInstance().sendAudioData(datas, System.currentTimeMillis(), seq, i);
+            }
+        }
     }
 
     @Override
     public void onVideoEncoded(byte[] datas, long pts, long seq) {
-        VideoNativeInteface.getInstance().sendVideoData(datas, System.currentTimeMillis(), seq, 0);
+        for (int i = 0; i < MAX_CONNECT_NUM; i++) {
+            if (visitors.get(i)) {
+                VideoNativeInteface.getInstance().sendVideoData(datas, System.currentTimeMillis(), seq, i);
+            }
+        }
     }
 }
 
