@@ -80,9 +80,6 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
         });
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
-        io = new ReadByteIO();
-        io.reset();
-        io.setPlayType(phoneInfo.getCallType());
         for (int i = 0; i < MAX_CONNECT_NUM; i++) {
             visitors.put(i, false);
         }
@@ -111,7 +108,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
 
         @Override
         public void avDataRecvHandle(byte[] data, int len) {
-            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
+            Log.e(TAG, "====datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
             io.addLast(data);
         }
 
@@ -123,13 +120,16 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             if (obj != null) {
                 visitorId = obj.getIntValue("visitor");
             }
-            if (type == 0) {
+            if (type == 0) { //开始预览
                 visitors.put(visitorId, true);
-                Log.e(TAG, "start send video data");
+                Log.e(TAG, "visitor " + visitorId + " 开始预览.");
                 handler.post(() -> startRecord());
-            } else if (type == 1) {
+            } else if (type == 1) { //结束预览
                 visitors.put(visitorId, false);
-                Log.e(TAG, "this call over");
+                Log.e(TAG, "visitor " + visitorId + " 结束预览.");
+            } else if (type == 3) { //结束对讲
+                Log.e(TAG, "visitor " + visitorId + " 结束对讲.");
+                play();
             }
         }
     };
@@ -146,7 +146,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         io.close();
     }
 
-    private OnRecordListener onRecordListener = new OnRecordListener() {
+    private final OnRecordListener onRecordListener = new OnRecordListener() {
         @Override public void onRecordStart() { }
         @Override public void onRecordTime(long time) { }
         @Override public void onRecordComplete(String path) { }
@@ -187,6 +187,10 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "ijkio,crypto,file,http,https,tcp,tls,udp");
 
         player.setSurface(this.surface);
+
+        io = new ReadByteIO();
+        io.reset();
+        io.setPlayType(phoneInfo.getCallType());
         player.setAndroidIOCallback(io);
 
         Uri uri = Uri.parse("ijkio:androidio:" + io.getURL_SUFFIX());

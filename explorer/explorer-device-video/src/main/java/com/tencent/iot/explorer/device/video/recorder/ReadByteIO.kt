@@ -49,7 +49,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     fun addLast(bytes: ByteArray): Boolean {
         var tmpList:List<Byte> = bytes.toList()
         var test = flvData.addAll(tmpList)
-        Log.e(TAG, "==== addLast return " + test)
+        Log.e(TAG, "==== addLast return " + bytes.size)
         return test
     }
 
