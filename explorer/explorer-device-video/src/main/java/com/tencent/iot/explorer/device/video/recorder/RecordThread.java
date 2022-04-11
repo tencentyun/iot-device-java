@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.CameraParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
@@ -47,6 +48,7 @@ public class RecordThread extends Thread {
     private AudioEncodeParam audioEncodeParam;
     private CameraParam cameraParam;
     private VideoEncodeParam videoEncodeParam;
+    private OnEncodeListener encodeListener;
 
     private GLThread glThread;
     private volatile Surface surface;
@@ -202,20 +204,21 @@ public class RecordThread extends Thread {
         }
     }
 
-    public RecordThread(RecordThreadParam recordThreadParam) {
+    public RecordThread(RecordThreadParam recordThreadParam, OnEncodeListener listener) {
         this(recordThreadParam.getRecordParam(), recordThreadParam.getMicParam(),
                 recordThreadParam.getAudioEncodeParam(), recordThreadParam.getCameraParam(),
-                recordThreadParam.getVideoEncodeParam());
+                recordThreadParam.getVideoEncodeParam(), listener);
     }
 
     private RecordThread(RecordParam recordParam, MicParam micParam, AudioEncodeParam audioEncodeParam,
-                         CameraParam cameraParam, VideoEncodeParam videoEncodeParam) {
+                         CameraParam cameraParam, VideoEncodeParam videoEncodeParam, OnEncodeListener listener) {
         this.recordParam = recordParam;
         this.micParam = micParam;
         this.audioEncodeParam = audioEncodeParam;
         this.cameraParam = cameraParam;
         this.videoEncodeParam = videoEncodeParam;
         this.storeMP4 = recordParam.isStoreMP4File();
+        this.encodeListener = listener;
         Log.d(TAG, "init RecordThread with storeMP4 " + storeMP4);
         glThread = new GLThread(this.cameraParam, this.videoEncodeParam);
         initMuxer();
@@ -377,7 +380,11 @@ public class RecordThread extends Thread {
                 if (isStopRecord || isCancelRecord) return;
                 storeVideoStream.write(dataBytes);
                 storeVideoStream.flush();
-                getInstance().sendAudioData(dataBytes, System.currentTimeMillis(), audioSeq, 0);
+                if (encodeListener != null) {
+                    encodeListener.onAudioEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
+                } else {
+                    Log.e(TAG, "Encode listener is null, please set encode listener.");
+                }
                 audioSeq++;
             }
         } catch (IOException e) {
@@ -429,14 +436,22 @@ public class RecordThread extends Thread {
                         storeVideoDataStream.flush();
                         hasIDR = true;
                     }
-                    getInstance().sendVideoData(dataBytes, System.currentTimeMillis(), seq, 0);
+                    if (encodeListener != null) {
+                        encodeListener.onVideoEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
+                    } else {
+                        Log.e(TAG, "Encode listener is null, please set encode listener.");
+                    }
                 } else {
 
                     if (startStore && storeVideoDataStream != null && hasIDR) { // 等待存在 IDR 帧以后，再开始添加 P 帧
                         storeVideoDataStream.write(bytes);
                         storeVideoDataStream.flush();
                     }
-                    getInstance().sendVideoData(bytes, System.currentTimeMillis(), seq, 0);
+                    if (encodeListener != null) {
+                        encodeListener.onVideoEncoded(bytes, System.currentTimeMillis(), audioSeq);
+                    } else {
+                        Log.e(TAG, "Encode listener is null, please set encode listener.");
+                    }
                 }
                 seq++;
             }

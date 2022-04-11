@@ -6,6 +6,7 @@ import android.media.MediaRecorder;
 import android.text.TextUtils;
 
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.base.EGLTextureView;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
@@ -23,6 +24,11 @@ public class VideoRecorder {
     private OnRecordListener onRecordListener; // 记录过程回调
     private CameraView cameraView; // 摄像头预览的内容
     private int recorderType = CallingType.TYPE_VIDEO_CALL;
+    private OnEncodeListener encodeListener;
+
+    public VideoRecorder(OnEncodeListener listener) {
+        encodeListener = listener;
+    }
 
     // 获取实际的摄像头预览对象
     public void attachCameraView(CameraView cameraView) {
@@ -128,7 +134,7 @@ public class VideoRecorder {
     private int start(RecordThreadParam recordThreadParam) {
         // 清理环境
         cancel();
-        recordThread = new RecordThread(recordThreadParam);
+        recordThread = new RecordThread(recordThreadParam, encodeListener);
         recordThread.setOnRecordListener(onRecordListener);
         recordThread.start();
         return ErrorCode.SUCCESS;

@@ -23,6 +23,7 @@ import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.VideoRecorder;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -32,13 +33,13 @@ import java.io.IOException;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class RecordVideoActivity2 extends AppCompatActivity implements TextureView.SurfaceTextureListener {
+public class RecordVideoActivity2 extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener {
 
     private String TAG = RecordVideoActivity2.class.getSimpleName();
     private CameraView cameraView;
     private Button btnSwitch;
     private Button btnStop;
-    private VideoRecorder videoRecorder = new VideoRecorder();
+    private VideoRecorder videoRecorder = new VideoRecorder(this);
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
@@ -197,6 +198,16 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onAudioEncoded(byte[] datas, long pts, long seq) {
+        VideoNativeInteface.getInstance().sendAudioData(datas, System.currentTimeMillis(), seq, 0);
+    }
+
+    @Override
+    public void onVideoEncoded(byte[] datas, long pts, long seq) {
+        VideoNativeInteface.getInstance().sendVideoData(datas, System.currentTimeMillis(), seq, 0);
     }
 }
 
