@@ -55,6 +55,10 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private Button hangupBtn;
     private ReadByteIO io;
 
+    private long lastClickTime = 0L;
+    //两次点击间隔不少于1000ms
+    private static final int FAST_CLICK_DELAY_TIME = 1000;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +89,12 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 //            playView.setVisibility(View.INVISIBLE);
         }
 
-        btnSwitch.setOnClickListener(v -> cameraView.switchCamera());
+        btnSwitch.setOnClickListener(v -> {
+            if (System.currentTimeMillis() - lastClickTime >= FAST_CLICK_DELAY_TIME) {
+                cameraView.switchCamera();
+                lastClickTime = System.currentTimeMillis();
+            }
+        });
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         registVideoOverBrodcast();
         io = new ReadByteIO();
