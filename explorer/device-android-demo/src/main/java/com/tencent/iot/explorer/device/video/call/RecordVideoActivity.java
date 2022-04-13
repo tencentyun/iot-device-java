@@ -125,6 +125,10 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoRecorder.start(onRecordListener);
     }
 
+    private void stopRecord() {
+        videoRecorder.stop();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -153,6 +157,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
             } else if (type == 1) {
                 Log.e(TAG, "this call over");
+                handler.post(() -> stopRecord());
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
                     new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
                 }
