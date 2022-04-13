@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.app.utils.LogcatHelper;
 import com.tencent.iot.explorer.device.video.call.MainActivity;
 import com.tencent.iot.explorer.device.video.push_stream.PushRealTimeStreamActivity;
 import com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity;
@@ -42,5 +43,12 @@ public class VideoEntryActivity extends AppCompatActivity {
             Intent intent = new Intent(VideoEntryActivity.this, PushRealTimeStreamActivity.class);
             startActivity(intent);
         });
+        LogcatHelper.getInstance(this).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogcatHelper.getInstance(this).stop();
     }
 }
