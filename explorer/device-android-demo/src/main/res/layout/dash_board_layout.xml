@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:drawable/screen_background_light_transparent"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/tv_v_cache_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="v_cache: "
+        android:textColor="@color/black_000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_v_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="v_cache"
+        android:textColor="@color/black_000000"
+        app:layout_constraintBottom_toBottomOf="@id/tv_v_cache_title"
+        app:layout_constraintStart_toEndOf="@id/tv_v_cache_title"
+        app:layout_constraintTop_toTopOf="@id/tv_v_cache_title" />
+
+    <TextView
+        android:id="@+id/tv_a_cache_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="a_cache: "
+        android:textColor="@color/black_000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_v_cache_title" />
+
+    <TextView
+        android:id="@+id/tv_a_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="a_cache"
+        android:textColor="@color/black_000000"
+        app:layout_constraintBottom_toBottomOf="@id/tv_a_cache_title"
+        app:layout_constraintStart_toEndOf="@id/tv_a_cache_title"
+        app:layout_constraintTop_toTopOf="@id/tv_a_cache_title" />
+
+    <TextView
+        android:id="@+id/tv_tcp_speed_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="speed: "
+        android:visibility="invisible"
+        android:textColor="@color/black_000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_a_cache_title" />
+
+    <TextView
+        android:id="@+id/tv_tcp_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:visibility="invisible"
+        android:text="speed"
+        android:textColor="@color/black_000000"
+        app:layout_constraintBottom_toBottomOf="@id/tv_tcp_speed_title"
+        app:layout_constraintStart_toEndOf="@id/tv_tcp_speed_title"
+        app:layout_constraintTop_toTopOf="@id/tv_tcp_speed_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>

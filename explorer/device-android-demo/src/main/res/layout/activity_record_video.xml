@@ -19,6 +19,14 @@
         android:text="Switch"
         android:textAllCaps="false" />
 
+    <include
+        android:id="@+id/ll_dash_board"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/btnSwitch"
+        layout="@layout/dash_board_layout" />
+
     <Button
         android:id="@+id/btnRecord"
         android:layout_width="wrap_content"

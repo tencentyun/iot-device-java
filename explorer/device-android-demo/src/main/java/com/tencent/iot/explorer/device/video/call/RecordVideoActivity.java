@@ -9,12 +9,14 @@ import android.graphics.SurfaceTexture;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,6 +25,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.app.utils.CommonUtils;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity;
@@ -36,6 +39,7 @@ import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -49,6 +53,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
+    private TextView tvTcpSpeed;
+    private TextView tvVCache;
+    private TextView tvACache;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
@@ -73,6 +80,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         setContentView(R.layout.activity_record_video);
         recordBtn = findViewById(R.id.btnRecord);
+        tvTcpSpeed = findViewById(R.id.tv_tcp_speed);
+        tvVCache = findViewById(R.id.tv_v_cache);
+        tvACache = findViewById(R.id.tv_a_cache);
         hangupBtn = findViewById(R.id.btn_hang_up);
         hangupBtn.setOnClickListener(v -> {
             new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
@@ -173,6 +183,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoRecorder.cancel();
         videoRecorder.stop();
         if (player != null) {
+            mHandler.removeMessages(MSG_UPDATE_HUD);
             player.stop();
         }
         io.close();
@@ -209,6 +220,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void play() {
         player = new IjkMediaPlayer();
         player.reset();
+        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
@@ -287,4 +299,31 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     public void onVideoEncoded(byte[] datas, long pts, long seq) {
         VideoNativeInteface.getInstance().sendVideoData(datas, System.currentTimeMillis(), seq, 0);
     }
+
+    private static final int MSG_UPDATE_HUD = 1;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_UPDATE_HUD:
+                    long videoCachedDuration = player.getVideoCachedDuration();
+                    long audioCachedDuration = player.getAudioCachedDuration();
+                    long videoCachedBytes = player.getVideoCachedBytes();
+                    long audioCachedBytes = player.getAudioCachedBytes();
+                    long tcpSpeed = player.getTcpSpeed();
+
+                    tvACache.setText(String.format(Locale.US, "%s, %s",
+                            CommonUtils.formatedDurationMilli(audioCachedDuration),
+                            CommonUtils.formatedSize(audioCachedBytes)));
+                    tvVCache.setText(String.format(Locale.US, "%s, %s",
+                            CommonUtils.formatedDurationMilli(videoCachedDuration),
+                            CommonUtils.formatedSize(videoCachedBytes)));
+                    tvTcpSpeed.setText(String.format(Locale.US, "%s",
+                            CommonUtils.formatedSpeed(tcpSpeed, 1000)));
+                    removeMessages(MSG_UPDATE_HUD);
+                    sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
+            }
+        }
+    };
 }
