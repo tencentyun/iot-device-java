@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 while (true) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(20000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
                         Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
                         Log.e(TAG, "reportCallStatusProperty status " + status);
-                        break;
+//                        break;
                     }
                 }
             }

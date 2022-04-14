@@ -225,8 +225,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
         } else {
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
-//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 100 * 1024);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 80000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 50 * 1024);
         }
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
