@@ -306,16 +306,20 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int sleepTime = 0;
                 while (true) {
                     try {
-                        Thread.sleep(20000);
+                        Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
+                        if (sleepTime < 32) {
+                            sleepTime++;
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
                     if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
                         Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        Log.e(TAG, "reportCallStatusProperty status " + status);
+                        Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
 //                        break;
                     }
                 }
