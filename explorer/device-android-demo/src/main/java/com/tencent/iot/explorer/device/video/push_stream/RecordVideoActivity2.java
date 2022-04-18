@@ -137,6 +137,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        VideoNativeInteface.getInstance().setCallback(null);
         cameraView.closeCamera();
         videoRecorder.cancel();
         videoRecorder.stop();
