@@ -303,25 +303,24 @@ public class MainActivity extends AppCompatActivity {
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int sleepTime = 0;
-                while (true) {
-                    try {
-                        Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
-                        if (sleepTime < 32) {
-                            sleepTime++;
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        new Thread(() -> {
+            int sleepTime = 0;
+            while (true) {
+                try {
+                    Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
+                    if (sleepTime < 5) {
+                        sleepTime++;
                     }
-                    String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                    if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
-                        Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
-//                        break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
+                if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+                    Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
+                    if (sleepTime == 1 && status == Status.OK) {
+                        updateLog("device ready.");
                     }
+                    Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
                 }
             }
         }).start();
