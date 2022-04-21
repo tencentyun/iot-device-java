@@ -101,11 +101,19 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         });
 
         videoCall.setOnClickListener( v -> {
-            startPhoneCall("1234567", defaultAgent, CallingType.TYPE_VIDEO_CALL);
+            if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
+                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_VIDEO_CALL);
+            } else {
+                updateLog("设备未上线");
+            }
         });
 
         audioCall.setOnClickListener( v -> {
-            startPhoneCall("1234567", defaultAgent, CallingType.TYPE_AUDIO_CALL);
+            if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
+                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_AUDIO_CALL);
+            } else {
+                updateLog("设备未上线");
+            }
         });
     }
 
@@ -234,8 +242,8 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         @Override
         public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             Log.e(TAG, "TXMqttActionCallBack onDisconnectCompleted");
-            updateLog("离线 " + msg);
             VideoNativeInteface.getInstance().release();
+            updateLog("离线 " + msg);
         }
 
         @Override
