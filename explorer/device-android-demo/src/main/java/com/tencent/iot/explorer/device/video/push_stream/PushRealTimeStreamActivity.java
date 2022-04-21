@@ -208,16 +208,21 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         @Override
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
-            Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
-            Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
-            updateLog("在线");
-            if (videoDataTemplateSample == null) return;
-            handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE)));
-            videoDataTemplateSample.subscribeTopic();
+            if (reconnect) {
+                videoDataTemplateSample.subscribeTopic();
+                updateLog("已自动重连 在线");
+            } else {
+                Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
+                Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
+                updateLog("在线");
+                if (videoDataTemplateSample == null) return;
+                handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200, "UTF-8", "H", "1", Color.BLACK, Color.WHITE)));
+                videoDataTemplateSample.subscribeTopic();
 
-            DeviceConnectCondition condtion = new DeviceConnectCondition(productIdEt.getText().toString(), devNameEt.getText().toString(), devPskEt.getText().toString());
-            handler.post(() -> initVideoModeul(condtion));
-            saveDeviceConnectCondition(condtion);
+                DeviceConnectCondition condtion = new DeviceConnectCondition(productIdEt.getText().toString(), devNameEt.getText().toString(), devPskEt.getText().toString());
+                handler.post(() -> initVideoModeul(condtion));
+                saveDeviceConnectCondition(condtion);
+            }
         }
 
         @Override
