@@ -17,6 +17,7 @@ import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.util.HmacSha256;
+import com.tencent.iot.hub.device.java.core.ssh.MqttSshProxy;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -182,6 +183,32 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
     }
 
     /**
+     * 构造函数
+     *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户）
+     * @param serverURI 服务器 URI
+     * @param productID 产品 ID
+     * @param deviceName 设备名，唯一
+     * @param secretKey 设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 url
+     * @param sshHost ssh 要访问的IP
+     * @param sshPort ssh 端口号
+     */
+    public TXMqttConnection(Context context, String serverURI, String productID, String deviceName, String secretKey,DisconnectedBufferOptions bufferOpts, MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl, String sshHost, int sshPort) {
+        super(serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, logUrl);
+        this.mContext = context;
+        this.mMqttLogFlag = mqttLogFlag;
+        this.mMqttLogCallBack = logCallBack;
+        this.sshHost = sshHost;
+        this.sshPort = sshPort;
+    }
+
+    /**
      * 设置 TrustID 和 HardwareID
      *
      * @param tid trust id
@@ -252,6 +279,9 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
                 // 连接建立后，如果需要日志，则初始化日志功能
                 if (mMqttLogFlag) {
                     initMqttLog(TAG);
+                }
+                if (sshHost != null && !sshHost.equals("")) {// 用户上下文（请求实例）
+                    subscribeNTPTopic(TXMqttConstants.QOS1, null);
                 }
             }
 
@@ -477,6 +507,33 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             //TODO：数据格式暂不确定
             Map<String, String> replyMessage = new HashMap<>();
             publishRRPCToCloud(null, processId, replyMessage);
+        }
+
+        if (topic != null && topic.contains("sys/operation/result/")) {
+            String jsonStr = new String(message.getPayload());
+
+            try {
+                JSONObject jsonObj = new JSONObject(jsonStr);
+
+                if (jsonObj.has("type")) {
+                    String type = jsonObj.getString("type");
+                    if (type.equals("ssh")) {
+                        Integer ssh_switch = jsonObj.getInt("switch");
+                        if (ssh_switch == 1) {
+                            if (mqttSshProxy == null) {
+                                mqttSshProxy = new MqttSshProxy(this, this.sshHost, this.sshPort);
+                            }
+                        } else {
+                            if (mqttSshProxy != null) {
+                                mqttSshProxy.stopWebsocketSshPing();
+                                mqttSshProxy = null;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         mLastReceivedMessageId = message.getId();
