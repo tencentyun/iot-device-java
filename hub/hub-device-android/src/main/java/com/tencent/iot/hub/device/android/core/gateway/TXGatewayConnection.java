@@ -90,6 +90,28 @@ public class TXGatewayConnection  extends TXMqttConnection {
     /**
      * 构造函数
      *
+     * @param context 用户上下文（这个参数在回调函数时透传给用户） {@link Context}
+     * @param serverURI 服务器 URI
+     * @param productID 网关产品 ID
+     * @param deviceName 网关设备名，唯一
+     * @param secretKey 网关设备密钥
+     * @param bufferOpts 发布消息缓存 buffer，当发布消息时 MQTT 连接非连接状态时使用 {@link DisconnectedBufferOptions}
+     * @param clientPersistence 消息永久存储 {@link MqttClientPersistence}
+     * @param mqttLogFlag 是否开启日志功能
+     * @param logCallBack 日志回调 {@link TXMqttLogCallBack}
+     * @param callBack 连接、消息发布、消息订阅回调接口 {@link TXMqttActionCallBack}
+     * @param logUrl 日志上报 url
+     * @param sshHost ssh 要访问的IP
+     * @param sshPort ssh 端口号
+     */
+    public TXGatewayConnection(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
+                               MqttClientPersistence clientPersistence, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack callBack, String logUrl, String sshHost, int sshPort) {
+        super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, mqttLogFlag,logCallBack,callBack,logUrl, sshHost, sshPort);
+    }
+
+    /**
+     * 构造函数
+     *
      * @param context 用户上下文（这个参数在回调函数时透传给用户）{@link Context}
      * @param serverURI 服务器 URI
      * @param productID 网关产品 ID
@@ -598,6 +620,9 @@ public class TXGatewayConnection  extends TXMqttConnection {
 
                 if (mMqttLogFlag) {
                     initMqttLog(TAG);
+                }
+                if (sshHost != null && !sshHost.equals("")) {// 用户上下文（请求实例）
+                    subscribeNTPTopic(TXMqttConstants.QOS1, null);
                 }
             }
 

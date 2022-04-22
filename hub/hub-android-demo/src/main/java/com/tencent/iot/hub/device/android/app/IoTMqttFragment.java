@@ -125,6 +125,10 @@ public class IoTMqttFragment extends Fragment {
     private String mProductKey = BuildConfig.PRODUCT_KEY;        // Used for dynamic register
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
+    // ssh 要访问的IP
+    private String sshHost = "192.168.1.107";
+    // ssh 端口号 
+    private int sshPort = 8022;
 
     private volatile boolean mIsConnected;
 
@@ -237,7 +241,7 @@ public class IoTMqttFragment extends Fragment {
                     mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
 
                     mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
-                            mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack());
+                            mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack(), sshHost, sshPort);
                     mMQTTSample.setSubDevPsk(mSubDevPsk);
                     mMQTTSample.connect();
                 } else {

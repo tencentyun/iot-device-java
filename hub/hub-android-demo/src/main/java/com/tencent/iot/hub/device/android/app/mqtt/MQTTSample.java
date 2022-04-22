@@ -34,6 +34,10 @@ public class MQTTSample {
     private String mProductID = "PRODUCT-ID";
     private String mDevName = "DEVICE-NAME";
     private String mDevPSK = "DEVICE-SECRET";
+    // ssh 要访问的IP
+    private String sshHost = "SSH-HOST";
+    // ssh 端口号 sshd服务一般默认端口22
+    private int sshPort = 22;
 
     private String mDevCertName = "DEVICE_CERT-NAME ";
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
@@ -118,6 +122,14 @@ public class MQTTSample {
         mSubDevPsk = subDevPsk;
     }
 
+    public MQTTSample(Context context, TXMqttActionCallBack callBack, String brokerURL, String productId,
+                      String devName, String devPsk, String devCert, String devPriv, String subProductID, String subDevName, String testTopic, String devCertName, String devKeyName,
+                      Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, String sshHost, int sshPort) {
+        this(context, callBack, brokerURL, productId, devName, devPsk, devCert, devPriv, subProductID, subDevName, testTopic, devCertName, devKeyName, mqttLogFlag, logCallBack);
+        this.sshHost = sshHost;
+        this.sshPort = sshPort;
+    }
+
     public void setSubDevPsk(String val) {
         mSubDevPsk = val;
     }
@@ -172,7 +184,7 @@ public class MQTTSample {
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXGatewayConnection(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,mMqttLogFlag, mMqttLogCallBack, mMqttActionCallBack);
+        mMqttConnection = new TXGatewayConnection(mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,mMqttLogFlag, mMqttLogCallBack, mMqttActionCallBack, null, sshHost, sshPort);
         mMqttConnection.setSubDevName(mSubDevName);
         mMqttConnection.setSubDevProductKey(mSubDevPsk);
         mMqttConnection.setSubProductID(mSubProductID);
