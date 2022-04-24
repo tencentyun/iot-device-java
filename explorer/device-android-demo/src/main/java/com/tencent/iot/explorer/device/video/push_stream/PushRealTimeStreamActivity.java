@@ -57,6 +57,8 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
     private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
+    private long onlineClickedTime = 0L;
+    private long offlineClickedTime = 0L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,21 +85,31 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         }
 
         online.setOnClickListener(v -> {
-            if (TextUtils.isEmpty(productIdEt.getText().toString()) || TextUtils.isEmpty(devNameEt.getText().toString())
-            || TextUtils.isEmpty(devPskEt.getText().toString())) {
-                return;
+            onlineClickedTime = System.currentTimeMillis()/1000;
+            if (onlineClickedTime - offlineClickedTime < 2) {
+                updateLog("请勿频繁点击上下线按钮.");
+            } else {
+                if (TextUtils.isEmpty(productIdEt.getText().toString()) || TextUtils.isEmpty(devNameEt.getText().toString())
+                        || TextUtils.isEmpty(devPskEt.getText().toString())) {
+                    return;
+                }
+                videoDataTemplateSample = new VideoDataTemplateSample(PushRealTimeStreamActivity.this,
+                        null, productIdEt.getText().toString(), devNameEt.getText().toString(),
+                        devPskEt.getText().toString(), jsonFileName, txMqttActionCallBack, null, downStreamCallBack);
+                videoDataTemplateSample.connect();
             }
-            videoDataTemplateSample = new VideoDataTemplateSample(PushRealTimeStreamActivity.this,
-                    null, productIdEt.getText().toString(), devNameEt.getText().toString(),
-                    devPskEt.getText().toString(), jsonFileName, txMqttActionCallBack, null, downStreamCallBack);
-            videoDataTemplateSample.connect();
         });
 
         offline.setOnClickListener(v -> {
-            if (videoDataTemplateSample != null) {
-                videoDataTemplateSample.disconnect();
+            offlineClickedTime = System.currentTimeMillis()/1000;
+            if (offlineClickedTime - onlineClickedTime < 2) {
+                updateLog("请勿频繁点击上下线按钮.");
+            } else {
+                if (videoDataTemplateSample != null) {
+                    videoDataTemplateSample.disconnect();
+                }
+                videoDataTemplateSample = null;
             }
-            videoDataTemplateSample = null;
         });
 
         videoCall.setOnClickListener( v -> {
