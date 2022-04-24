@@ -82,6 +82,11 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
             devPskEt.setText(values.getDevPsk());
         }
 
+
+        productIdEt.setText("AQTV2839QJ");
+        devNameEt.setText("sp01_32820237_7");
+        devPskEt.setText("7uZLzcBL2Q8yTOyOvihlKQ==");
+
         online.setOnClickListener(v -> {
             if (TextUtils.isEmpty(productIdEt.getText().toString()) || TextUtils.isEmpty(devNameEt.getText().toString())
             || TextUtils.isEmpty(devPskEt.getText().toString())) {
@@ -218,6 +223,8 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
+                VideoNativeInteface.getInstance().release();
+                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
                 updateLog("已自动重连 在线");
             } else {
                 Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
