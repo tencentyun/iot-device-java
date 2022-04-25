@@ -68,6 +68,10 @@ public class RecordThread extends Thread {
     private String path = "/mnt/sdcard/videoTest.flv";
     private File videoTmpFile = new File(path);
     private volatile FileOutputStream storeVideoStream;
+    // 记录视频裸流的h264临时文件，调试使用
+    private String h264path = "/mnt/sdcard/tmpVideo.h264";
+    private File h264TmpFile = new File(h264path);
+    private volatile FileOutputStream storeH264VideoStream;
     private volatile long seq = 0L;
     private volatile long audioSeq = 0L;
 
@@ -260,7 +264,7 @@ public class RecordThread extends Thread {
             MediaFormat format = MediaFormat.createVideoFormat(videoEncodeParam.getMime(), videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);//MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
             format.setInteger(MediaFormat.KEY_FRAME_RATE, videoEncodeParam.getFrameRate());
-            format.setInteger(MediaFormat.KEY_BIT_RATE, 250000);
+            format.setInteger(MediaFormat.KEY_BIT_RATE, 50000);
             format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, videoEncodeParam.getiFrameInterval());
             format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
 
@@ -312,12 +316,16 @@ public class RecordThread extends Thread {
             if (storeVideoStream != null) {
                 storeVideoStream.close();
             }
+            if (storeH264VideoStream != null) {
+                storeH264VideoStream.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (clean) {
             videoTmpFile.deleteOnExit();
+            h264TmpFile.deleteOnExit();
         }
     }
 
@@ -407,7 +415,7 @@ public class RecordThread extends Thread {
     }
 
     private void storeOriVideoData(ByteBuffer outputBuffer, MediaCodec.BufferInfo videoInfo) {
-        Log.e(TAG, "storeOriVideoData");
+        Log.e(TAG, "storeOriVideoData videoInfo.flags：" + videoInfo.flags);
         if (recordParam != null &&
                 recordParam.getRecorderType() != CallingType.TYPE_VIDEO_CALL) {
             return;
@@ -436,6 +444,10 @@ public class RecordThread extends Thread {
                         storeVideoDataStream.flush();
                         hasIDR = true;
                     }
+                    if (storeH264VideoStream != null) {
+                        storeH264VideoStream.write(bytes);
+                        storeH264VideoStream.flush();
+                    }
                     if (encodeListener != null) {
                         encodeListener.onVideoEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
                     } else {
@@ -446,6 +458,10 @@ public class RecordThread extends Thread {
                     if (startStore && storeVideoDataStream != null && hasIDR) { // 等待存在 IDR 帧以后，再开始添加 P 帧
                         storeVideoDataStream.write(bytes);
                         storeVideoDataStream.flush();
+                    }
+                    if (storeH264VideoStream != null) {
+                        storeH264VideoStream.write(bytes);
+                        storeH264VideoStream.flush();
                     }
                     if (encodeListener != null) {
                         encodeListener.onVideoEncoded(bytes, System.currentTimeMillis(), audioSeq);
@@ -467,6 +483,11 @@ public class RecordThread extends Thread {
             }
             videoTmpFile.createNewFile();
             storeVideoStream = new FileOutputStream(videoTmpFile, true);
+            if (h264TmpFile.exists()) {
+                h264TmpFile.delete();
+            }
+            h264TmpFile.createNewFile();
+            storeH264VideoStream = new FileOutputStream(h264TmpFile, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
