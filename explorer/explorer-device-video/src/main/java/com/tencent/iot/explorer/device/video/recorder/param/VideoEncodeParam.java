@@ -10,7 +10,7 @@ public class VideoEncodeParam {
     private int width = -1; //录制宽度
     private int height = -1; //录制高度
     private int frameRate = 7; // 帧率
-    private int iFrameInterval = 6; // I帧间隔: 默认一秒一个 I 帧
+    private int iFrameInterval = 21; // I帧间隔: 默认一秒一个 I 帧
     private String mime = MediaFormat.MIMETYPE_VIDEO_AVC; // 编码格式: 默认 H264
 
     private VideoEncodeParam() { }
