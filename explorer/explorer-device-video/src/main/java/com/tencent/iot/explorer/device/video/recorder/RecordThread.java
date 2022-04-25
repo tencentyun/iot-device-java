@@ -294,6 +294,10 @@ public class RecordThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if (glThread != null) {
+            glThread.onDestroy();
+            glThread = null;
+        }
     }
 
     void stopRecord() {
