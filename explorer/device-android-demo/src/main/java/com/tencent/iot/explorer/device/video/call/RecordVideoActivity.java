@@ -164,10 +164,11 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             if (type == 0) {
                 Log.e(TAG, "start send video data");
                 handler.post(() -> startRecord());
-
+                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
             } else if (type == 1) {
                 Log.e(TAG, "this call over");
                 handler.post(() -> stopRecord());
+                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
                     new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
                 }

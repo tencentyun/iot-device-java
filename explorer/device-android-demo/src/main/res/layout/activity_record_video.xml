@@ -35,6 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="40dp"
         android:text="Record"
+        android:visibility="invisible"
         android:textAllCaps="false" />
 
     <Button
