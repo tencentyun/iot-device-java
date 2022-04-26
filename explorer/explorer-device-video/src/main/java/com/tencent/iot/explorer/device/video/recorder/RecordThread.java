@@ -383,15 +383,15 @@ public class RecordThread extends Thread {
             byte[] dataBytes = new byte[bytes.length + 7];
             System.arraycopy(bytes, 0, dataBytes, 7, bytes.length);
             addADTStoPacket(dataBytes, dataBytes.length);
-            if (dataBytes != null && storeVideoStream != null) {
+            if (dataBytes != null /*&& storeVideoStream != null*/) {
                 if (startStore && storeAudioDataStream != null) {
                     storeAudioDataStream.write(dataBytes);
                     storeAudioDataStream.flush();
                 }
 
                 if (isStopRecord || isCancelRecord) return;
-                storeVideoStream.write(dataBytes);
-                storeVideoStream.flush();
+//                storeVideoStream.write(dataBytes);
+//                storeVideoStream.flush();
                 if (encodeListener != null) {
                     encodeListener.onAudioEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
                 } else {
@@ -428,7 +428,7 @@ public class RecordThread extends Thread {
         try {
             byte[] bytes = new byte[outputBuffer.remaining()];
             outputBuffer.get(bytes, 0, bytes.length);
-            if (bytes != null && storeVideoStream != null) {
+            if (bytes != null /*&& storeVideoStream != null*/) {
                 if (isStopRecord || isCancelRecord) return;
                 if (videoInfo.flags == MediaCodec.BUFFER_FLAG_KEY_FRAME) {  // I 帧的处理逻辑
                     ByteBuffer spsb = videoCodec.getOutputFormat().getByteBuffer("csd-0");
@@ -506,7 +506,7 @@ public class RecordThread extends Thread {
             onRecordError(new IllegalArgumentException("widget is null"));
             return;
         }
-        restartKeepOriData();
+//        restartKeepOriData();
 
         boolean isStartMuxer = false; // 合成是否开始
         seq = 0L;

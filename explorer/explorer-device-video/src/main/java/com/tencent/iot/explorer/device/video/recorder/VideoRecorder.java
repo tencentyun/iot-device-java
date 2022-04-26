@@ -68,7 +68,7 @@ public class VideoRecorder {
         recordThread.setStorePath(path);
         recordThread.setAudioName(audioName);
         recordThread.setVideoName(videoName);
-        return recordThread.startStore(true);
+        return recordThread.startStore(false);
     }
 
     public int stopRecord() {
