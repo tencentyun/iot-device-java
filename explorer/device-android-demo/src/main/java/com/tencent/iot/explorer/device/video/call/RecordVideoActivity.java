@@ -1,6 +1,5 @@
 package com.tencent.iot.explorer.device.video.call;
 
-import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -85,7 +84,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         tvACache = findViewById(R.id.tv_a_cache);
         hangupBtn = findViewById(R.id.btn_hang_up);
         hangupBtn.setOnClickListener(v -> {
-            new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+            new Thread(this::finishActivity).start();
         });
         recordBtn.setText("Record \n path:"  + path);
         cameraView = findViewById(R.id.cameraView);
@@ -170,7 +169,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 handler.post(() -> stopRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                    new Thread(() -> finishActivity()).start();
                 }
             }
         }
@@ -251,17 +250,21 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.start();
     }
 
+    private void finishActivity() {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        if (phoneInfo != null) {
+            bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+        }
+        intent.putExtra(PhoneInfo.TAG, bundle);
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            if (phoneInfo != null) {
-                bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
-            }
-            intent.putExtra(PhoneInfo.TAG, bundle);
-            setResult(RESULT_OK, intent);
-            finish();
+            finishActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -273,7 +276,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
             if (refreshTag == 9){
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+                    new Thread(() -> finishActivity()).start();
                 }
             }
         }
