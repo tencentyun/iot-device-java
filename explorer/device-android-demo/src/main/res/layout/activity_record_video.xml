@@ -49,13 +49,13 @@
         android:textAllCaps="false" />
 
 
-    <com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView
+    <SurfaceView
         android:id="@+id/cameraView"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_width="150dp"
         android:layout_height="200dp"
         />
