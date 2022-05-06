@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
@@ -32,9 +34,13 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
+import com.tencent.iot.explorer.device.video.call.adapter.FrameRateListAdapter;
+import com.tencent.iot.explorer.device.video.call.adapter.ResolutionListAdapter;
 import com.tencent.iot.explorer.device.video.call.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
+import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -45,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,6 +75,14 @@ public class MainActivity extends AppCompatActivity {
     private Button hangUp;
     private LinearLayout callActionLayout;
     private RelativeLayout callingLayout;
+    private RecyclerView resolutionRv;
+    private ResolutionListAdapter resolutionAdapter = null;
+    private ArrayList<ResolutionEntity> resolutionDatas = new ArrayList<>();
+    private RecyclerView frameRateRv;
+    private FrameRateListAdapter frameRateAdapter = null;
+    private ArrayList<FrameRateEntity> frameRateDatas = new ArrayList<>();
+    private Button confirm;
+    private LinearLayout callParamLayout;
     private TextView callerUserId;
     private TextView callType;
     private TextView logTv;
@@ -79,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
     private int callUserType = CallingType.TYPE_AUDIO_CALL;
+    private ResolutionEntity selectedResolutionEntity;
+    private FrameRateEntity selectedFrameRateEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
         hangUp = findViewById(R.id.btn_hang_up);
 //        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         toCalledUserId.setText(getUserId());
+        confirm = findViewById(R.id.confirm);
+        callParamLayout = findViewById(R.id.call_param_layout);
 
         DeviceConnectCondition values = getDeviceConnectCondition();
         if (values != null) {
@@ -178,6 +197,34 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             callUser(CallingType.TYPE_AUDIO_CALL);
+        });
+
+        resolutionRv = findViewById(R.id.rv_resolution);
+        resolutionDatas = new ArrayList<ResolutionEntity>();
+        resolutionDatas.add(new ResolutionEntity(240, 240, true));
+        resolutionDatas.add(new ResolutionEntity(176, 144));
+        LinearLayoutManager resolutionLayoutManager = new LinearLayoutManager(this);
+        resolutionRv.setLayoutManager(resolutionLayoutManager);
+        resolutionRv.setHasFixedSize(false);
+        resolutionAdapter = new ResolutionListAdapter(MainActivity.this, resolutionDatas);
+        resolutionRv.setAdapter(resolutionAdapter);
+
+        frameRateRv = findViewById(R.id.rv_frame_rate);
+        frameRateDatas = new ArrayList<FrameRateEntity>();
+        frameRateDatas.add(new FrameRateEntity(15, true));
+        LinearLayoutManager frameLayoutManager = new LinearLayoutManager(this);
+        frameRateRv.setLayoutManager(frameLayoutManager);
+        frameRateRv.setHasFixedSize(false);
+        frameRateAdapter = new FrameRateListAdapter(MainActivity.this, frameRateDatas);
+        frameRateRv.setAdapter(frameRateAdapter);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedResolutionEntity = resolutionAdapter.selectedResolutionEntity();
+                selectedFrameRateEntity = frameRateAdapter.selectedFrameRateEntity();
+                callParamLayout.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -394,6 +441,10 @@ public class MainActivity extends AppCompatActivity {
         phoneInfo.setAgent(agent);
         phoneInfo.setUserid(userid);
         bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+        if (selectedResolutionEntity != null)
+            bundle.putString(ResolutionEntity.TAG, JSON.toJSONString(selectedResolutionEntity));
+        if (selectedFrameRateEntity != null)
+            bundle.putString(FrameRateEntity.TAG, JSON.toJSONString(selectedFrameRateEntity));
         intent.putExtra(PhoneInfo.TAG, bundle);
         startActivityForResult(intent, 2);
     }

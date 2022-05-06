@@ -26,7 +26,9 @@ import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.app.utils.CommonUtils;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
 import com.tencent.iot.explorer.device.video.push_stream.PushStreamActivity;
 import com.tencent.iot.explorer.device.video.recorder.OnRecordListener;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
@@ -65,6 +67,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     //两次点击间隔不少于1000ms
     private static final int FAST_CLICK_DELAY_TIME = 1000;
 
+    private ResolutionEntity selectedResolutionEntity;
+    private FrameRateEntity selectedFrameRateEntity;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,12 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             if (bundle != null) {
                 String jsonStr = bundle.getString(PhoneInfo.TAG);
                 phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
+                String resolutionJsonStr = bundle.getString(ResolutionEntity.TAG);
+                if (resolutionJsonStr != null)
+                    selectedResolutionEntity = JSON.parseObject(resolutionJsonStr, ResolutionEntity.class);
+                String frameRateJsonStr = bundle.getString(FrameRateEntity.TAG);
+                if (frameRateJsonStr != null)
+                    selectedFrameRateEntity = JSON.parseObject(frameRateJsonStr, FrameRateEntity.class);
             }
         }
         setContentView(R.layout.activity_record_video);
@@ -128,6 +139,11 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private void startRecord() {
         if (phoneInfo != null) {
+            if (selectedFrameRateEntity != null && selectedResolutionEntity != null) {
+                videoRecorder.start(phoneInfo.getCallType(), selectedResolutionEntity.getWidth(), selectedResolutionEntity.getHeight(),
+                        selectedFrameRateEntity.getRate(), onRecordListener);
+                return;
+            }
             videoRecorder.start(phoneInfo.getCallType(), onRecordListener);
             return;
         }

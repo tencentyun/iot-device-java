@@ -25,6 +25,7 @@ public class VideoRecorder {
     private CameraView cameraView; // 摄像头预览的内容
     private int recorderType = CallingType.TYPE_VIDEO_CALL;
     private OnEncodeListener encodeListener;
+    private int frameRate = 0;
 
     public VideoRecorder(OnEncodeListener listener) {
         encodeListener = listener;
@@ -53,6 +54,12 @@ public class VideoRecorder {
     public int start(int recorderType, OnRecordListener onRecordListener) {
         this.recorderType = recorderType;
         return start(onRecordListener);
+    }
+
+    public int start(int recorderType, int width, int height, int frameRate, OnRecordListener onRecordListener) {
+        this.recorderType = recorderType;
+        this.frameRate = frameRate;
+        return start(width, height, "", onRecordListener);
     }
 
     public int startRecord(String path, String audioName, String videoName) {
@@ -118,6 +125,8 @@ public class VideoRecorder {
                 .build();
         VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder()
                 .setSize(width, height).build();
+        if (frameRate>0)
+            videoEncodeParam.setFrameRate(frameRate);
 
         RecordParam recordParam = new RecordParam(recorderType, path);
 
