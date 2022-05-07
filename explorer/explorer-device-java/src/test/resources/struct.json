@@ -1,0 +1,367 @@
+{
+  "version": "1.0",
+  "properties": [
+    {
+      "id": "power_switch",
+      "name": "电灯开关",
+      "desc": "控制电灯开灭",
+      "required": true,
+      "mode": "rw",
+      "define": {
+        "type": "bool",
+        "mapping": {
+          "0": "关",
+          "1": "开"
+        }
+      }
+    },
+    {
+      "id": "brightness",
+      "name": "亮度",
+      "desc": "灯光亮度",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "unit": "%",
+        "step": "1",
+        "min": "0",
+        "max": "100",
+        "start": "1"
+      }
+    },
+    {
+      "id": "color",
+      "name": "颜色",
+      "desc": "灯光颜色",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "Red",
+          "1": "Green",
+          "2": "Blue"
+        }
+      }
+    },
+    {
+      "id": "color_temp",
+      "name": "色温",
+      "desc": "灯光冷暖",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "100",
+        "start": "0",
+        "step": "10",
+        "unit": "%"
+      }
+    },
+    {
+      "id": "name",
+      "name": "灯位置名称",
+      "desc": "灯位置名称：书房、客厅等",
+      "mode": "rw",
+      "required": false,
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "64"
+      }
+    },
+    {
+      "id": "arrInt",
+      "name": "整形数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "int",
+          "min": "0",
+          "max": "100",
+          "start": "0",
+          "step": "1",
+          "unit": ""
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "arrString",
+      "name": "字符串型数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "string",
+          "min": "0",
+          "max": "2048"
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "arrFloat",
+      "name": "浮点型数组",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "float",
+          "min": "0",
+          "max": "100",
+          "start": "0",
+          "step": "1",
+          "unit": ""
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "struct",
+      "name": "结构体",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "struct",
+        "specs": [
+          {
+            "id": "bool_param",
+            "name": "param01",
+            "dataType": {
+              "type": "bool",
+              "mapping": {
+                "0": "关",
+                "1": "开"
+              }
+            }
+          },
+          {
+            "id": "int_param",
+            "name": "param02",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "100",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "str_param",
+            "name": "param03",
+            "dataType": {
+              "type": "string",
+              "min": "0",
+              "max": "2048"
+            }
+          },
+          {
+            "id": "float_param",
+            "name": "param04",
+            "dataType": {
+              "type": "float",
+              "min": "0",
+              "max": "100",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "enum_param",
+            "name": "param05",
+            "dataType": {
+              "type": "enum",
+              "mapping": {
+                "0": "first",
+                "1": "second"
+              }
+            }
+          },
+          {
+            "id": "time_param",
+            "name": "param06",
+            "dataType": {
+              "type": "timestamp"
+            }
+          }
+        ]
+      },
+      "required": false
+    },
+    {
+      "id": "arrStruct",
+      "name": "结构体",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "type": "struct",
+          "specs": [
+            {
+              "id": "boolM",
+              "name": "boolM",
+              "dataType": {
+                "type": "bool",
+                "mapping": {
+                  "0": "关",
+                  "1": "开"
+                }
+              }
+            },
+            {
+              "id": "intM",
+              "name": "intM",
+              "dataType": {
+                "type": "int",
+                "min": "0",
+                "max": "100",
+                "start": "0",
+                "step": "1",
+                "unit": ""
+              }
+            },
+            {
+              "id": "stringM",
+              "name": "stringM",
+              "dataType": {
+                "type": "string",
+                "min": "0",
+                "max": "2048"
+              }
+            },
+            {
+              "id": "floatM",
+              "name": "floatM",
+              "dataType": {
+                "type": "float",
+                "min": "0",
+                "max": "100",
+                "start": "0",
+                "step": "1",
+                "unit": ""
+              }
+            },
+            {
+              "id": "enumM",
+              "name": "enumM",
+              "dataType": {
+                "type": "bool",
+                "mapping": {
+                  "0": "关",
+                  "1": "开"
+                }
+              }
+            },
+            {
+              "id": "timeM",
+              "name": "timeM",
+              "dataType": {
+                "type": "timestamp"
+              }
+            }
+          ]
+        },
+        "type": "array"
+      },
+      "required": false
+    }
+  ],
+  "events": [
+    {
+      "id": "status_report",
+      "name": "DeviceStatus",
+      "desc": "Report the device status",
+      "type": "info",
+      "required": false,
+      "params": [
+        {
+          "id": "status",
+          "name": "running_state",
+          "desc": "Report current device running state",
+          "define": {
+            "type": "bool",
+            "mapping": {
+              "0": "normal",
+              "1": "fault"
+            }
+          }
+        },
+        {
+          "id": "message",
+          "name": "Message",
+          "desc": "Some extra message",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        }
+      ]
+    },
+    {
+      "id": "low_voltage",
+      "name": "LowVoltage",
+      "desc": "Alert for device voltage is low",
+      "type": "alert",
+      "required": false,
+      "params": [
+        {
+          "id": "voltage",
+          "name": "Voltage",
+          "desc": "Current voltage",
+          "define": {
+            "type": "float",
+            "unit": "V",
+            "step": "1",
+            "min": "0.0",
+            "max": "24.0",
+            "start": "1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "hardware_fault",
+      "name": "Hardware_fault",
+      "desc": "Report hardware fault",
+      "type": "fault",
+      "required": false,
+      "params": [
+        {
+          "id": "name",
+          "name": "Name",
+          "desc": "Name like: memory,tf card, censors ...",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        },
+        {
+          "id": "error_code",
+          "name": "Error_Code",
+          "desc": "Error code for fault",
+          "define": {
+            "type": "int",
+            "unit": "",
+            "step": "1",
+            "min": "0",
+            "max": "2000",
+            "start": "1"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [],
+  "profile": {
+    "ProductId": "4ALW3EHQW3",
+    "CategoryId": "141"
+  }
+}

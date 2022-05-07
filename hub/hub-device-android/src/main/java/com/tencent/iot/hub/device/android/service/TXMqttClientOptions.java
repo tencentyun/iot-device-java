@@ -1,0 +1,46 @@
+package com.tencent.iot.hub.device.android.service;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * mqtt远程客户端选项
+ */
+
+public class TXMqttClientOptions extends com.tencent.iot.hub.device.java.service.TXMqttClientOptions implements Parcelable {
+
+    public static final Creator<TXMqttClientOptions> CREATOR = new Creator<TXMqttClientOptions>() {
+        @Override
+        public TXMqttClientOptions createFromParcel(Parcel in) {
+            return new TXMqttClientOptions(in);
+        }
+
+        @Override
+        public TXMqttClientOptions[] newArray(int size) {
+            return new TXMqttClientOptions[size];
+        }
+    };
+
+    public TXMqttClientOptions() {
+    }
+
+    protected TXMqttClientOptions(Parcel in) {
+        serverURI(in.readString());
+        productId(in.readString());
+        deviceName(in.readString());
+        secretKey(in.readString());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(getServerURI());
+        parcel.writeString(getProductId());
+        parcel.writeString(getDeviceName());
+        parcel.writeString(getSecretKey());
+    }
+}

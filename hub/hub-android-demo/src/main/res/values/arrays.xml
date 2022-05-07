@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="setup_items">
+        <item>选择进行设置</item>
+        <item>设置Broker地址</item>
+        <item>设置设备Product ID</item>
+        <item>设置设备Device Name</item>
+        <item>设置设备PSK</item>
+        <item>设置子设备Product IID</item>
+        <item>设置子设备Device Name</item>
+        <item>设置测试Topic</item>
+        <item>设置产品Product Key</item>
+        <item>设置子设备产品Product Key</item>
+    </string-array>
+</resources>

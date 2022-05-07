@@ -1,0 +1,150 @@
+plugins {
+    id 'de.fuerstenau.buildconfig' version '1.1.8'
+}
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+rootProject.ext.configPath = "./src/test/resources/unit_test_config.json"
+apply from: "../../parse_json.gradle"
+
+buildConfig {
+    packageName = 'explorer.unit.test'
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_ID', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_DEVICE_NAME', "${getValueById('TESTDYNREGDEVSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTDYNREGDEVSAMPLE_PRODUCT_SECRET', "${getValueById('TESTDYNREGDEVSAMPLE_PRODUCT_SECRET')}"
+
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_NAME', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_DEVICE_PSK', "${getValueById('TESTGATEWAYSAMPLE_DEVICE_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_DEV_NAME', "${getValueById('TESTGATEWAYSAMPLE_SUB1_DEV_NAME')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB1_DEV_PSK', "${getValueById('TESTGATEWAYSAMPLE_SUB1_DEV_PSK')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB2_PRODUCT_ID', "${getValueById('TESTGATEWAYSAMPLE_SUB2_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTGATEWAYSAMPLE_SUB2_DEV_NAME', "${getValueById('TESTGATEWAYSAMPLE_SUB2_DEV_NAME')}"
+
+    buildConfigField 'String', 'TESTMQTTSAMPLE_PRODUCT_ID', "${getValueById('TESTMQTTSAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_NAME', "${getValueById('TESTMQTTSAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTMQTTSAMPLE_DEVICE_PSK', "${getValueById('TESTMQTTSAMPLE_DEVICE_PSK')}"
+
+    buildConfigField 'String', 'TESTOTASAMPLE_PRODUCT_ID', "${getValueById('TESTOTASAMPLE_PRODUCT_ID')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_NAME', "${getValueById('TESTOTASAMPLE_DEVICE_NAME')}"
+    buildConfigField 'String', 'TESTOTASAMPLE_DEVICE_PSK', "${getValueById('TESTOTASAMPLE_DEVICE_PSK')}"
+}
+
+jar {
+    exclude('log4j.properties')
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+def libVersion = rootProject.ext.sdk.version
+ext.isReleaseVersion = !libVersion.endsWith("SNAPSHOT")
+publishing {
+    publications {
+        jar(MavenPublication) {
+            groupId 'com.tencent.iot.explorer'
+            artifactId 'explorer-device-java'
+            version libVersion
+
+            artifact(sourceJar)
+            artifact(javadocJar)
+            artifact file('build/libs/explorer-device-java.jar')
+            pom {
+                name = 'explorer device java'
+                description = 'Explorer Device Java library'
+                url = 'https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-java'
+                licenses {
+                    license {
+                        name = 'Tencent Binary License'
+                        url = 'https://github.com/tencentyun/iot-device-java/blob/master/explorer/explorer-device-java/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tencent_archurtan'
+                        name = 'Tencent archurtan'
+                        email = 'archurtan@tencent.com'
+                    }
+                }
+                scm {
+                    url = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    connection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                    developerConnection = 'scm:git@github.com:tencentyun/iot-device-java.git'
+                }
+            }
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
+                    if (dp.version != "unspecified") {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', dp.group)
+                        dependencyNode.appendNode('artifactId', dp.name)
+                        dependencyNode.appendNode('version', dp.version)
+
+                        // for exclusions
+                        if (dp.excludeRules.size() > 0) {
+                            def exclusions = dependencyNode.appendNode('exclusions')
+                            dp.excludeRules.each { ExcludeRule ex ->
+                                def exclusion = exclusions.appendNode('exclusion')
+                                exclusion.appendNode('groupId', ex.group)
+                                exclusion.appendNode('artifactId', ex.module)
+                            }
+                        }
+                    }
+                }
+                def dependencyNode = dependenciesNode.appendNode('dependency')
+                dependencyNode.appendNode('groupId', "com.tencent.iot.hub")
+                dependencyNode.appendNode('artifactId', "hub-device-java")
+                dependencyNode.appendNode('version', "${rootProject.ext.sdk.version}")
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url = libVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = System.getenv("IOT_SONATYPE_USERNAME")
+                password = System.getenv("IOT_SONATYPE_PASSWORD")
+            }
+        }
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'net.iharder:base64:2.3.9'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    if (findProject(':hub:hub-device-java') != null) {
+        api project(path: ':hub:hub-device-java')
+    }
+    testImplementation 'junit:junit:4.13'
+}
+
+signing {
+    if (isReleaseVersion) {
+        sign publishing.publications.jar
+    }
+}
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
