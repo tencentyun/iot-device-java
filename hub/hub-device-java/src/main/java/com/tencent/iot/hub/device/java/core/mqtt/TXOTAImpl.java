@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -253,6 +254,16 @@ public class TXOTAImpl {
 		Loggor.debug(TAG, "reportDevVersion status " + status);
 
 		return status;
+	}
+
+	/**
+	 * 停止下载ota固件
+	 */
+	public void stopDownloadOTATask () {
+		if (mDownloadThread != null) {
+			mDownloadThread.interrupt();
+			mDownloadThread = null;
+		}
 	}
 
 	/**
@@ -638,7 +649,11 @@ public class TXOTAImpl {
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
-						new File(outputFile).delete(); // delete
+						if (e instanceof InterruptedIOException) {//主动interrupt线程
+							break;
+						} else {
+							new File(outputFile).delete(); // delete
+						}
 
 					} finally {
 						if (fos != null) {

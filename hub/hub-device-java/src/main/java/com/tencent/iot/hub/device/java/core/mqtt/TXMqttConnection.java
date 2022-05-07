@@ -948,6 +948,15 @@ public class TXMqttConnection implements MqttCallbackExtended {
     }
 
     /**
+     * 停止下载ota固件
+     */
+    public void stopDownloadOTATask () {
+        if (mOTAImpl != null) {
+            mOTAImpl.stopDownloadOTATask();
+        }
+    }
+
+    /**
      * 网关子设备上报版本号
      *
      * @param currentVersion 子设备固件版本号
