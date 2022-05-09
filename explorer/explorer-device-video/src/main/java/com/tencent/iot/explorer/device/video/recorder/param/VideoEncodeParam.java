@@ -92,6 +92,11 @@ public class VideoEncodeParam {
             return this;
         }
 
+        public Builder setBitRate(int bitRate) {
+            videoEncodeParam.setBitRate(bitRate);
+            return this;
+        }
+
         public VideoEncodeParam build() {
             return videoEncodeParam;
         }

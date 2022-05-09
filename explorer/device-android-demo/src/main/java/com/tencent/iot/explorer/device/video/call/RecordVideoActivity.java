@@ -75,6 +75,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private TextView tvTcpSpeed;
     private TextView tvVCache;
     private TextView tvACache;
+    private TextView tvFPS;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
@@ -123,6 +124,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         tvTcpSpeed = findViewById(R.id.tv_tcp_speed);
         tvVCache = findViewById(R.id.tv_v_cache);
         tvACache = findViewById(R.id.tv_a_cache);
+        tvFPS = findViewById(R.id.tv_fps);
         hangupBtn = findViewById(R.id.btn_hang_up);
         hangupBtn.setOnClickListener(v -> {
             new Thread(this::finishActivity).start();
@@ -169,7 +171,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     private void initVideoEncoder() {
-        VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder().setSize(vw, vh).setFrameRate(frameRate).build();
+        VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder().setSize(vw, vh).setFrameRate(frameRate).setBitRate(vw*vh).build();
         videoEncoder = new VideoEncoder(videoEncodeParam);
         videoEncoder.setEncoderListener(this);
     }
@@ -463,6 +465,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                     long audioCachedDuration = player.getAudioCachedDuration();
                     long videoCachedBytes = player.getVideoCachedBytes();
                     long audioCachedBytes = player.getAudioCachedBytes();
+                    float vdps = player.getVideoDecodeFramesPerSecond();
+                    float vfps = player.getVideoOutputFramesPerSecond();
                     long tcpSpeed = player.getTcpSpeed();
 
                     tvACache.setText(String.format(Locale.US, "%s, %s",
@@ -473,6 +477,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                             CommonUtils.formatedSize(videoCachedBytes)));
                     tvTcpSpeed.setText(String.format(Locale.US, "%s",
                             CommonUtils.formatedSpeed(tcpSpeed, 1000)));
+                    tvFPS.setText(String.format(Locale.US, "%.2f / %.2f", vdps, vfps));
                     removeMessages(MSG_UPDATE_HUD);
                     sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
             }
