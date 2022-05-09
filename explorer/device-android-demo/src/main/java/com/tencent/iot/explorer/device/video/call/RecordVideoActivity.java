@@ -95,6 +95,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private int vw = 320;
     private int vh = 240;
+    private int frameRate = 7;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,9 +110,12 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 String resolutionJsonStr = bundle.getString(ResolutionEntity.TAG);
                 if (resolutionJsonStr != null)
                     selectedResolutionEntity = JSON.parseObject(resolutionJsonStr, ResolutionEntity.class);
+                vw = selectedResolutionEntity.getWidth();
+                vh = selectedResolutionEntity.getHeight();
                 String frameRateJsonStr = bundle.getString(FrameRateEntity.TAG);
                 if (frameRateJsonStr != null)
                     selectedFrameRateEntity = JSON.parseObject(frameRateJsonStr, FrameRateEntity.class);
+                frameRate = selectedFrameRateEntity.getRate();
             }
         }
         setContentView(R.layout.activity_record_video);
@@ -165,7 +169,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     private void initVideoEncoder() {
-        VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder().setSize(vw, vh).build();
+        VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder().setSize(vw, vh).setFrameRate(frameRate).build();
         videoEncoder = new VideoEncoder(videoEncodeParam);
         videoEncoder.setEncoderListener(this);
     }
@@ -401,8 +405,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             e.printStackTrace();
         }
 
-
-        Camera.Size previewSize = getCameraPreviewSize(parameters);
         //设置预览图像分辨率
         parameters.setPreviewSize(vw, vh);
 
@@ -424,27 +426,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         });
         //调用startPreview()用以更新preview的surface
         camera.startPreview();
-    }
-
-    /**
-     * 获取设备支持的最大分辨率
-     */
-    private Camera.Size getCameraPreviewSize(Camera.Parameters parameters) {
-        List<Camera.Size> list = parameters.getSupportedPreviewSizes();
-        Camera.Size needSize = null;
-        for (Camera.Size size : list) {
-            Log.e(TAG, "****========== " + size.width + " " + size.height);
-            if (needSize == null) {
-                needSize = size;
-                continue;
-            }
-            if (size.width >= needSize.width) {
-                if (size.height > needSize.height) {
-                    needSize = size;
-                }
-            }
-        }
-        return needSize;
     }
 
     // 默认摄像头方向

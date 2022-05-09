@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -42,6 +43,7 @@ import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
+import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -52,6 +54,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -200,9 +203,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         resolutionRv = findViewById(R.id.rv_resolution);
-        resolutionDatas = new ArrayList<ResolutionEntity>();
-        resolutionDatas.add(new ResolutionEntity(240, 240, true));
-        resolutionDatas.add(new ResolutionEntity(176, 144));
+        getSupportedPreviewSizes();
         LinearLayoutManager resolutionLayoutManager = new LinearLayoutManager(this);
         resolutionRv.setLayoutManager(resolutionLayoutManager);
         resolutionRv.setHasFixedSize(false);
@@ -211,7 +212,8 @@ public class MainActivity extends AppCompatActivity {
 
         frameRateRv = findViewById(R.id.rv_frame_rate);
         frameRateDatas = new ArrayList<FrameRateEntity>();
-        frameRateDatas.add(new FrameRateEntity(15, true));
+        frameRateDatas.add(new FrameRateEntity(7, true));
+        frameRateDatas.add(new FrameRateEntity(15));
         LinearLayoutManager frameLayoutManager = new LinearLayoutManager(this);
         frameRateRv.setLayoutManager(frameLayoutManager);
         frameRateRv.setHasFixedSize(false);
@@ -226,6 +228,32 @@ public class MainActivity extends AppCompatActivity {
                 callParamLayout.setVisibility(View.GONE);
             }
         });
+    }
+
+    /**
+     * 获取设备支持的最大分辨率
+     */
+    private void getSupportedPreviewSizes() {
+        Camera camera = Camera.open(CameraConstants.facing.BACK);
+        //获取相机参数
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> list = parameters.getSupportedPreviewSizes();
+        resolutionDatas = new ArrayList<ResolutionEntity>();
+        for (Camera.Size size : list) {
+            Log.e(TAG, "****========== " + size.width + " " + size.height);
+            ResolutionEntity entity = new ResolutionEntity(size.width, size.height);
+            resolutionDatas.add(entity);
+        }
+        if (resolutionDatas.size() > 0) {
+            ResolutionEntity entity = resolutionDatas.get(resolutionDatas.size() - 1);
+            entity.setIsSelect(true);
+        } else {
+            Toast.makeText(MainActivity.this, "无法获取到设备Camera支持的分辨率", Toast.LENGTH_SHORT).show();
+        }
+        camera.setPreviewCallback(null);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 
 //    private XP2PCallback xP2PCallback = new XP2PCallback() {
