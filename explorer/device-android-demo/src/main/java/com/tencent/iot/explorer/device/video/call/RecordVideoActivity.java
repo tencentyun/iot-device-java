@@ -72,7 +72,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
-    private TextView tvTcpSpeed;
+    private TextView tvVideoWH;
     private TextView tvVCache;
     private TextView tvACache;
     private TextView tvFPS;
@@ -121,7 +121,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         setContentView(R.layout.activity_record_video);
         recordBtn = findViewById(R.id.btnRecord);
-        tvTcpSpeed = findViewById(R.id.tv_tcp_speed);
+        tvVideoWH = findViewById(R.id.tv_video_w_h);
         tvVCache = findViewById(R.id.tv_v_cache);
         tvACache = findViewById(R.id.tv_a_cache);
         tvFPS = findViewById(R.id.tv_fps);
@@ -475,8 +475,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                     tvVCache.setText(String.format(Locale.US, "%s, %s",
                             CommonUtils.formatedDurationMilli(videoCachedDuration),
                             CommonUtils.formatedSize(videoCachedBytes)));
-                    tvTcpSpeed.setText(String.format(Locale.US, "%s",
-                            CommonUtils.formatedSpeed(tcpSpeed, 1000)));
+                    tvVideoWH.setText(player.getVideoWidth() + " x " + player.getVideoHeight());
                     tvFPS.setText(String.format(Locale.US, "%.2f / %.2f", vdps, vfps));
                     removeMessages(MSG_UPDATE_HUD);
                     sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
