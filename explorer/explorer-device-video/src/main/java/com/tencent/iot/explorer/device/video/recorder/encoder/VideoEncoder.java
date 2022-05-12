@@ -118,7 +118,7 @@ public class VideoEncoder {
                         }
                     } else {
                         //outData就是输出的h264数据
-                        Log.e("TAG", "==========P帧===============" + seq);
+//                        Log.e("TAG", "==========P帧===============" + seq);
                         if (encoderListener != null) {
                             encoderListener.onVideoEncoded(outData, System.currentTimeMillis(), seq);
                             seq++;

@@ -210,7 +210,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
         @Override
         public void avDataRecvHandle(byte[] data, int len) {
-            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
+//            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
             io.addLast(data);
         }
 

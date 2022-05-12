@@ -49,7 +49,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     fun addLast(bytes: ByteArray): Boolean {
         var tmpList:List<Byte> = bytes.toList()
         var test = flvData.addAll(tmpList)
-        Log.e(TAG, "==== addLast return " + bytes.size)
+//        Log.e(TAG, "==== addLast return " + bytes.size)
         return test
     }
 
@@ -86,7 +86,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
         var tmpBytes = takeFirstWithLen() // 阻塞式读取
         var readLen = tmpBytes.size
-        Log.e(TAG, "*****************new read " + size + " buffer.len " + readLen)
+//        Log.e(TAG, "*****************new read " + size + " buffer.len " + readLen)
         if (readLen == 0) {
             return 0;
         }
