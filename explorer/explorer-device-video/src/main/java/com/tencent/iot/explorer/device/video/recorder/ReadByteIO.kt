@@ -36,12 +36,12 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     var playType = CallingType.TYPE_VIDEO_CALL
 
     // 从队列头部取数据
-    private fun takeFirstWithLen(len : Int): ByteArray {
-        var byteList = ByteArray(len)
-        for (i in 0 until len) {
+    private fun takeFirstWithLen(): ByteArray {
+        var size = flvData.size
+        var byteList = ByteArray(size)
+        for (i in 0 until size) {
             byteList[i] = flvData.take()
         }
-        Log.e(TAG, "*****************takeFirstWithLen " + len + " flvData.len " + flvData.size)
         return byteList
     }
 
@@ -83,17 +83,13 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     }
 
     override fun read(buffer: ByteArray?, size: Int): Int {
-        Log.e(TAG, "***************** read " + size + " buffer.len " + buffer?.size)
-        var readLen = size
-        if (playType == CallingType.TYPE_AUDIO_CALL) { // 音频
-            readLen = 256
-        } else if (playType == CallingType.TYPE_VIDEO_CALL) { // 视频，优化出图时间，可以在此继续缩小缓存 buffer
-            readLen = 256  //512
-        } else {  // 未知类型
-            readLen = 256
+
+        var tmpBytes = takeFirstWithLen() // 阻塞式读取
+        var readLen = tmpBytes.size
+        Log.e(TAG, "*****************new read " + size + " buffer.len " + readLen)
+        if (readLen == 0) {
+            return 0;
         }
-        readLen = 128
-        var tmpBytes = takeFirstWithLen(readLen) // 阻塞式读取
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
         startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
         return readLen
