@@ -284,6 +284,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "ijkio,crypto,file,http,https,tcp,tls,udp");
 
+        player.setFrameSpeed(1.5f);
         player.setSurface(this.surface);
         player.setAndroidIOCallback(io);
 
