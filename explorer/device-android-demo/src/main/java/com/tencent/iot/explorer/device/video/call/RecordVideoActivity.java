@@ -96,7 +96,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private int vw = 320;
     private int vh = 240;
-    private int frameRate = 7;
+    private int frameRate = 15;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -413,7 +413,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
         //设置预览图像分辨率
         parameters.setPreviewSize(vw, vh);
-
+        //设置帧率
+        parameters.setPreviewFrameRate(frameRate);
         //配置camera参数
         camera.setParameters(parameters);
         try {

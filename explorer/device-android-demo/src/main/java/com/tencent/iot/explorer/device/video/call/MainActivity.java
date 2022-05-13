@@ -212,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
 
         frameRateRv = findViewById(R.id.rv_frame_rate);
         frameRateDatas = new ArrayList<FrameRateEntity>();
-        frameRateDatas.add(new FrameRateEntity(7, true));
-        frameRateDatas.add(new FrameRateEntity(15));
+        frameRateDatas.add(new FrameRateEntity(15, true));
+        frameRateDatas.add(new FrameRateEntity(30));
         LinearLayoutManager frameLayoutManager = new LinearLayoutManager(this);
         frameRateRv.setLayoutManager(frameLayoutManager);
         frameRateRv.setHasFixedSize(false);
