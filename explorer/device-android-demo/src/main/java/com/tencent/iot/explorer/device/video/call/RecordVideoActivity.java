@@ -391,7 +391,10 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         parameters.setPreviewFormat(ImageFormat.NV21);
 
         if (this.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes != null && focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
         }
 
         int cameraIndex = -1;
