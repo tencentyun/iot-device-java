@@ -504,6 +504,8 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
+                VideoNativeInteface.getInstance().release();
+                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
                 updateLog("已自动重连 在线");
             } else {
                 Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");

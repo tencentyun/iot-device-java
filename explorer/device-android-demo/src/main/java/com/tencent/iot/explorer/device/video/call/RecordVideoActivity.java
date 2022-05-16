@@ -375,6 +375,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        surfaceHolder.removeCallback(this);
         releaseCamera(camera);
     }
 
