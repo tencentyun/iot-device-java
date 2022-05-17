@@ -44,9 +44,9 @@ public class FrameRateListAdapter extends RecyclerView.Adapter<FrameRateListAdap
         } else {
             holder.selectIv.setBackground(mContext.getDrawable(R.drawable.unselect));
         }
-        holder.selectIv.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 for (FrameRateEntity enti : mDatas) {
                     enti.setIsSelect(false);
                 }
