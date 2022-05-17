@@ -230,7 +230,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
-                VideoNativeInteface.getInstance().release();
+//                VideoNativeInteface.getInstance().release();
                 handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
                 updateLog("已自动重连 在线");
             } else {
@@ -249,6 +249,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         @Override
         public void onConnectionLost(Throwable cause) {
+            VideoNativeInteface.getInstance().release();
             Log.e(TAG, "TXMqttActionCallBack onConnectionLost");
             updateLog("掉线 " + cause.getMessage());
         }
