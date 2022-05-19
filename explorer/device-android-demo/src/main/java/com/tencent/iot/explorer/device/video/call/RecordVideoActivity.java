@@ -132,7 +132,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         recordBtn.setText("Record \n path:" + path);
         surfaceView = findViewById(R.id.cameraView);
         holder = surfaceView.getHolder();
-        holder.addCallback(this);
         btnSwitch = findViewById(R.id.btnSwitch);
         playView = findViewById(R.id.v_play);
         playView.setSurfaceTextureListener(this);
@@ -199,6 +198,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     protected void onResume() {
         super.onResume();
+        holder.addCallback(this);
     }
 
     @Override
@@ -243,6 +243,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         }
         io.close();
         executor.shutdown();
+        releaseCamera(camera);
     }
 
     @Override
@@ -365,18 +366,19 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface created.");
         openCamera();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        Log.d(TAG, "surface changed.");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface destroyed.");
         surfaceHolder.removeCallback(this);
-        releaseCamera(camera);
     }
 
     /**

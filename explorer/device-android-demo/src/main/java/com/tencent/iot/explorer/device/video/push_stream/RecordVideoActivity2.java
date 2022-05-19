@@ -71,6 +71,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     private AudioEncoder audioEncoder;
     private VideoEncoder videoEncoder;
     private volatile boolean startEncodeVideo = false;
+    private volatile boolean isRecording = false;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private int vw = 640;
     private int vh = 480;
@@ -141,6 +142,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             }
             audioEncoder.start();
         }
+        isRecording = true;
     }
 
     private void stopRecord() {
@@ -151,6 +153,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             videoEncoder.stop();
         }
         startEncodeVideo = false;
+        isRecording = false;
     }
 
     @Override
@@ -212,6 +215,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             io.close();
         }
         executor.shutdown();
+        releaseCamera(camera);
     }
 
     @Override
@@ -377,18 +381,21 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface created.");
         openCamera();
-        handler.post(this::startRecord);
+        if (!isRecording) {
+            handler.post(this::startRecord);
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        Log.d(TAG, "surface changed.");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        releaseCamera(camera);
+        Log.d(TAG, "surface destroyed.");
     }
 }
 
