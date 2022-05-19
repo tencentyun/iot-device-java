@@ -208,7 +208,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         super.onDestroy();
         VideoNativeInteface.getInstance().setCallback(null);
         if (player != null) {
-            player.stop();
+            player.release();
         }
         stopRecord();
         if (io != null) {
