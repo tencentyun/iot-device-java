@@ -76,6 +76,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private TextView tvVCache;
     private TextView tvACache;
     private TextView tvFPS;
+    private TextView tvStreamStatus;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
@@ -125,6 +126,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         tvVCache = findViewById(R.id.tv_v_cache);
         tvACache = findViewById(R.id.tv_a_cache);
         tvFPS = findViewById(R.id.tv_fps);
+        tvStreamStatus = findViewById(R.id.tv_stream_status);
         hangupBtn = findViewById(R.id.btn_hang_up);
         hangupBtn.setOnClickListener(v -> {
             new Thread(this::finishActivity).start();
@@ -485,10 +487,23 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                             CommonUtils.formatedSize(videoCachedBytes)));
                     tvVideoWH.setText(player.getVideoWidth() + " x " + player.getVideoHeight());
                     tvFPS.setText(String.format(Locale.US, "%.2f / %.2f", vdps, vfps));
+                    tvStreamStatus.setText(String.format(Locale.US, "%s", getSendStreamStatus()));
                     removeMessages(MSG_UPDATE_HUD);
                     sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
             }
         }
     };
+
+    private String getSendStreamStatus() {
+        switch (VideoNativeInteface.getInstance().getSendStreamStatus(0)) {
+            case 0:
+                return "Unkown";
+            case 1:
+                return "Direct";
+            case 2:
+                return "Turn";
+        }
+        return "Unkown";
+    }
 
 }
