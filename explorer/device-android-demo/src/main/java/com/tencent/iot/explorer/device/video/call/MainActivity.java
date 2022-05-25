@@ -42,11 +42,13 @@ import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
 import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
+import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
+import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.json.JSONArray;
@@ -256,26 +258,25 @@ public class MainActivity extends AppCompatActivity {
         camera = null;
     }
 
-//    private XP2PCallback xP2PCallback = new XP2PCallback() {
-//
-//        @Override
-//        public void avDataRecvHandle(byte[] data, int len) {
-//            ReadByteIO.Companion.getInstance().addLast(data);
-//        }
-//
-//        @Override
-//        public void avDataMsgHandle(int type, String msg) {
-//            Log.e(TAG, "avDataMsgHandle type " + type);
-//            if (type == 0) {
-//                Log.e(TAG, "start send video data");
-//                Utils.sendVideoBroadcast(MainActivity.this, 1);
-//
-//            } else if (type == 1) {
-//                Log.e(TAG, "this call over");
-//                Utils.sendVideoBroadcast(MainActivity.this, 2);
-//            }
-//        }
-//    };
+    private XP2PCallback xP2PCallback = new XP2PCallback() {
+
+        @Override
+        public void avDataRecvHandle(byte[] data, int len) {
+            ReadByteIO.Companion.getInstance().addLast(data);
+        }
+
+        @Override
+        public void avDataMsgHandle(int type, String msg) {
+            Log.e(TAG, "*========avDataMsgHandle type " + type);
+            if (type == 0) {
+                Log.e(TAG, "*========start send video data");
+                Utils.sendVideoBroadcast(MainActivity.this, 1);
+            } else if (type == 1) {
+                Log.e(TAG, "*========stop send video data");
+                Utils.sendVideoBroadcast(MainActivity.this, 2);
+            }
+        }
+    };
 
     private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
 
@@ -377,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
         int initRet = VideoNativeInteface.getInstance().initWithDevice(condition.getProductId(),
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
-
+        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         new Thread(() -> {
             int sleepTime = 0;
             while (true) {
@@ -532,6 +533,7 @@ public class MainActivity extends AppCompatActivity {
         public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             Log.e(TAG, "TXMqttActionCallBack onDisconnectCompleted");
             updateLog("离线 " + msg);
+            VideoNativeInteface.getInstance().setCallback(null);
             VideoNativeInteface.getInstance().release();
         }
 
