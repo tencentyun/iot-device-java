@@ -67,7 +67,6 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
     private String jsonFileName = "video_watch.json";
     private volatile VideoDataTemplateSample videoDataTemplateSample = null;
     private Handler handler = new Handler();
-    private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
     private long onlineClickedTime = 0L;
@@ -142,7 +141,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         videoCall.setOnClickListener( v -> {
             if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
-                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_VIDEO_CALL);
+                startPhoneCall(CallingType.TYPE_VIDEO_CALL);
             } else {
                 updateLog("设备未上线");
             }
@@ -150,7 +149,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         audioCall.setOnClickListener( v -> {
             if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
-                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_AUDIO_CALL);
+                startPhoneCall(CallingType.TYPE_AUDIO_CALL);
             } else {
                 updateLog("设备未上线");
             }
@@ -283,7 +282,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
                     String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
                     if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
                         Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        Log.e(TAG, "reportCallStatusProperty status " + status);
+                        Log.e(TAG, "reportXp2pInfo status " + status);
                         break;
                     }
                 }
@@ -291,15 +290,12 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void startPhoneCall(String userid, String agent, Integer callType) {
+    private void startPhoneCall(Integer callType) {
         Log.e(TAG, "callType " + callType);
-        videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, callType, userid, agent);
         Intent intent = new Intent(PushRealTimeStreamActivity.this, RecordVideoActivity2.class);
         Bundle bundle = new Bundle();
         PhoneInfo phoneInfo = new PhoneInfo();
         phoneInfo.setCallType(callType);
-        phoneInfo.setAgent(agent);
-        phoneInfo.setUserid(userid);
         bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
         if (selectedResolutionEntity != null)
             bundle.putString(ResolutionEntity.TAG, JSON.toJSONString(selectedResolutionEntity));
@@ -373,20 +369,5 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         String value = sp.getString(DeviceConnectCondition.TAG, "");
         ret = JSON.parseObject(value, DeviceConnectCondition.class);
         return ret;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
-            Bundle bundle = data.getBundleExtra(PhoneInfo.TAG);
-            if (bundle != null) {
-                String jsonStr = bundle.getString(PhoneInfo.TAG);
-                Log.e(TAG, "jsonStr " + jsonStr);
-                PhoneInfo phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
-                if (phoneInfo == null) return;
-                videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, phoneInfo.getCallType(), phoneInfo.getUserid(), phoneInfo.getAgent());
-            }
-        }
     }
 }
