@@ -4,7 +4,10 @@ import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
@@ -19,6 +22,7 @@ public class VideoEncoder {
     private final VideoEncodeParam videoEncodeParam;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MediaCodec mediaCodec;
+    private MediaFormat mediaFormat;
     private OnEncodeListener encoderListener;
     private long seq = 0L;
 
@@ -32,7 +36,7 @@ public class VideoEncoder {
             mediaCodec = MediaCodec.createEncoderByType("video/avc");
             //height和width一般都是照相机的height和width。
             //TODO 因为获取到的视频帧数据是逆时针旋转了90度的，所以这里宽高需要对调
-            MediaFormat mediaFormat = MediaFormat.createVideoFormat("video/avc", videoEncodeParam.getHeight(), videoEncodeParam.getWidth());
+            mediaFormat = MediaFormat.createVideoFormat("video/avc", videoEncodeParam.getHeight(), videoEncodeParam.getWidth());
             //描述平均位速率（以位/秒为单位）的键。 关联的值是一个整数
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, videoEncodeParam.getBitRate());
             //描述视频格式的帧速率（以帧/秒为单位）的键。帧率，一般在15至30之内，太小容易造成视频卡顿。
@@ -41,7 +45,7 @@ public class VideoEncoder {
             mediaFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatYUV420SemiPlanar);
             //关键帧间隔时间，单位是秒
             mediaFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, videoEncodeParam.getiFrameInterval());
-            mediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
+            mediaFormat.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR);
             //设置压缩等级  默认是 baseline
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mediaFormat.setInteger(MediaFormat.KEY_LEVEL, MediaCodecInfo.CodecProfileLevel.AVCLevel3);
@@ -56,6 +60,25 @@ public class VideoEncoder {
         }
     }
 
+    //描述平均位速率（以位/秒为单位）的键。 关联的值是一个整数
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void setVideoBitRate(int bitRate) {
+
+        videoEncodeParam.setBitRate(bitRate);
+
+        try {
+            Bundle params = new Bundle();
+            params.putInt(MediaCodec.PARAMETER_KEY_VIDEO_BITRATE, bitRate);
+            mediaCodec.setParameters(params);
+
+        } catch (IllegalStateException e) {
+            Log.e("TAG", "updateBitrate failed", e);
+        }
+    }
+
+    public int getVideoBitRate() {
+        return videoEncodeParam.getBitRate();
+    }
     /**
      * 将NV21编码成H264
      */
