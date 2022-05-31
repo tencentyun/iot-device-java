@@ -104,6 +104,8 @@
 3.2 视频推流
     * 点击视频推流即可采集音视频并推流，腾讯连连SDKDemo可以实时预览画面（有声有画），也可以发送语音到该demo
 
+[推流示例补充说明](../explorer-device-video/docs/呼叫流程/推流示例补充说明.md)
+
 ## IOT CONFIGWIFI DEMO
 待补充
 
