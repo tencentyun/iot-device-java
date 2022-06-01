@@ -151,7 +151,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 lastClickTime = System.currentTimeMillis();
             }
         });
-        ReadByteIO.Companion.getInstance().reset();
+
         ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
         initAudioEncoder();
         initVideoEncoder();
@@ -296,6 +296,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             mHandler.removeMessages(MSG_UPDATE_HUD);
             player.stop();
         }
+
+        ReadByteIO.Companion.getInstance().reset();
         ReadByteIO.Companion.getInstance().close();
         executor.shutdown();
         releaseCamera(camera);
