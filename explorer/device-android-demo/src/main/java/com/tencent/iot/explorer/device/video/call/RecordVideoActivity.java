@@ -65,7 +65,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class RecordVideoActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback {
 
-    private static Timer bitRateTimer = new Timer();
+    private static Timer bitRateTimer;
     private String TAG = RecordVideoActivity.class.getSimpleName();
     private SurfaceView surfaceView;
     private SurfaceHolder holder;
@@ -203,14 +203,14 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             int video_rate_byte = (now_video_rate / 8) * 3 / 4;
             if (p2p_wl_avg > video_rate_byte) {
 
-//                RecordVideoActivity.this.videoEncoder.setVideoBitRate(video_rate_byte);
+                videoEncoder.setVideoBitRate(video_rate_byte);
 
             }else if (p2p_wl_avg <  (now_video_rate / 8) / 3) {
 
                 // 升码率
                 // 测试发现升码率的速度慢一些效果更好
                 // p2p水线经验值一般小于[视频码率/2]，网络良好的情况会小于 [视频码率/3] 甚至更低
-//                RecordVideoActivity.this.videoEncoder.setVideoBitRate(now_video_rate + 5);
+                videoEncoder.setVideoBitRate(now_video_rate + 5);
             }
         }
     }
@@ -218,6 +218,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void startBitRateAdapter() {
 
         VideoNativeInteface.getInstance().resetAvg();
+        bitRateTimer = new Timer();
         bitRateTimer.schedule(new AdapterBitRateTask(),3000,1000);
     }
 
