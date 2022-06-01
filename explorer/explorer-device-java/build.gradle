@@ -89,9 +89,6 @@ publishing {
                         dependencyNode.appendNode('groupId', dp.group)
                         dependencyNode.appendNode('artifactId', dp.name)
                         dependencyNode.appendNode('version', dp.version)
-                        if (dp.name == "log4j") {
-                            dependencyNode.appendNode('type', 'pom')
-                        }
                         // for exclusions
                         if (dp.excludeRules.size() > 0) {
                             def exclusions = dependencyNode.appendNode('exclusions')
