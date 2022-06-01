@@ -63,6 +63,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     private Camera camera;
     private Button btnSwitch;
     private Button btnStop;
+    private Button btnSendCmd;
     private IjkMediaPlayer player;
     private Surface surface;
     private TextureView playView;
@@ -109,6 +110,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         holder.addCallback(this);
         btnSwitch = findViewById(R.id.btnSwitch);
         btnStop = findViewById(R.id.btnStop);
+        btnSendCmd = findViewById(R.id.btnSendCommand);
         playView = findViewById(R.id.v_play);
         playView.setSurfaceTextureListener(this);
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
@@ -119,6 +121,9 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         btnSwitch.setOnClickListener(v -> switchCamera());
         btnStop.setOnClickListener(v -> {
             new Thread(() -> new Instrumentation().sendKeyDownUpSync(KeyEvent.KEYCODE_BACK)).start();
+        });
+        btnSendCmd.setOnClickListener(v -> {
+            new Thread(() -> Log.d(TAG, "sendMsgToPeer:" + VideoNativeInteface.getInstance().sendMsgToPeer(0,"hello", 1*1000))).start();
         });
         player = new IjkMediaPlayer();
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
