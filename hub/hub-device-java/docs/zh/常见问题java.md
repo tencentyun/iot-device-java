@@ -93,3 +93,11 @@ log4j.appender.file.layout.ConversionPattern = %d{HH:mm:ss,SSS} [%t] %-5p %c{1} 
 #### 动态注册时，报Certificate not valid until ${日期} 错
 
 该错出现的原因是设备本机时间不正确，请检查设备本机的时间是否正确
+
+#### 控制台设备日志显示'FAIL，reach max limit'是什么问题？
+
+后台对设备的连接频率有限制：5s只允许连接一次；可以排查业务代码是否存在频繁连接的操作
+
+#### SDK的断网重连机制是怎样的？
+
+如果重连选项设置为true（options.setAutomaticReconnect(true);），则在连接丢失的情况下，客户端将尝试重新连接服务器。 一开始会等待1秒尝试重新连接，如果重新连接失败，延迟将会双倍直到2分钟，此后重连失败延迟将保持2分钟不变
