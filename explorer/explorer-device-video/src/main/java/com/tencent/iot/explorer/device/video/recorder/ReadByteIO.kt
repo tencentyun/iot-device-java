@@ -36,8 +36,11 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     var playType = CallingType.TYPE_VIDEO_CALL
 
     // 从队列头部取数据
-    private fun takeFirstWithLen(): ByteArray {
+    private fun takeFirstWithLen(readMaxLength: Int): ByteArray {
         var size = flvData.size
+        if (size > readMaxLength) {
+            size = readMaxLength
+        }
         var byteList = ByteArray(size)
         for (i in 0 until size) {
             byteList[i] = flvData.take()
@@ -84,7 +87,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun read(buffer: ByteArray?, size: Int): Int {
 
-        var tmpBytes = takeFirstWithLen() // 阻塞式读取
+        var tmpBytes = takeFirstWithLen(size) // 阻塞式读取
         var readLen = tmpBytes.size
 //        Log.e(TAG, "*=============new read " + size + " buffer.len " + readLen)
         if (readLen == 0) {
