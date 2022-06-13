@@ -288,7 +288,7 @@ public class TXMqttDynreg {
         }
 
         Loggor.info(TAG, "Register request " + obj + "; signSourceStr:" + signSourceStr);
-        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl,
+        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDynRegUrl,
                 String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
         httpThread.start();
 
