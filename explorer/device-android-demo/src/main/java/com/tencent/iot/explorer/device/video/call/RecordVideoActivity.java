@@ -99,7 +99,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private int vw = 320;
     private int vh = 240;
     private int frameRate = 15;
-    private volatile boolean resumePlay = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,10 +152,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         });
 
         ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
-        initAudioEncoder();
-        initVideoEncoder();
-        VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
-        VideoNativeInteface.getInstance().initVideoFormat(format);
     }
 
     private void initAudioEncoder() {
@@ -330,8 +325,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
         } else {
-//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 80000);
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 50 * 1024);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 50 * 1024);
         }
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
@@ -389,18 +384,16 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 }
             } else if (refreshTag == 1) {
                 Log.e(TAG, "*====== 开始推流");
-                if (!resumePlay) {
-                    handler.post(() -> startRecord());
-                    resumePlay = true;
-                }
+                initAudioEncoder();
+                initVideoEncoder();
+                VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
+                VideoNativeInteface.getInstance().initVideoFormat(format);
+                handler.post(() -> startRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
             } else if (refreshTag == 2) {
                 Log.e(TAG, "*====== 结束推流");
                 handler.post(() -> stopRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
-                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> finishActivity()).start();
-                }
             }
         }
     };

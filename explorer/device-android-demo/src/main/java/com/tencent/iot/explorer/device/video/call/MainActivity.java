@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             Log.e(TAG, "*========stop send video data over 60");
-                            Utils.sendVideoBroadcast(MainActivity.this, 2);
+                            Utils.sendVideoOverBroadcast(MainActivity.this);
                         }
                     });
                 }
@@ -302,7 +302,8 @@ public class MainActivity extends AppCompatActivity {
                 removeIsEnterRoom60secondsTask();
             } else if (type == 1) {
                 checkoutIsEnterRoom60seconds("通话结束...");
-                updateLog("p2p通道断开，尝试重连...");
+                updateLog("p2p通道断开");
+                Utils.sendVideoBroadcast(MainActivity.this, 2);
             }
         }
     };
