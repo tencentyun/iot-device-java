@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     private ResolutionEntity selectedResolutionEntity;
     private FrameRateEntity selectedFrameRateEntity;
     private TimerTask enterRoomTask = null;
+    private volatile boolean mIsExitActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -399,6 +400,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mIsExitActivity = true;
         if (videoDataTemplateSample != null) {
             videoDataTemplateSample.disconnect();
         }
@@ -411,22 +413,25 @@ public class MainActivity extends AppCompatActivity {
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         new Thread(() -> {
             int sleepTime = 0;
-            while (true) {
-                try {
-                    Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
-                    if (sleepTime < 5) {
-                        sleepTime++;
+
+            while (!mIsExitActivity) {
+                if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
+                    try {
+                        Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
+                        if (sleepTime < 5) {
+                            sleepTime++;
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
-                    Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                    if (sleepTime == 1 && status == Status.OK) {
-                        updateLog("device ready.");
+                    String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
+                    if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+                        Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
+                        if (sleepTime == 1 && status == Status.OK) {
+                            updateLog("device ready.");
+                        }
+                        Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
                     }
-                    Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
                 }
             }
         }).start();
