@@ -357,6 +357,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     private void finishActivity() {
+        stopRecord();
+
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         if (phoneInfo != null) {
