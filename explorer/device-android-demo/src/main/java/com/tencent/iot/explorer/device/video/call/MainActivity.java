@@ -34,6 +34,7 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.call.adapter.FrameRateListAdapter;
 import com.tencent.iot.explorer.device.video.call.adapter.ResolutionListAdapter;
@@ -104,10 +105,14 @@ public class MainActivity extends AppCompatActivity {
     private TimerTask enterRoomTask = null;
     private volatile boolean mIsExitActivity = false;
 
+    private NetWorkStateReceiver netWorkStateReceiver = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        netWorkStateReceiver = new NetWorkStateReceiver();
 
         qrImg = findViewById(R.id.iv_qrcode);
         brokerUrlEt = findViewById(R.id.et_broker_url);
@@ -151,6 +156,13 @@ public class MainActivity extends AppCompatActivity {
             if (videoDataTemplateSample == null) {
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -164,6 +176,13 @@ public class MainActivity extends AppCompatActivity {
             if (videoDataTemplateSample == null) {
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -195,6 +214,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             callUser(CallingType.TYPE_VIDEO_CALL);
         });
 
@@ -203,6 +229,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             callUser(CallingType.TYPE_AUDIO_CALL);
         });
 
