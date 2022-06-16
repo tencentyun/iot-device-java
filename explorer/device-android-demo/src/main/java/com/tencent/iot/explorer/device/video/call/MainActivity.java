@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private int callUserType = CallingType.TYPE_AUDIO_CALL;
     private ResolutionEntity selectedResolutionEntity;
     private FrameRateEntity selectedFrameRateEntity;
+    private TimerTask enterRoomTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,6 +259,33 @@ public class MainActivity extends AppCompatActivity {
         camera = null;
     }
 
+    private void checkoutIsEnterRoom60seconds(String message) {
+        if (enterRoomTask == null) {
+            enterRoomTask = new TimerTask(){
+                public void run(){
+                    //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "*========stop send video data over 60");
+                            Utils.sendVideoBroadcast(MainActivity.this, 2);
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(enterRoomTask, 60000);
+        }
+    }
+
+    private void removeIsEnterRoom60secondsTask() {
+        if (enterRoomTask != null) {
+            enterRoomTask.cancel();
+            enterRoomTask = null;
+        }
+    }
+
     private XP2PCallback xP2PCallback = new XP2PCallback() {
 
         @Override
@@ -271,9 +299,10 @@ public class MainActivity extends AppCompatActivity {
             if (type == 0) {
                 Log.e(TAG, "*========start send video data");
                 Utils.sendVideoBroadcast(MainActivity.this, 1);
+                removeIsEnterRoom60secondsTask();
             } else if (type == 1) {
-                Log.e(TAG, "*========stop send video data");
-                Utils.sendVideoBroadcast(MainActivity.this, 2);
+                checkoutIsEnterRoom60seconds("通话结束...");
+                updateLog("p2p通道断开，尝试重连...");
             }
         }
     };

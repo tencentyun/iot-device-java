@@ -48,7 +48,6 @@ import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoFormat;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
-import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -100,6 +99,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private int vw = 320;
     private int vh = 240;
     private int frameRate = 15;
+    private volatile boolean resumePlay = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -387,7 +387,10 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 }
             } else if (refreshTag == 1) {
                 Log.e(TAG, "*====== 开始推流");
-                handler.post(() -> startRecord());
+                if (!resumePlay) {
+                    handler.post(() -> startRecord());
+                    resumePlay = true;
+                }
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
             } else if (refreshTag == 2) {
                 Log.e(TAG, "*====== 结束推流");
