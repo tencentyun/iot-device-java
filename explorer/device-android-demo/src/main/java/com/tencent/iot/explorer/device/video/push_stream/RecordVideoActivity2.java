@@ -48,7 +48,6 @@ import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -258,7 +257,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
         } else {
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
         }
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
