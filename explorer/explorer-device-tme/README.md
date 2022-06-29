@@ -154,7 +154,7 @@ public class MyApplication extends Application {
 
 ### explorer-device-android SDK 设计说明
 
-explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/SDK%20API及参数说明.md)
+explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/zh/SDK%20API及参数说明.md)
 
 ### explorer-device-tme SDK 设计说明
 
