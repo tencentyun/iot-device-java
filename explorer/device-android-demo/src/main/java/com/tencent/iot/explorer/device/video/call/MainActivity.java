@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -103,9 +104,12 @@ public class MainActivity extends AppCompatActivity {
     private ResolutionEntity selectedResolutionEntity;
     private FrameRateEntity selectedFrameRateEntity;
     private TimerTask enterRoomTask = null;
-    private volatile boolean mIsExitActivity = false;
 
     private NetWorkStateReceiver netWorkStateReceiver = null;
+
+    private String currentHostIp = "";
+    private String currentXp2pInfo = "";
+    private volatile boolean mIsOnCall = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         netWorkStateReceiver = new NetWorkStateReceiver();
+        currentHostIp = getCurrentIp();
 
         qrImg = findViewById(R.id.iv_qrcode);
         brokerUrlEt = findViewById(R.id.et_broker_url);
@@ -293,6 +298,26 @@ public class MainActivity extends AppCompatActivity {
         camera = null;
     }
 
+    private String getCurrentIp() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        int hostIp = wifiManager.getDhcpInfo().gateway;
+        return intToIp(hostIp);
+    }
+
+    /**
+     * xxxxxxxx 转成 xxx.xxx.xxx.xxx
+     * int转化为ip地址
+     */
+    public String intToIp(int ip)
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(String.valueOf(ip>>>24)).append(".");
+        sb.append(String.valueOf((ip&0xFFFFFF) >>>16)).append(".");
+        sb.append(String.valueOf((ip&0xFFFF) >>>8 )).append(".");
+        sb.append(String.valueOf(ip&0xFF)).append(".");
+        return sb.toString();
+    }
+
     private void checkoutIsEnterRoom60seconds(String message) {
         if (enterRoomTask == null) {
             enterRoomTask = new TimerTask(){
@@ -331,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
         public void avDataMsgHandle(int type, String msg) {
             Log.e(TAG, "*========avDataMsgHandle type " + type);
             if (type == 0) {
+                ReadByteIO.Companion.getInstance().reset();
                 Log.e(TAG, "*========start send video data");
                 Utils.sendVideoBroadcast(MainActivity.this, 1);
                 removeIsEnterRoom60secondsTask();
@@ -339,11 +365,24 @@ public class MainActivity extends AppCompatActivity {
                 updateLog("p2p通道断开");
                 Utils.sendVideoBroadcast(MainActivity.this, 2);
             } else if (type == 4) {
-                // ready
-                updateLog("device p2p ready");
+                checkIfNeedReportXp2PInfo();
             }
         }
     };
+
+    private void checkIfNeedReportXp2PInfo() {
+        String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
+        updateLog("xp2pInfo: "+xp2pInfo);
+        if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+            if (!currentXp2pInfo.equals(xp2pInfo)) {
+                currentXp2pInfo = xp2pInfo;
+                Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
+                if (status == Status.OK) {
+                    updateLog("device ready with report xp2pInfo: "+xp2pInfo+ "status " + status);
+                }
+            }
+        }
+    }
 
     private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
 
@@ -436,7 +475,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mIsExitActivity = true;
         if (videoDataTemplateSample != null) {
             videoDataTemplateSample.disconnect();
         }
@@ -447,30 +485,6 @@ public class MainActivity extends AppCompatActivity {
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
-        new Thread(() -> {
-            int sleepTime = 0;
-
-            while (!mIsExitActivity) {
-                if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
-                    try {
-                        Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
-                        if (sleepTime < 5) {
-                            sleepTime++;
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                    if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
-                        Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        if (sleepTime == 1 && status == Status.OK) {
-                            updateLog("device ready.");
-                        }
-                        Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
-                    }
-                }
-            }
-        }).start();
     }
 
     private TXVideoCallBack videoCallBack = new TXVideoCallBack() {
@@ -547,6 +561,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString(FrameRateEntity.TAG, JSON.toJSONString(selectedFrameRateEntity));
         intent.putExtra(PhoneInfo.TAG, bundle);
         startActivityForResult(intent, 2);
+        mIsOnCall = true;
     }
 
     private void showNewCall(String userId, int callTypeInt) {
@@ -576,8 +591,14 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
-                VideoNativeInteface.getInstance().release();
-                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
+                String hostIp = getCurrentIp();
+                if (!hostIp.equals(currentHostIp) || !mIsOnCall) {
+                    Log.e(TAG, "hostIp: " + hostIp + ", currentHostIp: " + currentHostIp);
+                    VideoNativeInteface.getInstance().release();
+                    handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
+                    currentHostIp = hostIp;
+                }
+                checkIfNeedReportXp2PInfo();
                 updateLog("已自动重连 在线");
             } else {
                 Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
@@ -654,6 +675,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mIsOnCall = false;
         if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
             Bundle bundle = data.getBundleExtra(PhoneInfo.TAG);
             if (bundle != null) {
