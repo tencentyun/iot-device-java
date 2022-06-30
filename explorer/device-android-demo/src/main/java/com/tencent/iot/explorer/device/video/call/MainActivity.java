@@ -599,11 +599,11 @@ public class MainActivity extends AppCompatActivity {
                     currentHostIp = hostIp;
                 }
                 checkIfNeedReportXp2PInfo();
-                updateLog("已自动重连 在线");
+                updateLog("已自动重连 在线状态"+status);
             } else {
                 Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
                 Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
-                updateLog("在线");
+                updateLog("首次在线状态"+status);
                 if (videoDataTemplateSample == null) return;
                 handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE)));
                 videoDataTemplateSample.subscribeTopic();
