@@ -2,7 +2,6 @@ package com.tencent.iot.explorer.device.video.recorder
 
 import android.util.Log
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType
-import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils
 import kotlinx.coroutines.*
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
 import java.util.concurrent.LinkedBlockingQueue
@@ -31,6 +30,8 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     private var chaseFrameThreadStarted = false
     @Volatile
     var chaseFrame = false  // 默认不开启追帧功能
+    @Volatile
+    var stopAdd = false  // 停止添加数据
     var chaseFrameRate = 1000L // 默认的追帧扫描频率
     var chaseFrameThreshold = 6000L // 默认的触发追帧的阈值
     var playType = CallingType.TYPE_VIDEO_CALL
@@ -48,8 +49,15 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
         return byteList
     }
 
+    fun startAdd() {
+        stopAdd = false
+    }
+
     // 队列尾部增加新的数据
     fun addLast(bytes: ByteArray): Boolean {
+        if (stopAdd) {
+            return false
+        }
         var tmpList:List<Byte> = bytes.toList()
         var test = flvData.addAll(tmpList)
 //        Log.e(TAG, "==== addLast return " + bytes.size)
@@ -108,6 +116,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     }
 
     fun reset() {
+        stopAdd = true
         flvData.clear()
 //        instance = null
     }

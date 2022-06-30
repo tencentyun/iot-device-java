@@ -356,11 +356,12 @@ public class MainActivity extends AppCompatActivity {
         public void avDataMsgHandle(int type, String msg) {
             Log.e(TAG, "*========avDataMsgHandle type " + type);
             if (type == 0) {
-                ReadByteIO.Companion.getInstance().reset();
+                ReadByteIO.Companion.getInstance().startAdd();
                 Log.e(TAG, "*========start send video data");
                 Utils.sendVideoBroadcast(MainActivity.this, 1);
                 removeIsEnterRoom60secondsTask();
             } else if (type == 1) {
+                ReadByteIO.Companion.getInstance().reset();
                 checkoutIsEnterRoom60seconds("通话结束...");
                 updateLog("p2p通道断开");
                 Utils.sendVideoBroadcast(MainActivity.this, 2);
