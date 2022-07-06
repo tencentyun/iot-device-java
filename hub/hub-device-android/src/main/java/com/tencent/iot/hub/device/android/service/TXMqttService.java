@@ -1,19 +1,24 @@
 package com.tencent.iot.hub.device.android.service;
 
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
+import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tencent.iot.hub.device.android.core.mqtt.TXMqttConnection;
+import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.android.core.shadow.TXShadowConnection;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.android.core.shadow.DeviceProperty;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
@@ -31,17 +36,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.CER_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_CER;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.MQTT_SERVER_PORT_PSK;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.PSK_PREFIX;
-import static com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants.QCLOUD_IOT_MQTT_DIRECT_DOMAIN;
-
 /**
- * MQTT 远程服务
- * <p>
- * 如需将MQTT功能运行在独立进程中时，使用TXMqttService开启服务；
- * 不需要时，直接调用TXMqttConnection或TXShadowConnection中相关接口即可。
+ * MQTT 远程服务，如需将 MQTT 功能运行在独立进程中时，使用 TXMqttService 开启服务；
+ * 不需要时，直接调用 TXMqttConnection 或 TXShadowConnection 中相关接口即可。
  */
 public class TXMqttService extends Service {
 
@@ -50,12 +47,12 @@ public class TXMqttService extends Service {
     private Context mContext = null;
 
     /**
-     * 服务器URI
+     * 服务器 URI
      */
     private String mServerURI;
 
     /**
-     * Iot Hub控制台获取产品ID
+     * Iot Hub控制台获取产品 ID
      */
     private String mProductId;
 
@@ -72,27 +69,27 @@ public class TXMqttService extends Service {
     private TXMqttConnection mMqttConnection = null;
 
     /**
-     * shadow连接器
+     * shadow 连接器
      */
     private TXShadowConnection mShadowConnection = null;
 
     /**
-     * mqttAction回调接口
+     * mqttAction 回调接口
      */
     private TXMqttActionCallBack mMqttActionCallBack = null;
 
     /**
-     * shadowAction回调接口
+     * shadowAction 回调接口
      */
     private TXShadowActionCallBack mShadowActionCallBack = null;
 
     /**
-     * 客户端MqttAction监听器
+     * 客户端 MqttAction 监听器
      */
     private ITXMqttActionListener mMqttActionListener = null;
 
     /**
-     * 客户端ShadowAction监听器
+     * 客户端 ShadowAction 监听器
      */
     private ITXShadowActionListener mShadowActionListener = null;
 
@@ -109,7 +106,7 @@ public class TXMqttService extends Service {
     private ITXMqttService.Stub mMqttService = null;
 
     /**
-     * 是否使用shadow
+     * 是否使用 shadow
      */
     private boolean mUseShadow = false;
 
@@ -165,6 +162,9 @@ public class TXMqttService extends Service {
         }
     };
 
+    /**
+     * 创建服务
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -172,6 +172,14 @@ public class TXMqttService extends Service {
         init();
     }
 
+    /**
+     * 启动服务
+     *
+     * @param intent 启动服务的 intent
+     * @param flags 服务启动方式
+     * @param startId 启动 ID
+     * @return 服务的运行方式
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String intentStr = (null == intent) ? "" : intent.toString();
@@ -186,18 +194,33 @@ public class TXMqttService extends Service {
         return START_STICKY;
     }
 
+    /**
+     * 服务绑定回调
+     *
+     * @param intent 绑定的 intent
+     * @return 代理 binder
+     */
     @Override
     public IBinder onBind(Intent intent) {
         TXLog.d(TAG, "onBind");
         return mMqttService;
     }
 
+    /**
+     * 解绑服务回调
+     *
+     * @param intent 解绑的 intent
+     * @return 解绑是否成功
+     */
     @Override
     public boolean onUnbind(Intent intent) {
         TXLog.d(TAG, "onUnbind");
         return super.onUnbind(intent);
     }
 
+    /**
+     * 销毁服务
+     */
     @Override
     public void onDestroy() {
         TXLog.d(TAG, "onDestroy");
@@ -231,7 +254,7 @@ public class TXMqttService extends Service {
     /**
      * 初始化设备信息
      *
-     * @param mqttClientOptions
+     * @param mqttClientOptions {@link TXMqttClientOptions}
      */
     private void initDeviceInfo(TXMqttClientOptions mqttClientOptions) {
         mProductId = mqttClientOptions.getProductId();
@@ -243,10 +266,10 @@ public class TXMqttService extends Service {
     }
 
     /**
-     * mqtt连接服务器
+     * mqtt 连接服务器
      *
-     * @param options
-     * @param userContextId
+     * @param options {@link TXMqttConnectOptions}
+     * @param userContextId 上下文的映射 ID
      */
     private String connect(TXMqttConnectOptions options, long userContextId) {
         Status status = Status.ERROR;
@@ -320,7 +343,7 @@ public class TXMqttService extends Service {
     /**
      * 重新连接
      *
-     * @return
+     * @return 重连结果
      */
     private String reconnect() {
         Status status = Status.ERROR;
@@ -336,7 +359,7 @@ public class TXMqttService extends Service {
     }
 
     /**
-     * mqtt断连
+     * mqtt 断连
      */
     private String disConnect(long timeout, long userContextId) {
         Status status = Status.ERROR;
@@ -370,10 +393,10 @@ public class TXMqttService extends Service {
     }
 
     /**
-     * 初始化OTA功能。
+     * 初始化 OTA 功能
      *
-     * @param storagePath OTA升级包存储路径(调用者必确保路径已存在，并且具有写权限)
-     * @param otaListener OTA事件回调
+     * @param storagePath OTA 升级包存储路径(调用者必确保路径已存在，并且具有写权限)
+     * @param otaListener OTA 事件回调
      */
     public void initOTA(String storagePath, ITXOTAListener otaListener) {
         if (!isInit) {
@@ -391,10 +414,10 @@ public class TXMqttService extends Service {
     }
 
     /**
-     * 上报设备当前版本信息到后台服务器。
+     * 上报设备当前版本信息到后台服务器
      *
      * @param currentFirmwareVersion 设备当前版本信息
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回Status.OK；其它返回值表示发送请求失败
      */
     public Status reportCurrentFirmwareVersion(String currentFirmwareVersion) {
         Status status = Status.ERROR;
@@ -408,13 +431,13 @@ public class TXMqttService extends Service {
     }
 
     /**
-     * 上报设备升级状态到后台服务器。
+     * 上报设备升级状态到后台服务器
      *
-     * @param state
-     * @param resultCode
-     * @param resultMsg
-     * @param version
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param state 状态
+     * @param resultCode 结果码
+     * @param resultMsg 结果信息
+     * @param version 版本号
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportOTAState(String state, int resultCode, String resultMsg, String version) {
         Status status = Status.ERROR;
@@ -648,7 +671,7 @@ public class TXMqttService extends Service {
 
         mMqttActionCallBack = new TXMqttActionCallBack() {
             @Override
-            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+            public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
                 if (null == mMqttActionListener) {
                     TXLog.d(TAG, "ITXMqttActionListener instance is null!");
                     return;
@@ -678,7 +701,7 @@ public class TXMqttService extends Service {
             }
 
             @Override
-            public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+            public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
                 if (null == mMqttActionListener) {
                     TXLog.d(TAG, "ITXMqttActionListener instance is null!");
                     return;
@@ -694,17 +717,17 @@ public class TXMqttService extends Service {
             }
 
             @Override
-            public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+            public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
                 TXMqttService.this.handlePublishCompleted(status, token, userContext, errMsg);
             }
 
             @Override
-            public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+            public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
                 TXMqttService.this.handleSubscribeCompleted(status, asyncActionToken, userContext, errMsg);
             }
 
             @Override
-            public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+            public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
                 TXMqttService.this.handleUnSubscribeCompleted(status, asyncActionToken, userContext, errMsg);
             }
 

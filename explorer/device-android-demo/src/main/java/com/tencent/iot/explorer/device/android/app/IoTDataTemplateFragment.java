@@ -2,8 +2,9 @@ package com.tencent.iot.explorer.device.android.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +16,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.tencent.iot.explorer.device.android.app.data_template.DataTemplateSample;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -28,6 +33,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -52,6 +64,9 @@ public class IoTDataTemplateFragment extends Fragment {
     private Button mEventPostBtn;
     private Button mEventsPostBtn;
 
+    private Button mDeviceLogBtn;
+    private Button mUploadLogBtn;
+
     private Button mCheckFirmwareBtn;
 
     private Spinner mSpinner;
@@ -68,6 +83,8 @@ public class IoTDataTemplateFragment extends Fragment {
 
     private final static String mJsonFileName = "struct.json";
 
+    /**日志保存的路径*/
+    private final static String mLogPath = Environment.getExternalStorageDirectory().getPath() + "/tencent/";
     private EditText mItemText;
 
     private final static String BROKER_URL = "broker_url";
@@ -94,6 +111,8 @@ public class IoTDataTemplateFragment extends Fragment {
         mClearControlBtn = view.findViewById(R.id.clear_control);
         mEventPostBtn = view.findViewById(R.id.event_report);
         mEventsPostBtn = view.findViewById(R.id.events_report);
+        mDeviceLogBtn = view.findViewById(R.id.mlog);
+        mUploadLogBtn = view.findViewById(R.id.uploadlog);
         mCheckFirmwareBtn = view.findViewById(R.id.check_firmware);
         mSpinner = view.findViewById(R.id.spinner4);
         mLogInfoText = view.findViewById(R.id.log_info);
@@ -163,7 +182,7 @@ public class IoTDataTemplateFragment extends Fragment {
                 mDevCert = settings.getString(DEVICE_CERT, mDevCert);
                 mDevPriv  = settings.getString(DEVICE_PRIV, mDevPriv);
 
-                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
+                mDataTemplateSample = new DataTemplateSample(mParent, mBrokerURL, mProductID, mDevName, mDevPSK, true, new SelfMqttLogCallBack(), new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
                 mDataTemplateSample.connect();
             }
         });
@@ -410,6 +429,27 @@ public class IoTDataTemplateFragment extends Fragment {
             }
         });
 
+        mDeviceLogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataTemplateSample == null)
+                    return;
+                mDataTemplateSample.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
+                mDataTemplateSample.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
+                mDataTemplateSample.mLog(TXMqttLogConstants.LEVEL_INFO,TAG,"Info level log for test!!!");
+                mDataTemplateSample.mLog(TXMqttLogConstants.LEVEL_DEBUG,TAG,"Debug level log for test!!!");
+            }
+        });
+
+        mUploadLogBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataTemplateSample == null)
+                    return;
+                mDataTemplateSample.uploadLog();
+            }
+        });
+
         mCheckFirmwareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -495,8 +535,14 @@ public class IoTDataTemplateFragment extends Fragment {
 
         @Override
         public void onUnbindDeviceCallBack(String msg) {
-            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            //用户删除设备的通知消息
             Log.d(TAG, "unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //用户绑定设备的通知消息
+            Log.d(TAG, "bind device received : " + msg);
         }
     }
 
@@ -506,7 +552,7 @@ public class IoTDataTemplateFragment extends Fragment {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -524,7 +570,7 @@ public class IoTDataTemplateFragment extends Fragment {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -534,7 +580,7 @@ public class IoTDataTemplateFragment extends Fragment {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -545,7 +591,7 @@ public class IoTDataTemplateFragment extends Fragment {
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -560,7 +606,7 @@ public class IoTDataTemplateFragment extends Fragment {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -575,5 +621,116 @@ public class IoTDataTemplateFragment extends Fragment {
             String logInfo = String.format("receive command, topic[%s], message[%s]", topic, message.toString());
             mParent.printLogInfo(TAG, logInfo, mLogInfoText);
         }
+    }
+
+    /**
+     * 实现TXMqttLogCallBack回调接口
+     */
+    private class SelfMqttLogCallBack extends TXMqttLogCallBack {
+
+        @Override
+        public String setSecretKey() {
+            String secertKey;
+            if (mDevPSK != null && mDevPSK.length() != 0) {  //密钥认证
+                secertKey = mDevPSK;
+                secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
+                return secertKey;
+            } else {
+                StringBuilder builder = new StringBuilder();
+                if (mDevPriv != null && mDevPriv.length() != 0) { //动态注册, 从DevPriv中读取
+                    builder.append(mDevPriv);
+                } else { //证书认证，从证书文件中读取
+                    return null;
+                }
+                String privateKey = builder.toString();
+                if (privateKey.contains("-----BEGIN PRIVATE KEY-----")) {
+                    secertKey = privateKey;
+                } else {
+                    secertKey = null;
+                    mParent.printLogInfo(TAG,"Invaild Private Key File.", mLogInfoText);
+                }
+            }
+            return secertKey;
+        }
+
+        @Override
+        public void printDebug(String message){
+            mParent.printLogInfo(TAG, message, mLogInfoText);
+            //TXLog.d(TAG,message);
+        }
+
+        @Override
+        public boolean saveLogOffline(String log){
+            //判断SD卡是否可用
+            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                mParent.printLogInfo(TAG, "saveLogOffline not ready", mLogInfoText);
+                return false;
+            }
+
+            String logFilePath = mLogPath + mProductID + mDevName + ".log";
+
+            TXLog.i(TAG, "Save log to %s", logFilePath);
+
+            try {
+                BufferedWriter wLog = new BufferedWriter(new FileWriter(new File(logFilePath), true));
+                wLog.write(log);
+                wLog.flush();
+                wLog.close();
+                return true;
+            } catch (IOException e) {
+                String logInfo = String.format("Save log to [%s] failed, check the Storage permission!", logFilePath);
+                mParent.printLogInfo(TAG,logInfo, mLogInfoText);
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        @Override
+        public String readOfflineLog(){
+            //判断SD卡是否可用
+            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                mParent.printLogInfo(TAG, "readOfflineLog not ready", mLogInfoText);
+                return null;
+            }
+
+            String logFilePath = mLogPath + mProductID + mDevName + ".log";
+
+            TXLog.i(TAG, "Read log from %s", logFilePath);
+
+            try {
+                BufferedReader logReader = new BufferedReader(new FileReader(logFilePath));
+                StringBuilder offlineLog = new StringBuilder();
+                int data;
+                while (( data = logReader.read()) != -1 ) {
+                    offlineLog.append((char)data);
+                }
+                logReader.close();
+                return offlineLog.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        public boolean delOfflineLog(){
+
+            //判断SD卡是否可用
+            if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                mParent.printLogInfo(TAG, "delOfflineLog not ready", mLogInfoText);
+                return false;
+            }
+
+            String logFilePath = mLogPath + mProductID + mDevName + ".log";
+
+            File file = new File(logFilePath);
+            if (file.exists() && file.isFile()) {
+                if (file.delete()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }

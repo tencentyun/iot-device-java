@@ -54,19 +54,19 @@ public class LightSample {
     //light property
     public ConcurrentHashMap<String, Object> mProperty = null;
 
-    public LightSample( String brokerURL, String productId, String devName, String devCertName, String devKeyName, final String jsonFileName) {
+    public LightSample( String brokerURL, String productId, String devName, String devCertName, String devKeyName, final String jsonFileName, final String jsonFilePath) {
 
         this.mDevCertName = devCertName;
         this.mDevKeyName = devKeyName;
         //初始化模板数据
         initTemplateData();
-        mDataTemplateClient = new TXDataTemplateClient(  brokerURL, productId, devName, null,null,null, new LightSampleMqttActionCallBack(), jsonFileName, new LightSampleDownStreamCallBack());
+        mDataTemplateClient = new TXDataTemplateClient(  brokerURL, productId, devName, null,null,null, new LightSampleMqttActionCallBack(), jsonFileName, jsonFilePath, new LightSampleDownStreamCallBack());
     }
 
-    public LightSample( String brokerURL, String productId, String devName, String devPSK, final String jsonFileName) {
+    public LightSample( String brokerURL, String productId, String devName, String devPSK, final String jsonFileName, final String jsonFilePath) {
         //初始化模板数据
         initTemplateData();
-        mDataTemplateClient = new TXDataTemplateClient( brokerURL, productId, devName, devPSK,null,null, new LightSampleMqttActionCallBack(), jsonFileName, new LightSampleDownStreamCallBack());
+        mDataTemplateClient = new TXDataTemplateClient( brokerURL, productId, devName, devPSK,null,null, new LightSampleMqttActionCallBack(), jsonFileName, jsonFilePath, new LightSampleDownStreamCallBack());
     }
 
     /**
@@ -252,6 +252,8 @@ public class LightSample {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
+            this.setName("tencent-sample-light-report-property-periodically-thread");
+
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();
                 for(Map.Entry<String, Object> entry: mProperty.entrySet())
@@ -375,6 +377,12 @@ public class LightSample {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
             LOG.debug("unbind device received : " + msg);
         }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            LOG.debug("bind device received : " + msg);
+        }
     }
 
     /**
@@ -383,7 +391,7 @@ public class LightSample {
     private class LightSampleMqttActionCallBack extends TXMqttActionCallBack {
         /**初次连接成功则订阅相关主题*/
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if(Status.OK == status && !reconnect) { //初次连接订阅主题,重连后会自动订阅主题
                 if (Status.OK != mDataTemplateClient.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
                     LOG.error(TAG, "subscribeTopic: subscribe property down stream topic failed!");
@@ -417,7 +425,7 @@ public class LightSample {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -427,7 +435,7 @@ public class LightSample {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -439,7 +447,7 @@ public class LightSample {
 
         /**订阅属性下行主题成功则获取状态和上报信息，启动周期性上报属性线程*/
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -463,7 +471,7 @@ public class LightSample {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

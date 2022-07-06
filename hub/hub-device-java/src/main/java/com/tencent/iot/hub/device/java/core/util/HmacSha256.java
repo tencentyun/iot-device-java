@@ -4,10 +4,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Created by jamesbonddu on 2018/5/30.
+ * 签名类
  */
-
-
 public class HmacSha256 {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
@@ -16,8 +14,8 @@ public class HmacSha256 {
      * 生成签名数据
      *
      * @param data 待加密的数据
-     * @param key  加密使用的key
-     * @return 生成16进制编码的字符串
+     * @param key 加密使用的 key
+     * @return 生成 16 进制编码的字符串
      */
     public static String getSignature(byte[] data, byte[] key)  {
         try {
@@ -36,7 +34,7 @@ public class HmacSha256 {
     }
 
     /**
-     * byte[]数组转换为16进制的字符串
+     * byte[]数组转换为 16 进制的字符串
      *
      * @param bytes 要转换的字节数组
      * @return 转换后的结果

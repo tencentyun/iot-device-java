@@ -1,12 +1,14 @@
+简体中文 | [English](docs/en)
+
 ## 概述
-该演示Demo有三个演示入口，其中`IOT DEMO`主要演示[Explorer Device Android SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-android) 基础功能和个别使用场景; `IOT AI FACE Demo`
-演示了[Explorer Device Face SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-face)的简单应用; `IOT TRTC DEMO`演示[Explorer Device RTC SDK](https://github.com/tencentyun/iot-device-java/tree/master/explorer/explorer-device-rtc)的简单应用.
+该演示Demo有四个演示入口，其中`IOT DEMO`主要演示[Explorer Device Android SDK](../explorer-device-android) 基础功能和个别使用场景; `IOT AI FACE Demo` 演示了[Explorer Device Face SDK](../explorer-device-face)的简单应用; `IOT TRTC DEMO`演示[Explorer Device RTC SDK](../explorer-device-rtc)的简单应用; `IOT TME DEMO`演示[Explorer Device TME SDK](../explorer-device-tme)的简单应用.
 ## Demo入口示意图
 ```
 ├── Demo
 │   ├── IOT DEMO
 │   ├── IOT AI FACE DEMO
 │   ├── IOT TRTC DEMO
+│   ├── IOT TME DEMO
 ```
 
 ## IOT Demo
@@ -14,7 +16,7 @@
 ### 数据模板
 该页面从上至下包含三部分：`参数设置区`、`功能操作区`、`日志输出区`
 1. 参数设置区
-    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](https://github.com/tencentyun/iot-device-java/blob/master/explorer/device-android-demo/src/main/assets/app-config.json)中设置即可
+    * 包含下拉选择参数key和参数value输入框(可以不在此处设置)，在[app-config.json](src/main/assets/app-config.json)中设置即可
 2. 功能操作区
     * 包含设备上下线、Topic相关(订阅主题/取消订阅主题)、属性上报、状态更新、设备信息上报、清除控制、事件上报、检查固件更新等操作
     * 注意：在操作功能区其他功能的前提是点击`设备上线`且日志输出区打印出`onConnectComplete，status[ok]`字样
@@ -44,9 +46,26 @@
 待补充
 ## IOT TRTC DEMO
 该页面主要包含两部分：`设备二维码生成区`、`音视频通话区`，主要演示App与trtc设备间的音视频通话场景
-1、设备二维码生成区
+
+1. 设备二维码生成区
     * 填写trtc设备三元组信息（产品ID、设备名称、设备密钥）
     * 点击设备上线即可生成trtc设备的二维码，可通过`腾讯连连App`扫描该二维码进行设备绑定
-2、音视频通话区
+
+2. 音视频通话区
+
     * 可以点击`音频呼叫`或`视频呼叫`按钮进行设备与App间通话，前提是App已经绑定了该设备
+
+## IOT TME DEMO
+该Demo包含两部分：`设备信息配置页面`、`音乐播放控制页面`；该Demo主要演示`腾讯连连App`/`腾讯连连小程序`与设备间的播放控制场景
+
+1. 设备信息配置页面
+    * 填写设备三元组信息（产品ID、设备名称、设备密钥）
+    * 点击配置即可跳转至`播放控制页面`
+
+2. 播放控制页面
+    * 可以点击`OFFLINE`按钮使设备上线
+    * 该页面其他控件是基本的播放控制按键，该页面目前支持音量调节、播放进度调节、播放模式切换、播放/暂停切换、切歌、音质调节等能力
+
+3. 如何进入预发或体验环境
+    * 在`设备信息配置页面`的`Broker Url`输入框中输入环境对应的Broker Url
 

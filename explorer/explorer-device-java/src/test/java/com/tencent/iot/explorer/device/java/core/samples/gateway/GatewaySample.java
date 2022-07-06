@@ -44,7 +44,7 @@ public class GatewaySample {
 
     private String workDir = System.getProperty("user.dir") + "/explorer/explorer-device-java/src/test/resources/";
 
-    public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, String subDev1ProductId, String subDev2ProductId) {
+    public GatewaySample(String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, final String jsonFileName, final String jsonFilePath, String subDev1ProductId, String subDev2ProductId) {
 
         this.mDevPSK = devPSK;
         this.mSubDev1ProductId = subDev1ProductId;
@@ -52,7 +52,7 @@ public class GatewaySample {
         this.mDevCertName = devCertName;
         this.mDevKeyName = devKeyName;
         mConnection = new TXGatewayClient(brokerURL, productId, devName, devPSK,null,null,
-                                new GatewaySampleMqttActionCallBack(), jsonFileName, new GatewaySampleDownStreamCallBack());
+                new GatewaySampleMqttActionCallBack(), jsonFileName, jsonFilePath, new GatewaySampleDownStreamCallBack());
     }
 
     /**
@@ -188,6 +188,12 @@ public class GatewaySample {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
             LOG.debug("unbind device received : " + msg);
         }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            LOG.debug("bind device received : " + msg);
+        }
     }
 
     /**
@@ -196,7 +202,7 @@ public class GatewaySample {
     private class GatewaySampleMqttActionCallBack extends TXMqttActionCallBack {
         /**初次连接成功则订阅相关主题*/
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if(Status.OK == status && !reconnect) { //初次连接订阅主题,重连后会自动订阅主题
                 if (Status.OK != mConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
                     LOG.error("subscribeTopic: subscribe property down stream topic failed!");
@@ -228,7 +234,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -238,7 +244,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -250,7 +256,7 @@ public class GatewaySample {
 
         /**订阅子设备主题相关主题成功，则调用子设备onSubscribeCompleted*/
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -280,7 +286,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

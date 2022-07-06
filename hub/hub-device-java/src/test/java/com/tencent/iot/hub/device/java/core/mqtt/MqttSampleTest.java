@@ -4,10 +4,10 @@ import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.utils.Loggor;
+
 import main.mqtt.MQTTRequest;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -46,7 +46,7 @@ public class MqttSampleTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MqttSampleTest.class);
 
-	private static final String TAG = "TXMQTT";
+	private static final String TAG = MqttSampleTest.class.getSimpleName();
 
 	private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
 
@@ -62,12 +62,13 @@ public class MqttSampleTest {
 	private static TXMqttConnection mqttconnection;
 	private static MqttConnectOptions options;
 
-	/**日志保存的路径*/
-	private final static String mLogPath = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
-	/**
-	 * 请求ID
-	 */
-	private static AtomicInteger requestID = new AtomicInteger(0);
+	static {
+		Loggor.setLogger(LOG);
+	}
+
+	private static final String mLogPath = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
+
+	private static final AtomicInteger requestID = new AtomicInteger(0);
 
 	private static void connect() {
 		String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
@@ -80,13 +81,13 @@ public class MqttSampleTest {
 		//客户端证书文件名  mDevPSK是设备秘钥
 
 		if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
-			LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+			Loggor.info(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
 		} else if (mDevPSK != null && mDevPSK.length() != 0){
-			LOG.info("Using PSK");
-//				options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
+			Loggor.info(TAG, "Using PSK");
+			// options.setSocketFactory(AsymcSslUtils.getSocketFactory());   如果您使用的是3.3.0及以下版本的 hub-device-java sdk，由于密钥认证默认配置的ssl://的url，请添加此句setSocketFactory配置。
 		} else {
-			LOG.info("Using cert file");
+			Loggor.info(TAG, "Using cert file");
 			options.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
 		}
 		mqttconnection = new TXMqttConnection(mBrokerURL, mProductID, mDevName, mDevPSK,null,null ,true, new SelfMqttLogCallBack(), new callBack());
@@ -125,14 +126,14 @@ public class MqttSampleTest {
 				jsonObject.put(entrys.getKey(), entrys.getValue());
 			}
 		} catch (JSONException e) {
-			LOG.error(e.getMessage()+"pack json data failed!");
+			Loggor.error(TAG, e.getMessage()+"pack json data failed!");
 		}
 		message.setQos(TXMqttConstants.QOS1);
 		message.setPayload(jsonObject.toString().getBytes());
 
 		// 用户上下文（请求实例）
 
-		LOG.debug("pub topic " + mTestTopic + message);
+		Loggor.debug(TAG, "pub topic " + mTestTopic + message);
 		// 发布主题
 		mqttconnection.publish(mTestTopic, message, null);
 	}
@@ -151,6 +152,18 @@ public class MqttSampleTest {
 		mqttconnection.subscribeBroadcastTopic(TXMqttConstants.QOS1, mqttRequest);
 	}
 
+	public void subscribeNTPTopic() {
+		// QOS等级
+		int qos = TXMqttConstants.QOS1;
+		// 用户上下文（请求实例）
+		MQTTRequest mqttRequest = new MQTTRequest("subscribeNTPTopic", requestID.getAndIncrement());
+		mqttconnection.subscribeNTPTopic(qos, mqttRequest);
+	}
+
+	public void getNTPService() {
+		mqttconnection.getNTPService();
+	}
+
 	private static void deviceLog() {
 		mqttconnection.mLog(TXMqttLogConstants.LEVEL_ERROR,TAG,"Error level log for test!!!");
 		mqttconnection.mLog(TXMqttLogConstants.LEVEL_WARN,TAG,"Warning level log for test!!!");
@@ -165,38 +178,38 @@ public class MqttSampleTest {
 	public static class callBack extends TXMqttActionCallBack {
 
 		@Override
-		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+		public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
 					status.name(), reconnect, userContextInfo, msg);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 			unlock();
 		}
 
 		@Override
 		public void onConnectionLost(Throwable cause) {
 			String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 
 		}
 
 		@Override
-		public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+		public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-			LOG.info(logInfo);
+			Loggor.info(TAG, logInfo);
 			unlock();
 		}
 
 		@Override
-		public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+		public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 			if (status == Status.OK && Arrays.toString(token.getTopics()).contains(mTestTopic)) {
 				publishTopicSuccess = true;
 				unlock();
@@ -204,15 +217,15 @@ public class MqttSampleTest {
 		}
 
 		@Override
-		public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+		public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
 			if (Status.ERROR == status) {
-				LOG.error(logInfo);
+				Loggor.error(TAG, logInfo);
 			} else {
-				LOG.debug(logInfo);
+				Loggor.debug(TAG, logInfo);
 				if (Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)){ // 订阅mTestTopic成功
 					subscribeTopicSuccess = true;
 					unlock();
@@ -222,17 +235,20 @@ public class MqttSampleTest {
 				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("broadcast/rxd")) { // broadcast Topic成功
 					subscribeBroadCastTopicSuccess = true;
 					unlock();
+				} else if (Arrays.toString(asyncActionToken.getTopics()).contains("sys/operation")) { // broadcast Topic成功
+					subscribeNTPTopicSuccess = true;
+					unlock();
 				}
 			}
 		}
 
 		@Override
-		public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+		public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
 			String userContextInfo = "";
 
 			String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
 					status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
 			if (status == Status.OK && Arrays.toString(asyncActionToken.getTopics()).contains(mTestTopic)) {
 				unSubscribeTopicSuccess = true;
 				unlock();
@@ -242,7 +258,11 @@ public class MqttSampleTest {
 		@Override
 		public void onMessageReceived(final String topic, final MqttMessage message) {
 			String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
-			LOG.debug(logInfo);
+			Loggor.debug(TAG, logInfo);
+			if (message.toString().contains("\"type\":\"get\"") && message.toString().contains("ntptime")) {
+				getNTPServiceSuccess = true;
+				unlock();
+			}
 		}
 	}
 
@@ -270,7 +290,7 @@ public class MqttSampleTest {
 						String workDir = System.getProperty("user.dir") + "/hub/hub-device-java/src/test/resources/";
 						cert=new BufferedReader(new InputStreamReader(new FileInputStream(new File(workDir + mCertFilePath))));
 					} catch (IOException e) {
-						LOG.error("getSecertKey failed, cannot open CRT Files.");
+						Loggor.error(TAG, "getSecertKey failed, cannot open CRT Files.");
 						return null;
 					}
 				}
@@ -281,11 +301,11 @@ public class MqttSampleTest {
 						secertKey = secertKey.length() > 24 ? secertKey.substring(0,24) : secertKey;
 					} else {
 						secertKey = null;
-						LOG.error("Invaild CRT Files.");
+						Loggor.error(TAG, "Invaild CRT Files.");
 					}
 					cert.close();
 				} catch (IOException e) {
-					LOG.error("getSecertKey failed.");
+					Loggor.error(TAG, "getSecertKey failed.");
 					return null;
 				}
 			}
@@ -295,7 +315,7 @@ public class MqttSampleTest {
 
 		@Override
 		public void printDebug(String message){
-			LOG.debug(message);
+			Loggor.debug(TAG, message);
 		}
 
 		@Override
@@ -303,7 +323,7 @@ public class MqttSampleTest {
 
 			String logFilePath = mLogPath + mProductID + mDevName + ".log";
 
-			LOG.debug("Save log to %s", logFilePath);
+			Loggor.debug(TAG, "Save log to " + logFilePath);
 
 			try {
 				BufferedWriter wLog = new BufferedWriter(new FileWriter(new File(logFilePath), true));
@@ -313,7 +333,7 @@ public class MqttSampleTest {
 				return true;
 			} catch (IOException e) {
 				String logInfo = String.format("Save log to [%s] failed, check the Storage permission!", logFilePath);
-				LOG.error(logInfo);
+				Loggor.error(TAG, logInfo);
 				e.printStackTrace();
 				return false;
 			}
@@ -324,7 +344,7 @@ public class MqttSampleTest {
 
 			String logFilePath = mLogPath + mProductID + mDevName + ".log";
 
-			LOG.debug("Read log from %s", logFilePath);
+			Loggor.debug(TAG, "Read log from " + logFilePath);
 
 			try {
 				BufferedReader logReader = new BufferedReader(new FileReader(logFilePath));
@@ -368,6 +388,8 @@ public class MqttSampleTest {
 	private static boolean unSubscribeTopicSuccess = false;
 	private static boolean subscribeRRPCTopicSuccess = false;
 	private static boolean subscribeBroadCastTopicSuccess = false;
+	private static boolean subscribeNTPTopicSuccess = false;
+	private static boolean getNTPServiceSuccess = false;
 
 	private static void lock() {
 		latch = new CountDownLatch(COUNT);
@@ -384,44 +406,50 @@ public class MqttSampleTest {
 
 	@Test
 	public void testMqttConnect() {
-
-		LogManager.resetConfiguration();
-		LOG.isDebugEnabled();
-		PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
+        // Loggor.saveLogs("hub/hub-device-java.log"); //保存日志到文件
 		connect();
 		lock();
 		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-		LOG.debug("after connect");
+		Loggor.debug(TAG, "after connect");
 
 		subscribeTopic();
 		lock();
 		assertTrue(subscribeTopicSuccess);
-		LOG.debug("after subscribe");
+		Loggor.debug(TAG, "after subscribe");
 
 		publishTopic();
 		lock();
 		assertTrue(publishTopicSuccess);
-		LOG.debug("after publish");
+		Loggor.debug(TAG, "after publish");
 
 		unSubscribeTopic();
 		lock();
 		assertTrue(unSubscribeTopicSuccess);
-		LOG.debug("after unSubscribe");
+		Loggor.debug(TAG, "after unSubscribe");
 
 		subscribeRRPCTopic();
 		lock();
 		assertTrue(subscribeRRPCTopicSuccess);
-		LOG.debug("after subscribeRRPCTopic");
+		Loggor.debug(TAG, "after subscribeRRPCTopic");
 
 		subscribeBroadCastTopic();
 		lock();
 		assertTrue(subscribeBroadCastTopicSuccess);
-		LOG.debug("after subscribeBroadCastTopic");
+		Loggor.debug(TAG, "after subscribeBroadCastTopic");
+
+		subscribeNTPTopic();
+		lock();
+		assertTrue(subscribeNTPTopicSuccess);
+		Loggor.debug(TAG, "after subscribeNTPTopic");
+
+		getNTPService();
+		lock();
+		assertTrue(getNTPServiceSuccess);
+		Loggor.debug(TAG, "after getNTPService");
 
 		disconnect();
 		lock();
 		assertSame(mqttconnection.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
-		LOG.debug("after disconnect");
+		Loggor.debug(TAG, "after disconnect");
 	}
 }

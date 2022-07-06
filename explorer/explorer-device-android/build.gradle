@@ -107,6 +107,11 @@ publishing {
                 dependencyNode.appendNode('groupId', "com.tencent.iot.explorer")
                 dependencyNode.appendNode('artifactId', "explorer-device-java")
                 dependencyNode.appendNode('version', "${rootProject.ext.sdk.version}")
+
+                def dependencyNodehub = dependenciesNode.appendNode('dependency')
+                dependencyNodehub.appendNode('groupId', "com.tencent.iot.hub")
+                dependencyNodehub.appendNode('artifactId', "hub-device-android")
+                dependencyNodehub.appendNode('version', "${rootProject.ext.sdk.version}")
             }
         }
     }
@@ -127,8 +132,18 @@ publishing {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.13'
+    // Optional -- Mockito framework（可选，用于模拟一些依赖对象，以达到隔离依赖的效果）
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+
+    testImplementation "androidx.test.ext:junit:1.1.3"
+    testImplementation "org.robolectric:robolectric:4.5.1"
+
     if (findProject(':explorer:explorer-device-java') != null) {
         api project(path: ':explorer:explorer-device-java')
+    }
+
+    if (findProject(':hub:hub-device-android') != null) {
+        api project(path: ':hub:hub-device-android')
     }
 }
 

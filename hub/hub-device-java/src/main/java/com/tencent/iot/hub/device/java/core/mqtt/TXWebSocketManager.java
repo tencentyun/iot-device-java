@@ -10,6 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * websocket 连接管理器
+ */
 public class TXWebSocketManager {
 
     private String TAG = TXWebSocketManager.class.getSimpleName();
@@ -32,6 +35,11 @@ public class TXWebSocketManager {
 
     private TXWebSocketManager() { }
 
+    /**
+     * 获取单例
+     *
+     * @return 单例实体
+     */
     public synchronized static TXWebSocketManager getInstance() {
         if (instance == null) {
             instance = new TXWebSocketManager();
@@ -39,6 +47,15 @@ public class TXWebSocketManager {
         return instance;
     }
 
+    /**
+     * 获取连接对象
+     *
+     * @param wsUrl 服务器 URL
+     * @param productId 产品 ID
+     * @param devicename 设备名
+     * @param secretKey 密钥
+     * @return 连接对象 {@link TXWebSocketClient}
+     */
     public synchronized TXWebSocketClient getClient(String wsUrl, String productId, String devicename, String secretKey) {
         if (isEmpty(productId) || isEmpty(devicename)) {
             Loggor.error(TAG, "productId or devicename empty");
@@ -69,10 +86,24 @@ public class TXWebSocketManager {
         return clients.get(clientId);
     }
 
+    /**
+     * 获取连接对象
+     *
+     * @param productId 产品 ID
+     * @param devicename 设备名
+     * @param secretKey 密钥
+     * @return 连接对象 {@link TXWebSocketClient}
+     */
     public synchronized TXWebSocketClient getClient(String productId, String devicename, String secretKey) {
         return getClient(null, productId, devicename, secretKey);
     }
 
+    /**
+     * 释放连接对象
+     *
+     * @param productId 产品 ID
+     * @param devicename 设备名
+     */
     public synchronized void releaseClient(String productId, String devicename) {
 
         // 移除对象默认关闭连接

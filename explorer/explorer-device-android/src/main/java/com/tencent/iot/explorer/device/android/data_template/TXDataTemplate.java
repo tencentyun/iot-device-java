@@ -54,7 +54,7 @@ import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateC
 public class TXDataTemplate extends DataTemplate {
 
     public static final String TAG = "TXDATATEMPLATE";
-    private static final CustomLog CUSTOM_LOG = new CustomLog(TAG);
+    private static final CustomLog CUSTOM_LOG = new CustomLog();
 
     /**
      * @param context            用户上下文（这个参数在回调函数时透传给用户）

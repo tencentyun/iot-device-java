@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -41,7 +43,7 @@ public class AuthActivity extends AppCompatActivity {
     static {
         System.loadLibrary("YTCommon");
         System.loadLibrary("YTFaceFeature");
-        System.loadLibrary("YTFaceAlignment");
+        System.loadLibrary("YTFaceAlign");
         System.loadLibrary("YTFaceQuality");
         System.loadLibrary("YTFaceTracker");
         System.loadLibrary("YTFaceQualityPro");
@@ -215,21 +217,16 @@ public class AuthActivity extends AppCompatActivity {
 
     private void connect() {
         SharedPreferences settings = getSharedPreferences("config", Context.MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(BROKER_URL, mBrokerURL);
-        editor.putString(PRODUCT_ID, mProductID);
-        editor.putString(DEVICE_NAME, mDevName);
-        editor.putString(DEVICE_PSK, mDevPSK);
-        editor.commit();
-
         mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
         mProductID = settings.getString(PRODUCT_ID, mProductID);
         mDevName = settings.getString(DEVICE_NAME, mDevName);
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
-
-        FaceKitSample.getInstance().init(getApplicationContext(), mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
-        FaceKitSample.getInstance().connect();
+        if (TextUtils.isEmpty(mProductID) || TextUtils.isEmpty(mDevName) || TextUtils.isEmpty(mDevPSK)) {
+            Toast.makeText(this, "请配置正确的ProductID/DeviceName/DevicePSK，然后重试", Toast.LENGTH_LONG).show();
+        } else {
+            FaceKitSample.getInstance().init(getApplicationContext(), mBrokerURL, mProductID, mDevName, mDevPSK, new SelfMqttActionCallBack(), mJsonFileName, new SelfDownStreamCallBack());
+            FaceKitSample.getInstance().connect();
+        }
     }
 
     /**
@@ -302,8 +299,14 @@ public class AuthActivity extends AppCompatActivity {
 
         @Override
         public void onUnbindDeviceCallBack(String msg) {
-            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            //用户删除设备的通知消息
             Log.d(TAG, "unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //用户绑定设备的通知消息
+            Log.d(TAG, "bind device received : " + msg);
         }
     }
 
@@ -313,7 +316,7 @@ public class AuthActivity extends AppCompatActivity {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -354,7 +357,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -364,7 +367,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -375,7 +378,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -390,7 +393,7 @@ public class AuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

@@ -6,9 +6,8 @@ import org.eclipse.paho.client.mqttv3.MqttToken;
 import java.util.Arrays;
 
 /**
- * 该类负责序列化MqttToken相关信息
+ * 该类负责序列化 MqttToken 相关信息
  */
-
 public class TXMqttToken {
 
     private String[] mTopics = null;
@@ -17,17 +16,34 @@ public class TXMqttToken {
     private int[] mGrantedQos = null;
     private boolean mSessionPresent = false;
 
+    /**
+     * 构造函数
+     */
     public TXMqttToken() {
     }
 
-    public TXMqttToken(String[] topics, boolean mCompleted, int mMessageID, int[] mGrantedQos, boolean mSessionPresent) {
+    /**
+     * 构造函数
+     *
+     * @param topics 主题
+     * @param completed 完成标记
+     * @param messageID 消息 ID
+     * @param grantedQos 消息 qos
+     * @param sessionPresent 体显 session
+     */
+    public TXMqttToken(String[] topics, boolean completed, int messageID, int[] grantedQos, boolean sessionPresent) {
         this.mTopics = topics;
-        this.mCompleted = mCompleted;
-        this.mMessageID = mMessageID;
-        this.mGrantedQos = mGrantedQos;
-        this.mSessionPresent = mSessionPresent;
+        this.mCompleted = completed;
+        this.mMessageID = messageID;
+        this.mGrantedQos = grantedQos;
+        this.mSessionPresent = sessionPresent;
     }
 
+    /**
+     * 构造函数
+     *
+     * @param mqttToken {@link IMqttToken}
+     */
     public TXMqttToken(IMqttToken mqttToken) {
         if (null != mqttToken.getTopics() && mqttToken.getTopics().length > 0) {
             mTopics = new String[mqttToken.getTopics().length];
@@ -42,6 +58,11 @@ public class TXMqttToken {
         mSessionPresent = mqttToken.getSessionPresent();
     }
 
+    /**
+     * 转换 MqttToken {@link MqttToken}
+     *
+     * @return {@link MqttToken}
+     */
     public MqttToken transToMqttToken() {
         MqttToken mqttToken = new MqttToken("TXMqttToken");
         mqttToken.internalTok.setTopics(mTopics);
@@ -49,6 +70,11 @@ public class TXMqttToken {
         return mqttToken;
     }
 
+    /**
+     * 转换成标准格式的字符串内容
+     *
+     * @return 标准字符串内容
+     */
     @Override
     public String toString() {
         return "TXMqttToken{" +
@@ -60,42 +86,91 @@ public class TXMqttToken {
                 '}';
     }
 
+    /**
+     * 获取主题
+     *
+     * @return 主题数组
+     */
     public String[] getTopics() {
         return mTopics;
     }
 
+    /**
+     * 设置主题
+     *
+     * @param topics 主题数组
+     */
     public void setTopics(String[] topics) {
         this.mTopics = topics;
     }
 
+    /**
+     * 是否完成标记
+     *
+     * @return 完成标记
+     */
     public boolean isCompleted() {
         return mCompleted;
     }
 
+    /**
+     * 设置完成标记
+     *
+     * @param completed 完成标记
+     */
     public void setCompleted(boolean completed) {
         this.mCompleted = completed;
     }
 
+    /**
+     * 获取消息 ID
+     *
+     * @return 消息 ID
+     */
     public int getMessageID() {
         return mMessageID;
     }
 
+    /**
+     * 设置消息 ID
+     *
+     * @param messageID 消息 ID
+     */
     public void setMessageID(int messageID) {
         this.mMessageID = messageID;
     }
 
+    /**
+     * 获取消息 qos
+     *
+     * @return 消息 qos
+     */
     public int[] getGrantedQos() {
         return mGrantedQos;
     }
 
+    /**
+     * 设置消息 qos
+     * @param grantedQos 消息 qos
+     */
     public void setGrantedQos(int[] grantedQos) {
         this.mGrantedQos = grantedQos;
     }
 
+    /**
+     * 是否体现 session
+     *
+     * @return 体显 session 的标记
+     */
     public boolean isSessionPresent() {
         return mSessionPresent;
     }
 
+    /**
+     * 设置是否体现 session
+     *
+     * @param sessionPresent 体显 session 的标记
+     */
     public void setSessionPresent(boolean sessionPresent) {
         this.mSessionPresent = sessionPresent;
     }

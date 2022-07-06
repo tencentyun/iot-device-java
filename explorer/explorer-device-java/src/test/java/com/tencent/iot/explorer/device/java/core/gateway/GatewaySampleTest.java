@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.tencent.iot.explorer.device.java.core.samples.gateway.GatewaySample;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -14,7 +15,7 @@ import static org.junit.Assert.assertSame;
 
 public class GatewaySampleTest {
     private static final Logger LOG = LoggerFactory.getLogger(GatewaySampleTest.class);
-    private static final String TAG = "TXGatewaySample";
+    private static final String TAG = GatewaySampleTest.class.getSimpleName();
     private static GatewaySample mGatewaySample;
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private static String mProductID = BuildConfig.TESTGATEWAYSAMPLE_PRODUCT_ID;
@@ -24,6 +25,7 @@ public class GatewaySampleTest {
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
     private static String mJsonFileName = "gateway.json";
+    private static String mJsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
 
     private static String mSubDev1ProductId = BuildConfig.TESTGATEWAYSAMPLE_SUB1_PRODUCT_ID;
     private static String mSubDev1DeviceName = BuildConfig.TESTGATEWAYSAMPLE_SUB1_DEV_NAME;
@@ -31,13 +33,15 @@ public class GatewaySampleTest {
 
     private static String mSubDev2ProductId = BuildConfig.TESTGATEWAYSAMPLE_SUB2_PRODUCT_ID;
     private static String mSubDev2DeviceName = BuildConfig.TESTGATEWAYSAMPLE_SUB2_DEV_NAME;
+    static {
+        Loggor.setLogger(LOG);
+    }
 
     private static void gatewayOffline() {
         try {
             Thread.sleep(2000);
             mGatewaySample.offline();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -47,7 +51,6 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.gatewayBindSubdev(productId, deviceName, devicePsk);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -57,7 +60,6 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.gatewayUnbindSubdev(productId, deviceName);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -67,7 +69,6 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.addSubDev(productId,deviceName);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -77,7 +78,6 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.delSubDev(productId,deviceName);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -87,7 +87,6 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.onlineSubDev(productId,deviceName);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -97,14 +96,14 @@ public class GatewaySampleTest {
             Thread.sleep(2000);
             mGatewaySample.offlineSubDev(productId,deviceName);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
     @Test
     public void testGatewayConnect() {
-        mGatewaySample = new GatewaySample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mSubDev1ProductId, mSubDev2ProductId);
+        // Loggor.saveLogs("explorer/explorer-device-java.log"); //保存日志到文件
+        mGatewaySample = new GatewaySample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, mJsonFileName, mJsonFilePath, mSubDev1ProductId, mSubDev2ProductId);
 
         mGatewaySample.online();
 

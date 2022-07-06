@@ -1,6 +1,7 @@
 package com.tencent.iot.hub.device.java.core.mqtt;
 
 import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class WebsocketMqttSampleTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebsocketMqttSampleTest.class);
+    private static final String TAG = WebsocketMqttSampleTest.class.getSimpleName();
 
     private static String mProductID = BuildConfig.TESTWEBSOCKETMQTTSAMPLE_PRODUCT_ID;
     private static String mDevName = BuildConfig.TESTWEBSOCKETMQTTSAMPLE_DEVICE_NAME;
@@ -34,6 +36,10 @@ public class WebsocketMqttSampleTest {
     private static String mPrivKeyFilePath = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static String mDevCert = "DEVICE_CERT_CONTENT_STRING";           // Cert String
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_CONTENT_STRING";           // Priv String
+
+    static {
+        Loggor.setLogger(LOG);
+    }
 
     private static void websocketdisconnect() {
         try {
@@ -47,18 +53,16 @@ public class WebsocketMqttSampleTest {
     private static void websocketConnect() {
 
         try {
-            // init connection
             MqttConnectOptions conOptions = new MqttConnectOptions();
             conOptions.setCleanSession(true);
 
             if (mDevPSK != null && mDevPSK.length() != 0) {
-                LOG.info("Using PSK");
-//                conOptions.setSocketFactory(AsymcSslUtils.getSocketFactory());
+                Loggor.info(TAG, "Using PSK");
             } else if (mDevPriv != null && mDevCert != null && mDevPriv.length() != 0 && mDevCert.length() != 0 && !mDevCert.equals("DEVICE_CERT_CONTENT_STRING") && !mDevPriv.equals("DEVICE_PRIVATE_KEY_CONTENT_STRING")) {
-                LOG.info("Using cert stream " + mDevPriv + "  " + mDevCert);
+                Loggor.info(TAG, "Using cert stream " + mDevPriv + "  " + mDevCert);
                 conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByStream(new ByteArrayInputStream(mDevCert.getBytes()), new ByteArrayInputStream(mDevPriv.getBytes())));
             } else {
-                LOG.info("Using cert file");
+                Loggor.info(TAG, "Using cert file");
                 String workDir = System.getProperty("user.dir") + "/src/test/resources/";
                 conOptions.setSocketFactory(AsymcSslUtils.getSocketFactoryByFile(workDir + mCertFilePath, workDir + mPrivKeyFilePath));
             }
@@ -73,23 +77,23 @@ public class WebsocketMqttSampleTest {
 
                 @Override
                 public void onConnected() {
-                    LOG.debug("onConnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
+                    Loggor.debug(TAG, "onConnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
                     unlock();
                 }
 
                 @Override
                 public void onMessageArrived(String topic, MqttMessage message) {
-                    LOG.debug("onMessageArrived topic= " + topic);
+                    Loggor.debug(TAG, "onMessageArrived topic= " + topic);
                 }
 
                 @Override
                 public void onConnectionLost(Throwable cause) {
-                    LOG.debug("onConnectionLost " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
+                    Loggor.debug(TAG, "onConnectionLost " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
                 }
 
                 @Override
                 public void onDisconnected() {
-                    LOG.debug("onDisconnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
+                    Loggor.debug(TAG, "onDisconnected " + TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState());
                     unlock();
                 }
             });
@@ -97,7 +101,7 @@ public class WebsocketMqttSampleTest {
             Thread.sleep(2000);
         } catch (MqttException | InterruptedException e) {
             e.printStackTrace();
-            LOG.error("MqttException " + e.toString());
+            Loggor.error(TAG, "MqttException " + e.toString());
         }
     }
 
@@ -122,18 +126,15 @@ public class WebsocketMqttSampleTest {
 
     @Test
     public void testWebsocketMqttConnect() {
-        LogManager.resetConfiguration();
-        LOG.isDebugEnabled();
-        PropertyConfigurator.configure(WebsocketMqttSampleTest.class.getResource("/log4j.properties"));
-
+        // Loggor.saveLogs("hub/hub-device-java.log"); //保存日志到文件
         websocketConnect();
         lock();
         assertTrue(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).isConnected());
-        LOG.debug("after websocketConnect");
+        Loggor.debug(TAG, "after websocketConnect");
 
         websocketdisconnect();
         lock();
         assertSame(TXWebSocketManager.getInstance().getClient(mProductID, mDevName, mDevPSK).getConnectionState(), ConnectionState.DISCONNECTED);
-        LOG.debug("after websocketdisconnect");
+        Loggor.debug(TAG, "after websocketdisconnect");
     }
 }

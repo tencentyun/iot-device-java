@@ -14,15 +14,24 @@ import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * MQTT 日志类
+ */
 public class TXMqttLog {
     private static final Logger logger = LoggerFactory.getLogger(TXMqttLog.class);
 
+    /**
+     * 类标记
+     */
     public static final String TAG = TXMqttLog.class.getName();
 
     private TXMqttLogImpl mqttLogImp;
 
     private TXMqttConnection mMqttConnection;
 
+    /**
+     * 日志级别
+     */
     public static final String level_str[] = new String[] {"ERR", "ERR", "WRN", "INF", "DBG"};
     private  int mLogLevel = TXMqttLogConstants.LEVEL_FATAL;
 
@@ -34,19 +43,31 @@ public class TXMqttLog {
 
     static { Loggor.setLogger(logger); }
 
+    /**
+     * 构造函数
+     *
+     * @param mqttConnection {@link TXMqttConnection}
+     */
     public TXMqttLog(TXMqttConnection mqttConnection) {
         this.mMqttConnection = mqttConnection;
         this.mqttLogImp = new TXMqttLogImpl(mqttConnection);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param mqttConnection {@link TXMqttConnection}
+     * @param logUrl 日志 URL
+     */
     public TXMqttLog(TXMqttConnection mqttConnection, String logUrl) {
         this.mMqttConnection = mqttConnection;
         this.mqttLogImp = new TXMqttLogImpl(mqttConnection, logUrl);
     }
 
     /**
-     * 日志上传初始化，订阅指令下行topic，向数据上行topic发布消息
-     * @return 初始化成功时返回Status.OK; 其它返回值表示初始化失败；
+     * 日志上传初始化，订阅指令下行 topic，向数据上行 topic 发布消息
+     *
+     * @return 初始化成功时返回 Status.OK；其它返回值表示初始化失败；
      */
     public Status initMqttLog() {
         //初始化之前处理上次的离线日志
@@ -62,6 +83,7 @@ public class TXMqttLog {
 
     /**
      * 设置日志级别，在接受消息回调函数中调用
+     *
      * @param logLevel 日志等级
      */
     public void setMqttLogLevel(int logLevel) {
@@ -70,6 +92,11 @@ public class TXMqttLog {
 
     /**
      * 将一条日志保存到日志队列中
+     * @param logLevel 日志级别
+     * @param tag 日志标记
+     * @param format 格式
+     * @param obj 日志内容
+     * @return 操作结果
      */
     public boolean saveMqttLog(final int logLevel, final String tag, final String format, final Object... obj) {
         //低于设置日志信息等级的信息不存储

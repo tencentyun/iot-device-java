@@ -61,6 +61,10 @@ public interface TXDataTemplateConstants {
     /**
      * service method
      */
+    String METHOD_BIND_DEVICE = "bind_device";
     String METHOD_UNBIND_DEVICE = "unbind_device";
+    String METHOD_APP_BIND_TOKEN = "app_bind_token";
+    String METHOD_GET_USER_AVATAR = "get_user_avatar";
+    String METHOD_GET_USER_AVATAR_REPLY = "get_user_avatar_reply";
 
 }

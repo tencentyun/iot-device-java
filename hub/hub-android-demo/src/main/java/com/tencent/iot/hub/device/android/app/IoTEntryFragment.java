@@ -1,6 +1,5 @@
 package com.tencent.iot.hub.device.android.app;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.tencent.iot.hub.device.android.core.util.TXLog;
+import androidx.fragment.app.Fragment;
+
 import com.tencent.iot.hub.device.android.app.scenarized.Airconditioner;
 import com.tencent.iot.hub.device.android.app.scenarized.Door;
+import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 
@@ -75,7 +76,7 @@ public class IoTEntryFragment extends Fragment {
     private class AirMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             TXLog.i(TAG, msg);
 
             if (status.equals(Status.OK)) {
@@ -91,13 +92,13 @@ public class IoTEntryFragment extends Fragment {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onDisconnectCompleted, status[%s], msg[%s]", status.name(), msg);
             TXLog.i(TAG, logInfo);
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg) {
+        public void onSubscribeCompleted(Status status, IMqttToken token, Object userContext, String msg, Throwable cause) {
             String logInfo = String.format("onSubscribeCompleted, status[%s], message[%s]", status.name(), msg);
             if (Status.ERROR == status) {
                 TXLog.e(TAG, logInfo);

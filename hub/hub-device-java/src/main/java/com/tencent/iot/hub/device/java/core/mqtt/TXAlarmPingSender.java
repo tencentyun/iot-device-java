@@ -7,10 +7,13 @@ import org.eclipse.paho.client.mqttv3.internal.ClientComms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * ping 发送器类
+ */
 public class TXAlarmPingSender implements MqttPingSender {
 	private static final Logger logger = LoggerFactory.getLogger(TXMqttConnection.class);
-	public static final String TAG = TXAlarmPingSender.class.getSimpleName();
+
+	private static final String TAG = TXAlarmPingSender.class.getSimpleName();
 
 	static { Loggor.setLogger(logger); }
 
@@ -19,23 +22,36 @@ public class TXAlarmPingSender implements MqttPingSender {
 	private TXAlarmPingSender that;
 	private volatile boolean hasStarted = false;
 
+	/**
+	 * 构造函数
+	 */
 	public TXAlarmPingSender() {
 		that = this;
 	}
 
+	/**
+	 * 初始化
+	 * @param comms {@link ClientComms}
+	 */
 	@Override
 	public void init(ClientComms comms) {
 		this.mComms = comms;
 	}
 
+	/**
+	 * 启动心跳发送器
+	 */
 	@Override
 	public void start() {
-		String action = TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
+		String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
 		Loggor.debug(TAG, "Register alarmreceiver to Context " + action);
 		schedule(mComms.getKeepAlive());
 		hasStarted = true;
 	}
 
+	/**
+	 * 停止心跳发送器
+	 */
 	@Override
 	public void stop() {
 		Loggor.debug(TAG, "Unregister alarmreceiver to Context " + mComms.getClient().getClientId());
@@ -48,6 +64,10 @@ public class TXAlarmPingSender implements MqttPingSender {
 		}
 	}
 
+	/**
+	 * 定时任务
+	 * @param delayInMilliseconds 定时周期
+	 */
 	@Override
 	public void schedule(long delayInMilliseconds) {
 		long nextAlarmInMilliseconds = System.currentTimeMillis() + delayInMilliseconds;

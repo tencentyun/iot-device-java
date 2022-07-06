@@ -20,6 +20,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/top_guide_line"/>
 
+    <TextView
+        android:id="@+id/tv_sponsor_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trtccalling_contact_default_name"
+        android:textColor="@color/trtccalling_color_white"
+        android:textSize="@dimen/trtccalling_text_size_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/top_guide_line" />
+
+    <TextView
+        android:id="@+id/tv_sponsor_audio_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/trtccalling_invite_audio_call"
+        android:textColor="@color/trtccalling_color_white"
+        android:textSize="@dimen/trtccalling_text_size_large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sponsor_user_name" />
+
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_inviting"
         android:layout_width="wrap_content"

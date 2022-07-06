@@ -5,29 +5,23 @@ import com.tencent.iot.explorer.device.java.utils.ILog;
 
 public class CustomLog implements ILog {
 
-    private String tag;
-
-    public CustomLog(String tag) {
-        this.tag = tag;
-    }
-
     @Override
-    public void debug(String msg) {
+    public void debug(String tag, String msg) {
         TXLog.d(tag, msg);
     }
 
     @Override
-    public void info(String msg) {
+    public void info(String tag, String msg) {
         TXLog.i(tag, msg);
     }
 
     @Override
-    public void warn(String msg) {
+    public void warn(String tag, String msg) {
         TXLog.w(tag, msg);
     }
 
     @Override
-    public void error(String msg) {
+    public void error(String tag, String msg) {
         TXLog.e(tag, msg);
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
+import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.rtmp.ui.TXCloudVideoView;

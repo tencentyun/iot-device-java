@@ -9,7 +9,9 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import com.google.android.cameraview.CameraView;
+import com.tencent.cloud.ai.fr.business.heavystep.ColorLiveTaskStep;
 import com.tencent.cloud.ai.fr.business.heavystep.ExtractFeatureStep;
+import com.tencent.cloud.ai.fr.business.heavystep.GlassesDetectorStep;
 import com.tencent.cloud.ai.fr.business.heavystep.PrepareFaceLibraryFromFileStep;
 import com.tencent.cloud.ai.fr.business.heavystep.RegStep;
 import com.tencent.cloud.ai.fr.business.heavystep.RetrievalStep;
@@ -29,17 +31,12 @@ import com.tencent.cloud.ai.fr.camera.FrameGroup;
 import com.tencent.cloud.ai.fr.camera.ICameraManager;
 import com.tencent.cloud.ai.fr.camera.ICameraManager.OnFrameArriveListener;
 import com.tencent.cloud.ai.fr.pipeline.AbsStep;
-import com.tencent.cloud.ai.fr.sdksupport.YTSDKManager;
 import com.tencent.cloud.ai.fr.widgets.AbsActivityViewController;
 import com.tencent.cloud.ai.fr.widgets.FaceDrawView;
 import com.tencent.cloud.ai.fr.widgets.FaceDrawView.DrawableFace;
 import com.tencent.iot.explorer.device.face.data_template.FaceKitSample;
-import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.youtu.YTFaceRetrieval;
 import com.tencent.youtu.YTFaceTracker;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -141,6 +138,7 @@ public class RetrieveWithAndroidCameraActivity extends AppCompatActivity {
             .addStep(new PreprocessStep(PreprocessStep.IN_RAW_FRAME_GROUP))
             .addStep(new TrackStep())
             .addStep(new PickBestStep(TrackStep.OUT_COLOR_FACE))
+            .addStep(new ColorLiveTaskStep(PickBestStep.OUT_PICK_OK_FACES))
             .addStep(new AbsStep<StuffBox>() {
                 @Override
                 protected boolean onProcess(StuffBox stuffBox) {
@@ -150,7 +148,8 @@ public class RetrieveWithAndroidCameraActivity extends AppCompatActivity {
             })
             .submit()
             .onThread(AIThreadPool.instance().getHeavyThread())
-            .addStep(new ExtractFeatureStep(TrackStep.OUT_COLOR_FACE))//提取人脸特征, TrackStep.OUT_COLOR_FACE 提取全部人脸特征, PickBestStep.OUT_PICK_OK_FACES: 提取最佳脸特征
+            .addStep(new GlassesDetectorStep(ColorLiveTaskStep.OUT_COLOR_LIVE_OK))
+            .addStep(new ExtractFeatureStep(GlassesDetectorStep.OUT_GLASS_OK_NEXT))//提取人脸特征, TrackStep.OUT_COLOR_FACE 提取全部人脸特征, PickBestStep.OUT_PICK_OK_FACES: 提取最佳脸特征
             .addStep(new RetrievalStep(ExtractFeatureStep.OUT_FACE_FEATURES))//搜索人脸特征
             .addStep(new AbsStep<StuffBox>() {
                 @Override

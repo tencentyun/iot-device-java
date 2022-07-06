@@ -14,7 +14,7 @@ import com.tencent.iot.hub.device.java.core.util.AsymcSslUtils;
 public class Airconditioner {
 
     private static final Logger LOG = LoggerFactory.getLogger(Airconditioner.class);
-	public static final String TAG = "iot.scenarized.Airconditioner";
+	public static final String TAG = Airconditioner.class.getSimpleName();
 
 	/**
 	 * 产品ID

@@ -1,0 +1,188 @@
+{
+  "version": "1.0",
+  "properties": [
+    {
+      "id": "pause_play",
+      "name": "播放暂停",
+      "desc": "属性 暂停播放 pause_play\t布尔\t读写\t0-暂停 1-播放",
+      "mode": "rw",
+      "define": {
+        "type": "bool",
+        "mapping": {
+          "0": "暂停",
+          "1": "播放"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "cur_play_list",
+      "name": "当前播放列表",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "pre_next",
+      "name": "前一首后一首",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "不变",
+          "1": "上一首",
+          "2": "下一首"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "play_mode",
+      "name": "播放模式",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "顺序播放",
+          "1": "单曲循环",
+          "2": "随机播放"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "volume",
+      "name": "音量",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "100",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "play_position",
+      "name": "播放进度",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "7200",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "cur_song_id",
+      "name": "当前曲目",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "string",
+        "min": "0",
+        "max": "2048"
+      },
+      "required": false
+    },
+    {
+      "id": "recommend_quality",
+      "name": "推荐播放质量",
+      "desc": "\"SQ,HQ,LQ\"",
+      "mode": "rw",
+      "define": {
+        "type": "enum",
+        "mapping": {
+          "0": "标准",
+          "1": "高清",
+          "2": "无损"
+        }
+      },
+      "required": false
+    },
+    {
+      "id": "song_index",
+      "name": "song_index",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "10000",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "control_seq",
+      "name": "下发标志",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "type": "int",
+        "min": "0",
+        "max": "2000000000",
+        "start": "0",
+        "step": "1",
+        "unit": ""
+      },
+      "required": false
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "id": "fresh_token",
+      "name": "刷新token",
+      "desc": "",
+      "input": [
+        {
+          "id": "fresh_token",
+          "name": "刷新token",
+          "define": {
+            "type": "bool",
+            "mapping": {
+              "0": "关",
+              "1": "开"
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "id": "Code",
+          "name": "Code",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    }
+  ],
+  "profile": {
+    "ProductId": "CJTPB68RMZ",
+    "CategoryId": "1"
+  }
+}

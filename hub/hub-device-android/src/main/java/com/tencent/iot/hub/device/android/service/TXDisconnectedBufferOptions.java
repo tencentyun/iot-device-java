@@ -5,11 +5,13 @@ import android.os.Parcelable;
 
 
 /**
- * 该类负责序列化DisconnectedBufferOptions相关信息
+ * 该类负责序列化 DisconnectedBufferOptions 相关信息
  */
-
 public class TXDisconnectedBufferOptions extends com.tencent.iot.hub.device.java.service.TXDisconnectedBufferOptions implements Parcelable {
 
+    /**
+     * 构造函数
+     */
     public TXDisconnectedBufferOptions() {
         super();
     }
@@ -22,11 +24,20 @@ public class TXDisconnectedBufferOptions extends com.tencent.iot.hub.device.java
     }
 
 
+    /**
+     * 内容描述符
+     * @return 描述符
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * 序列化
+     * @param parcel {@link Parcel}
+     * @param i 标记
+     */
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(getBufferSize());

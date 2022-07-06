@@ -28,6 +28,7 @@ public class ProductLight {
 
     public TXGatewaySubdev mGatewaySubdev;
     private final static String mSubDev1JsonFileName = "struct.json";
+    private final static String mSubDev1JsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
     private static final Logger LOG = LoggerFactory.getLogger(ProductLight.class);
 
     /**上报周期*/
@@ -40,7 +41,7 @@ public class ProductLight {
     public ProductLight(TXGatewayClient connection, String productId, String deviceName) {
         //初始化模板数据
         initTemplateData();
-        mGatewaySubdev = new TXGatewaySubdev(connection,  productId, deviceName, mSubDev1JsonFileName,
+        mGatewaySubdev = new TXGatewaySubdev(connection,  productId, deviceName, mSubDev1JsonFileName, mSubDev1JsonFilePath,
                                             new ProductLightActionCallBack(), new ProductLightDownStreamCallBack());
     }
 
@@ -165,6 +166,8 @@ public class ProductLight {
      */
     private class reportPropertyPeriodically extends Thread {
         public void run() {
+            this.setName("tencent-sample-light-report-property-periodically-thread");
+
             while (!isInterrupted()) {
                 JSONObject property = new JSONObject();
                 for(Map.Entry<String, Object> entry: mProperty.entrySet())
@@ -352,6 +355,12 @@ public class ProductLight {
         public void onUnbindDeviceCallBack(String msg) {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
             LOG.debug("unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            LOG.debug("bind device received : " + msg);
         }
     }
 }

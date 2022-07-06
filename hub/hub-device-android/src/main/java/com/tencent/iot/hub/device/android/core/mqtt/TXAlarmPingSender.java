@@ -18,10 +18,15 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttPingSender;
 import org.eclipse.paho.client.mqttv3.internal.ClientComms;
 
-
+/**
+ * 心跳包发送器
+ */
 public class TXAlarmPingSender implements MqttPingSender {
 
-    public static final String TAG = "iot.TXAlarmPingSender";
+    /**
+     * 类标记
+     */
+    private static final String TAG = "iot.TXAlarmPingSender";
 
     private ClientComms mComms;
     private Context mContext;
@@ -30,20 +35,33 @@ public class TXAlarmPingSender implements MqttPingSender {
     private PendingIntent pendingIntent;
     private volatile boolean hasStarted = false;
 
+    /**
+     * 构造函数
+     *
+     * @param context 上下文 {@link Context}
+     */
     public TXAlarmPingSender(Context context) {
         this.mContext = context;
         that = this;
     }
 
+    /**
+     * 初始化
+     *
+     * @param comms {@link ClientComms}
+     */
     @Override
     public void init(ClientComms comms) {
         this.mComms = comms;
         this.mAlarmReceiver = new AlarmReceiver();
     }
 
+    /**
+     * 启动心跳发送器
+     */
     @Override
     public void start() {
-        String action = TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
+        String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
         TXLog.d(TAG, "Register alarmreceiver to Context " + action);
         if (mContext != null && mAlarmReceiver != null) {
             mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action));
@@ -55,6 +73,9 @@ public class TXAlarmPingSender implements MqttPingSender {
         hasStarted = true;
     }
 
+    /**
+     * 停止心跳发送器
+     */
     @Override
     public void stop() {
 
@@ -75,6 +96,11 @@ public class TXAlarmPingSender implements MqttPingSender {
         }
     }
 
+    /**
+     * 定时发送心跳
+     *
+     * @param delayInMilliseconds 定时周期
+     */
     @Override
     public void schedule(long delayInMilliseconds) {
         long nextAlarmInMilliseconds = System.currentTimeMillis() + delayInMilliseconds;
@@ -101,7 +127,7 @@ public class TXAlarmPingSender implements MqttPingSender {
 
         private PowerManager.WakeLock wakelock;
 
-        private final String wakeLockTag = TXMqttConstants.PING_WAKELOCK + that.mComms.getClient().getClientId();
+        private final String wakeLockTag = TAG + TXMqttConstants.PING_WAKELOCK + that.mComms.getClient().getClientId();
 
         @Override
         @SuppressLint("Wakelock")
@@ -116,7 +142,13 @@ public class TXAlarmPingSender implements MqttPingSender {
 
             PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
             wakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, wakeLockTag);
-            wakelock.acquire();
+            try { // 唤醒锁获取失败，抛出权限异常，同时避免后续的释放过程
+                wakelock.acquire();
+            } catch (Exception e) {
+                TXLog.e(TAG, "wakelock without permission.WAKE_LOCK return");
+                e.printStackTrace();
+                return;
+            }
 
             // Assign new callback to token to execute code after PingResq
             // arrives. Get another wakelock even receiver already has one,

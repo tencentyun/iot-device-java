@@ -1,11 +1,12 @@
 <resources>
-    <string name="app_name">explorer-app-demo</string>
+    <string name="app_name">Explorer Device Demo</string>
     <string name="trtccalling_title_video_call">"视频通话"</string>
     <string name="trtccalling_tips_start_call">"点击上方按钮发起呼叫"</string>
     <string name="trtccalling_dialed_is_busy">"正在通话中..."</string>
     <string name="trtccalling_waiting_to_hear">"等待接听中..."</string>
     <string name="trtccalling_call_time_default">"00:01"</string>
     <string name="trtccalling_contact_default_name">"测试123"</string>
+    <string name="trtccalling_invite_audio_call">"邀请您进行语音通话..."</string>
     <string name="trtccalling_invite_video_call">"邀请您进行视频通话..."</string>
     <string name="trtccalling_search_call_hint">搜索手机号</string>
     <string name="trtccalling_start_call">"呼叫"</string>
@@ -18,7 +19,7 @@
     <string name="trtccalling_toast_user_not_response" formatted="false">"%1$s无响应"</string>
     <string name="trtccalling_toast_user_busy" formatted="false">"%1$s忙线"</string>
     <string name="trtccalling_toast_user_cancel_call" formatted="false">"%1$s取消了通话"</string>
-    <string name="trtccalling_toast_user_timeout" formatted="false" >"%1$s通话超时"</string>
+    <string name="trtccalling_toast_user_timeout" formatted="false">"%1$s通话超时"</string>
     <string name="trtccalling_toast_enable_mute">"开启静音"</string>
     <string name="trtccalling_toast_disable_mute">"关闭静音"</string>
     <string name="trtccalling_toast_use_speaker">"使用扬声器"</string>

@@ -19,48 +19,36 @@ package com.tencent.iot.hub.device.java.core.util;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Utilities for encoding and decoding the Base64 representation of
- * binary data.  See RFCs <a
- * href="http://www.ietf.org/rfc/rfc2045.txt">2045</a> and <a
- * href="http://www.ietf.org/rfc/rfc3548.txt">3548</a>.
+ * Base64 编码解码类
  */
 public class Base64 {
     /**
-     * Default values for encoder/decoder flags.
+     * 默认的编解码标记
      */
     public static final int DEFAULT = 0;
 
     /**
-     * Encoder flag bit to omit the padding '=' characters at the end
-     * of the output (if any).
+     * 忽略 padding 的标记
      */
     public static final int NO_PADDING = 1;
 
     /**
-     * Encoder flag bit to omit all line terminators (i.e., the output
-     * will be on one long line).
+     * 忽略行结束符的标记
      */
     public static final int NO_WRAP = 2;
 
     /**
-     * Encoder flag bit to indicate lines should be terminated with a
-     * CRLF pair instead of just an LF.  Has no effect if {@code
-     * NO_WRAP} is specified as well.
+     * 使用 CRLF 作为结束符的标记
      */
     public static final int CRLF = 4;
 
     /**
-     * Encoder/decoder flag bit to indicate using the "URL and
-     * filename safe" variant of Base64 (see RFC 3548 section 4) where
-     * {@code -} and {@code _} are used in place of {@code +} and
-     * {@code /}.
+     * URL 和文件名安全的标记
      */
     public static final int URL_SAFE = 8;
 
     /**
-     * Flag to pass to {@link Base64OutputStream} to indicate that it
-     * should not close the output stream it is wrapping when it
-     * itself is closed.
+     * 不关闭输出流的标记
      */
     public static final int NO_CLOSE = 16;
 
@@ -100,57 +88,35 @@ public class Base64 {
     //  --------------------------------------------------------
 
     /**
-     * Decode the Base64-encoded data in input and return the data in
-     * a new byte array.
+     * 解码 Base64 编码的数据
      *
-     * <p>The padding '=' characters at the end are considered optional, but
-     * if any are present, there must be the correct number of them.
-     *
-     * @param str    the input String to decode, which is converted to
-     *               bytes using the default charset
-     * @param flags  controls certain features of the decoded output.
-     *               Pass {@code DEFAULT} to decode standard Base64.
-     *
-     * @throws IllegalArgumentException if the input contains
-     * incorrect padding
+     * @param str 解码源
+     * @param flags 解码特性
+     * @return base64 解码后的内容
      */
     public static byte[] decode(String str, int flags) {
         return decode(str.getBytes(), flags);
     }
 
     /**
-     * Decode the Base64-encoded data in input and return the data in
-     * a new byte array.
+     * 解码 Base64 编码的数据
      *
-     * <p>The padding '=' characters at the end are considered optional, but
-     * if any are present, there must be the correct number of them.
-     *
-     * @param input the input array to decode
-     * @param flags  controls certain features of the decoded output.
-     *               Pass {@code DEFAULT} to decode standard Base64.
-     *
-     * @throws IllegalArgumentException if the input contains
-     * incorrect padding
+     * @param input 解码源
+     * @param flags 解码特性
+     * @return base64 解码后的内容
      */
     public static byte[] decode(byte[] input, int flags) {
         return decode(input, 0, input.length, flags);
     }
 
     /**
-     * Decode the Base64-encoded data in input and return the data in
-     * a new byte array.
+     * 解码 Base64 编码的数据
      *
-     * <p>The padding '=' characters at the end are considered optional, but
-     * if any are present, there must be the correct number of them.
-     *
-     * @param input  the data to decode
-     * @param offset the position within the input array at which to start
-     * @param len    the number of bytes of input to decode
-     * @param flags  controls certain features of the decoded output.
-     *               Pass {@code DEFAULT} to decode standard Base64.
-     *
-     * @throws IllegalArgumentException if the input contains
-     * incorrect padding
+     * @param input 解码源
+     * @param offset 偏移量
+     * @param len 解码长度
+     * @param flags 解码特性
+     * @return base64 解码后的内容
      */
     public static byte[] decode(byte[] input, int offset, int len, int flags) {
         // Allocate space for the most data the input could represent.
@@ -443,13 +409,11 @@ public class Base64 {
     //  --------------------------------------------------------
 
     /**
-     * Base64-encode the given data and return a newly allocated
-     * String with the result.
+     * Base64 编码
      *
-     * @param input  the data to encode
-     * @param flags  controls certain features of the encoded output.
-     *               Passing {@code DEFAULT} results in output that
-     *               adheres to RFC 2045.
+     * @param input 编码源
+     * @param flags 编码特性
+     * @return base64 编码后的内容
      */
     public static String encodeToString(byte[] input, int flags) {
         try {
@@ -461,16 +425,13 @@ public class Base64 {
     }
 
     /**
-     * Base64-encode the given data and return a newly allocated
-     * String with the result.
+     * Base64 编码
      *
-     * @param input  the data to encode
-     * @param offset the position within the input array at which to
-     *               start
-     * @param len    the number of bytes of input to encode
-     * @param flags  controls certain features of the encoded output.
-     *               Passing {@code DEFAULT} results in output that
-     *               adheres to RFC 2045.
+     * @param input 编码源
+     * @param offset 偏移量
+     * @param len 编码长度
+     * @param flags 编码特性
+     * @return base64 编码后的内容
      */
     public static String encodeToString(byte[] input, int offset, int len, int flags) {
         try {
@@ -482,29 +443,24 @@ public class Base64 {
     }
 
     /**
-     * Base64-encode the given data and return a newly allocated
-     * byte[] with the result.
+     * Base64 编码
      *
-     * @param input  the data to encode
-     * @param flags  controls certain features of the encoded output.
-     *               Passing {@code DEFAULT} results in output that
-     *               adheres to RFC 2045.
+     * @param input 编码源
+     * @param flags 编码特性
+     * @return base64 编码后的内容
      */
     public static byte[] encode(byte[] input, int flags) {
         return encode(input, 0, input.length, flags);
     }
 
     /**
-     * Base64-encode the given data and return a newly allocated
-     * byte[] with the result.
+     * Base64 编码
      *
-     * @param input  the data to encode
-     * @param offset the position within the input array at which to
-     *               start
-     * @param len    the number of bytes of input to encode
-     * @param flags  controls certain features of the encoded output.
-     *               Passing {@code DEFAULT} results in output that
-     *               adheres to RFC 2045.
+     * @param input 编码源
+     * @param offset 偏移量
+     * @param len 编码长度
+     * @param flags 编码特性
+     * @return base64 编码后的内容
      */
     public static byte[] encode(byte[] input, int offset, int len, int flags) {
         Encoder encoder = new Encoder(flags, null);

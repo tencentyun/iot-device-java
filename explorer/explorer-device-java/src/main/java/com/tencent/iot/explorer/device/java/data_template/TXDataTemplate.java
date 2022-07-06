@@ -6,6 +6,8 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileInputStream;
+
 
 public class TXDataTemplate extends DataTemplate {
 
@@ -17,10 +19,23 @@ public class TXDataTemplate extends DataTemplate {
      * @param productId          产品名
      * @param deviceName         设备名，唯一
      * @param jsonFileName       数据模板描述文件
+     * @param jsonFilePath       数据模板描述文件路径
      * @param downStreamCallBack 下行数据接收回调函数
      */
     public TXDataTemplate(TXMqttConnection connection, String productId, String deviceName,
-                          final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
-        super(connection, productId, deviceName, new TXDataTemplateJson(jsonFileName), downStreamCallBack, CUSTOM_LOG);
+                          final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(connection, productId, deviceName, new TXDataTemplateJson(jsonFileName, jsonFilePath), downStreamCallBack, CUSTOM_LOG);
+    }
+
+    /**
+     * @param connection         mqtt连接
+     * @param productId          产品名
+     * @param deviceName         设备名，唯一
+     * @param jsonFileStream     数据模板文件流
+     * @param downStreamCallBack 下行数据接收回调函数
+     */
+    public TXDataTemplate(TXMqttConnection connection, String productId, String deviceName,
+                          FileInputStream jsonFileStream, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super(connection, productId, deviceName, new TXDataTemplateJson(jsonFileStream), downStreamCallBack, CUSTOM_LOG);
     }
 }

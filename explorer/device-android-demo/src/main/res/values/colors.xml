@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="windowBackgroundColor">#00ffffff</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
@@ -35,4 +36,8 @@
     <color name="login_color_text_login_success">#FF42BC56</color>
     <color name="login_color_text_login_fail">#FFE84B40</color>
     <color name="login_transparent">#00000000</color>
+
+    <color name="gray_E7E8EB">#E7E8EB</color>
+    <color name="black_000000">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.android.app.gateway;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -20,11 +25,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.ACTION_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.EVENT_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.PROPERTY_DOWN_STREAM_TOPIC;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplateSubTopic.SERVICE_DOWN_STREAM_TOPIC;
 
 public class GatewaySample {
     private static final String TAG = "TXGatewaySample";
@@ -101,6 +101,10 @@ public class GatewaySample {
     }
 
     public Object addSubDev(String productId, String deviceName) {
+        if (mConnection.findSubdev(productId, deviceName) != null) {
+            return null;
+        }
+
         if(productId.equals(mSubDev1ProductId)) { //通过产品ID表示产品类型
             ProductLight subdev = new ProductLight(mConnection, mContext, productId, deviceName); //创建一个该类产品的设备
             mConnection.addSubdev(subdev.mGatewaySubdev); //添加子设备到网关
@@ -165,8 +169,14 @@ public class GatewaySample {
 
         @Override
         public void onUnbindDeviceCallBack(String msg) {
-            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            //用户删除设备的通知消息
             Log.d(TAG, "unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //用户绑定设备的通知消息
+            Log.d(TAG, "bind device received : " + msg);
         }
     }
 
@@ -176,7 +186,7 @@ public class GatewaySample {
     private class GatewaySampleMqttActionCallBack extends TXMqttActionCallBack {
         /**初次连接成功则订阅相关主题*/
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if(Status.OK == status && !reconnect) { //初次连接订阅主题,重连后会自动订阅主题
                 if (Status.OK != mConnection.subscribeTemplateTopic(PROPERTY_DOWN_STREAM_TOPIC, 0)) {
                     TXLog.e(TAG, "subscribeTopic: subscribe property down stream topic failed!");
@@ -211,7 +221,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -221,7 +231,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -233,7 +243,7 @@ public class GatewaySample {
 
         /**订阅子设备主题相关主题成功，则调用子设备onSubscribeCompleted*/
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -263,7 +273,7 @@ public class GatewaySample {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();

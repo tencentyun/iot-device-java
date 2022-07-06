@@ -2,6 +2,7 @@ package com.tencent.iot.explorer.device.rtc.ui.audiocall;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -22,8 +23,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.IntentParams;
-import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingDelegate;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCallingParamsCallback;
@@ -32,6 +34,7 @@ import com.tencent.iot.explorer.device.rtc.data_template.model.UserInfo;
 import com.tencent.iot.explorer.device.rtc.impl.TRTCCallingImpl;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayout;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.audiolayout.TRTCAudioLayoutManager;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.trtc.TRTCCloudDef;
 
 import java.util.ArrayList;
@@ -44,7 +47,8 @@ import java.util.TimerTask;
 /**
  * 用于展示语音通话的主界面，通话的接听和拒绝就是在这个界面中完成的。
  */
-public class TRTCAudioCallActivity extends AppCompatActivity {
+public class TRTCAudioCallActivity extends AppCompatActivity implements NetWorkStateReceiver.NetworkStateReceiverListener {
+
     private static final String TAG = TRTCAudioCallActivity.class.getName();
 
     public static final String PARAM_TYPE                = "type";
@@ -70,6 +74,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private LinearLayout mLayoutImgContainer;
     private TextView mTextTime;
     private TextView mStatusView;
+    private TextView mSponsorUserNameTv;
+    private TextView mSponsorAudioTagTv;
 
     private Runnable mTimeRunnable;
     private int           mTimeCount;
@@ -86,10 +92,13 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     private TRTCCallingImpl mTRTCCalling;
     private boolean               isHandsFree       = true;
     private boolean               isMuteMic         = false;
+    private volatile boolean      mIsEnterRoom      = false;
     private volatile boolean      mIsExitRoom       = false;
 
     private TimerTask otherEnterRoomTask = null;
     private TimerTask enterRoomTask = null;
+
+    private NetWorkStateReceiver netWorkStateReceiver;
 
     /**
      * 拨号的回调
@@ -129,6 +138,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                         mCallUserModelMap.put(model.getUserId(), model);
                         addUserToManager(model);
                     }
+                    mIsEnterRoom = true;
                     showTimeCount();
                     mStatusView.setText(R.string.trtccalling_dialed_is_busy);
                 }
@@ -279,20 +289,22 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
     }
 
     private void checkoutOtherIsEnterRoom15seconds() {
-        otherEnterRoomTask = new TimerTask(){
-            public void run(){
-                //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消timertask
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
-                        removeCallbackAndFinish();
-                    }
-                });
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(otherEnterRoomTask, 15000);
+        if (otherEnterRoomTask == null) {
+            otherEnterRoomTask = new TimerTask(){
+                public void run(){
+                    //自己已进入房间15秒内对方没有进入房间 则显示对方已挂断，并主动退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "对方已挂断", Toast.LENGTH_LONG).show();
+                            removeCallbackAndFinish();
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(otherEnterRoomTask, 15000);
+        }
     }
 
     private void removeOtherIsEnterRoom15secondsTask() {
@@ -302,21 +314,23 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         }
     }
 
-    private void checkoutIsEnterRoom60seconds() {
-        enterRoomTask = new TimerTask(){
-            public void run(){
-                //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "对方无人接听", Toast.LENGTH_LONG).show();
-                        removeCallbackAndFinish();
-                    }
-                });
-            }
-        };
-        Timer timer = new Timer();
-        timer.schedule(enterRoomTask, 60000);
+    private void checkoutIsEnterRoom60seconds(String message) {
+        if (enterRoomTask == null) {
+            enterRoomTask = new TimerTask(){
+                public void run(){
+                    //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            removeCallbackAndFinish();
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(enterRoomTask, 60000);
+        }
     }
 
     private void removeIsEnterRoom60secondsTask() {
@@ -334,13 +348,13 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.trtccalling_audiocall_activity_call_main);
+        startNetworkBroadcastReceiver(this);
 
         TRTCUIManager.getInstance().addCallingParamsCallback(new TRTCCallingParamsCallback() {
             @Override
             public void joinRoom(Integer callingType, String deviceId, RoomKey roomKey) {
                 //1.分配自己的画面
                 mLayoutManagerTRTC.setMySelfUserId(mSelfModel.getUserId());
-                addUserToManager(mSelfModel);
                 //2.接听电话
                 TRTCUIManager.getInstance().callingUserId = roomKey.getUserId();
                 mTRTCCalling.enterTRTCRoom(roomKey);
@@ -356,10 +370,11 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
             }
         });
 
+
         initView();
         initData();
         initListener();
-        checkoutIsEnterRoom60seconds();
+        checkoutIsEnterRoom60seconds("对方无人接听");
     }
 
     @Override
@@ -389,6 +404,60 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mTimeHandlerThread.quit();
     }
 
+    //在onResume()方法注册
+    @Override
+    protected void onResume() {
+        registerNetworkBroadcastReceiver(this);
+        TXLog.e(TAG, "注册netWorkStateReceiver");
+        super.onResume();
+    }
+
+    //onPause()方法注销
+    @Override
+    protected void onPause() {
+        unregisterNetworkBroadcastReceiver(this);
+        TXLog.e(TAG, "注销netWorkStateReceiver");
+        super.onPause();
+    }
+
+    public void startNetworkBroadcastReceiver(Context currentContext) {
+        netWorkStateReceiver = new NetWorkStateReceiver();
+        netWorkStateReceiver.addListener((NetWorkStateReceiver.NetworkStateReceiverListener) currentContext);
+        registerNetworkBroadcastReceiver(currentContext);
+    }
+
+    /**
+     * Register the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void registerNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.registerReceiver(netWorkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    /**
+     * Unregister the NetworkStateReceiver with your activity
+     *
+     * @param currentContext
+     */
+    public void unregisterNetworkBroadcastReceiver(Context currentContext) {
+        currentContext.unregisterReceiver(netWorkStateReceiver);
+    }
+
+    @Override
+    public void networkAvailable() {
+        TXLog.e(TAG, "networkAvailable");
+        if (mIsEnterRoom) {
+            removeIsEnterRoom60secondsTask();
+        }
+    }
+
+    @Override
+    public void networkUnavailable() {
+        TXLog.e(TAG, "networkUnavailable");
+        checkoutIsEnterRoom60seconds("网络异常，请稍后重试");
+    }
+
     private void initListener() {
         mLayoutMute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,7 +483,7 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         // 初始化成员变量
         mTRTCCalling = new TRTCCallingImpl(this);
         mTRTCCalling.setTRTCCallingDelegate(mTRTCAudioCallListener);
-        mTimeHandlerThread = new HandlerThread("time-count-thread");
+        mTimeHandlerThread = new HandlerThread("tencent-time-count-thread");
         mTimeHandlerThread.start();
         mTimeHandler = new Handler(mTimeHandlerThread.getLooper());
         // 初始化从外界获取的数据
@@ -437,7 +506,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
                 mOtherInvitingUserInfoList = params.mUserInfos;
             }
             showWaitingResponseView();
-            mStatusView.setText(mUserId+"邀请您进行语音通话");
         } else {
             // 主叫方
             if (roomKey != null) {
@@ -464,6 +532,8 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutImgContainer = (LinearLayout) findViewById(R.id.ll_img_container);
         mTextTime = (TextView) findViewById(R.id.tv_time);
         mStatusView = (TextView) findViewById(R.id.tv_status);
+        mSponsorUserNameTv = (TextView) findViewById(R.id.tv_sponsor_user_name);
+        mSponsorAudioTagTv = (TextView) findViewById(R.id.tv_sponsor_audio_tag);
     }
 
 
@@ -472,9 +542,10 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
      */
     public void showWaitingResponseView() {
         //1. 展示对方的画面
-        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mUserId);
-        layout.setUserId(mUserId);
-//        Picasso.get().load(mSponsorUserInfo.userAvatar).into(layout.getImageView());
+        TRTCAudioLayout layout = mLayoutManagerTRTC.allocAudioCallLayout(mSelfModel.getUserId());
+        layout.setUserId(mSelfModel.getUserId());
+        mSponsorUserNameTv.setText(mSponsorUserInfo.userName);
+
         //2. 展示电话对应界面
         mLayoutHangup.setVisibility(View.VISIBLE);
         mLayoutDialing.setVisibility(View.VISIBLE);
@@ -484,7 +555,6 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.reject();
                 removeCallbackAndFinish();
             }
         });
@@ -516,14 +586,15 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 removeCallbackAndFinish();
             }
         });
         mLayoutDialing.setVisibility(View.GONE);
-        mLayoutHandsFree.setVisibility(View.GONE);
-        mLayoutMute.setVisibility(View.GONE);
+        mLayoutHandsFree.setVisibility(View.VISIBLE);
+        mLayoutMute.setVisibility(View.VISIBLE);
+        mSponsorUserNameTv.setVisibility(View.GONE);
+        mSponsorAudioTagTv.setVisibility(View.GONE);
         //4. 隐藏中间他们也在界面
         hideOtherInvitingUserView();
     }
@@ -536,11 +607,12 @@ public class TRTCAudioCallActivity extends AppCompatActivity {
         mLayoutDialing.setVisibility(View.GONE);
         mLayoutHandsFree.setVisibility(View.VISIBLE);
         mLayoutMute.setVisibility(View.VISIBLE);
+        mSponsorUserNameTv.setVisibility(View.GONE);
+        mSponsorAudioTagTv.setVisibility(View.GONE);
 
         mLayoutHangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mTRTCCalling.hangup();
                 mTRTCCalling.exitRoom();
                 removeCallbackAndFinish();
             }

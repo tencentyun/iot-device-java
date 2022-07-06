@@ -4,6 +4,12 @@ package com.tencent.iot.explorer.device.java.gateway;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateClient;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
+import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.mqtt.TXAlarmPingSender;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.core.util.Base64;
+import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -12,19 +18,11 @@ import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.tencent.iot.hub.device.java.core.common.Status;
-import com.tencent.iot.hub.device.java.core.mqtt.TXAlarmPingSender;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
-import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
-import com.tencent.iot.hub.device.java.core.util.Base64;
-import com.tencent.iot.hub.device.java.core.util.HmacSha256;
 
 import java.util.HashMap;
 
@@ -37,9 +35,9 @@ public class TXGatewayClient extends TXDataTemplateClient {
 
 
     public TXGatewayClient( String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
-                           MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
-                           final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
-        super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, jsonFileName,downStreamCallBack);
+                            MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
+                            final String jsonFileName, final String jsonFilePath, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        super( serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack, jsonFileName, jsonFilePath, downStreamCallBack);
     }
 
     /**
@@ -393,6 +391,9 @@ public class TXGatewayClient extends TXDataTemplateClient {
         }
     }
 
+    /*
+     * 连接 MQTT 服务器，无需设置 username 和 password，内部会自动填充
+     */
     @Override
     public synchronized Status connect(MqttConnectOptions options, Object userContext) {
         if (mConnectStatus.equals(TXMqttConstants.ConnectStatus.kConnecting)) {
@@ -439,7 +440,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
             public void onSuccess(IMqttToken token) {
                 LOG.info("onSuccess!");
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnected);
-                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI);
+                mActionCallBack.onConnectCompleted(Status.OK, false, token.getUserContext(), "connected to " + mServerURI, null);
                 // If the connection is established, subscribe the gateway operation topic
                 String gwTopic = GW_OPERATION_RES_PREFIX + mProductId + "/" + mDeviceName;
                 int qos = TXMqttConstants.QOS1;
@@ -451,7 +452,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
             public void onFailure(IMqttToken token, Throwable exception) {
                 LOG.error("{}", "onFailure!", exception);
                 setConnectingState(TXMqttConstants.ConnectStatus.kConnectFailed);
-                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString());
+                mActionCallBack.onConnectCompleted(Status.ERROR, false, token.getUserContext(), exception.toString(), exception);
             }
         };
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:paddingHorizontal="20dp"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:layout_weight="1" >
+
+    <TextView
+        android:id="@+id/tv_song_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:textSize="16sp"
+        android:textColor="@color/black_000000"
+        android:text="歌名" />
+
+    <TextView
+        android:id="@+id/tv_singer_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:textSize="12sp"
+        android:text="作者" />
+
+    <ImageView
+        android:id="@+id/btn_play"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/icon_music"
+        android:text="播放" />
+
+</LinearLayout>

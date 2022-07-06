@@ -12,4 +12,6 @@ public abstract class TXDataTemplateDownStreamCallBack {
     public abstract JSONObject onActionCallBack(String actionId, JSONObject params);
 
     public abstract void onUnbindDeviceCallBack(String msg);
+
+    public abstract void onBindDeviceCallBack(String msg);
 }

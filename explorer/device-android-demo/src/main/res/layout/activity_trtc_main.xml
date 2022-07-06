@@ -87,7 +87,28 @@
             android:layout_weight="0.5"
             android:text="设备下线" />
 
+        <Button
+            android:id="@+id/start_adv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="蓝牙配网" />
+
+        <Button
+            android:id="@+id/get_avatar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="获取头像" />
+
     </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/to_call_id"
+        android:singleLine="true"
+        />
 
     <ScrollView
         android:layout_width="match_parent"

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
         android:background="#FFFFFF"
-        android:text="基础功能"
+        android:text="@string/base_function"
         android:textColor="#000000"
         android:textSize="18sp" />
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
         android:background="#FFFFFF"
-        android:text="设备互通"
+        android:text="@string/device_connection"
         android:textColor="#000000"
         android:textSize="18sp" />
 
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
         android:background="#FFFFFF"
-        android:text="设备影子"
+        android:text="@string/device_shadow"
         android:textColor="#000000"
         android:textSize="18sp" />
 
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.25"
         android:background="#FFFFFF"
-        android:text="远程服务"
+        android:text="@string/remote_service"
         android:textColor="#000000"
         android:textSize="18sp" />
 

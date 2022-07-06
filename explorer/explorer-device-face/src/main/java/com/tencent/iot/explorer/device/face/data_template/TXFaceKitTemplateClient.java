@@ -76,6 +76,13 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
         return this.getConnectStatus().equals(TXMqttConstants.ConnectStatus.kConnected);
     }
 
+    public Status disConnect(Object userContext) {
+        if (mDataTemplate != null) {
+            mDataTemplate.destroy();
+        }
+        return disConnect(0, userContext);
+    }
+
     /**
      * 是否AI人脸识别 SDK 是否鉴权通过
      */
@@ -162,6 +169,18 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
      */
     public Status eventSinglePost(String eventId, String type, JSONObject params) {
         return  mDataTemplate.eventSinglePost(eventId, type, params);
+    }
+
+    /**
+     * 单个人脸下载/删除/注册状态的事件上报， 不检查构造是否符合json文件中的定义
+     * @param resourceName csv资源文件名
+     * @param version 版本
+     * @param featureId 特征ID
+     * @param result 结果值 1：下载成功，待注册 2：下载失败 3：注册成功 4：注册失败 5：删除成功 6：删除失败
+     * @return 返回状态
+     */
+    public Status eventPost(String resourceName, String version, String featureId, int result) {
+        return  mDataTemplate.faceStatusPost(resourceName, version, featureId, result);
     }
 
     /**
@@ -395,7 +414,8 @@ public class TXFaceKitTemplateClient extends TXMqttConnection {
     }
     private void onGetAIFaceLicenseCallBack(Integer code, String status, String license, String secret_key) {
         if (code == 0) {//请求License成功
-            Auth.AuthResult authResult = Auth.initAuthByString(license, secret_key);
+            Auth.AuthResult authResult = Auth.authLicenseString(license, secret_key);
+
             String msg = String.format("授权%s, licenceFileName=%s   base64授权", authResult.isSucceeded() ? "成功" : "失败",  authResult.toString());
             if (authResult.isSucceeded()) {
                 if (mAuthCallBack != null && !isAuthoried) {

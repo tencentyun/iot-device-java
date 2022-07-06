@@ -1,5 +1,10 @@
 package com.tencent.iot.explorer.device.rtc;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
+import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,13 +12,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.multidex.MultiDex;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +22,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.multidex.MultiDex;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServer;
+import com.tencent.iot.explorer.device.android.llsync.LLSyncGattServerCallback;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.common.stateflow.entity.CallExtraInfo;
+import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.rtc.adapter.UserListAdapter;
@@ -34,12 +44,13 @@ import com.tencent.iot.explorer.device.rtc.data_template.TRTCCallStatus;
 import com.tencent.iot.explorer.device.rtc.data_template.TRTCDataTemplateSample;
 import com.tencent.iot.explorer.device.rtc.data_template.TRTCExplorerDemoSessionManager;
 import com.tencent.iot.explorer.device.rtc.data_template.TXTRTCCallBack;
-import com.tencent.iot.explorer.device.rtc.data_template.model.RoomKey;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCCalling;
 import com.tencent.iot.explorer.device.rtc.data_template.model.TRTCUIManager;
+import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity;
 import com.tencent.iot.explorer.device.rtc.ui.videocall.TRTCVideoCallActivity;
-import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
+import com.tencent.iot.explorer.device.rtc.utils.WifiUtils;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
@@ -60,39 +71,40 @@ import java.util.TimerTask;
 
 import de.mindpipe.android.logging.log4j.LogConfigurator;
 
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_NICKNAME;
-import static com.tencent.iot.explorer.device.rtc.data_template.model.TXTRTCDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
-
 public class TRTCMainActivity extends AppCompatActivity {
 
-    private static final String TAG = "TRTCMainActivity";
+    private static final String TAG = TRTCMainActivity.class.getSimpleName();
 
     private TRTCDataTemplateSample mDataTemplateSample;
+    private LLSyncGattServer mServer;
 
     private ImageView mQRCodeImgView;
     private Button mConnectBtn;
     private Button mCloseConnectBtn;
+    private Button mStartAdvBtn;
     private Button mAudioCallBtn;
     private Button mVideoCallBtn;
+    private Button mGetAvatarBtn;
 
     private EditText mBrokerURLEditText;
     private EditText mProductIdEditText;
     private EditText mDevNameEditText;
     private EditText mDevPSKEditText;
+    private EditText toCallIdText;
     private Button mGenerateQRCodeBtn;
 
     private TextView mLogInfoText;
 
     private RecyclerView mRecyclerView = null;
     private UserListAdapter mAdapter = null;
-    private ArrayList<UserEntity> mDatas = null;
+    private ArrayList<UserEntity> mDatas = new ArrayList<>();
 
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private String mProductID = BuildConfig.SUB_PRODUCT_ID;
     private String mDevName = BuildConfig.SUB_DEV_NAME;
     private String mDevPSK  = BuildConfig.SUB_DEV_PSK; //若使用证书验证，设为null
+    private String m2CallId = "";
 
     private String mDevCert = "";           // Cert String
     private String mDevPriv = "";           // Priv String
@@ -108,6 +120,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private final static String PRODUCT_ID = "product_id";
     private final static String DEVICE_NAME = "dev_name";
     private final static String DEVICE_PSK = "dev_psk";
+    private final static String TO_CALL_ID = "toCallId";
 
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -115,10 +128,13 @@ public class TRTCMainActivity extends AppCompatActivity {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
+    private NetWorkStateReceiver netWorkStateReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trtc_main);
+        netWorkStateReceiver = new NetWorkStateReceiver();
 
         //日志功能开启写权限
         try {
@@ -141,9 +157,12 @@ public class TRTCMainActivity extends AppCompatActivity {
         mQRCodeImgView = findViewById(R.id.iv_qrcode);
         mConnectBtn = findViewById(R.id.connect);
         mCloseConnectBtn = findViewById(R.id.close_connect);
+        mStartAdvBtn = findViewById(R.id.start_adv);
+        mGetAvatarBtn = findViewById(R.id.get_avatar);
         mAudioCallBtn = findViewById(R.id.select_audio_call);
         mVideoCallBtn = findViewById(R.id.select_video_call);
         mLogInfoText = findViewById(R.id.log_info);
+        toCallIdText = findViewById(R.id.to_call_id);
 
         mBrokerURLEditText = findViewById(R.id.et_broker_url);
         mProductIdEditText = findViewById(R.id.et_productId);
@@ -170,17 +189,26 @@ public class TRTCMainActivity extends AppCompatActivity {
         mProductID = settings.getString(PRODUCT_ID, mProductID);
         mDevName = settings.getString(DEVICE_NAME, mDevName);
         mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+        m2CallId = settings.getString(TO_CALL_ID, m2CallId);
         editor.commit();
 
-        if (!mProductID.equals("")) {
+        if (!TextUtils.isEmpty(m2CallId)) {
+            toCallIdText.setText(m2CallId);
+        }
+
+        if (!TextUtils.isEmpty(mBrokerURL)) {
+            mBrokerURLEditText.setText(mBrokerURL);
+        }
+
+        if (!TextUtils.isEmpty(mProductID)) {
             mProductIdEditText.setText(mProductID);
         }
 
-        if (!mDevName.equals("")) {
+        if (!TextUtils.isEmpty(mDevName)) {
             mDevNameEditText.setText(mDevName);
         }
 
-        if (!mDevPSK.equals("")) {
+        if (!TextUtils.isEmpty(mDevPSK)) {
             mDevPSKEditText.setText(mDevPSK);
         }
 
@@ -197,6 +225,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                 editor.putString(PRODUCT_ID, mProductID);
                 editor.putString(DEVICE_NAME, mDevName);
                 editor.putString(DEVICE_PSK, mDevPSK);
+                editor.putString(TO_CALL_ID, toCallIdText.getText().toString());
                 editor.commit();
                 if (mDataTemplateSample != null) {
                     return;
@@ -216,11 +245,80 @@ public class TRTCMainActivity extends AppCompatActivity {
             }
         });
 
+        mStartAdvBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mServer == null) {
+                    mServer = new LLSyncGattServer(TRTCMainActivity.this, mProductID, mDevName, "", new LLSyncGattServerCallback() {
+                        @Override
+                        public void onFailure(String errorMessage) {
+                            Log.d(TAG, "LLSyncGattServer onFailure : " + errorMessage);
+                            printLogInfo(TAG, "LLSyncGattServer onFailure : " + errorMessage, mLogInfoText);
+                        }
+
+                        @Override
+                        public void requestConnectWifi(String ssid, String password) {
+                            Log.d(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password);
+                            printLogInfo(TAG, "LLSyncGattServer requestConnectWifi ssid: " + ssid + "; password: " + password, mLogInfoText);
+                            WifiUtils.connectWifiApByNameAndPwd(TRTCMainActivity.this, ssid, password, new WifiUtils.WifiConnectCallBack() {
+                                @Override
+                                public void connectResult(boolean connectResult) {
+                                    Log.d(TAG, "WifiUtils connectResult: " + connectResult);
+                                    printLogInfo(TAG, "WifiUtils connectResult: " + connectResult, mLogInfoText);
+                                    if (!connectResult) {
+                                        mServer.noticeAppConnectWifiIsSuccess(false);
+                                    } else {
+                                        TimerTask task = new TimerTask(){
+                                            public void run(){
+                                                if (connectResult) {
+                                                    mConnectBtn.callOnClick(); //连接mqtt
+                                                }
+                                            }
+                                        };
+                                        Timer timer = new Timer();
+                                        timer.schedule(task, 5000);//防止刚切换到wifi时，mqtt连接不上延迟5s
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void requestAppBindToken(String token) {
+                            Log.d(TAG, "LLSyncGattServer requestAppBindToken : " + token);
+                            printLogInfo(TAG, "LLSyncGattServer requestAppBindToken : " + token, mLogInfoText);
+                            mDataTemplateSample.appBindToken(token);
+                        }
+                    });
+                    printLogInfo(TAG, "Start LLSyncGattServer Advertise", mLogInfoText);
+                }
+            }
+        });
+
+        mGetAvatarBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataTemplateSample == null)
+                    return;
+                JSONArray userIdsArray = getUserIdsArray();
+                if (userIdsArray.length() == 0) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "暂未和用户绑定", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
+                mDataTemplateSample.getUserAvatar(userIdsArray);
+            }
+        });
+
         mVideoCallBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
+                if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
@@ -235,6 +333,11 @@ public class TRTCMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDataTemplateSample == null)
                     return;
+                if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                    Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                    toast.show();
+                    return;
+                }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
@@ -278,6 +381,16 @@ public class TRTCMainActivity extends AppCompatActivity {
         }
     }
 
+    private JSONArray getUserIdsArray() {
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < mDatas.size(); i++) {
+            UserEntity user = mDatas.get(i);
+            String userId = user.getUserid();
+            array.put(userId);
+        }
+        return array;
+    }
+
     private String selectedUserIds() {
         String userIds = "";
         Integer callMobileNumber = 0;
@@ -302,6 +415,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private boolean checkInput() {
         String inputBrokerURL = String.valueOf(mBrokerURLEditText.getText());
         if (inputBrokerURL.equals("")) {
+            mBrokerURL = null;
         } else {
             mBrokerURL = inputBrokerURL;
         }
@@ -359,8 +473,8 @@ public class TRTCMainActivity extends AppCompatActivity {
             //do something 如果是userlist，刷新展示用户列表
             try {
                 JSONObject property = data.getJSONObject("reported");
+                mDatas.clear();
                 if (property.has(PROPERTY_SYS_CALL_USERLIST)) {
-                    mDatas = new ArrayList<UserEntity>();
                     String userList = property.getString(PROPERTY_SYS_CALL_USERLIST);
                     JSONArray userArrayList = new JSONArray(userList);
                     for (int i = 0; i < userArrayList.length(); i++) {
@@ -378,16 +492,21 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                         mDatas.add(user);
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 设置适配器，刷新展示用户列表
-                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    });
-
                 }
+
+                if (!TextUtils.isEmpty(toCallIdText.getText().toString())) {
+                    UserEntity lastUser = new UserEntity();
+                    lastUser.setUserid(toCallIdText.getText().toString());
+                    mDatas.add(lastUser);
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 设置适配器，刷新展示用户列表
+                        mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -397,6 +516,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         public JSONObject onControlCallBack(JSONObject msg) {
             Log.d(TAG, "control down stream message received : " + msg);
             //do something 如果是userlist，刷新展示用户列表
+            mDatas.clear();
             if (msg.has(PROPERTY_SYS_CALL_USERLIST)) {
                 try {
                     mDatas = new ArrayList<UserEntity>();
@@ -417,20 +537,27 @@ public class TRTCMainActivity extends AppCompatActivity {
                         }
                         mDatas.add(user);
                     }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // 设置适配器，刷新展示用户列表
-                            mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
-                            mRecyclerView.setAdapter(mAdapter);
-                        }
-                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
+
+            if (!TextUtils.isEmpty(toCallIdText.getText().toString())) {
+                UserEntity lastUser = new UserEntity();
+                lastUser.setUserid(toCallIdText.getText().toString());
+                mDatas.add(lastUser);
+            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    // 设置适配器，刷新展示用户列表
+                    mAdapter = new UserListAdapter(TRTCMainActivity.this, mDatas);
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            });
+
             //output
             try {
                 JSONObject result = new JSONObject();
@@ -477,8 +604,14 @@ public class TRTCMainActivity extends AppCompatActivity {
 
         @Override
         public void onUnbindDeviceCallBack(String msg) {
-            //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
+            //用户删除设备的通知消息
             Log.d(TAG, "unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //用户绑定设备的通知消息
+            Log.d(TAG, "bind device received : " + msg);
         }
     }
 
@@ -488,7 +621,7 @@ public class TRTCMainActivity extends AppCompatActivity {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -496,6 +629,10 @@ public class TRTCMainActivity extends AppCompatActivity {
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
+
+            if (mServer != null) { //开启了llsync辅助配网
+                mServer.noticeAppConnectWifiIsSuccess(status == Status.OK);
+            }
             if (mDataTemplateSample != null) {
                 if (!reconnect) {
                     mDataTemplateSample.subscribeTopic();
@@ -518,7 +655,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -528,7 +665,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -539,7 +676,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -558,7 +695,7 @@ public class TRTCMainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -572,13 +709,17 @@ public class TRTCMainActivity extends AppCompatActivity {
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive command, topic[%s], message[%s]", topic, message.toString());
             printLogInfo(TAG, logInfo, mLogInfoText);
+            if (mServer != null && topic.equals(TOPIC_SERVICE_DOWN_PREFIX+mProductID+"/"+mDevName) && message.toString().contains("app_bind_token_reply") && message.toString().contains("success")) {
+                printLogInfo(TAG, "app_bind_token success", mLogInfoText);
+                mServer.release();
+            }
         }
     }
 
     private class TRTCCallBack extends TXTRTCCallBack {
 
         @Override
-        public void onGetCallStatusCallBack(Integer callStatus, final String userid, final String agent, Integer callType) {
+        public void onGetCallStatusCallBack(Integer callStatus, final String userid, final String agent, Integer callType, CallExtraInfo callExtraInfo) {
             if (callStatus == 1) { //表示被呼叫了
                 mCallMobileNumber = 0;
                 mCallType = callType;
@@ -602,7 +743,7 @@ public class TRTCMainActivity extends AppCompatActivity {
                     mCallMobileNumber--;
                 }
                 if (mCallMobileNumber == 0) {
-                    TRTCUIManager.getInstance().callMobile = false;
+//                    TRTCUIManager.getInstance().callMobile = false;
                     if (TRTCUIManager.getInstance().isCalling && TRTCUIManager.getInstance().callingUserId.equals("")) { //当前正显示音视频通话页面，finish掉
                         TimerTask task = new TimerTask(){
                             public void run(){
@@ -629,9 +770,26 @@ public class TRTCMainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     TRTCUIManager.getInstance().joinRoom(mCallType, "", room);
-                    TRTCUIManager.getInstance().callMobile = false;
+//                    TRTCUIManager.getInstance().callMobile = false;
                 }
             });
+        }
+
+        @Override
+        public void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList) {
+            if (code == 0) {
+                for (int i = 0; i < mDatas.size(); i++) {
+                    UserEntity user = mDatas.get(i);
+                    try {
+                        String imgUrl = avatarList.getString(user.getUserid());
+                        printLogInfo(TAG, "userId: " + user.getUserid() + " imgUrl: " + imgUrl, mLogInfoText);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                printLogInfo(TAG, "trtcGetUserAvatarCallBack error code : " + code + "errorMsg: " + errorMsg, mLogInfoText);
+            }
         }
     }
 

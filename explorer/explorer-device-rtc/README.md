@@ -1,9 +1,12 @@
+简体中文 | [English](docs/en)
+
 * [IoT Explorer RTC Android SDK开发指南](#IoT-Explorer-RTC-Android-SDK开发指南)
   * [引用方式](#引用方式)
   * [API说明](#API说明)
      *  [explorer-device-android SDK 设计说明](#explorer-device-android-SDK-设计说明)
      *  [explorer-device-rtc SDK 设计说明](#explorer-device-rtc-SDK-设计说明)
      *  [explorer-device-rtc SDK 回调callback 设计说明](#explorer-device-rtc-SDK-回调callback-设计说明)
+     *  [explorer-device-rtc SDK 自定义音频数据](#explorer-device-rtc-SDK-自定义音频数据)
   * [通话流程梳理](#通话流程梳理)
 
 # IoT Explorer RTC Android SDK开发指南
@@ -14,7 +17,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入实时音视频 TRTC SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/编译环境及SDK接入说明.md)
+如果不需要接入实时音视频 TRTC SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/zh/编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
@@ -169,6 +172,13 @@ TXTRTCTemplateClient 继承自 TXMqttConnection 类
      * @return 发送请求成功时返回Status.OK;
      */
     public Status eventsPost(JSONArray events)
+    
+    /**
+     * 获取用户头像
+     * @param userIdsArray 要获取哪些头像的用户Id数组
+     * @return 获取用户头像，发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     */
+    public Status getUserAvatar(JSONArray userIdsArray)
 ```
 
 ### explorer-device-rtc SDK 回调callback 设计说明
@@ -192,7 +202,75 @@ TXTRTCCallBack 授权回调callback说明如下：
      * @param room
      */
     public abstract void trtcJoinRoomCallBack(RoomKey room);
+    
+    /**
+     * 获取用户头像结果
+     *
+     * @param code  0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param errorMsg 0成功，400请求不是json格式，401无权限，404userid不存在，500内部错误
+     * @param avatarList userId对应用户头像 json
+     */
+    public abstract void trtcGetUserAvatarCallBack(Integer code, String errorMsg, JSONObject avatarList);
 ```
+
+### explorer-device-rtc SDK 自定义音频数据
+#### SDK接入方自行采集音频
+##### 1. 启用音频自定义采集模式
+> 调用TRTCCloud的`enableCustomAudioCapture(boolean enable)`方法即可开启音频自定义采集模式
+
+> 开启该模式后，SDK不再运行原有的音频采集流程，即不再继续从麦克风采集音频数据，而是只保留音频编码和发送能力。您需要通过`sendCustomAudioData`不断地向 SDK 发送自己采集的音频数据。
+
+##### 2. 发送自定义音频数据
+调用TRTCCloud的`sendCustomAudioData(TRTCCloudDef.TRTCAudioFrame frame)`
+
+参数`TRTCAudioFrame`推荐下列填写方式（其他字段不需要填写）：
+* audioFormat：音频数据格式，仅支持 TRTCAudioFrameFormatPCM。
+* data：音频帧 buffer。音频帧数据只支持 PCM 格式，支持[5ms ~ 100ms]帧长，推荐使用 20ms 帧长，长度计算方法：【48000采样率、单声道的帧长度：48000 × 0.02s × 1 × 16bit = 15360bit = 1920字节】。
+* sampleRate：采样率，支持：16000、24000、32000、44100、48000。
+* channel：声道数（如果是立体声，数据是交叉的），单声道：1； 双声道：2。
+* timestamp：时间戳，单位为毫秒（ms），请使用音频帧在采集时被记录下来的时间戳（可以在采集到一帧音频帧之后，通过调用TRTCCloud的`generateCustomPTS`方法获取时间戳）。
+
+***
+
+其中`generateCustomPTS()`生成自定义采集时的时间戳，该方法返回 时间戳（单位：ms）
+> 本接口仅适用于自定义采集模式，用于解决音视频帧的采集时间（capture time）和投送时间（send time）不一致所导致的音画不同步问题。 当您通过`sendCustomAudioData`接口进行自定义视频或音频采集时，请按照如下操作使用该接口：
+
+> 首先，在采集到一帧视频或音频帧时，通过调用本接口获得当时的 PTS 时间戳。之后可以将该视频或音频帧送入您使用的前处理模块（如第三方美颜组件，或第三方音效组件）。在真正调用sendCustomAudioData进行投送时，请将该帧在采集时记录的`PTS`时间戳赋值给 TRTCAudioFrame 中的 timestamp 字段。
+
+##### 3. 代码示例
+```
+//启用音频自定义采集模式
+mTRTCCloud.enableCustomAudioCapture(true);
+...
+//发送自定义音频数据
+TRTCCloudDef.TRTCAudioFrame trtcAudioFrame = new TRTCCloudDef.TRTCAudioFrame();
+trtcAudioFrame.data = data;
+trtcAudioFrame.sampleRate = sampleRate;
+trtcAudioFrame.channel = channel;
+trtcAudioFrame.timestamp = timestamp;
+mTRTCCloud.sendCustomAudioData(trtcAudioFrame);
+```
+
+#### SDK接入方使用SDK内部采集的音频
+
+本地麦克风采集到的原始音频数据回调
+
+`void onCapturedRawAudioFrame(TRTCCloudDef.TRTCAudioFrame frame)`
+
+当您设置完音频数据自定义回调之后，SDK 内部会把刚从麦克风采集到的原始音频数据，以 PCM 格式的形式通过本接口回调给您。
+
+* 此接口回调出的音频时间帧长固定为0.02s，格式为 PCM 格式。
+* 由时间帧长转化为字节帧长的公式为【采样率 × 时间帧长 × 声道数 × 采样点位宽】。
+* 以 TRTC 默认的音频录制格式48000采样率、单声道、16采样点位宽为例，字节帧长为【48000 × 0.02s × 1 × 16bit = 15360bit = 1920字节】。
+
+参数
+> frame	PCM 格式的音频数据帧
+注意
+* 请不要在此回调函数中做任何耗时操作，由于 SDK 每隔 20ms 就要处理一帧音频数据，如果您的处理时间超过 20ms，就会导致声音异常。
+* 此接口回调出的音频数据是可读写的，也就是说您可以在回调函数中同步修改音频数据，但请保证处理耗时。
+* 此接口回调出的音频数据**不包含**背景音、音效、混响等前处理效果，延迟极低。
+
+参考文档：[自定义采集](https://cloud.tencent.com/document/product/647/34066) [接口API](https://cloud.tencent.com/document/product/647/32267#.E8.87.AA.E5.AE.9A.E4.B9.89.E9.87.87.E9.9B.86.E5.92.8C.E8.87.AA.E5.AE.9A.E4.B9.89.E6.B8.B2.E6.9F.93) [音频数据自定义回调](https://cloud.tencent.com/document/product/647/32267#.E9.9F.B3.E9.A2.91.E6.95.B0.E6.8D.AE.E8.87.AA.E5.AE.9A.E4.B9.89.E5.9B.9E.E8.B0.83) [官方Demo](https://cloud.tencent.com/document/product/647/32689)
 
 ## 设备与用户绑定说明
 
@@ -218,6 +296,10 @@ explorer-device-android TXMqttConnection 类 的接口
 ## 通话流程梳理
 
 ### 连连APP/小程序 视频呼叫 Android设备端
+
+时序图：
+
+![UserCallDeviceUML](media/UserCallDeviceUML.jpg)
 
 1. 连连APP/小程序 在控制面板页面中点击 视频呼叫。
 
@@ -247,18 +329,22 @@ TRTCUIManager.getInstance().didAcceptJoinRoom(TRTCCalling.TYPE_VIDEO_CALL, mSpon
 接到此消息后需要调用
 ``` 
 TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
-``` 
+```
 
 6、连连APP/小程序 和 设备端 进行视频通话。
 
 7、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
 ``` 
 TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
-``` 
+```
 
 **连连APP/小程序 音频呼叫 Android设备端 流程和视频呼叫类似，注意修改对应的呼叫类型**
 
 ### Android设备端 视频呼叫 连连APP/小程序
+
+时序图：
+
+![UserCallDeviceUML](media/DeviceCallUserUML.jpg)
 
 1、设备端点击视频呼叫，需要调用
 ```
@@ -275,13 +361,13 @@ TRTCVideoCallActivity.startCallSomeone(TRTCMainActivity.this, agent, userId);//�
 接到此消息后需要调用
 ``` 
 TRTCUIManager.getInstance().joinRoom(mCallType, "", room); //加入房间，更新视频呼叫属性为通话中。
-``` 
+```
 
 4、连连APP/小程序 和 设备端 进行视频通话。
 
 5、当主动挂断，或收到对方挂断的回调 ``` public void onUserLeave(final String userId) ``` 后，退出当前音视频页面并调用 
 ``` 
 TRTCUIManager.getInstance().didExitRoom(TRTCCalling.TYPE_VIDEO_CALL, mSponsorUserInfo.getUserId()); //更新视频呼叫属性为空闲。
-``` 
+```
 
 **Android设备端 音频呼叫 连连APP/小程序 流程和视频呼叫类似，注意修改对应的呼叫类型**

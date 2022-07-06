@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +16,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
-import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
-import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
+import androidx.fragment.app.Fragment;
+
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTRequest;
 import com.tencent.iot.hub.device.android.app.mqtt.MQTTSample;
 import com.tencent.iot.hub.device.android.core.util.AsymcSslUtils;
 import com.tencent.iot.hub.device.android.core.util.TXLog;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynreg;
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
+import com.tencent.iot.hub.device.java.core.httppublish.TXHTTPPulish;
+import com.tencent.iot.hub.device.java.core.httppublish.TXHttpPublishCallback;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogConstants;
 import com.tencent.iot.hub.device.java.core.mqtt.ConnectionState;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXWebSocketActionCallback;
@@ -35,6 +38,8 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -44,10 +49,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.SocketFactory;
@@ -97,10 +102,14 @@ public class IoTMqttFragment extends Fragment {
 
     private Button mDeviceLogBtn;
     private Button mUploadLogBtn;
+    private Button mhttpPublishBtn;
 
     private Button mGetRemoteConfigBtn;
     private Button mConcernRemoteConfigBtn;
     private Button mReportSubDevVersionBtn;
+
+    private Button mSubscribeNTPTopicBtn;
+    private Button mGetNTPServiceBtn;
 
     // Default testing parameters
     private String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
@@ -371,6 +380,43 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.uploadLog();
             }
         });
+        mhttpPublishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                JSONObject property = new JSONObject();
+                try {
+                    // 车辆类型
+                    property.put("car_type", "suv");
+                    // 车辆油耗
+                    property.put("oil_consumption", "6.6");
+                    // 车辆最高速度
+                    property.put("maximum_speed", "205");
+                    // 温度信息
+                    property.put("temperature", String.valueOf(temperature.getAndIncrement()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                JSONObject object = new JSONObject();
+                String clientToken = mProductID + mDevName + UUID.randomUUID().toString();
+                try {
+                    object.put("method", "report");
+                    object.put("clientToken", clientToken);
+                    object.put("timestamp", System.currentTimeMillis());
+                    object.put("params", property);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String topic = String.format("%s/%s/data", mProductID, mDevName);
+                TXHTTPPulish httpPulish = new TXHTTPPulish(mProductID, mDevPSK, mDevName, new SelfHttpPublishCallback());
+                if (httpPulish.doHttpPublish(topic, property, 0)) {
+                    Log.d(TAG, "http publish OK!");
+                } else {
+                    Log.e(TAG, "http publish failed!");
+                }
+            }
+        });
 
         mSubScribeRRPCBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -475,6 +521,20 @@ public class IoTMqttFragment extends Fragment {
                 mMQTTSample.reportSubDevVersion("0.0");
             }
         });
+
+        mSubscribeNTPTopicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.subscribeNTPTopic();
+            }
+        });
+
+        mGetNTPServiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMQTTSample.getNTPService();
+            }
+        });
         return view;
     }
 
@@ -494,6 +554,7 @@ public class IoTMqttFragment extends Fragment {
         mSubdevOfflineBtn = view.findViewById(R.id.subdev_offline);
         mDeviceLogBtn = view.findViewById(R.id.mlog);
         mUploadLogBtn = view.findViewById(R.id.uploadlog);
+        mhttpPublishBtn = view.findViewById(R.id.http_publish);
         mSubScribeRRPCBtn = view.findViewById(R.id.subscribe_rrpc_topic);
         mSubdevBindedBtn = view.findViewById(R.id.subdev_binded);
         mSubdevUnbindedBtn = view.findViewById(R.id.subdev_unbinded);
@@ -504,6 +565,8 @@ public class IoTMqttFragment extends Fragment {
         mGetRemoteConfigBtn = view.findViewById(R.id.get_remote_config);
         mConcernRemoteConfigBtn = view.findViewById(R.id.concern_remote_config);
         mReportSubDevVersionBtn = view.findViewById(R.id.report_sub_dev_version);
+        mSubscribeNTPTopicBtn = view.findViewById(R.id.subscribe_ntp_topic);
+        mGetNTPServiceBtn = view.findViewById(R.id.get_ntp_service);
 
     }
 
@@ -519,7 +582,7 @@ public class IoTMqttFragment extends Fragment {
     private class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -537,7 +600,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -548,7 +611,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -559,7 +622,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -574,7 +637,7 @@ public class IoTMqttFragment extends Fragment {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof MQTTRequest) {
                 userContextInfo = userContext.toString();
@@ -763,6 +826,30 @@ public class IoTMqttFragment extends Fragment {
         public void onFailedDynreg(Throwable cause) {
             String logInfo = String.format("Dynamic register failed! onFailedDynreg, ErrMsg[%s]", cause.toString());
             mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_ERROR);
+        }
+    }
+
+    /**
+     * Callback for http publish
+     */
+    private class SelfHttpPublishCallback implements TXHttpPublishCallback {
+
+        @Override
+        public void onFailedPublish(Throwable cause) {
+            String logInfo = String.format("http publish failed! onFailedPublish, ErrMsg[%s]", cause.toString());
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_ERROR);
+        }
+
+        @Override
+        public void onFailedPublish(Throwable cause, String errMsg) {
+            String logInfo = String.format("http publish failed! onFailedPublish, ErrMsg[%s]", cause.toString() + errMsg);
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_ERROR);
+        }
+
+        @Override
+        public void onSuccessPublishGetRequestId(String requestId) {
+            String logInfo = String.format("http publish OK!onSuccessPublishGetRequestId, requestId[%s]", requestId);
+            mParent.printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_INFO);
         }
     }
 }

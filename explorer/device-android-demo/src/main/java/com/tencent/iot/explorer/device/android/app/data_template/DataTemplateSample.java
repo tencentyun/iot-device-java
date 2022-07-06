@@ -9,6 +9,7 @@ import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
+import com.tencent.iot.hub.device.java.core.log.TXMqttLogCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTACallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
@@ -36,6 +37,9 @@ public class DataTemplateSample {
     private String mDevKeyName  = "DEVICE_KEY-NAME ";
     private String mJsonFileName = "JSON_FILE_NAME";
     private Context mContext;
+
+    private boolean mMqttLogFlag;
+    private TXMqttLogCallBack mMqttLogCallBack;
 
     private TXMqttActionCallBack mMqttActionCallBack;
 
@@ -81,6 +85,20 @@ public class DataTemplateSample {
         mDownStreamCallBack = downStreamCallBack;
     }
 
+    public DataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, Boolean mqttLogFlag, TXMqttLogCallBack logCallBack, TXMqttActionCallBack mqttActionCallBack,
+                              final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+        mContext = context;
+        mBrokerURL = brokerURL;
+        mProductID = productId;
+        mDevName = devName;
+        mDevPSK = devPSK;
+        mMqttLogFlag = mqttLogFlag;
+        mMqttLogCallBack = logCallBack;
+        mMqttActionCallBack = mqttActionCallBack;
+        mJsonFileName = jsonFileName;
+        mDownStreamCallBack = downStreamCallBack;
+    }
+
     /**
      * 生成绑定设备的二维码字符串
      * @return 生成的绑定设备的二维码字符串;
@@ -93,7 +111,7 @@ public class DataTemplateSample {
      * 建立MQTT连接
      */
     public void connect() {
-        mMqttConnection = new TXDataTemplateClient( mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttActionCallBack,
+        mMqttConnection = new TXDataTemplateClient( mContext, mBrokerURL, mProductID, mDevName, mDevPSK,null,null, mMqttLogFlag, mMqttLogCallBack, mMqttActionCallBack,
                                                     mJsonFileName, mDownStreamCallBack);
 
         MqttConnectOptions options = new MqttConnectOptions();
@@ -187,6 +205,29 @@ public class DataTemplateSample {
 
     public Status eventSinglePost(String eventId, String type, JSONObject params){
         return  mMqttConnection.eventSinglePost(eventId, type, params);
+    }
+
+    /**
+     * 生成一条日志
+     * @param logLevel 日志级别：
+     *                 错误：TXMqttLogConstants.LEVEL_ERROR
+     *                 警告：TXMqttLogConstants.LEVEL_WARN
+     *                 通知：TXMqttLogConstants.LEVEL_INFO
+     *                 调试：TXMqttLogConstants.LEVEL_DEBUG
+     * @param tag
+     * @param format
+     * @param obj
+     */
+    public void mLog(int logLevel, final String tag,final String format, final Object... obj) {
+        if (mMqttLogFlag)
+            mMqttConnection.mLog(logLevel, tag, format, obj);
+    }
+
+    /**
+     * 发起一次日志上传
+     */
+    public void uploadLog() {
+        mMqttConnection.uploadLog();
     }
 
     public void checkFirmware() {

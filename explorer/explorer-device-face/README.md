@@ -1,3 +1,5 @@
+简体中文 | [English](docs/en)
+
 * [IoT Explorer人脸识别 Android SDK开发指南](#IoT-Explorer人脸识别-Android-SDK开发指南)
   * [引用方式](#引用方式)
   * [API说明](#API说明)
@@ -13,7 +15,7 @@
 
 - 集成 SDK 方式
 
-如果不需要接入人脸识别离线SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/编译环境及SDK接入说明.md)
+如果不需要接入人脸识别离线SDK，仅需要接入explorer-device-android SDK，请参考 [编译环境及SDK接入说明.md](../explorer-device-android/docs/zh/编译环境及SDK接入说明.md)
 
  -  gradle 工程 正式版SDK 远程构建
 
@@ -188,4 +190,13 @@ TXResourceCallBack 人员库资源回调callback说明如下：
     void onOfflineRetrievalResultEventSave(String feature_id, float score, float sim, int timestamp);
 ```
 
+* [YT-MOBILE-UTILS通用接口](ai-docs/zh/优图移动端通用函数文档.md)
+* [优图人脸追踪 FACE-TRACKER](ai-docs/zh/优图人脸追踪文档.md)
+* [优图人脸精确配准文档](ai-docs/zh/优图人脸精确配准文档.md)
+* [优图人脸质量文档](ai-docs/zh/优图人脸质量文档.md)
+* [优图人脸归隐质量文档 FACE-QUALITY-PRO](ai-docs/zh/优图人脸归因质量文档.md)
+* [优图人脸彩色活文档 FACE-LIVE-COLOR](ai-docs/zh/优图人脸彩色活体文档.md)
+* [优图人脸特征文档 FACE-FEATURE](ai-docs/zh/优图人脸特征文档.md)
+* [优图人脸检索 YT-FACE-RETRIEVAL](ai-docs/zh/优图人脸检索文档.md)
+* [Demo 架构设计简介](ai-docs/zh/Demo架构设计简介.md)
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.face.consts.Common;
 import com.tencent.iot.explorer.device.face.resource.TXResourceCallBack;
 import com.tencent.iot.explorer.device.face.resource.TXResourceImpl;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
@@ -15,6 +16,7 @@ import com.tencent.iot.hub.device.java.core.mqtt.TXOTAConstansts;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,7 +74,7 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      * @param callback 事件回调
      */
     public void initResource(String storagePath, String[] cosServerCaCrtList, TXResourceCallBack callback) {
-        mResourceImpl = new TXResourceImpl(mConnection, storagePath, cosServerCaCrtList, callback);
+        mResourceImpl = new TXResourceImpl(this, mConnection, storagePath, cosServerCaCrtList, callback);
     }
 
     /**
@@ -84,7 +86,7 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      *            事件回调
      */
     public void initResource(String storagePath, TXResourceCallBack callback) {
-        mResourceImpl = new TXResourceImpl(mConnection, storagePath, callback);
+        mResourceImpl = new TXResourceImpl(this, mConnection, storagePath, callback);
     }
 
     /**
@@ -113,10 +115,31 @@ public class TXFaceKitTemplate extends TXDataTemplate {
         }
 
         MqttMessage message = new MqttMessage();
-        message.setQos(0);
+        message.setQos(1);
         message.setPayload(object.toString().getBytes());
 
         return publishTemplateMessage(clientToken,EVENT_UP_STREAM_TOPIC, message);
+    }
+
+    /**
+     * 单个人脸下载/删除/注册状态的事件上报， 不检查构造是否符合json文件中的定义
+     * @param resourceName csv资源文件名
+     * @param version 版本
+     * @param featureId 特征ID
+     * @param result 结果值 1：下载成功，待注册 2：下载失败 3：注册成功 4：注册失败 5：删除成功 6：删除失败
+     * @return 返回状态
+     */
+    public Status faceStatusPost(String resourceName, String version, String featureId, int result) {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put(Common.PARAMS_RESOURCE_NAME, resourceName);
+            obj.put(Common.PARAMS_VERSION, version);
+            obj.put(Common.PARAMS_FEATURE_ID, featureId);
+            obj.put(Common.PARAMS_UPDATE_RESULT, result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return sysEventSinglePost(Common.EVENT_UPDATE_RESULT_REPORT, Common.EVENT_TYPE_INFO, obj);
     }
 
     /**
@@ -227,9 +250,9 @@ public class TXFaceKitTemplate extends TXDataTemplate {
      * @param message 消息内容
      * @throws Exception 异常
      */
+    @Override
     public void onMessageArrived(String topic, MqttMessage message) throws Exception {
         super.onMessageArrived(topic, message);
-
         if (mResourceImpl != null ) {
             mResourceImpl.processMessage(topic, message);
         }

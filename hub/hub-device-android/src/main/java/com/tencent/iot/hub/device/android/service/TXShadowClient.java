@@ -15,40 +15,48 @@ import com.tencent.iot.hub.device.java.core.shadow.TXShadowActionCallBack;
 import java.util.List;
 
 /**
- * Shadow远程服务客户端
+ * Shadow 远程服务客户端
  */
 public class TXShadowClient {
 
     private static final String TAG = TXShadowClient.class.getSimpleName();
 
     /**
-     * mqtt客户端，ShadowClient所有功能均通过该成员变量进行
+     * mqtt 客户端，ShadowClient 所有功能均通过该成员变量进行
      */
     private TXMqttClient mMqttClient = null;
 
     /**
-     * shadowAction监听器，用于跨进程调用
+     * shadowAction 监听器，用于跨进程调用
      */
     private ITXShadowActionListener mShadowActionListener = null;
 
     /**
-     * shadowAction回调接口，用于外部回调
+     * shadowAction 回调接口，用于外部回调
      */
     private TXShadowActionCallBack mShadowActionCallBack = null;
 
+    /**
+     * 构造函数
+     */
     public TXShadowClient() {
         this.mMqttClient = new TXMqttClient();
     }
 
+    /**
+     * 构造函数
+     *
+     * @param mMqttClient {@link TXMqttClient}
+     */
     public TXShadowClient(TXMqttClient mMqttClient) {
         this.mMqttClient = mMqttClient;
     }
 
     /**
-     * 设置ShadowAction回调接口
+     * 设置 ShadowAction 回调接口
      *
-     * @param mShadowActionCallBack shadowAction回调接口
-     * @return
+     * @param mShadowActionCallBack shadowAction 回调接口 {@link TXShadowActionCallBack}
+     * @return 影子实例 {@link TXShadowClient}
      */
     public TXShadowClient setShadowActionCallBack(TXShadowActionCallBack mShadowActionCallBack) {
         this.mShadowActionCallBack = mShadowActionCallBack;
@@ -58,8 +66,8 @@ public class TXShadowClient {
     /**
      * 设置远程服务连接回调接口
      *
-     * @param serviceConnection 远程服务连接回调接口
-     * @return
+     * @param serviceConnection 远程服务连接回调接口 {@link ServiceConnection}
+     * @return 影子实例 {@link TXShadowClient}
      */
     public TXShadowClient setServiceConnection(ServiceConnection serviceConnection) {
         mMqttClient.setServiceConnection(serviceConnection);
@@ -67,9 +75,9 @@ public class TXShadowClient {
     }
 
     /**
-     * 获取Mqtt客户端实例
+     * 获取 MQTT 客户端实例
      *
-     * @return
+     * @return MQTT 客户端实例 {@link TXMqttClient}
      */
     public TXMqttClient getMqttClient() {
         return mMqttClient;
@@ -78,8 +86,8 @@ public class TXShadowClient {
     /**
      * 初始化远程服务客户端
      *
-     * @param context
-     * @param clientOptions 客户端选项
+     * @param context 上下文
+     * @param clientOptions 客户端选项 {@link TXMqttClientOptions}
      */
     public void init(Context context, TXMqttClientOptions clientOptions) {
         initListener();
@@ -101,9 +109,9 @@ public class TXShadowClient {
     }
 
     /**
-     * 设置断连状态buffer缓冲区
+     * 设置断连状态 buffer 缓冲区
      *
-     * @param bufferOpts
+     * @param bufferOpts {@link TXDisconnectedBufferOptions}
      */
     public void setBufferOpts(TXDisconnectedBufferOptions bufferOpts) {
         mMqttClient.setBufferOpts(bufferOpts);
@@ -112,9 +120,9 @@ public class TXShadowClient {
     /**
      * 与云端建立连接，结果通过回调函数通知
      *
-     * @param connectOptions 连接参数
-     * @param userContext    用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param connectOptions 连接参数 {@link TXMqttConnectOptions}
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status connect(TXMqttConnectOptions connectOptions, Object userContext) {
         connectOptions.setUseShadow(true);
@@ -122,10 +130,10 @@ public class TXShadowClient {
     }
 
     /**
-     * 断开连接请求，结果通过回调函数通知。
+     * 断开连接请求，结果通过回调函数通知
      *
      * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status disConnect(Object userContext) {
         return mMqttClient.disConnect(userContext);
@@ -134,7 +142,7 @@ public class TXShadowClient {
     /**
      * 获取连接状态
      *
-     * @return 连接状态
+     * @return 连接状态 {@link TXMqttConstants.ConnectStatus}
      */
     public TXMqttConstants.ConnectStatus getConnectStatus() {
         TXMqttConstants.ConnectStatus status = TXMqttConstants.ConnectStatus.kDisconnected;
@@ -148,7 +156,10 @@ public class TXShadowClient {
     }
 
     /**
-     * 获取设备影子
+     * 获取设备影子状态
+     *
+     * @param userContext 上下文
+     * @return 状态 {@link Status}
      */
     public Status get(Object userContext) {
         Status status = Status.ERROR;
@@ -163,11 +174,11 @@ public class TXShadowClient {
     }
 
     /**
-     * 更新设备属性信息，结果通过回调函数通知。
+     * 更新设备属性信息，结果通过回调函数通知
      *
      * @param devicePropertyList 需要更新的设备属性集
-     * @param userContext        用户上下文（这个参数在回调函数时透传给用户）
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param userContext 用户上下文（这个参数在回调函数时透传给用户）
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status update(List<DeviceProperty> devicePropertyList, Object userContext) {
         Status status = Status.ERROR;
@@ -184,7 +195,7 @@ public class TXShadowClient {
     /**
      * 注册设备属性
      *
-     * @param deviceProperty
+     * @param deviceProperty {@link DeviceProperty}
      */
     public void registerProperty(DeviceProperty deviceProperty) {
         try {
@@ -197,7 +208,7 @@ public class TXShadowClient {
     /**
      * 取消注册设备属性
      *
-     * @param deviceProperty
+     * @param deviceProperty {@link DeviceProperty}
      */
     public void unRegisterProperty(DeviceProperty deviceProperty) {
         try {
@@ -208,19 +219,19 @@ public class TXShadowClient {
     }
 
     /**
-     * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
+     * 更新 delta 信息后，上报空的 desired 信息，通知服务器不再发送 delta 消息
      *
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportNullDesiredInfo() {
         return reportNullDesiredInfo(null);
     }
 
     /**
-     * 更新delta信息后，上报空的desired信息，通知服务器不再发送delta消息。
+     * 更新 delta 信息后，上报空的 desired 信息，通知服务器不再发送 delta 消息
      *
-     * @param reportJsonDoc 用户上报的JSON内容
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param reportJsonDoc 用户上报的 JSON 内容
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportNullDesiredInfo(String reportJsonDoc) {
         Status status = Status.ERROR;
@@ -241,10 +252,10 @@ public class TXShadowClient {
     }
 
     /**
-     * 初始化OTA功能。
+     * 初始化 OTA 功能
      *
-     * @param storagePath OTA升级包存储路径(调用者必确保路径已存在，并且具有写权限)
-     * @param callback    OTA事件回调
+     * @param storagePath OTA 升级包存储路径(调用者必确保路径已存在，并且具有写权限)
+     * @param callback OTA 事件回调
      */
     public void initOTA(String storagePath, TXOTACallBack callback) {
 
@@ -252,10 +263,10 @@ public class TXShadowClient {
     }
 
     /**
-     * 上报设备当前版本信息到后台服务器。
+     * 上报设备当前版本信息到后台服务器
      *
      * @param currentFirmwareVersion 设备当前版本信息
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportCurrentFirmwareVersion(String currentFirmwareVersion)  {
 
@@ -263,13 +274,13 @@ public class TXShadowClient {
     }
 
     /**
-     * 上报设备升级状态到后台服务器。
+     * 上报设备升级状态到后台服务器
      *
-     * @param state
-     * @param resultCode
-     * @param resultMsg
-     * @param version
-     * @return 发送请求成功时返回Status.OK; 其它返回值表示发送请求失败；
+     * @param state 状态
+     * @param resultCode 结果码
+     * @param resultMsg 结果信息
+     * @param version 版本号
+     * @return 发送请求成功时返回 Status.OK；其它返回值表示发送请求失败
      */
     public Status reportOTAState(TXOTAConstansts.ReportState state, int resultCode, String resultMsg, String version) {
 

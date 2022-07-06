@@ -143,6 +143,7 @@ dependencies {
     if (findProject(':hub:hub-device-java') != null) {
         api project(path: ':hub:hub-device-java')
     }
+    api 'de.mindpipe.android:android-logging-log4j:1.0.3'
 }
 
 signing {
@@ -150,3 +151,35 @@ signing {
         sign publishing.publications.aar
     }
 }
+
+task clearLastestJavadoc(type: Delete) {
+    doFirst {
+        delete("javadoc/")
+    }
+}
+
+task javaDoc(type: Javadoc) {
+
+    options{
+        encoding('UTF-8')
+        charSet('UTF-8')
+        memberLevel = JavadocMemberLevel.PUBLIC
+        linkSource true
+        author false
+        noTree true
+        noIndex true
+        noNavBar true
+    }
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    destinationDir = file("javadoc/")
+    failOnError false
+}
+
+afterEvaluate {
+    javaDoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath
+    })
+}
+
+javaDoc.dependsOn clearLastestJavadoc

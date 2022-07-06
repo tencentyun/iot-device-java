@@ -6,9 +6,8 @@ import com.tencent.iot.explorer.device.java.core.data_template.DataTemplateSampl
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
+import com.tencent.iot.hub.device.java.utils.Loggor;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONArray;
@@ -32,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MqttSampleTest {
     private static final Logger LOG = LoggerFactory.getLogger(MqttSampleTest.class);
-
+    private static final String TAG = MqttSampleTest.class.getSimpleName();
     private static String mBrokerURL = null;  //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
     private static String mProductID = BuildConfig.TESTMQTTSAMPLE_PRODUCT_ID;
     private static String mDevName = BuildConfig.TESTMQTTSAMPLE_DEVICE_NAME;
@@ -42,13 +41,18 @@ public class MqttSampleTest {
     private static String mDevPriv = "DEVICE_PRIVATE_KEY_FILE_NAME";            // Device Private Key File Name
     private static AtomicInteger requestID = new AtomicInteger(0);
     private static String mJsonFileName = "struct.json";
+    private static String mJsonFilePath = System.getProperty("user.dir") + "/src/test/resources/";
 
     private static DataTemplateSample mDataTemplateSample;
+
+    static {
+        Loggor.setLogger(LOG);
+    }
 
     private static void connect() {
         // init connection
         mDataTemplateSample = new DataTemplateSample(mBrokerURL, mProductID, mDevName, mDevPSK, mDevCert, mDevPriv, new SelfMqttActionCallBack(),
-                mJsonFileName, new SelfDownStreamCallBack());
+                mJsonFileName, mJsonFilePath, new SelfDownStreamCallBack());
         mDataTemplateSample.connect();
     }
 
@@ -117,18 +121,18 @@ public class MqttSampleTest {
 
 
         if(Status.OK != mDataTemplateSample.propertyReport(property, null)) {
-            LOG.error("property report failed!");
+            Loggor.error(TAG, "property report failed!");
         }
     }
 
     private static void propertyGetStatus() {
         //get status
         if(Status.OK != mDataTemplateSample.propertyGetStatus("report", false)) {
-            LOG.error("property get report status failed!");
+            Loggor.error(TAG, "property get report status failed!");
         }
 
         if(Status.OK != mDataTemplateSample.propertyGetStatus("control", false)) {
-            LOG.error("property get control status failed!");
+            Loggor.error(TAG, "property get control status failed!");
         }
     }
 
@@ -147,18 +151,18 @@ public class MqttSampleTest {
             params.put("mac", "00:00:00:00");
             params.put("device_label", label);
         } catch (JSONException e) {
-            LOG.error("Construct params failed!");
+            Loggor.error(TAG, "Construct params failed!");
             return;
         }
         if(Status.OK != mDataTemplateSample.propertyReportInfo(params)) {
-            LOG.error("property report failed!");
+            Loggor.error(TAG, "property report failed!");
         }
     }
 
     private static void propertyClearControl() {
         //clear control
         if(Status.OK !=  mDataTemplateSample.propertyClearControl()){
-            LOG.error("clear control failed!");
+            Loggor.error(TAG, "clear control failed!");
         }
     }
 
@@ -170,10 +174,10 @@ public class MqttSampleTest {
             params.put("status",0);
             params.put("message","");
         } catch (JSONException e) {
-            LOG.error("Construct params failed!");
+            Loggor.error(TAG, "Construct params failed!");
         }
         if(Status.OK != mDataTemplateSample.eventSinglePost(eventId, type, params)){
-            LOG.error("single event post failed!");
+            Loggor.error(TAG, "single event post failed!");
         }
     }
 
@@ -195,7 +199,7 @@ public class MqttSampleTest {
 
             events.put(event);
         } catch (JSONException e) {
-            LOG.error("Construct params failed!");
+            Loggor.error(TAG, "Construct params failed!");
             return;
         }
 
@@ -213,7 +217,7 @@ public class MqttSampleTest {
 
             events.put(event);
         } catch (JSONException e) {
-            LOG.error("Construct params failed!");
+            Loggor.error(TAG, "Construct params failed!");
             return;
         }
 
@@ -232,59 +236,59 @@ public class MqttSampleTest {
 
             events.put(event);
         } catch (JSONException e) {
-            LOG.error("Construct params failed!");
+            Loggor.error(TAG, "Construct params failed!");
             return;
         }
 
         if(Status.OK != mDataTemplateSample.eventsPost(events)){
-            LOG.error("events post failed!");
+            Loggor.error(TAG, "events post failed!");
         }
     }
 
     public static class SelfMqttActionCallBack extends TXMqttActionCallBack {
 
         @Override
-        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg) {
+        public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onConnectCompleted, status[%s], reconnect[%b], userContext[%s], msg[%s]",
                     status.name(), reconnect, userContextInfo, msg);
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             if (!reconnect){unlock();}
         }
 
         @Override
         public void onConnectionLost(Throwable cause) {
             String logInfo = String.format("onConnectionLost, cause[%s]", cause.toString());
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
         }
 
         @Override
-        public void onDisconnectCompleted(Status status, Object userContext, String msg) {
+        public void onDisconnectCompleted(Status status, Object userContext, String msg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onDisconnectCompleted, status[%s], userContext[%s], msg[%s]", status.name(), userContextInfo, msg);
-            LOG.info(logInfo);
+            Loggor.info(TAG, logInfo);
             unlock();
         }
 
         @Override
-        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg) {
+        public void onPublishCompleted(Status status, IMqttToken token, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onPublishCompleted, status[%s], topics[%s],  userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(token.getTopics()), userContextInfo, errMsg);
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
         }
 
         @Override
-        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
@@ -292,9 +296,9 @@ public class MqttSampleTest {
             String logInfo = String.format("onSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
             if (Status.ERROR == status) {
-                LOG.error(logInfo);
+                Loggor.error(TAG, logInfo);
             } else {
-                LOG.debug(logInfo);
+                Loggor.debug(TAG, logInfo);
             }
             if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
                 subscribeTopicSuccess = true;
@@ -303,14 +307,14 @@ public class MqttSampleTest {
         }
 
         @Override
-        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg) {
+        public void onUnSubscribeCompleted(Status status, IMqttToken asyncActionToken, Object userContext, String errMsg, Throwable cause) {
             String userContextInfo = "";
             if (userContext instanceof TXMqttRequest) {
                 userContextInfo = userContext.toString();
             }
             String logInfo = String.format("onUnSubscribeCompleted, status[%s], topics[%s], userContext[%s], errMsg[%s]",
                     status.name(), Arrays.toString(asyncActionToken.getTopics()), userContextInfo, errMsg);
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
             if (Arrays.toString(asyncActionToken.getTopics()).contains("thing/down/property") && userContextInfo.contains("subscribeTopic")) {
                 unSubscribeTopicSuccess = true;
                 unlock();
@@ -320,7 +324,7 @@ public class MqttSampleTest {
         @Override
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("receive message, topic[%s], message[%s]", topic, message.toString());
-            LOG.debug(logInfo);
+            Loggor.debug(TAG, logInfo);
             if (topic.contains("thing/down/property") && message.toString().contains("report_reply") && message.toString().contains("success")) {//上报属性成功消息
                 propertyReportSuccess = true;
                 unlock();
@@ -338,7 +342,7 @@ public class MqttSampleTest {
         @Override
         public void onReplyCallBack(String replyMsg) {
             //可根据自己需求进行处理属性上报以及事件的回复，根据需求填写
-            LOG.debug("reply received : " + replyMsg);
+            Loggor.debug(TAG, "reply received : " + replyMsg);
 
             if (replyMsg.contains("report_info_reply") &&  replyMsg.contains("success")) { //获取report_info状态成功消息
                 propertyReportInfoSuccess = true;
@@ -358,12 +362,12 @@ public class MqttSampleTest {
         @Override
         public void onGetStatusReplyCallBack(JSONObject data) {
             //可根据自己需求进行处理状态和控制信息的获取结果
-            LOG.debug("event down stream message received : " + data);
+            Loggor.debug(TAG, "event down stream message received : " + data);
         }
 
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
-            LOG.debug("control down stream message received : " + msg);
+            Loggor.debug(TAG, "control down stream message received : " + msg);
             //do something
 
             //output
@@ -373,21 +377,21 @@ public class MqttSampleTest {
                 result.put("status", "some message wher errorsome message when error");
                 return result;
             } catch (JSONException e) {
-                LOG.error("Construct params failed!");
+                Loggor.error(TAG, "Construct params failed!");
                 return null;
             }
         }
 
         @Override
         public  JSONObject onActionCallBack(String actionId, JSONObject params){
-            LOG.debug("action [{}] received, input:" + params, actionId);
+            Loggor.debug(TAG, String.format("action [%s] received, input:%s", actionId, params));
             //do something based action id and input
             if(actionId.equals("blink")) {
                 try {
                     Iterator<String> it = params.keys();
                     while (it.hasNext()) {
                         String key = it.next();
-                        LOG.debug("Input parameter[{}]:" + params.get(key), key);
+                        Loggor.debug(TAG, String.format("Input parameter[%s]:%s", key, params.get(key)));
                     }
                     //construct result
                     JSONObject result = new JSONObject();
@@ -412,7 +416,13 @@ public class MqttSampleTest {
         @Override
         public void onUnbindDeviceCallBack(String msg) {
             //可根据自己需求进行用户删除设备的通知消息处理的回复，根据需求填写
-            LOG.debug("unbind device received : " + msg);
+            Loggor.debug(TAG, "unbind device received : " + msg);
+        }
+
+        @Override
+        public void onBindDeviceCallBack(String msg) {
+            //可根据自己需求进行用户绑定设备的通知消息处理的回复，根据需求填写
+            Loggor.debug(TAG, "bind device received : " + msg);
         }
     }
 
@@ -446,59 +456,55 @@ public class MqttSampleTest {
 
     @Test
     public void testMqttConnect() {
-
-        LogManager.resetConfiguration();
-        LOG.isDebugEnabled();
-        PropertyConfigurator.configure(MqttSampleTest.class.getResource("/log4j.properties"));
-
+        // Loggor.saveLogs("explorer/explorer-device-java.log"); //保存日志到文件
         connect();
         lock();
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kConnected);
-        LOG.debug("after connect");
+        Loggor.debug(TAG, "after connect");
 
         subscribeTopic();
         lock();
         assertTrue(subscribeTopicSuccess);
-        LOG.debug("after subscribe");
+        Loggor.debug(TAG, "after subscribe");
 
         propertyReport();
         lock();
         assertTrue(propertyReportSuccess);
-        LOG.debug("after propertyReport");
+        Loggor.debug(TAG, "after propertyReport");
 
         propertyGetStatus();
         lock();
         assertTrue(propertyGetStatusSuccess);
-        LOG.debug("after propertyGetStatus");
+        Loggor.debug(TAG, "after propertyGetStatus");
 
         propertyReportInfo();
         lock();
         assertTrue(propertyReportInfoSuccess);
-        LOG.debug("after propertyReportInfo");
+        Loggor.debug(TAG, "after propertyReportInfo");
 
         propertyClearControl();
         lock();
         assertTrue(propertyClearControlSuccess);
-        LOG.debug("after propertyClearControl");
+        Loggor.debug(TAG, "after propertyClearControl");
 
         eventSinglePost();
         lock();
         assertTrue(eventSinglePostSuccess);
-        LOG.debug("after eventSinglePost");
+        Loggor.debug(TAG, "after eventSinglePost");
 
         eventsPost();
         lock();
         assertTrue(eventsPostSuccess);
-        LOG.debug("after eventsPost");
+        Loggor.debug(TAG, "after eventsPost");
 
         unSubscribeTopic();
         lock();
         assertTrue(unSubscribeTopicSuccess);
-        LOG.debug("after unSubscribe");
+        Loggor.debug(TAG, "after unSubscribe");
 
         disconnect();
         lock();
-        LOG.debug("after disconnect");
+        Loggor.debug(TAG, "after disconnect");
         assertSame(mDataTemplateSample.getConnectStatus(), TXMqttConstants.ConnectStatus.kDisconnected);
     }
 }
