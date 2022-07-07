@@ -13,7 +13,6 @@ import com.tencent.iot.explorer.device.video.recorder.RecordThread;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
-import com.tencent.iot.explorer.device.video.recorder.param.RecordParam;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -139,7 +138,6 @@ public class AudioEncoder {
         packet[6] = (byte) 0xFC;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void record() {
         if (audioCodec == null) {
             return;
@@ -157,7 +155,12 @@ public class AudioEncoder {
             // 将 AudioRecord 获取的 PCM 原始数据送入编码器
             int audioInputBufferId = audioCodec.dequeueInputBuffer(0);
             if (audioInputBufferId >= 0) {
-                ByteBuffer inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
+                ByteBuffer inputBuffer = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
+                } else {
+                    inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
+                }
                 int readSize = -1;
                 if (inputBuffer != null) {
                     readSize = audioRecord.read(inputBuffer, bufferSizeInBytes);
@@ -169,7 +172,12 @@ public class AudioEncoder {
 
             int audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
             while (audioOutputBufferId >= 0) {
-                ByteBuffer outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
+                ByteBuffer outputBuffer = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
+                } else {
+                    outputBuffer = audioCodec.getOutputBuffers()[audioOutputBufferId];
+                }
                 outputBuffer.position(audioInfo.offset);
                 outputBuffer.limit(audioInfo.offset + audioInfo.size);
                 addADTStoPacket(outputBuffer);
