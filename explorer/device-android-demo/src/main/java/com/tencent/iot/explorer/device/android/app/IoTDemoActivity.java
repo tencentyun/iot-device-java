@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.tencent.iot.explorer.device.android.app.utils.Watermark;
+import com.tencent.iot.explorer.device.central.CentralMainActivity;
 import com.tencent.iot.explorer.device.face.AuthActivity;
 import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
 import com.tencent.iot.explorer.device.video.VideoEntryActivity;
@@ -31,6 +32,7 @@ public class IoTDemoActivity extends AppCompatActivity {
     private Button mIoTTmeBtn;
     private Button mIoTVideoBtn;
     private Button mIoTWiFiBtn;
+    private Button mIoTCentralBtn;
 
     private static final String TAG = IoTDemoActivity.class.getSimpleName();
 
@@ -70,6 +72,7 @@ public class IoTDemoActivity extends AppCompatActivity {
         mIoTTmeBtn = findViewById(R.id.iot_tme);
         mIoTVideoBtn = findViewById(R.id.btn_iot_video);
         mIoTWiFiBtn = findViewById(R.id.btn_wifi);
+        mIoTCentralBtn = findViewById(R.id.btn_central);
 
         mIoTVideoBtn.setOnClickListener(v -> {
             Intent intent = new Intent(IoTDemoActivity.this, VideoEntryActivity.class);
@@ -114,6 +117,12 @@ public class IoTDemoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(IoTDemoActivity.this, WiFiActivity.class));
+            }
+        });
+        mIoTCentralBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(IoTDemoActivity.this, CentralMainActivity.class));
             }
         });
         Watermark.getInstance(this).show(this, BuildConfig.SDKDemoCommitID + "    xp2p: " + XP2P.getVersion());
