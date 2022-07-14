@@ -365,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
                 checkoutIsEnterRoom60seconds("通话结束...");
                 updateLog("p2p通道断开");
                 Utils.sendVideoBroadcast(MainActivity.this, 2);
-            } else if (type == 4) {
+            } else if (type == 100) {
                 checkIfNeedReportXp2PInfo();
             }
         }
