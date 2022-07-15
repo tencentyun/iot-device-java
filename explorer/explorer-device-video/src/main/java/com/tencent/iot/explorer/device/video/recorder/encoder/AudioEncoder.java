@@ -4,10 +4,7 @@ import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
-import android.os.Build;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.tencent.iot.explorer.device.video.recorder.RecordThread;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
@@ -82,7 +79,6 @@ public class AudioEncoder {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void start() {
         new Thread(this::record).start();
     }
