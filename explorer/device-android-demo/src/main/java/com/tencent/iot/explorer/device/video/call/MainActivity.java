@@ -355,17 +355,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void avDataMsgHandle(int type, String msg) {
             Log.e(TAG, "*========avDataMsgHandle type " + type);
-            if (type == 0) {
-                ReadByteIO.Companion.getInstance().startAdd();
+            if (type == 0) { //开始预览
                 Log.e(TAG, "*========start send video data");
                 Utils.sendVideoBroadcast(MainActivity.this, 1);
                 removeIsEnterRoom60secondsTask();
-            } else if (type == 1) {
-                ReadByteIO.Companion.getInstance().reset();
+            } else if (type == 1) { //结束预览
                 checkoutIsEnterRoom60seconds("通话结束...");
                 updateLog("p2p通道断开");
                 Utils.sendVideoBroadcast(MainActivity.this, 2);
-            } else if (type == 100) {
+            }else if (type == 2) { //开始对讲
+                ReadByteIO.Companion.getInstance().reset();
+                Utils.sendVideoBroadcast(MainActivity.this, 3);
+            } else if (type == 3) { //结束对讲
+                Utils.sendVideoBroadcast(MainActivity.this, 4);
+                ReadByteIO.Companion.getInstance().reset();
+            } else if (type == 100) { //p2p ready
                 checkIfNeedReportXp2PInfo();
             }
         }

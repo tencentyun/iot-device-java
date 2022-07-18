@@ -71,7 +71,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private Camera camera;
     private Button btnSwitch;
     private String path; // 保存源文件的路径
-    private IjkMediaPlayer player;
+    private IjkMediaPlayer player = null;
     private Surface surface;
     private TextureView playView;
     private TextView tvVideoWH;
@@ -283,14 +283,21 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 //        }
 //    };
 
+    private void releasePlayer() {
+        if (player != null) {
+            mHandler.removeMessages(MSG_UPDATE_HUD);
+            if (player.isPlaying()) {
+                player.stop();
+            }
+            player.release();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregistVideoOverBrodcast();
-        if (player != null) {
-            mHandler.removeMessages(MSG_UPDATE_HUD);
-            player.stop();
-        }
+        releasePlayer();
 
         ReadByteIO.Companion.getInstance().reset();
         ReadByteIO.Companion.getInstance().close();
@@ -302,7 +309,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         if (surface != null) {
             this.surface = new Surface(surface);
-            play();
+//            play();
         }
     }
 
@@ -395,6 +402,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 Log.e(TAG, "*====== 结束推流");
                 handler.post(() -> stopRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
+            } else if (refreshTag == 3) {
+                Log.e(TAG, "*====== 开始对讲");
+                releasePlayer();
+                play();
+            } else if (refreshTag == 4) { //结束对讲
+                Log.e(TAG, "*====== 结束对讲.");
+                releasePlayer();
             }
         }
     };
