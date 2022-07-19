@@ -369,6 +369,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (type == 3) { //结束对讲
                 Utils.sendVideoBroadcast(MainActivity.this, 4);
                 ReadByteIO.Companion.getInstance().reset();
+            } else if (type == 4) { //command 自定义信令接收
+                Log.e(TAG, "*========command=="+msg);
             } else if (type == 100) { //p2p ready
                 checkIfNeedReportXp2PInfo();
             }
