@@ -278,11 +278,8 @@ class HttpRequest private constructor() {
     /**
      * 获取设备在线状态
      */
-    fun deviceOnlineStatus(productId: String, deviceIds: ArrayList<String>, callback: MyCallback) {
-//        val param = tokenParams("AppGetDeviceOnlineStatus")
+    fun deviceOnlineStatus(deviceIds: ArrayList<String>, callback: MyCallback) {
         val param = tokenParams("AppGetDeviceStatuses")
-        param["ProductId"] = productId
-//        param["ListDeviceName"] = deviceIds
         param["DeviceIds"] = deviceIds
         tokenPost(param, callback, RequestCode.device_online_status)
     }

@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 rootProject.ext.configPath = "./src/main/assets/app-config.json"
 
 apply from: "../../parse_json.gradle"
@@ -103,6 +106,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     testImplementation 'junit:junit:4.13'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //依赖一个utils类
     implementation 'com.blankj:utilcode:1.25.9'

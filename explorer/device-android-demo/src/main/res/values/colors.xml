@@ -40,4 +40,13 @@
     <color name="gray_E7E8EB">#E7E8EB</color>
     <color name="black_000000">#000000</color>
     <color name="white">#FFFFFF</color>
+    <color name="dialog_background">#AA333333</color>
+    <!--红色-->
+    <color name="red_eb3d3d">#EB3D3D</color>
+    <color name="red_e54545">#E54545</color>
+
+    <!--绿色-->
+    <color name="green_1aad19">#1AAD19</color>
+    <color name="green_29CC85">#29CC85</color>
+    <color name="green_0ABF5B">#0ABF5B</color>
 </resources>

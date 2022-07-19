@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.tencent.iot.explorer.device.android.utils.AsymcSslUtils;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
+import com.tencent.iot.explorer.device.central.callback.OnGetDeviceListListener;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -45,16 +46,13 @@ public class CentralDataTemplateSample {
     private TXMqttActionCallBack mMqttActionCallBack;
     private CentralTemplateClient mClient;
     private TXDataTemplateDownStreamCallBack mDownStreamCallBack;
+    private OnGetDeviceListListener mGetDeviceListListener;
 
     private Context mContext;
 
 
-    public CentralDataTemplateSample(Context context) {
-        mContext = context;
-    }
-
     public CentralDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, String devCertName, String devKeyName, TXMqttActionCallBack mqttActionCallBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+                                     final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, OnGetDeviceListListener onGetDeviceListListener) {
         mBrokerURL = brokerURL;
         mProductID = productId;
         mDevName = devName;
@@ -65,10 +63,11 @@ public class CentralDataTemplateSample {
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
         mDownStreamCallBack = downStreamCallBack;
+        mGetDeviceListListener = onGetDeviceListListener;
     }
 
     public CentralDataTemplateSample(Context context, String brokerURL, String productId, String devName, String devPSK, TXMqttActionCallBack mqttActionCallBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack, OnGetDeviceListListener onGetDeviceListListener) {
         mContext = context;
         mBrokerURL = brokerURL;
         mProductID = productId;
@@ -77,6 +76,7 @@ public class CentralDataTemplateSample {
         mMqttActionCallBack = mqttActionCallBack;
         mJsonFileName = jsonFileName;
         mDownStreamCallBack = downStreamCallBack;
+        mGetDeviceListListener = onGetDeviceListListener;
     }
 
     /**
@@ -84,7 +84,7 @@ public class CentralDataTemplateSample {
      */
     public void connect() {
         mClient = new CentralTemplateClient(mContext, mBrokerURL, mProductID, mDevName, mDevPSK, null, null, mMqttActionCallBack,
-                mJsonFileName, mDownStreamCallBack);
+                mJsonFileName, mDownStreamCallBack, mGetDeviceListListener);
 
         MqttConnectOptions options = new MqttConnectOptions();
         options.setConnectionTimeout(8);
@@ -221,6 +221,10 @@ public class CentralDataTemplateSample {
      */
     public String generateDeviceQRCodeContent() {
         return mClient.generateDeviceQRCodeContent();
+    }
+
+    public Status requestDeviceList(String accessToken) {
+        return mClient.requestDeviceList(accessToken);
     }
 
 }

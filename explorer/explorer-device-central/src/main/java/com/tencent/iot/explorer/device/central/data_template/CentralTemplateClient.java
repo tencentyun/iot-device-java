@@ -3,6 +3,7 @@ package com.tencent.iot.explorer.device.central.data_template;
 import android.content.Context;
 
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
+import com.tencent.iot.explorer.device.central.callback.OnGetDeviceListListener;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
@@ -25,9 +26,10 @@ public class CentralTemplateClient extends TXMqttConnection {
 
     public CentralTemplateClient(Context context, String serverURI, String productID, String deviceName, String secretKey, DisconnectedBufferOptions bufferOpts,
                                  MqttClientPersistence clientPersistence, TXMqttActionCallBack callBack,
-                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack) {
+                                 final String jsonFileName, TXDataTemplateDownStreamCallBack downStreamCallBack,
+                                 OnGetDeviceListListener onGetDeviceListListener) {
         super(context, serverURI, productID, deviceName, secretKey, bufferOpts, clientPersistence, callBack);
-        this.mDataTemplate = new CentralDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack);
+        this.mDataTemplate = new CentralDataTemplate(context, this,  productID,  deviceName, jsonFileName, downStreamCallBack, onGetDeviceListListener);
     }
 
     /**
@@ -131,5 +133,9 @@ public class CentralTemplateClient extends TXMqttConnection {
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
         super.connectComplete(reconnect, serverURI);
+    }
+
+    public Status requestDeviceList(String accessToken) {
+        return mDataTemplate.requestDeviceList(accessToken);
     }
 }

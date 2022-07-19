@@ -2,6 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 android {
     compileSdkVersion 29
     buildToolsVersion "26.0.3"
@@ -36,6 +40,8 @@ dependencies {
     if (findProject(':explorer:explorer-device-android') != null) {
         implementation project(':explorer:explorer-device-android')
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api 'com.alibaba:fastjson:1.2.73'
 }
 
 task androidJavadocs(type: Javadoc) {
