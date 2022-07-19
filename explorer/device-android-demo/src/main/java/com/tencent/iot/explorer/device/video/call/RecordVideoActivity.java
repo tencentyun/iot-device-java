@@ -328,12 +328,18 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player = new IjkMediaPlayer();
         player.reset();
         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
+        /*
+         * probesize & analyzeduration 可通过这两个参数进行首开延时优化
+         * 单位字节 & 单位微秒 表示探测多大数据和多长时间
+         * 如果推流端码率较小，可降低探测字节数，以及缩短探测时长
+         * https://github.com/tencentyun/iot-link-ios/blob/master/Source/SDK/LinkVideo/doc/IoTVideo%20常见问题指引.md
+         */
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 256);
         } else {
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
-//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 50 * 1024);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 25 * 1024);
         }
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
