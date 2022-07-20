@@ -84,6 +84,7 @@ object RequestCode {
     const val device_product_info = 3016
     const val gateway_sub_device_list = 3017
     const val bind_gateway_sub_device = 3018
+    const val get_family_subdevice_list = 3019
 
     /*************设备接口结束**************/
 

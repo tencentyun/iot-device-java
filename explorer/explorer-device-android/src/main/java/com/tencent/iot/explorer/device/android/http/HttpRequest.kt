@@ -349,6 +349,18 @@ class HttpRequest private constructor() {
     }
 
     /**
+     * 获取已绑定到家庭下的指定网关的子设备列表
+     */
+    fun getFamilySubDeviceList(gatewayProductId: String, gatewayDeviceName: String, offset: Int, callback: MyCallback) {
+        val param = tokenParams("AppGetFamilySubDeviceList")
+        param["ProductId"] = gatewayProductId
+        param["DeviceName"] = gatewayDeviceName
+        param["Offset"] = offset
+        param["Limit"] = 50
+        tokenPost(param, callback, RequestCode.get_family_subdevice_list)
+    }
+
+    /**
      * 控制设备
      */
     fun controlDevice(productId: String, deviceName: String, data: String, callback: MyCallback) {

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.http.HttpRequest;
@@ -33,6 +34,8 @@ import com.tencent.iot.explorer.device.central.entity.DeviceDataEntity;
 import com.tencent.iot.explorer.device.central.entity.DeviceDataResponse;
 import com.tencent.iot.explorer.device.central.entity.DeviceOnlineEntity;
 import com.tencent.iot.explorer.device.central.entity.DeviceOnlineResponse;
+import com.tencent.iot.explorer.device.central.message.payload.Payload;
+import com.tencent.iot.explorer.device.central.utils.MessageParseUtils;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
@@ -79,7 +82,7 @@ public class CentralMainActivity extends AppCompatActivity {
     private String mProductID = BuildConfig.CENTRAL_PRODUCT_ID;
     private String mDevName = BuildConfig.CENTRAL_DEVICE_NAME;
     private String mDevPSK  = BuildConfig.CENTRAL_DEVICE_PSK;
-
+    private String mAccessToken = "";
     private String mCurrentDeviceId = "";
 
     private final ArrayList<Device> mDeviceList = new ArrayList<>();
@@ -87,6 +90,7 @@ public class CentralMainActivity extends AppCompatActivity {
 
     private CentralDataTemplateSample mDataTemplateSample;
 
+    private boolean mDialogShow = false;
     private IosCenterStyleDialog mDeviceDetailDialog;
     private List<DeviceDataEntity> mDeviceDataEntities;
     private RecyclerView mDeviceDetailListView;
@@ -180,7 +184,12 @@ public class CentralMainActivity extends AppCompatActivity {
                 mDeviceDetailListView.setAdapter(mDevicePropertiesAdapter);
             }
         };
+        mDeviceDetailDialog.setOnDismissListener(dialog -> {
+            mDialogShow = false;
+            mCurrentDeviceId = "";
+        });
         mDeviceDetailDialog.show();
+        mDialogShow = true;
     }
 
     @Override
@@ -336,8 +345,8 @@ public class CentralMainActivity extends AppCompatActivity {
 
             if (Status.OK == status) {
                 if (topics.contains(TOPIC_SERVICE_DOWN_PREFIX)) {
-                    mDataTemplateSample.requestDeviceList("");
-                    IoTAuth.INSTANCE.init("");
+                    mDataTemplateSample.requestDeviceList(mAccessToken);
+                    IoTAuth.INSTANCE.init(mAccessToken);
                 }
             }
 
@@ -360,9 +369,28 @@ public class CentralMainActivity extends AppCompatActivity {
         @Override
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("onMessageReceived, topic[%s], message[%s]", topic, message.toString());
+            if (message.toString().contains("ws_message") && message.toString().contains("Report")) {
+                //解析设备上报的ws消息并更新设备控制面板
+                Payload payload = MessageParseUtils.parseMessage(message.toString());
+                if (mDialogShow && mCurrentDeviceId.equals(payload.getDeviceId())) {
+                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(payload.getData());
+                    if (jsonObject != null) {
+                        for (int i = 0; i < mDeviceDataEntities.size(); i++) {
+                            String id = mDeviceDataEntities.get(i).getId();
+                            if (jsonObject.containsKey(id)) {
+                                mDeviceDataEntities.get(i).setValue(jsonObject.getString(id));
+                            }
+                        }
+                        runOnUiThread(() -> {
+                            mDevicePropertiesAdapter.notifyDataSetChanged();
+                        });
+                    }
+                }
+            }
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_DEBUG);
         }
     }
+
 
     private class SelfDownStreamCallBack extends TXDataTemplateDownStreamCallBack {
         @Override
