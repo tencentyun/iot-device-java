@@ -373,6 +373,9 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "*========command=="+msg);
             } else if (type == 100) { //p2p ready
                 checkIfNeedReportXp2PInfo();
+            } else if (type > 100 && type < 104) {
+                VideoNativeInteface.getInstance().release();
+                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
             }
         }
     };
