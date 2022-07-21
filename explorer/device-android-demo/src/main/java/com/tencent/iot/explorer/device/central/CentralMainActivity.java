@@ -369,6 +369,7 @@ public class CentralMainActivity extends AppCompatActivity {
         @Override
         public void onMessageReceived(final String topic, final MqttMessage message) {
             String logInfo = String.format("onMessageReceived, topic[%s], message[%s]", topic, message.toString());
+            // 解析设备上报的ws消息
             if (message.toString().contains("ws_message") && message.toString().contains("Report")) {
                 //解析设备上报的ws消息并更新设备控制面板
                 Payload payload = MessageParseUtils.parseMessage(message.toString());
@@ -385,6 +386,23 @@ public class CentralMainActivity extends AppCompatActivity {
                             mDevicePropertiesAdapter.notifyDataSetChanged();
                         });
                     }
+                }
+            }
+
+            // 解析设备上下线的ws消息
+            if (message.toString().contains("ws_message") && message.toString().contains("StatusChange")) {
+                //解析设备上报的ws消息并更新设备控制面板
+                Payload payload = MessageParseUtils.parseMessage(message.toString());
+                if (payload != null) {
+                    for (int i = 0; i < mDeviceList.size(); i++) {
+                        String id = mDeviceList.get(i).id;
+                        if (mDeviceList.get(i).id.equals(payload.getDeviceId())) {
+                            mDeviceList.get(i).status = payload.getSubtype().equals("Online") ? 1 : 0;
+                        }
+                    }
+                    runOnUiThread(() -> {
+                        mDeviceListAdapter.notifyDataSetChanged();
+                    });
                 }
             }
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_DEBUG);

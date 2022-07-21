@@ -18,6 +18,10 @@ class Payload {
     //json中返回的“DeviceId”字段
     var deviceId = ""
 
+    var type = ""
+
+    var subtype = ""
+
     fun keySet(): Set<String>? {
         try {
             return JSON.parseObject(data)?.keys

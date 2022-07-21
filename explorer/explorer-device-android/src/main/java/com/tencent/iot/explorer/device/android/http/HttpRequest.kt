@@ -57,7 +57,6 @@ class HttpRequest private constructor() {
      */
     private fun tokenPost(param: HashMap<String, Any>, callback: MyCallback, reqCode: Int) {
         if (TextUtils.isEmpty(IoTAuth.getToken())) {//登录过期或未登录
-//            App.toLogin()
             return
         }
         val host:String = OEM_TOKEN_API
@@ -75,6 +74,8 @@ class HttpRequest private constructor() {
                     // 检查特殊情况 token 失效
                     if (checkRespTokenValid(this)) {
                         callback.success(this, reqCode)
+                    } else {
+                        callback.fail("token invalid", -1)
                     }
                 }
             }
@@ -84,10 +85,8 @@ class HttpRequest private constructor() {
     // 处理当使用过期 token 请求时，返回的数据
     private fun checkRespTokenValid(resp: BaseResponse): Boolean {
         if (resp.code == ErrorCode.REQ_ERROR_CODE && resp.data != null) {
-            var errMsg = ErrorMessage.parseErrorMessage(resp.data.toString())
-
+            val errMsg = ErrorMessage.parseErrorMessage(resp.data.toString())
             if (errMsg != null && errMsg.Code.equals(ErrorCode.DATA_MSG.ACCESS_TOKEN_ERR)) {
-//                App.toLogin()
                 return false
             }
         }

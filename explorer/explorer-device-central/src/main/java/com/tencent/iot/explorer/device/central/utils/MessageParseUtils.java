@@ -22,6 +22,8 @@ public class MessageParseUtils {
                     String p = new String(Base64.decodeFast(params.getPayload()));
                     payload.setPayload(p);
                     payload.setData(getPayload(p));
+                    payload.setType(params.getType());
+                    payload.setSubtype(params.getSubType());
                 }
             }
         }
@@ -34,6 +36,9 @@ public class MessageParseUtils {
     // { "method": "report", "params": { "brightness": 14, "color": 0, "power_switch": 0, "name": "test-light-position-3556"}, "timestamp": 1581585022, "clientToken": "22"}
     private static String getPayload(String str) {
         com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(str);
+        if (jsonObject == null) {
+            return "";
+        }
         String type = jsonObject.getString("type");
         if ("update".equals(type)) {
             com.alibaba.fastjson.JSONObject state = jsonObject.getJSONObject("state");
