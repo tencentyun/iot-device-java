@@ -88,6 +88,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/sv_log_info"
         android:layout_width="match_parent"
         android:layout_height="60dp">
 

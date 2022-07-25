@@ -10,24 +10,30 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.tencent.iot.explorer.device.android.app.App;
 import com.tencent.iot.explorer.device.android.app.BuildConfig;
 import com.tencent.iot.explorer.device.android.app.R;
+import com.tencent.iot.explorer.device.android.http.ErrorCode;
 import com.tencent.iot.explorer.device.android.http.HttpRequest;
 import com.tencent.iot.explorer.device.android.http.IoTAuth;
 import com.tencent.iot.explorer.device.android.http.callback.MyCallback;
 import com.tencent.iot.explorer.device.android.http.response.BaseResponse;
 import com.tencent.iot.explorer.device.android.http.utils.RequestCode;
+import com.tencent.iot.explorer.device.android.utils.SharePreferenceUtil;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.central.adapter.DeviceListAdapter;
 import com.tencent.iot.explorer.device.central.adapter.DevicePropertiesAdapter;
 import com.tencent.iot.explorer.device.central.callback.OnGetDeviceListListener;
+import com.tencent.iot.explorer.device.central.consts.Common;
 import com.tencent.iot.explorer.device.central.data_template.CentralDataTemplateSample;
 import com.tencent.iot.explorer.device.central.entity.Device;
 import com.tencent.iot.explorer.device.central.entity.DeviceDataEntity;
@@ -75,6 +81,7 @@ public class CentralMainActivity extends AppCompatActivity {
     private EditText mDevNameEditText;
     private EditText mDevPSKEditText;
     private TextView mLogInfoText;
+    private ScrollView mLogInfoScrollView;
     private RecyclerView mDeviceListView;
 
     //传入null，即使用腾讯云物联网通信默认地址 "${ProductId}.iotcloud.tencentdevices.com:8883"  https://cloud.tencent.com/document/product/634/32546
@@ -110,6 +117,11 @@ public class CentralMainActivity extends AppCompatActivity {
         @Override
         public void fail(@Nullable String msg, int reqCode) {
             TXLog.e(TAG, msg);
+            if (ErrorCode.DATA_MSG.ACCESS_TOKEN_ERR.equals(msg)) {
+                // Invalid Access Token, 小程序重新扫码绑定中控设备
+                TXLog.e(TAG, msg);
+                mDataTemplateSample.refreshToken(mAccessToken);
+            }
         }
 
         @Override
@@ -128,17 +140,19 @@ public class CentralMainActivity extends AppCompatActivity {
                     break;
                 case RequestCode.device_online_status:
                     DeviceOnlineResponse resp = response.parse(DeviceOnlineResponse.class);
-                    List<DeviceOnlineEntity> deviceStatuses = resp.getDeviceStatuses();
-                    if (deviceStatuses != null) {
-                        for (int i = 0; i < mDeviceList.size(); i++) {
-                            for (int j = 0; j < deviceStatuses.size(); j++) {
-                                if (mDeviceList.get(i).id.equals(deviceStatuses.get(j).getDeviceId())) {
-                                    mDeviceList.get(i).status = deviceStatuses.get(j).getOnline();
+                    if (resp != null) {
+                        List<DeviceOnlineEntity> deviceStatuses = resp.getDeviceStatuses();
+                        if (deviceStatuses != null) {
+                            for (int i = 0; i < mDeviceList.size(); i++) {
+                                for (int j = 0; j < deviceStatuses.size(); j++) {
+                                    if (mDeviceList.get(i).id.equals(deviceStatuses.get(j).getDeviceId())) {
+                                        mDeviceList.get(i).status = deviceStatuses.get(j).getOnline();
+                                    }
                                 }
                             }
                         }
+                        runOnUiThread(() -> mDeviceListAdapter.notifyDataSetChanged());
                     }
-                    runOnUiThread(() -> mDeviceListAdapter.notifyDataSetChanged());
                     break;
                 default:
                     break;
@@ -201,6 +215,7 @@ public class CentralMainActivity extends AppCompatActivity {
         mConnectBtn = findViewById(R.id.btn_connect);
         mDisconnectBtn = findViewById(R.id.btn_disconnect);
         mLogInfoText = findViewById(R.id.log_info);
+        mLogInfoScrollView = findViewById(R.id.sv_log_info);
 
         mBrokerURLEditText = findViewById(R.id.et_broker_url);
         mProductIdEditText = findViewById(R.id.et_productId);
@@ -270,6 +285,8 @@ public class CentralMainActivity extends AppCompatActivity {
             mDataTemplateSample.disconnect();
             mDataTemplateSample = null;
         });
+
+        mAccessToken = IoTAuth.INSTANCE.getToken();
     }
 
 
@@ -319,6 +336,7 @@ public class CentralMainActivity extends AppCompatActivity {
             if (mDataTemplateSample != null) {
                 mDataTemplateSample.unSubscribeTopic();
             }
+            runOnUiThread(() -> Toast.makeText(CentralMainActivity.this, "下线成功", Toast.LENGTH_SHORT).show());
         }
 
         @Override
@@ -345,8 +363,9 @@ public class CentralMainActivity extends AppCompatActivity {
 
             if (Status.OK == status) {
                 if (topics.contains(TOPIC_SERVICE_DOWN_PREFIX)) {
-                    mDataTemplateSample.requestDeviceList(mAccessToken);
-                    IoTAuth.INSTANCE.init(mAccessToken);
+                    if (!TextUtils.isEmpty(mAccessToken)) {
+                        mDataTemplateSample.requestDeviceList(mAccessToken);
+                    }
                 }
             }
 
@@ -425,6 +444,8 @@ public class CentralMainActivity extends AppCompatActivity {
         @Override
         public JSONObject onControlCallBack(JSONObject msg) {
             TXLog.d(TAG, "onControlCallBack : " + msg);
+            // 更新AccessToken以及过期时间
+            updateToken(msg);
             JSONObject result = new JSONObject();
             try {
                 result.put("code",0);
@@ -527,6 +548,46 @@ public class CentralMainActivity extends AppCompatActivity {
                 break;
         }
 
-        runOnUiThread(() -> textView.append(logInfo + "\n"));
+        runOnUiThread(() -> {
+            textView.setMovementMethod(ScrollingMovementMethod.getInstance());
+            textView.append(logInfo + "\n");
+            mLogInfoScrollView.post(() -> mLogInfoScrollView.smoothScrollTo(0, textView.getBottom()));
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDataTemplateSample != null) {
+            mDataTemplateSample.disconnect();
+        }
+        if (mDeviceDetailDialog != null && mDeviceDetailDialog.isShowing()) {
+            mDeviceDetailDialog.dismiss();
+            mDeviceDetailDialog = null;
+        }
+    }
+
+    private void updateToken(JSONObject msg) {
+        if (msg != null) {
+            try {
+                String str = msg.getString(Common.PROPERTY_ACCESS_TOKEN); // {token;expiredTime}
+                if (!TextUtils.isEmpty(str)) {
+                    String[] info = str.split(";");
+                    if (info.length == 2) {
+                        String token = info[0];
+                        long expiredTime = Long.parseLong(info[1]);
+                        SharePreferenceUtil.saveString(this, App.CONFIG, App.ACCESS_TOKEN, token);
+                        SharePreferenceUtil.saveLong(this, App.CONFIG, App.TOKEN_EXPIRED_TIME, expiredTime);
+                        IoTAuth.INSTANCE.init(token, expiredTime);
+                        mAccessToken = token;
+                        mDataTemplateSample.requestDeviceList(mAccessToken);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            TXLog.e(TAG, "updateToken msg is null");
+        }
     }
 }

@@ -227,4 +227,8 @@ public class CentralDataTemplateSample {
         return mClient.requestDeviceList(accessToken);
     }
 
+    public Status refreshToken(String accessToken) {
+        return mClient.refreshToken(accessToken);
+    }
+
 }

@@ -6,6 +6,7 @@ import com.tencent.iot.explorer.device.android.data_template.TXDataTemplate;
 import com.tencent.iot.explorer.device.android.mqtt.TXMqttConnection;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.central.callback.OnGetDeviceListListener;
+import com.tencent.iot.explorer.device.central.consts.Common;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.hub.device.java.core.common.Status;
 
@@ -98,6 +99,25 @@ public class CentralDataTemplate extends TXDataTemplate {
         String clientToken = UUID.randomUUID().toString();
         try {
             object.put("method", METHOD_WS_ACTIVE_PUSH);
+            object.put("clientToken", clientToken);
+            params.put("AccessToken", accessToken);
+            object.put("params", params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        MqttMessage message = new MqttMessage();
+        message.setQos(1);
+        message.setPayload(object.toString().getBytes());
+        return mConnection.publish(mServiceUptreamTopic, message, null);
+    }
+
+    public Status refreshToken(String accessToken) {
+        //构造发布信息
+        JSONObject object = new JSONObject();
+        JSONObject params = new JSONObject();
+        String clientToken = UUID.randomUUID().toString();
+        try {
+            object.put("method", Common.REFRESH_HTTP_ACCESS_TOKEN);
             object.put("clientToken", clientToken);
             params.put("AccessToken", accessToken);
             object.put("params", params);

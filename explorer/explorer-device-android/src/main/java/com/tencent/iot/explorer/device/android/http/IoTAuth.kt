@@ -7,15 +7,24 @@ import android.text.TextUtils
  */
 object IoTAuth {
     private var accessToken = ""
+    private var expiredTime = 0L //秒
 
-    fun init(token: String) {
+    fun init(token: String, expiredTime: Long) {
         if (TextUtils.isEmpty(token)) {
             throw Exception("Access token can not be empty")
         }
         this.accessToken = token
+        this.expiredTime = expiredTime
     }
 
     fun getToken(): String {
+        if (System.currentTimeMillis() / 1000 >= expiredTime) {
+            return ""
+        }
         return accessToken
+    }
+
+    fun getExpiredTime(): Long {
+        return expiredTime
     }
 }

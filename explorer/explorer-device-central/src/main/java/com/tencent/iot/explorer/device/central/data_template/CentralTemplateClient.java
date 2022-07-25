@@ -138,4 +138,8 @@ public class CentralTemplateClient extends TXMqttConnection {
     public Status requestDeviceList(String accessToken) {
         return mDataTemplate.requestDeviceList(accessToken);
     }
+
+    public Status refreshToken(String accessToken) {
+        return mDataTemplate.refreshToken(accessToken);
+    }
 }
