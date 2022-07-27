@@ -16,6 +16,14 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.Charset;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.SocketFactory;
@@ -42,7 +50,7 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
      *
      * @param serverURI 服务器 URI
      * @param clientId 客户端 ID
-     * @param secretKey 密钥
+     * @param secretKey 密钥认证设备该参数为 设备密钥  证书认证设备该参数为 设备私钥
      * @throws MqttException
      */
     public TXWebSocketClient(String serverURI, String clientId, String secretKey) throws MqttException {
@@ -65,8 +73,8 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         }
 
         IMqttToken ret = super.connect(conOptions);
-        ret.waitForCompletion(-1);
         state.set(ConnectionState.CONNECTING);
+        ret.waitForCompletion(-1);
         return ret;
     }
 
@@ -90,20 +98,67 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
         // 设置密钥之后可以进行 mqtt 连接
         String userName = generateUsername();
         conOptions.setUserName(userName);
-        if (secretKey != null && secretKey.length() != 0) {
+        if (getIsPskDevice()) {
             try {
                 conOptions.setPassword(generatePwd(userName).toCharArray());
             } catch (IllegalArgumentException e) {
                 Loggor.debug(TAG, "Failed to set password");
             }
+        } else {
+            String base64String = sha256WithRSA(userName, secretKey);
+            String hexString = toHex(Base64.decode(base64String, Base64.DEFAULT));
+
+            String password = hexString + ";rsa-sha256";
+            conOptions.setPassword(password.toCharArray());
         }
         conOptions.setMqttVersion(MqttConnectOptions.MQTT_VERSION_3_1_1);
+    }
+
+    private boolean getIsPskDevice() {
+        if (secretKey != null && secretKey.length() != 0) {
+            return !secretKey.contains("BEGIN PRIVATE KEY");
+        }
+        return false;
+    }
+
+    private String sha256WithRSA(String input, String secret) {
+        String privateKey = secret.replaceAll("-----END PRIVATE KEY-----", "")
+                .replaceAll("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll("\n", "");
+
+        byte[] sign = new byte[0];
+        byte[] decodedPrivKey = Base64.decode(privateKey, Base64.DEFAULT);
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decodedPrivKey);
+        try {
+            KeyFactory kf = KeyFactory.getInstance("RSA");
+            Signature privateSignature = Signature.getInstance("SHA256withRSA");
+            privateSignature.initSign(kf.generatePrivate(spec));
+            privateSignature.update(input.getBytes(Charset.forName("UTF-8")));
+            sign = privateSignature.sign();
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+            e.printStackTrace();
+        }
+
+        return Base64.encodeToString(sign, Base64.NO_WRAP);
+    }
+
+    private static final char[] DIGITS
+            = {'0', '1', '2', '3', '4', '5', '6', '7',
+            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+    private static final String toHex(byte[] data) {
+        final StringBuffer sb = new StringBuffer(data.length * 2);
+        for (int i = 0; i < data.length; i++) {
+            sb.append(DIGITS[(data[i] >>> 4) & 0x0F]);
+            sb.append(DIGITS[data[i] & 0x0F]);
+        }
+        return sb.toString();
     }
 
     /**
      * 获取密钥
      *
-     * @return 密钥
+     * @return 密钥认证设备该参数为 设备密钥  证书认证设备该参数为 设备私钥
      */
     public String getSecretKey() {
         return secretKey;
@@ -140,13 +195,13 @@ public class TXWebSocketClient extends MqttAsyncClient implements MqttCallbackEx
 
         IMqttToken ret = this.disconnect(null, mActionListener);
         state.set(ConnectionState.DISCONNECTING);   // 接口调用成功后重新设置状态
-        onDisconnected();
         return ret;
     }
 
     private void onDisconnected() {
         state.set(ConnectionState.DISCONNECTED);
         if (connectListener != null) {
+            Loggor.debug(TAG, "connectListener.onDisconnected()");
             connectListener.onDisconnected();
         }
     }

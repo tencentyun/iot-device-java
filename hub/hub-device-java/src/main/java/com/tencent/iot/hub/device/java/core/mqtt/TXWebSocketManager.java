@@ -53,7 +53,7 @@ public class TXWebSocketManager {
      * @param wsUrl 服务器 URL
      * @param productId 产品 ID
      * @param devicename 设备名
-     * @param secretKey 密钥
+     * @param secretKey 密钥认证设备该参数为 设备密钥  证书认证设备该参数为 设备私钥
      * @return 连接对象 {@link TXWebSocketClient}
      */
     public synchronized TXWebSocketClient getClient(String wsUrl, String productId, String devicename, String secretKey) {
@@ -69,7 +69,7 @@ public class TXWebSocketManager {
         } else {    // 集合内不存在连接对象，新创建一个连接对象
             try {
                 if (wsUrl == null || wsUrl.length() == 0) {
-                    if (secretKey != null && secretKey.length() != 0) {
+                    if (getIsPskDevice(secretKey)) {
                         wsUrl = WS_PREFIX + productId + defaultUriStr + WS_PORT;
                     } else {
                         wsUrl = WSS_PREFIX + productId + defaultUriStr + WSS_PORT;
@@ -86,12 +86,19 @@ public class TXWebSocketManager {
         return clients.get(clientId);
     }
 
+    private boolean getIsPskDevice(String secretKey) {
+        if (secretKey != null && secretKey.length() != 0) {
+            return !secretKey.contains("BEGIN PRIVATE KEY");
+        }
+        return false;
+    }
+
     /**
      * 获取连接对象
      *
      * @param productId 产品 ID
      * @param devicename 设备名
-     * @param secretKey 密钥
+     * @param secretKey 密钥认证设备该参数为 设备密钥  证书认证设备该参数为 设备私钥
      * @return 连接对象 {@link TXWebSocketClient}
      */
     public synchronized TXWebSocketClient getClient(String productId, String devicename, String secretKey) {
