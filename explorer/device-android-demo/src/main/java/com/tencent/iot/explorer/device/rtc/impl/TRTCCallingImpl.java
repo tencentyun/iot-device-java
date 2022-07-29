@@ -48,6 +48,7 @@ public class TRTCCallingImpl {
     private TRTCCloudListener mTRTCCloudListener = new TRTCCloudListener() {
         @Override
         public void onError(int errCode, String errMsg, Bundle extraInfo) {
+            Log.e(TAG, "errorCode = " + errCode + ", errMsg: " + errMsg + ", extraInfo: " + extraInfo.toString());
             if (mTRTCCallingDelegate != null) {
                 mTRTCCallingDelegate.onError(errCode, errMsg);
             }
