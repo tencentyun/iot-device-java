@@ -33,4 +33,11 @@
     <string name="trtccalling_video_call">视频通话</string>
     <string name="trtccalling_audio_call">语音通话</string>
     <string name="trtccalling_toast_user_end">%s 结束通话</string>
+
+    <string name="product_id">Product ID</string>
+    <string name="hint_product_id">请输入被呼Product ID</string>
+    <string name="device_name">Device Name</string>
+    <string name="hint_device_name">请输入被呼Device Name</string>
+    <string name="xp2p_info">Xp2pInfo</string>
+    <string name="hint_xp2p_info">请输入被呼Xp2pInfo</string>
 </resources>

@@ -130,4 +130,6 @@ dependencies {
     api 'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
     api 'com.scwang.smart:refresh-header-classics:2.0.0-alpha-1'
     api 'com.scwang.smart:refresh-footer-classics:2.0.0-alpha-1'
+
+    implementation 'com.tencent.iot.thirdparty.android:media-server:1.0.2'
 }
