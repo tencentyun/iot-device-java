@@ -424,6 +424,17 @@ public class CentralMainActivity extends AppCompatActivity {
                     });
                 }
             }
+
+            // 设备别名变更或设备房间变更
+            if (message.toString().contains("ws_message") && message.toString().contains("AppUpdate")) {
+                Payload payload = MessageParseUtils.parseMessage(message.toString());
+                if ("DeviceAliasUpdate".equals(payload.getSubtype())) {
+                    runOnUiThread(() -> Toast.makeText(CentralMainActivity.this, payload.getPayload(), Toast.LENGTH_SHORT).show());
+                } else if ("DeviceRoomUpdate".equals(payload.getSubtype())) {
+                    runOnUiThread(() -> Toast.makeText(CentralMainActivity.this, payload.getPayload(), Toast.LENGTH_SHORT).show());
+                }
+            }
+
             printLogInfo(TAG, logInfo, mLogInfoText, TXLog.LEVEL_DEBUG);
         }
     }
