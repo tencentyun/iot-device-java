@@ -106,6 +106,7 @@ public class CentralMainActivity extends AppCompatActivity {
     private final OnGetDeviceListListener onGetDeviceListListener = new OnGetDeviceListListener() {
         @Override
         public void onGetDeviceList(List<String> devices) {
+            mDeviceList.clear();
             for (int i = 0; i < devices.size(); i++) {
                 mDeviceList.add(new Device(devices.get(i), 0));
             }
