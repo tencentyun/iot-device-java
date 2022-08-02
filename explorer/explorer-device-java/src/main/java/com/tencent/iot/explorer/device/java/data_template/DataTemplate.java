@@ -269,6 +269,19 @@ public class DataTemplate {
      * @return 结果
      */
     public Status propertyReport(JSONObject property, JSONObject metadata, Boolean check) {
+        return propertyReport(property, metadata, check, true);
+    }
+
+    /**
+     * 属性上报
+     *
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
+     * @param check 是否检查上报的数据的合法性
+     * @param automation 是否触发自动场景
+     * @return 结果
+     */
+    public Status propertyReport(JSONObject property, JSONObject metadata, Boolean check, boolean automation) {
         if (check) {
             //检查构造是否符合json文件中的定义
             if (Status.OK != mDataTemplateJson.checkPropertyJson(property)) {
@@ -283,6 +296,9 @@ public class DataTemplate {
             object.put("method", METHOD_PROPERTY_REPORT);
             object.put("clientToken", clientToken);
             object.put("timestamp", System.currentTimeMillis());
+            if (!automation) {
+                object.put("automation", "disable");
+            }
             object.put("params", property);
             if (null != metadata) {
                 object.put("metadata", metadata);
