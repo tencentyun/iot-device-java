@@ -57,6 +57,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_SERVICE_DOWN_PREFIX;
@@ -409,15 +410,35 @@ public class CentralMainActivity extends AppCompatActivity {
                 }
             }
 
-            // 解析设备上下线的ws消息
+            // 解析设备上下线以及设备绑定或解绑的ws消息
             if (message.toString().contains("ws_message") && message.toString().contains("StatusChange")) {
                 //解析设备上报的ws消息并更新设备控制面板
                 Payload payload = MessageParseUtils.parseMessage(message.toString());
                 if (payload != null) {
-                    for (int i = 0; i < mDeviceList.size(); i++) {
-                        String id = mDeviceList.get(i).id;
-                        if (mDeviceList.get(i).id.equals(payload.getDeviceId())) {
-                            mDeviceList.get(i).status = payload.getSubtype().equals("Online") ? 1 : 0;
+                    String subType = payload.getSubtype();
+                    if (subType.equalsIgnoreCase("Online") || subType.equalsIgnoreCase("Offline")) {
+                        for (int i = 0; i < mDeviceList.size(); i++) {
+                            String id = mDeviceList.get(i).id;
+                            if (mDeviceList.get(i).id.equals(payload.getDeviceId())) {
+                                mDeviceList.get(i).status = subType.equals("Online") ? 1 : 0;
+                            }
+                        }
+                    }
+                    if (subType.equalsIgnoreCase("Bind")) {
+                        //新设备添加至设备列表，并获取在线状态
+                        mDeviceList.add(new Device(payload.getDeviceId(), 0));
+                        ArrayList<String> devices = new ArrayList<>();
+                        devices.add(payload.getDeviceId());
+                        HttpRequest.Companion.getInstance().deviceOnlineStatus(devices, mCallback);
+                    }
+                    if (subType.equalsIgnoreCase("Unbind")) {
+                        //将设备从设备列表移除
+                        Iterator<Device> itr = mDeviceList.iterator();
+                        while (itr.hasNext()) {
+                            Device x = itr.next();
+                            if (x.id.equals(payload.getDeviceId())) {
+                                itr.remove();
+                            }
                         }
                     }
                     runOnUiThread(() -> {
