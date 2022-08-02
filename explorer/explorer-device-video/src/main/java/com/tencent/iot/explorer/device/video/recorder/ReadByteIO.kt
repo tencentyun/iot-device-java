@@ -33,6 +33,8 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     var chaseFrameRate = 1000L // 默认的追帧扫描频率
     var chaseFrameThreshold = 6000L // 默认的触发追帧的阈值
     var playType = CallingType.TYPE_VIDEO_CALL
+    @Volatile
+    private var isOpened = false
 
     // 从队列头部取数据
     private fun takeFirstWithLen(readMaxLength: Int): ByteArray {
@@ -49,6 +51,9 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     // 队列尾部增加新的数据
     fun addLast(bytes: ByteArray): Boolean {
+        if (!isOpened) {
+            Log.d(TAG, "===========addLast before open AndroidIO flvData.size:" + flvData.size)
+        }
         var tmpList:List<Byte> = bytes.toList()
         var test = flvData.addAll(tmpList)
 //        Log.e(TAG, "==== addLast return " + bytes.size)
@@ -77,6 +82,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun open(url: String?): Int {
         if (url == URL_SUFFIX) {
+            isOpened = true
             Log.d(TAG, "===========recv stream opened")
             return 1
         }
@@ -103,10 +109,13 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun close(): Int {
         cancel()
+        isOpened = false
+        Log.d(TAG, "===========ReadByteIO close")
         return 0
     }
 
     fun reset() {
+        Log.d(TAG, "===========reset before flvData.size:" + flvData.size)
         flvData.clear()
 //        instance = null
     }
