@@ -8,10 +8,20 @@
     android:layout_weight="1" >
 
     <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.3"
+        android:textSize="16sp"
+        android:textColor="@color/black_000000"
+        android:text="test" />
+
+
+    <TextView
         android:id="@+id/tv_device_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.6"
+        android:layout_weight="0.5"
         android:textSize="16sp"
         android:textColor="@color/black_000000"
         android:text="test" />
@@ -20,7 +30,7 @@
         android:id="@+id/tv_device_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.4"
+        android:layout_weight="0.2"
         android:gravity="center"
         android:textSize="12sp"
         android:text="离线" />

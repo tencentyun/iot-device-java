@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.iot.explorer.device.android.app.R;
-import com.tencent.iot.explorer.device.central.entity.Device;
+import com.tencent.iot.explorer.device.central.entity.DeviceEntity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,12 +19,12 @@ import java.util.List;
 
 public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.ViewHolder>{
 
-    private List<Device> mDeviceList;
+    private List<DeviceEntity> mDeviceList;
     private LayoutInflater mInflater;
     private Context mContext;
     private DeviceListAdapter.ItemClickListener mItemClickLitener;
 
-    public DeviceListAdapter(Context context, List<Device> data) {
+    public DeviceListAdapter(Context context, List<DeviceEntity> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mDeviceList = data;
         this.mContext = context;
@@ -40,9 +40,10 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        Device device = mDeviceList.get(position);
-        holder.tvDeviceId.setText(device.id);
-        if (device.status == 0) {
+        DeviceEntity device = mDeviceList.get(position);
+        holder.tvDeviceName.setText(device.getAliasName());
+        holder.tvDeviceId.setText(device.getDeviceId());
+        if (device.getOnline() == 0) {
             holder.tvDeviceStatus.setText("离线");
             holder.tvDeviceStatus.setTextColor(mContext.getResources().getColor(R.color.red_eb3d3d));
         } else {
@@ -66,11 +67,13 @@ public class DeviceListAdapter extends RecyclerView.Adapter<DeviceListAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvDeviceName;
         TextView tvDeviceId;
         TextView tvDeviceStatus;
 
         ViewHolder(View itemView) {
             super(itemView);
+            tvDeviceName = itemView.findViewById(R.id.tv_device_name);
             tvDeviceId = itemView.findViewById(R.id.tv_device_id);
             tvDeviceStatus = itemView.findViewById(R.id.tv_device_status);
         }
