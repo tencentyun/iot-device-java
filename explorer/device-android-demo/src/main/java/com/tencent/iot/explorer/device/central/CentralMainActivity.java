@@ -180,7 +180,7 @@ public class CentralMainActivity extends AppCompatActivity {
                         String productId = mCurrentDeviceId.split("/")[0];
                         String deviceName = mCurrentDeviceId.split("/")[1];
                         int propertyValue = Integer.parseInt(deviceDatas.get(position).getValue()) == 0 ? 1 : 0;
-                        String data = String.format("{\"%s\":\"%s\"}", deviceDatas.get(position).getId(), propertyValue);
+                        String data = String.format("{\"%s\":%d}", deviceDatas.get(position).getId(), propertyValue);
                         HttpRequest.Companion.getInstance().controlDevice(productId, deviceName, data, new MyCallback() {
                             @Override
                             public void fail(@Nullable String msg, int reqCode) {
