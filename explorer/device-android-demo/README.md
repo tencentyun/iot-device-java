@@ -107,6 +107,23 @@
 
 [推流示例补充说明](../explorer-device-video/docs/呼叫流程/推流示例补充说明.md)
 
+### IoT Video Device & Device Communication
+该Demo包含：`设备信息配置`、`设备上下线`、`音频推流`、`视频推流`、`主动呼叫填入的设备`；该Demo主要演示Android设备实时采集音视频并推流，主动呼叫填入信息的设备，实现Android设备和Android设备进行实时音视频的场景。
+
+1. 设备信息配置
+   * 在腾讯云物联网智能视频服务(消费版)控制台创建产品和设备，并在Demo中输入框填写创建好的设备三元组信息（产品ID、设备名称、设备密钥）。
+
+2. 设备上下线
+   * 可以点击`设备上线`按钮使设备上线、点击`设备下线`按钮使设备下线
+
+3.1 视频推流
+   * 点击视频推流即可采集当前设备音视频并开始推流。
+
+3.2 主动呼叫填入的设备
+   * 填入被呼叫的Product ID、Device Name、Xp2pInfo信息后，点击主动呼叫填入的设备，即当前设备去呼叫填入信息的设备。
+
+作为主呼设备调用的相关API介绍请参考 [android sdk接口使用说明](https://github.com/tencentyun/iot-link-android/blob/master/sdk/video-link-android/doc/VideoSDK%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E.md)
+
 ## IOT CONFIGWIFI DEMO
 待补充
 
