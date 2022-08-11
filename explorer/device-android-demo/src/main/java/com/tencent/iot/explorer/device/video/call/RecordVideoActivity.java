@@ -156,13 +156,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
-                .setAudioSource(MediaRecorder.AudioSource.MIC)
+                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
                 .setSampleRateInHz(8000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam);
+        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true, true);
         audioEncoder.setOnEncodeListener(this);
     }
 
