@@ -6,6 +6,7 @@ import android.media.MediaRecorder;
 import android.text.TextUtils;
 
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView;
 import com.tencent.iot.explorer.device.video.recorder.opengles.view.base.EGLTextureView;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
@@ -23,6 +24,12 @@ public class VideoRecorder {
     private OnRecordListener onRecordListener; // 记录过程回调
     private CameraView cameraView; // 摄像头预览的内容
     private int recorderType = CallingType.TYPE_VIDEO_CALL;
+    private OnEncodeListener encodeListener;
+    private int frameRate = 0;
+
+    public VideoRecorder(OnEncodeListener listener) {
+        encodeListener = listener;
+    }
 
     // 获取实际的摄像头预览对象
     public void attachCameraView(CameraView cameraView) {
@@ -49,6 +56,12 @@ public class VideoRecorder {
         return start(onRecordListener);
     }
 
+    public int start(int recorderType, int width, int height, int frameRate, OnRecordListener onRecordListener) {
+        this.recorderType = recorderType;
+        this.frameRate = frameRate;
+        return start(width, height, "", onRecordListener);
+    }
+
     public int startRecord(String path, String audioName, String videoName) {
         if (recordThread == null) {// 没有开启采集线程
             return ErrorCode.ERROR_INSTANCE;
@@ -62,7 +75,7 @@ public class VideoRecorder {
         recordThread.setStorePath(path);
         recordThread.setAudioName(audioName);
         recordThread.setVideoName(videoName);
-        return recordThread.startStore(true);
+        return recordThread.startStore(false);
     }
 
     public int stopRecord() {
@@ -98,8 +111,8 @@ public class VideoRecorder {
 
         MicParam micParam = new MicParam.Builder()
                 .setAudioSource(MediaRecorder.AudioSource.MIC)
-                .setSampleRateInHz(44100) // 采样率
-                .setChannelConfig(AudioFormat.CHANNEL_IN_STEREO)
+                .setSampleRateInHz(8000) // 采样率
+                .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
@@ -112,6 +125,8 @@ public class VideoRecorder {
                 .build();
         VideoEncodeParam videoEncodeParam = new VideoEncodeParam.Builder()
                 .setSize(width, height).build();
+        if (frameRate>0)
+            videoEncodeParam.setFrameRate(frameRate);
 
         RecordParam recordParam = new RecordParam(recorderType, path);
 
@@ -128,7 +143,7 @@ public class VideoRecorder {
     private int start(RecordThreadParam recordThreadParam) {
         // 清理环境
         cancel();
-        recordThread = new RecordThread(recordThreadParam);
+        recordThread = new RecordThread(recordThreadParam, encodeListener);
         recordThread.setOnRecordListener(onRecordListener);
         recordThread.start();
         return ErrorCode.SUCCESS;

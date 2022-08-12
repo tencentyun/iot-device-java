@@ -9,6 +9,7 @@ import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoTemplateClient;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
 
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -98,6 +99,14 @@ public class VideoDataTemplateSample {
 
     public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent) {
         return mMqttConnection.reportCallStatusProperty(callStatus, callType, userId, agent, null);
+    }
+
+    public boolean isConnected() {
+        if (mMqttConnection != null) {
+            return mMqttConnection.getConnectStatus() == TXMqttConstants.ConnectStatus.kConnected;
+        } else {
+            return false;
+        }
     }
 
     /**

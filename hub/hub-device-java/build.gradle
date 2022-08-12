@@ -138,14 +138,16 @@ javadoc {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'log4j:log4j:1.2.17'
-    api 'org.slf4j:slf4j-log4j12:1.8.0-beta0'
-    api 'org.slf4j:slf4j-api:1.8.0-beta0'
+    api 'org.apache.logging.log4j:log4j:2.17.2'
+    api 'org.slf4j:slf4j-log4j12:1.7.36'
+    api 'org.slf4j:slf4j-api:1.7.36'
     api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
     api "com.squareup.okhttp3:okhttp:3.12.2"
     api 'org.json:json:20190722'
     api 'org.bouncycastle:bcprov-jdk15on:1.57'
     api 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    //WebSocket
+    api 'org.java-websocket:Java-WebSocket:1.5.2'
     testImplementation 'junit:junit:4.13'
 }
 

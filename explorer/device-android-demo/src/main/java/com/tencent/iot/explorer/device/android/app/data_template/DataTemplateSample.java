@@ -265,4 +265,13 @@ public class DataTemplateSample {
         mMqttConnection.reportCurrentFirmwareVersion("0.0.1");
     }
 
+    /**
+     * 停止下载ota固件
+     */
+    public void stopDownloadOTATask () {
+        if (mMqttConnection != null) {
+            mMqttConnection.stopDownloadOTATask();
+        }
+    }
+
 }

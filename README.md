@@ -24,6 +24,12 @@
 
 * [腾讯云物联网开发平台（IoT Explorer）设备端 Android-SDK](explorer/explorer-device-android)
 
+* [腾讯云物联网开发平台（IoT Explorer）设备端 人脸识别 Android-SDK](explorer/explorer-device-face)
+
+* [腾讯云物联网开发平台（IoT Explorer）设备端 音视频通话 Android-SDK](explorer/explorer-device-video)
+
+* [腾讯云物联网开发平台（IoT Explorer）设备端 腾讯音乐 Android-SDK](explorer/explorer-device-tme)
+
 ## SDK涉及到的域名
 
 两个产品对应SDK涉及到的域名请参考 [Device SDK涉及的域名](https://github.com/tencentyun/iot-device-java/wiki/Device-SDK涉及的域名)

@@ -114,6 +114,7 @@ public class TXVideoTemplateClient extends TXCallTemplateClient {
      */
     @Override
     public void connectComplete(boolean reconnect, String serverURI) {
+        super.connectComplete(reconnect, serverURI);
         Log.e(TAG, "----- connectComplete ");
     }
 }

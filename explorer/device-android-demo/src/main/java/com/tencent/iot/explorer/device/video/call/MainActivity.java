@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
@@ -32,10 +35,15 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
+import com.tencent.iot.explorer.device.video.call.adapter.FrameRateListAdapter;
+import com.tencent.iot.explorer.device.video.call.adapter.ResolutionListAdapter;
 import com.tencent.iot.explorer.device.video.call.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
+import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
 import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
+import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -45,6 +53,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
     private Button hangUp;
     private LinearLayout callActionLayout;
     private RelativeLayout callingLayout;
+    private RecyclerView resolutionRv;
+    private ResolutionListAdapter resolutionAdapter = null;
+    private ArrayList<ResolutionEntity> resolutionDatas = new ArrayList<>();
+    private RecyclerView frameRateRv;
+    private FrameRateListAdapter frameRateAdapter = null;
+    private ArrayList<FrameRateEntity> frameRateDatas = new ArrayList<>();
+    private Button confirm;
+    private LinearLayout callParamLayout;
     private TextView callerUserId;
     private TextView callType;
     private TextView logTv;
@@ -79,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
     private int callUserType = CallingType.TYPE_AUDIO_CALL;
+    private ResolutionEntity selectedResolutionEntity;
+    private FrameRateEntity selectedFrameRateEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
         hangUp = findViewById(R.id.btn_hang_up);
 //        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
         toCalledUserId.setText(getUserId());
+        confirm = findViewById(R.id.confirm);
+        callParamLayout = findViewById(R.id.call_param_layout);
 
         DeviceConnectCondition values = getDeviceConnectCondition();
         if (values != null) {
@@ -122,6 +144,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         accpetCall.setOnClickListener(v -> {
+            if (videoDataTemplateSample == null) {
+                return;
+            }
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -132,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         rejectCall.setOnClickListener(v -> {
+            if (videoDataTemplateSample == null) {
+                return;
+            }
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -173,6 +201,59 @@ public class MainActivity extends AppCompatActivity {
             }
             callUser(CallingType.TYPE_AUDIO_CALL);
         });
+
+        resolutionRv = findViewById(R.id.rv_resolution);
+        getSupportedPreviewSizes();
+        LinearLayoutManager resolutionLayoutManager = new LinearLayoutManager(this);
+        resolutionRv.setLayoutManager(resolutionLayoutManager);
+        resolutionRv.setHasFixedSize(false);
+        resolutionAdapter = new ResolutionListAdapter(MainActivity.this, resolutionDatas);
+        resolutionRv.setAdapter(resolutionAdapter);
+
+        frameRateRv = findViewById(R.id.rv_frame_rate);
+        frameRateDatas = new ArrayList<FrameRateEntity>();
+        frameRateDatas.add(new FrameRateEntity(15, true));
+        frameRateDatas.add(new FrameRateEntity(30));
+        LinearLayoutManager frameLayoutManager = new LinearLayoutManager(this);
+        frameRateRv.setLayoutManager(frameLayoutManager);
+        frameRateRv.setHasFixedSize(false);
+        frameRateAdapter = new FrameRateListAdapter(MainActivity.this, frameRateDatas);
+        frameRateRv.setAdapter(frameRateAdapter);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedResolutionEntity = resolutionAdapter.selectedResolutionEntity();
+                selectedFrameRateEntity = frameRateAdapter.selectedFrameRateEntity();
+                callParamLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    /**
+     * 获取设备支持的最大分辨率
+     */
+    private void getSupportedPreviewSizes() {
+        Camera camera = Camera.open(CameraConstants.facing.BACK);
+        //获取相机参数
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> list = parameters.getSupportedPreviewSizes();
+        resolutionDatas = new ArrayList<ResolutionEntity>();
+        for (Camera.Size size : list) {
+            Log.e(TAG, "****========== " + size.width + " " + size.height);
+            ResolutionEntity entity = new ResolutionEntity(size.width, size.height);
+            resolutionDatas.add(entity);
+        }
+        if (resolutionDatas.size() > 0) {
+            ResolutionEntity entity = resolutionDatas.get(resolutionDatas.size() - 1);
+            entity.setIsSelect(true);
+        } else {
+            Toast.makeText(MainActivity.this, "无法获取到设备Camera支持的分辨率", Toast.LENGTH_SHORT).show();
+        }
+        camera.setPreviewCallback(null);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 
 //    private XP2PCallback xP2PCallback = new XP2PCallback() {
@@ -297,21 +378,24 @@ public class MainActivity extends AppCompatActivity {
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        new Thread(() -> {
+            int sleepTime = 0;
+            while (true) {
+                try {
+                    Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
+                    if (sleepTime < 5) {
+                        sleepTime++;
                     }
-                    String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                    if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
-                        Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        Log.e(TAG, "reportCallStatusProperty status " + status);
-                        break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
+                if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+                    Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
+                    if (sleepTime == 1 && status == Status.OK) {
+                        updateLog("device ready.");
                     }
+                    Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
                 }
             }
         }).start();
@@ -385,6 +469,10 @@ public class MainActivity extends AppCompatActivity {
         phoneInfo.setAgent(agent);
         phoneInfo.setUserid(userid);
         bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+        if (selectedResolutionEntity != null)
+            bundle.putString(ResolutionEntity.TAG, JSON.toJSONString(selectedResolutionEntity));
+        if (selectedFrameRateEntity != null)
+            bundle.putString(FrameRateEntity.TAG, JSON.toJSONString(selectedFrameRateEntity));
         intent.putExtra(PhoneInfo.TAG, bundle);
         startActivityForResult(intent, 2);
     }
@@ -414,17 +502,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
-            Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
-            Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
-            updateLog("在线");
-            if (videoDataTemplateSample == null) return;
-            handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE)));
-            videoDataTemplateSample.subscribeTopic();
+            if (reconnect) {
+                videoDataTemplateSample.subscribeTopic();
+                VideoNativeInteface.getInstance().release();
+                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
+                updateLog("已自动重连 在线");
+            } else {
+                Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
+                Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
+                updateLog("在线");
+                if (videoDataTemplateSample == null) return;
+                handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE)));
+                videoDataTemplateSample.subscribeTopic();
 
-            DeviceConnectCondition condtion = new DeviceConnectCondition(productIdEt.getText().toString(), devNameEt.getText().toString(), devPskEt.getText().toString());
-            handler.post(() -> initVideoModeul(condtion));
-            saveDeviceConnectCondition(condtion);
-            saveUserId(toCalledUserId.getText().toString());
+                DeviceConnectCondition condtion = new DeviceConnectCondition(productIdEt.getText().toString(), devNameEt.getText().toString(), devPskEt.getText().toString());
+                handler.post(() -> initVideoModeul(condtion));
+                saveDeviceConnectCondition(condtion);
+                saveUserId(toCalledUserId.getText().toString());
+            }
         }
 
         @Override

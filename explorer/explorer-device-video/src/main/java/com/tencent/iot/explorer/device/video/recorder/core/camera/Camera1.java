@@ -76,7 +76,7 @@ public class Camera1 implements ICamera {
             }
 
             // 设置预览尺寸
-            parameters.setPreviewSize(cameraSize.getWidth(), cameraSize.getHeight());
+//            parameters.setPreviewSize(cameraSize.getWidth(), cameraSize.getHeight());
 
             // 这里设置使用的对焦模式
             if (this.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {

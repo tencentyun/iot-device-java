@@ -19,6 +19,14 @@
         android:text="Switch"
         android:textAllCaps="false" />
 
+    <include
+        android:id="@+id/ll_dash_board"
+        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/btnSwitch"
+        layout="@layout/dash_board_layout" />
+
     <Button
         android:id="@+id/btnRecord"
         android:layout_width="wrap_content"
@@ -27,16 +35,27 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="40dp"
         android:text="Record"
+        android:visibility="invisible"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_hang_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnRecord"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:text="挂断"
         android:textAllCaps="false" />
 
 
-    <com.tencent.iot.explorer.device.video.recorder.opengles.view.CameraView
+    <SurfaceView
         android:id="@+id/cameraView"
         android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_width="150dp"
         android:layout_height="200dp"
         />

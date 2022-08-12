@@ -12,10 +12,18 @@
             android:text="IoT Video Call" />
 
         <Button
+            android:visibility="gone"
             android:layout_marginTop="50dp"
             android:id="@+id/iot_video_push_stream"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:text="IoT Video Push Stream" />
+
+        <Button
+            android:layout_marginTop="50dp"
+            android:id="@+id/iot_video_push_realtime_stream"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="IoT Video Push Real Time Stream" />
 
 </LinearLayout>

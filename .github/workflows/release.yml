@@ -93,23 +93,23 @@ jobs:
           sed -i 's#//xxx##g' explorer/explorer-device-rtc/build.gradle
           sed -i 's#//xxx##g' explorer/explorer-device-video/build.gradle
           ./gradlew :explorer:device-android-demo:build
-      - name: Archive the apks
-        uses: actions/upload-artifact@v2
-        with:
-          path: |
-            'explorer/device-android-demo/build/outputs/apk/debug/*.apk'
-            'hub/hub-android-demo/build/outputs/apk/debug/*.apk'
-      - name: Upload apks to fir
-        run: |
-          expApk=$(ls explorer/device-android-demo/build/outputs/apk/release/*.apk)
-          hubApk=$(ls hub/hub-android-demo/build/outputs/apk/release/*.apk)
-
-          rc=$(git rev-parse --short HEAD)
-          rl=$(git log --pretty=format:"%s" $rc -1)
-          fir publish $expApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
-          fir publish $hubApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
-        env:
-          IOT_FIRIM_API_TOKEN: ${{ secrets.IOT_FIRIM_API_TOKEN }}
+#      - name: Archive the apks
+#        uses: actions/upload-artifact@v2
+#        with:
+#          path: |
+#            'explorer/device-android-demo/build/outputs/apk/debug/*.apk'
+#            'hub/hub-android-demo/build/outputs/apk/debug/*.apk'
+#      - name: Upload apks to fir
+#        run: |
+#          expApk=$(ls explorer/device-android-demo/build/outputs/apk/release/*.apk)
+#          hubApk=$(ls hub/hub-android-demo/build/outputs/apk/release/*.apk)
+#
+#          rc=$(git rev-parse --short HEAD)
+#          rl=$(git log --pretty=format:"%s" $rc -1)
+#          fir publish $expApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
+#          fir publish $hubApk -T $IOT_FIRIM_API_TOKEN -c "$rl" --oversea_turbo --force_pin_history -V
+#        env:
+#          IOT_FIRIM_API_TOKEN: ${{ secrets.IOT_FIRIM_API_TOKEN }}
       - name: Report success result to wecom
         if: ${{ success() }}
         run: |

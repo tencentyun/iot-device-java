@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.CameraParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
@@ -47,6 +48,7 @@ public class RecordThread extends Thread {
     private AudioEncodeParam audioEncodeParam;
     private CameraParam cameraParam;
     private VideoEncodeParam videoEncodeParam;
+    private OnEncodeListener encodeListener;
 
     private GLThread glThread;
     private volatile Surface surface;
@@ -66,6 +68,10 @@ public class RecordThread extends Thread {
     private String path = "/mnt/sdcard/videoTest.flv";
     private File videoTmpFile = new File(path);
     private volatile FileOutputStream storeVideoStream;
+    // 记录视频裸流的h264临时文件，调试使用
+    private String h264path = "/mnt/sdcard/tmpVideo.h264";
+    private File h264TmpFile = new File(h264path);
+    private volatile FileOutputStream storeH264VideoStream;
     private volatile long seq = 0L;
     private volatile long audioSeq = 0L;
 
@@ -202,20 +208,21 @@ public class RecordThread extends Thread {
         }
     }
 
-    public RecordThread(RecordThreadParam recordThreadParam) {
+    public RecordThread(RecordThreadParam recordThreadParam, OnEncodeListener listener) {
         this(recordThreadParam.getRecordParam(), recordThreadParam.getMicParam(),
                 recordThreadParam.getAudioEncodeParam(), recordThreadParam.getCameraParam(),
-                recordThreadParam.getVideoEncodeParam());
+                recordThreadParam.getVideoEncodeParam(), listener);
     }
 
     private RecordThread(RecordParam recordParam, MicParam micParam, AudioEncodeParam audioEncodeParam,
-                         CameraParam cameraParam, VideoEncodeParam videoEncodeParam) {
+                         CameraParam cameraParam, VideoEncodeParam videoEncodeParam, OnEncodeListener listener) {
         this.recordParam = recordParam;
         this.micParam = micParam;
         this.audioEncodeParam = audioEncodeParam;
         this.cameraParam = cameraParam;
         this.videoEncodeParam = videoEncodeParam;
         this.storeMP4 = recordParam.isStoreMP4File();
+        this.encodeListener = listener;
         Log.d(TAG, "init RecordThread with storeMP4 " + storeMP4);
         glThread = new GLThread(this.cameraParam, this.videoEncodeParam);
         initMuxer();
@@ -237,7 +244,7 @@ public class RecordThread extends Thread {
         audioRecord = new AudioRecord(micParam.getAudioSource(), micParam.getSampleRateInHz(), micParam.getChannelConfig(), micParam.getAudioFormat(), bufferSizeInBytes);
         try {
             audioCodec = MediaCodec.createEncoderByType(audioEncodeParam.getMime());
-            MediaFormat format = MediaFormat.createAudioFormat(audioEncodeParam.getMime(), micParam.getSampleRateInHz(), 2);
+            MediaFormat format = MediaFormat.createAudioFormat(audioEncodeParam.getMime(), micParam.getSampleRateInHz(), 1);
             format.setInteger(MediaFormat.KEY_BIT_RATE, audioEncodeParam.getBitRate());
             format.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
             format.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, audioEncodeParam.getMaxInputSize());
@@ -257,7 +264,7 @@ public class RecordThread extends Thread {
             MediaFormat format = MediaFormat.createVideoFormat(videoEncodeParam.getMime(), videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
             format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);//MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
             format.setInteger(MediaFormat.KEY_FRAME_RATE, videoEncodeParam.getFrameRate());
-            format.setInteger(MediaFormat.KEY_BIT_RATE, 250000);
+            format.setInteger(MediaFormat.KEY_BIT_RATE, 50000);
             format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, videoEncodeParam.getiFrameInterval());
             format.setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR);
 
@@ -287,6 +294,10 @@ public class RecordThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        if (glThread != null) {
+            glThread.onDestroy();
+            glThread = null;
+        }
     }
 
     void stopRecord() {
@@ -309,12 +320,16 @@ public class RecordThread extends Thread {
             if (storeVideoStream != null) {
                 storeVideoStream.close();
             }
+            if (storeH264VideoStream != null) {
+                storeH264VideoStream.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (clean) {
             videoTmpFile.deleteOnExit();
+            h264TmpFile.deleteOnExit();
         }
     }
 
@@ -368,16 +383,20 @@ public class RecordThread extends Thread {
             byte[] dataBytes = new byte[bytes.length + 7];
             System.arraycopy(bytes, 0, dataBytes, 7, bytes.length);
             addADTStoPacket(dataBytes, dataBytes.length);
-            if (dataBytes != null && storeVideoStream != null) {
+            if (dataBytes != null /*&& storeVideoStream != null*/) {
                 if (startStore && storeAudioDataStream != null) {
                     storeAudioDataStream.write(dataBytes);
                     storeAudioDataStream.flush();
                 }
 
                 if (isStopRecord || isCancelRecord) return;
-                storeVideoStream.write(dataBytes);
-                storeVideoStream.flush();
-                getInstance().sendAudioData(dataBytes, System.currentTimeMillis(), audioSeq);
+//                storeVideoStream.write(dataBytes);
+//                storeVideoStream.flush();
+                if (encodeListener != null) {
+                    encodeListener.onAudioEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
+                } else {
+                    Log.e(TAG, "Encode listener is null, please set encode listener.");
+                }
                 audioSeq++;
             }
         } catch (IOException e) {
@@ -387,8 +406,8 @@ public class RecordThread extends Thread {
 
     private void addADTStoPacket(byte[] packet, int packetLen) {
         int profile = 2;  // AAC LC
-        int chanCfg = 2;  // CPE
-        int freqIdx = samplingFrequencyIndexMap.get(44100);
+        int chanCfg = 1;  // CPE
+        int freqIdx = samplingFrequencyIndexMap.get(micParam.getSampleRateInHz());
         // filled in ADTS data
         packet[0] = (byte) 0xFF;
         packet[1] = (byte) 0xF9;
@@ -400,7 +419,7 @@ public class RecordThread extends Thread {
     }
 
     private void storeOriVideoData(ByteBuffer outputBuffer, MediaCodec.BufferInfo videoInfo) {
-        Log.e(TAG, "storeOriVideoData");
+        Log.e(TAG, "storeOriVideoData videoInfo.flags：" + videoInfo.flags);
         if (recordParam != null &&
                 recordParam.getRecorderType() != CallingType.TYPE_VIDEO_CALL) {
             return;
@@ -409,7 +428,7 @@ public class RecordThread extends Thread {
         try {
             byte[] bytes = new byte[outputBuffer.remaining()];
             outputBuffer.get(bytes, 0, bytes.length);
-            if (bytes != null && storeVideoStream != null) {
+            if (bytes != null /*&& storeVideoStream != null*/) {
                 if (isStopRecord || isCancelRecord) return;
                 if (videoInfo.flags == MediaCodec.BUFFER_FLAG_KEY_FRAME) {  // I 帧的处理逻辑
                     ByteBuffer spsb = videoCodec.getOutputFormat().getByteBuffer("csd-0");
@@ -429,14 +448,30 @@ public class RecordThread extends Thread {
                         storeVideoDataStream.flush();
                         hasIDR = true;
                     }
-                    getInstance().sendFrameData(dataBytes, System.currentTimeMillis(), seq);
+                    if (storeH264VideoStream != null) {
+                        storeH264VideoStream.write(bytes);
+                        storeH264VideoStream.flush();
+                    }
+                    if (encodeListener != null) {
+                        encodeListener.onVideoEncoded(dataBytes, System.currentTimeMillis(), audioSeq);
+                    } else {
+                        Log.e(TAG, "Encode listener is null, please set encode listener.");
+                    }
                 } else {
 
                     if (startStore && storeVideoDataStream != null && hasIDR) { // 等待存在 IDR 帧以后，再开始添加 P 帧
                         storeVideoDataStream.write(bytes);
                         storeVideoDataStream.flush();
                     }
-                    getInstance().sendFrameData(bytes, System.currentTimeMillis(), seq);
+                    if (storeH264VideoStream != null) {
+                        storeH264VideoStream.write(bytes);
+                        storeH264VideoStream.flush();
+                    }
+                    if (encodeListener != null) {
+                        encodeListener.onVideoEncoded(bytes, System.currentTimeMillis(), audioSeq);
+                    } else {
+                        Log.e(TAG, "Encode listener is null, please set encode listener.");
+                    }
                 }
                 seq++;
             }
@@ -452,6 +487,11 @@ public class RecordThread extends Thread {
             }
             videoTmpFile.createNewFile();
             storeVideoStream = new FileOutputStream(videoTmpFile, true);
+            if (h264TmpFile.exists()) {
+                h264TmpFile.delete();
+            }
+            h264TmpFile.createNewFile();
+            storeH264VideoStream = new FileOutputStream(h264TmpFile, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -466,7 +506,7 @@ public class RecordThread extends Thread {
             onRecordError(new IllegalArgumentException("widget is null"));
             return;
         }
-        restartKeepOriData();
+//        restartKeepOriData();
 
         boolean isStartMuxer = false; // 合成是否开始
         seq = 0L;
