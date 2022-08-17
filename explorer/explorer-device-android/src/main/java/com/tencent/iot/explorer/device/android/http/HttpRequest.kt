@@ -94,6 +94,15 @@ class HttpRequest private constructor() {
         return true
     }
 
+    /**
+     * 获取家庭、设备、场景等的信息集合
+     */
+    fun appSmartHomeDiscover(familyId: String, callback: MyCallback) {
+        val param = tokenParams("AppSmartHomeDiscover")
+        param["FamilyId"] = familyId
+        tokenPost(param, callback, RequestCode.device_info_set)
+    }
+
     /*************************************  家庭接口开始  ************************************************/
 
     /**

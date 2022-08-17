@@ -138,5 +138,5 @@ object RequestCode {
 
     /*************场景联动接口结束**************/
 
-
+    const val device_info_set = 9000
 }
