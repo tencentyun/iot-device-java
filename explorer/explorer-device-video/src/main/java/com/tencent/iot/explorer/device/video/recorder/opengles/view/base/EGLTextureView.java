@@ -23,7 +23,6 @@ import android.opengl.GLDebugHelper;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.TextureView;
-import androidx.annotation.NonNull;
 
 import com.tencent.iot.explorer.device.video.recorder.opengles.render.Renderer;
 
@@ -523,24 +522,24 @@ public class EGLTextureView extends TextureView implements TextureView.SurfaceTe
     }
 
     @Override
-    public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         mGLThread.surfaceCreated();
         mGLThread.onWindowResize(width, height);
     }
 
     @Override
-    public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
         mGLThread.onWindowResize(width, height);
     }
 
     @Override
-    public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         mGLThread.surfaceDestroyed();
         return true;
     }
 
     @Override
-    public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
     }
 

@@ -9,8 +9,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Surface;
 
-import androidx.annotation.RequiresApi;
-
 import com.alibaba.fastjson.JSONObject;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
@@ -20,7 +18,6 @@ import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.RecordParam;
 import com.tencent.iot.explorer.device.video.recorder.param.RecordThreadParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
-import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,8 +26,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface.getInstance;
 
 public class RecordThread extends Thread {
 
@@ -368,7 +363,6 @@ public class RecordThread extends Thread {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void run() {
         super.run();
@@ -497,7 +491,6 @@ public class RecordThread extends Thread {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void record() {
         // 存储当前文件，容器混合器为空，不进行后续流程
         if (storeMP4 && mediaMuxer == null) return;
@@ -532,7 +525,12 @@ public class RecordThread extends Thread {
             // 将 AudioRecord 获取的 PCM 原始数据送入编码器
             int audioInputBufferId = audioCodec.dequeueInputBuffer(0);
             if (audioInputBufferId >= 0) {
-                ByteBuffer inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
+                ByteBuffer inputBuffer = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
+                } else {
+                    inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
+                }
                 int readSize = -1;
                 if (inputBuffer != null) readSize = audioRecord.read(inputBuffer, bufferSizeInBytes);
                 if (readSize >= 0) audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
@@ -550,7 +548,12 @@ public class RecordThread extends Thread {
                 }
 
             } else if (videoOutputBufferId >= 0) {
-                ByteBuffer outputBuffer = videoCodec.getOutputBuffer(videoOutputBufferId);
+                ByteBuffer outputBuffer = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    outputBuffer = videoCodec.getOutputBuffer(videoOutputBufferId);
+                } else {
+                    outputBuffer = videoCodec.getOutputBuffers()[videoOutputBufferId];
+                }
                 if (outputBuffer != null && videoInfo.size != 0) {
                     outputBuffer.position(videoInfo.offset);
                     outputBuffer.limit(videoInfo.offset + videoInfo.size);
@@ -572,7 +575,12 @@ public class RecordThread extends Thread {
                 }
 
             } else if (audioOutputBufferId >= 0) {
-                ByteBuffer outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
+                ByteBuffer outputBuffer = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
+                } else {
+                    outputBuffer = audioCodec.getOutputBuffers()[audioOutputBufferId];
+                }
                 if (outputBuffer != null && audioInfo.size != 0) {
                     outputBuffer.position(audioInfo.offset);
                     outputBuffer.limit(audioInfo.offset + audioInfo.size);

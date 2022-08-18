@@ -6,7 +6,6 @@ import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.video.recorder.RecordThread;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
@@ -38,7 +37,7 @@ public class AudioEncoder {
         samplingFrequencyIndexMap.put(8000, 11);
     }
 
-    private final String TAG = RecordThread.class.getSimpleName();
+    private final String TAG = AudioEncoder.class.getSimpleName();
     private MediaCodec audioCodec;
     private AudioRecord audioRecord;
 

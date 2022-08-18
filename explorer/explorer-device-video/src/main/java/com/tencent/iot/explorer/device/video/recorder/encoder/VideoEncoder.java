@@ -1,13 +1,12 @@
 package com.tencent.iot.explorer.device.video.recorder.encoder;
 
+import android.annotation.TargetApi;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-
-import androidx.annotation.RequiresApi;
 
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
@@ -66,7 +65,7 @@ public class VideoEncoder {
     }
 
     //描述平均位速率（以位/秒为单位）的键。 关联的值是一个整数
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void setVideoBitRate(int bitRate) {
         int nowBitrate = videoEncodeParam.getBitRate();
         int nowWidth   = videoEncodeParam.getWidth();
