@@ -173,6 +173,25 @@ XP2PCallback 回调callback说明如下：
 | IV_ERR_DEVICE_OFFLINE          |  -901  |  设备处于离线状态              |
 
 
+### 回音消除AEC及自动增益控制AGC接口介绍
+
+#### AudioEncoder
+
+1、AudioEncoder初始化  AudioEncoder#AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean enableAEC, boolean enableAGC)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| micParam | MicParam | Mic 设置参数 |
+| audioEncodeParam| AudioEncodeParam | 音频编码参数 |
+| enableAEC | boolean | 使能AEC回音消除 |
+| enableAGC | boolean | 使能AGC自动增益控制 |
+
+| 返回值 | 描述 |
+|:-|:-|
+| AudioEncoder | AudioEncoder实例 |
+
+MicParam setAudioSource 输入音频源设置为 VOICE_COMMUNICATION
+
 ## 设备与App交互流程
 
 [App呼叫设备](docs/呼叫流程/App呼设备.md)
