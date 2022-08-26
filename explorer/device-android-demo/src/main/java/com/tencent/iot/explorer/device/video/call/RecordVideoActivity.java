@@ -218,7 +218,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     private void stopBitRateAdapter() {
-        bitRateTimer.cancel();
+        if (bitRateTimer != null) {
+            bitRateTimer.cancel();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

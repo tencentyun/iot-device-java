@@ -64,10 +64,10 @@ public class AudioEncoder {
         this.audioEncodeParam = audioEncodeParam;
         initAudio();
         int audioSessionId = audioRecord.getAudioSessionId();
-        if (enableAEC) {
+        if (enableAEC && audioSessionId != 0) {
             Log.e(TAG, "=====initAEC result: " + initAEC(audioSessionId));
         }
-        if (enableAGC) {
+        if (enableAGC && audioSessionId != 0) {
             Log.e(TAG, "=====initAGC result: " + initAGC(audioSessionId));
         }
     }
