@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
@@ -302,7 +303,7 @@ public class TXMqttDynreg {
         @SuppressWarnings("DefaultLocale")
         String signSourceStr = String.format("%s\n%s\n%s\n%s\n%s\n%d\n%d\n%s",
                 "POST",
-                "ap-guangzhou.gateway.tencentdevices.com",
+                getHost(mDynRegUrl),
                 "/device/register",
                 "",
                 HMAC_ALGO,
@@ -326,5 +327,16 @@ public class TXMqttDynreg {
         httpThread.start();
 
         return true;
+    }
+
+    private String getHost(String url_) {
+        URL url;
+        try {
+            url = new URL(url_);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
