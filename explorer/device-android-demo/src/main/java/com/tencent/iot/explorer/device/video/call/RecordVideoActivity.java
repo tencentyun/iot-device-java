@@ -291,6 +291,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             if (player.isPlaying()) {
                 player.stop();
             }
+            player._setApmStatus(false);
             player.release();
         }
     }
@@ -356,6 +357,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.setMaxPacketNum(2);
         player.setSurface(this.surface);
         player.setAndroidIOCallback(ReadByteIO.Companion.getInstance());
+        player._setApmStatus(true);
 
         Uri uri = Uri.parse("ijkio:androidio:" + ReadByteIO.Companion.getURL_SUFFIX());
         try {

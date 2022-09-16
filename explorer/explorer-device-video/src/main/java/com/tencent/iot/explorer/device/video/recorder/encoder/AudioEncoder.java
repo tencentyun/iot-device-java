@@ -8,7 +8,9 @@ import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.AutomaticGainControl;
 import android.util.Log;
 
+import com.iot.speexdsp.interfaces.SpeexJNIBridge;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnReadPlayerPlayPcmListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 
@@ -53,11 +55,21 @@ public class AudioEncoder {
     private long seq = 0L;
     private int bufferSizeInBytes;
 
+    private volatile boolean denoise = false;
+    private OnReadPlayerPlayPcmListener mPlayPcmListener;
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam) {
         this(micParam, audioEncodeParam, false, false);
     }
 
+    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean denoise, OnReadPlayerPlayPcmListener playPcmListener) {
+        this(micParam, audioEncodeParam, false, false);
+        this.denoise = denoise;
+        this.mPlayPcmListener = playPcmListener;
+        if (denoise) {
+            SpeexJNIBridge.init(bufferSizeInBytes, micParam.getSampleRateInHz());
+        }
+    }
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean enableAEC, boolean enableAGC) {
         this.micParam = micParam;
@@ -164,6 +176,9 @@ public class AudioEncoder {
             control.release();
             control = null;
         }
+        if (denoise) {
+            SpeexJNIBridge.destory();
+        }
     }
 
     private void addADTStoPacket(ByteBuffer outputBuffer) {
@@ -223,10 +238,19 @@ public class AudioEncoder {
                     inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
                 }
                 int readSize = -1;
+                byte[] audioRecordData = new byte[bufferSizeInBytes];
                 if (inputBuffer != null) {
-                    readSize = audioRecord.read(inputBuffer, bufferSizeInBytes);
+                    readSize = audioRecord.read(audioRecordData, 0, bufferSizeInBytes);
                 }
                 if (readSize >= 0) {
+                    inputBuffer.clear();
+                    if (denoise && mPlayPcmListener != null) {
+                        byte[] playerBytes = mPlayPcmListener.onReadPlayerPlayPcm(audioRecordData.length);
+                        byte[] cancell = SpeexJNIBridge.cancellation(audioRecordData, playerBytes);
+                        inputBuffer.put(cancell);
+                    } else {
+                        inputBuffer.put(audioRecordData);
+                    }
                     audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
                 }
             }
