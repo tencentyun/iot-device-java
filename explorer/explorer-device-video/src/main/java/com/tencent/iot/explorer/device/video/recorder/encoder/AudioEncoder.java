@@ -1,11 +1,16 @@
 package com.tencent.iot.explorer.device.video.recorder.encoder;
 
+import android.annotation.SuppressLint;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.AutomaticGainControl;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.iot.speexdsp.interfaces.SpeexJNIBridge;
@@ -14,6 +19,12 @@ import com.tencent.iot.explorer.device.video.recorder.listener.OnReadPlayerPlayP
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -55,6 +66,13 @@ public class AudioEncoder {
     private long seq = 0L;
     private int bufferSizeInBytes;
 
+    private Handler writeHandler;
+    private String audioCacheFilePath = "";
+    private FileOutputStream fos1;
+    private FileOutputStream fos2;
+    private FileOutputStream fos3;
+    private final int MESSAGE_AUDIO_ENCODE_FROM_BYTE = 3000;
+
     private volatile boolean denoise = false;
     private OnReadPlayerPlayPcmListener mPlayPcmListener;
 
@@ -88,6 +106,10 @@ public class AudioEncoder {
         this.encodeListener = listener;
     }
 
+    public void setAudioCacheFilePath(String audioCacheFilePath) {
+        this.audioCacheFilePath = audioCacheFilePath;
+    }
+
     private void initAudio() {
         bufferSizeInBytes = AudioRecord.getMinBufferSize(micParam.getSampleRateInHz(), micParam.getChannelConfig(), micParam.getAudioFormat());
         Log.e(TAG, "=====bufferSizeInBytes: " + bufferSizeInBytes);
@@ -107,7 +129,10 @@ public class AudioEncoder {
     }
 
     public void start() {
-        new Thread(this::record).start();
+        if (!TextUtils.isEmpty(audioCacheFilePath)) {
+            new WriteThread().start();
+        }
+        new CodecThread().start();
     }
 
     public void stop() {
@@ -214,61 +239,152 @@ public class AudioEncoder {
         packet[6] = (byte) 0xFC;
     }
 
-    private void record() {
-        if (audioCodec == null) {
-            return;
-        }
-        stopEncode = false;
-        audioRecord.startRecording();
-        audioCodec.start();
-        MediaCodec.BufferInfo audioInfo = new MediaCodec.BufferInfo();
-        while (true) {
-            if (stopEncode) {
-                release();
-                break;
+    class WriteThread extends Thread {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void run() {
+            super.run();
+            Looper.prepare();
+            File file1 = new File(audioCacheFilePath+"_file1.pcm");
+            File file2 = new File(audioCacheFilePath+"_file2.pcm");
+            File file3 = new File(audioCacheFilePath+"_file3.pcm");
+            Log.i(TAG, "audio cache pcm file path:" + audioCacheFilePath);
+            if (file1.exists()) {
+                file1.delete();
             }
-
-            // 将 AudioRecord 获取的 PCM 原始数据送入编码器
-            int audioInputBufferId = audioCodec.dequeueInputBuffer(0);
-            if (audioInputBufferId >= 0) {
-                ByteBuffer inputBuffer = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
-                } else {
-                    inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
-                }
-                int readSize = -1;
-                byte[] audioRecordData = new byte[bufferSizeInBytes];
-                if (inputBuffer != null) {
-                    readSize = audioRecord.read(audioRecordData, 0, bufferSizeInBytes);
-                }
-                if (readSize >= 0) {
-                    inputBuffer.clear();
-                    if (denoise && mPlayPcmListener != null) {
-                        byte[] playerBytes = mPlayPcmListener.onReadPlayerPlayPcm(audioRecordData.length);
-                        byte[] cancell = SpeexJNIBridge.cancellation(audioRecordData, playerBytes);
-                        inputBuffer.put(cancell);
-                    } else {
-                        inputBuffer.put(audioRecordData);
+            if (file2.exists()) {
+                file2.delete();
+            }
+            if (file3.exists()) {
+                file3.delete();
+            }
+            try {
+                file1.createNewFile();
+                file2.createNewFile();
+                file3.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos1 = new FileOutputStream(file1);
+                fos2 = new FileOutputStream(file2);
+                fos3 = new FileOutputStream(file3);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Log.e(TAG, "临时缓存文件未找到");
+            }
+            writeHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    if (msg.what == MESSAGE_AUDIO_ENCODE_FROM_BYTE) {
+                        JSONObject jsonObject = (JSONObject) msg.obj;
+                        if (AudioRecord.ERROR_INVALID_OPERATION != msg.arg1) {
+                            if (fos1 != null && fos2 != null && fos3 != null) {
+                                try {
+//                                    jsonObject.put("micBytesData", audioRecordData);
+//                                    jsonObject.put("playerBytesData", playerBytes);
+//                                    jsonObject.put("cancellBytesData", cancell);
+                                    byte[] micBytesData = (byte[]) jsonObject.get("micBytesData");
+                                    byte[] playerBytesData = (byte[]) jsonObject.get("playerBytesData");
+                                    byte[] cancellBytesData = (byte[]) jsonObject.get("cancellBytesData");
+                                    Log.i("audioRecordTest", "写录音数据->data:" + micBytesData.length + ", readSize:" + msg.arg1);
+                                    fos1.write(micBytesData);
+                                    fos1.flush();
+                                    fos2.write(playerBytesData);
+                                    fos2.flush();
+                                    fos3.write(cancellBytesData);
+                                    fos3.flush();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
                     }
-                    audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
+                    Log.e(TAG, "threadName--" +Thread.currentThread().getName() + "messageWhat-"+msg.what);
+                }
+            };
+            Looper.loop();
+        }
+    }
+
+    class CodecThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+            Looper.prepare();
+            if (audioCodec == null) {
+                return;
+            }
+            stopEncode = false;
+            audioRecord.startRecording();
+            audioCodec.start();
+            MediaCodec.BufferInfo audioInfo = new MediaCodec.BufferInfo();
+            while (true) {
+                if (stopEncode) {
+                    release();
+                    break;
+                }
+
+                // 将 AudioRecord 获取的 PCM 原始数据送入编码器
+                int audioInputBufferId = audioCodec.dequeueInputBuffer(0);
+                if (audioInputBufferId >= 0) {
+                    ByteBuffer inputBuffer = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        inputBuffer = audioCodec.getInputBuffer(audioInputBufferId);
+                    } else {
+                        inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
+                    }
+                    int readSize = -1;
+                    byte[] audioRecordData = new byte[bufferSizeInBytes];
+                    if (inputBuffer != null) {
+                        readSize = audioRecord.read(audioRecordData, 0, bufferSizeInBytes);
+                    }
+                    if (readSize >= 0) {
+                        inputBuffer.clear();
+                        if (denoise && mPlayPcmListener != null) {
+                            byte[] playerBytes = mPlayPcmListener.onReadPlayerPlayPcm(audioRecordData.length);
+                            byte[] cancell = SpeexJNIBridge.cancellation(audioRecordData, playerBytes);
+                            inputBuffer.put(cancell);
+                            if (writeHandler != null) {
+                                JSONObject jsonObject = new JSONObject();
+                                try {
+                                    jsonObject.put("micBytesData", audioRecordData);
+                                    jsonObject.put("playerBytesData", playerBytes);
+                                    jsonObject.put("cancellBytesData", cancell);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                Message message = writeHandler.obtainMessage(MESSAGE_AUDIO_ENCODE_FROM_BYTE, jsonObject);
+                                message.arg1 = readSize;
+                                writeHandler.sendMessage(message);
+                            }
+                        } else {
+                            inputBuffer.put(audioRecordData);
+                        }
+                        audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
+                    }
+                }
+
+                int audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
+                while (audioOutputBufferId >= 0) {
+                    ByteBuffer outputBuffer = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                        outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
+                    } else {
+                        outputBuffer = audioCodec.getOutputBuffers()[audioOutputBufferId];
+                    }
+                    outputBuffer.position(audioInfo.offset);
+                    outputBuffer.limit(audioInfo.offset + audioInfo.size);
+                    addADTStoPacket(outputBuffer);
+                    audioCodec.releaseOutputBuffer(audioOutputBufferId, false);
+                    audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
                 }
             }
 
-            int audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
-            while (audioOutputBufferId >= 0) {
-                ByteBuffer outputBuffer = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    outputBuffer = audioCodec.getOutputBuffer(audioOutputBufferId);
-                } else {
-                    outputBuffer = audioCodec.getOutputBuffers()[audioOutputBufferId];
-                }
-                outputBuffer.position(audioInfo.offset);
-                outputBuffer.limit(audioInfo.offset + audioInfo.size);
-                addADTStoPacket(outputBuffer);
-                audioCodec.releaseOutputBuffer(audioOutputBufferId, false);
-                audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
-            }
+            Looper.loop();
         }
     }
 }

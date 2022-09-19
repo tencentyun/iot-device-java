@@ -43,6 +43,7 @@ import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraUtils;
 import com.tencent.iot.explorer.device.video.recorder.encoder.AudioEncoder;
 import com.tencent.iot.explorer.device.video.recorder.encoder.VideoEncoder;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnReadPlayerPlayPcmListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
@@ -52,6 +53,7 @@ import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +61,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
@@ -99,6 +102,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private int vw = 320;
     private int vh = 240;
     private int frameRate = 15;
+
+    private LinkedBlockingDeque<Byte> playPcmData = new LinkedBlockingDeque<>();  // 内存队列，用于缓存获取到的播放器音频pcm
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -156,13 +161,42 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+                .setAudioSource(MediaRecorder.AudioSource.MIC)
                 .setSampleRateInHz(8000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true, true);
+        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true, new OnReadPlayerPlayPcmListener() {
+            @Override
+            public byte[] onReadPlayerPlayPcm(int length) {
+                if (player != null && player.isPlaying()) {
+                    byte[] data = new byte[204800];
+                    int len = player._getPcmData(data);
+                    byte[] playerBytes = new byte[len];
+                    System.arraycopy(data, 0, playerBytes, 0, len);
+                    List<Byte> tmpList = new ArrayList<>();
+                    for (byte b : playerBytes){
+                        tmpList.add(b);
+                    }
+                    playPcmData.addAll(tmpList);
+                    if (playPcmData.size() > length) {
+                        byte[] res = new byte[length];
+                        try {
+                            for (int i = 0 ; i < length ; i++) {
+                                res[i] = playPcmData.take();
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        return res;
+                    } else {
+                        return new byte[length];
+                    }
+                }
+                return new byte[length];
+            }
+        });
         audioEncoder.setOnEncodeListener(this);
     }
 
@@ -243,7 +277,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             videoEncoder.stop();
         }
         startEncodeVideo = false;
-
+        playPcmData.clear();
         stopBitRateAdapter();
     }
 
