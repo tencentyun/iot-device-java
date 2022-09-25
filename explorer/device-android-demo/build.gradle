@@ -40,6 +40,7 @@ android {
         buildConfigField 'String', 'TME_DEVICE_NAME', "\"${getValueById('TME_DEVICE_NAME')}\""
         buildConfigField 'String', 'TME_DEVICE_PSK', "\"${getValueById('TME_DEVICE_PSK')}\""
         buildConfigField 'String', 'TME_BROKER_URL', "\"${getValueById('TME_BROKER_URL')}\""
+        buildConfigField 'String', 'SDKDemoCommitID', "\"${rootProject.ext.sdk.sdkdemoVersion}\""
     }
     buildTypes {
         release {

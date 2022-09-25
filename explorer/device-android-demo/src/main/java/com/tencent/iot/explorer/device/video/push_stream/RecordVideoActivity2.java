@@ -28,7 +28,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
+import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
 import com.tencent.iot.explorer.device.video.recorder.ReadByteIO;
 import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraUtils;
@@ -45,6 +47,7 @@ import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,10 +74,14 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     private AudioEncoder audioEncoder;
     private VideoEncoder videoEncoder;
     private volatile boolean startEncodeVideo = false;
+    private volatile boolean isRecording = false;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private int vw = 640;
     private int vh = 480;
-    private int frameRate = 7;
+    private int frameRate = 15;
+
+    private ResolutionEntity selectedResolutionEntity;
+    private FrameRateEntity selectedFrameRateEntity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,6 +92,15 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             if (bundle != null) {
                 String jsonStr = bundle.getString(PhoneInfo.TAG);
                 phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
+                String resolutionJsonStr = bundle.getString(ResolutionEntity.TAG);
+                if (resolutionJsonStr != null)
+                    selectedResolutionEntity = JSON.parseObject(resolutionJsonStr, ResolutionEntity.class);
+                vw = selectedResolutionEntity.getWidth();
+                vh = selectedResolutionEntity.getHeight();
+                String frameRateJsonStr = bundle.getString(FrameRateEntity.TAG);
+                if (frameRateJsonStr != null)
+                    selectedFrameRateEntity = JSON.parseObject(frameRateJsonStr, FrameRateEntity.class);
+                frameRate = selectedFrameRateEntity.getRate();
             }
         }
         setContentView(R.layout.activity_record_video2);
@@ -141,6 +157,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             }
             audioEncoder.start();
         }
+        isRecording = true;
     }
 
     private void stopRecord() {
@@ -151,6 +168,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
             videoEncoder.stop();
         }
         startEncodeVideo = false;
+        isRecording = false;
     }
 
     @Override
@@ -205,13 +223,14 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         super.onDestroy();
         VideoNativeInteface.getInstance().setCallback(null);
         if (player != null) {
-            player.stop();
+            player.release();
         }
         stopRecord();
         if (io != null) {
             io.close();
         }
         executor.shutdown();
+        releaseCamera(camera);
     }
 
     @Override
@@ -311,7 +330,10 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         parameters.setPreviewFormat(ImageFormat.NV21);
 
         if (this.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            List<String> focusModes = parameters.getSupportedFocusModes();
+            if (focusModes != null && focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            }
         }
 
         int cameraIndex = -1;
@@ -377,18 +399,21 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface created.");
         openCamera();
-        handler.post(this::startRecord);
+        if (!isRecording) {
+            handler.post(this::startRecord);
+        }
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        Log.d(TAG, "surface changed.");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
-        releaseCamera(camera);
+        Log.d(TAG, "surface destroyed.");
     }
 }
 

@@ -13,10 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.tencent.iot.explorer.device.android.app.utils.Watermark;
 import com.tencent.iot.explorer.device.face.AuthActivity;
 import com.tencent.iot.explorer.device.rtc.TRTCMainActivity;
 import com.tencent.iot.explorer.device.video.VideoEntryActivity;
-import com.tencent.iot.explorer.device.video.call.MainActivity;
+import com.tencent.xnet.XP2P;
 
 import java.io.File;
 
@@ -115,6 +116,7 @@ public class IoTDemoActivity extends AppCompatActivity {
                 startActivity(new Intent(IoTDemoActivity.this, WiFiActivity.class));
             }
         });
+        Watermark.getInstance(this).show(this, BuildConfig.SDKDemoCommitID + "    xp2p: " + XP2P.getVersion());
     }
 
     private void initLogConfigurator() {

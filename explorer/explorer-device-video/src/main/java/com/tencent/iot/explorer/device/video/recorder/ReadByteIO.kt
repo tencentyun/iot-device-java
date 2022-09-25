@@ -9,19 +9,19 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
-//    companion object {
-//        private var instance: ReadByteIO? = null
-//        var URL_SUFFIX = "recv_data_online"
-//
-//        @Synchronized
-//        fun getInstance(): ReadByteIO {
-//            instance?.let {
-//                return it
-//            }
-//            instance = ReadByteIO()
-//            return instance!!
-//        }
-//    }
+    companion object {
+        private var instance: ReadByteIO? = null
+        var URL_SUFFIX = "recv_data_online"
+
+        @Synchronized
+        fun getInstance(): ReadByteIO {
+            instance?.let {
+                return it
+            }
+            instance = ReadByteIO()
+            return instance!!
+        }
+    }
 
     var URL_SUFFIX = "recv_data_online"
 
@@ -86,7 +86,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
         var tmpBytes = takeFirstWithLen() // 阻塞式读取
         var readLen = tmpBytes.size
-//        Log.e(TAG, "*****************new read " + size + " buffer.len " + readLen)
+//        Log.e(TAG, "*=============new read " + size + " buffer.len " + readLen)
         if (readLen == 0) {
             return 0;
         }

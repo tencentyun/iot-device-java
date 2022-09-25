@@ -458,8 +458,7 @@ public class TXGatewayClient extends TXDataTemplateClient {
 
         if (mMqttClient == null) {
             try {
-                mPingSender = new TXAlarmPingSender();
-                mMqttClient = new MqttAsyncClient(mServerURI, mClientId, mMqttPersist, mPingSender);
+                mMqttClient = new MqttAsyncClient(mServerURI, mClientId, mMqttPersist);
                 mMqttClient.setCallback(this);
                 mMqttClient.setBufferOpts(super.bufferOpts);
                 mMqttClient.setManualAcks(false);

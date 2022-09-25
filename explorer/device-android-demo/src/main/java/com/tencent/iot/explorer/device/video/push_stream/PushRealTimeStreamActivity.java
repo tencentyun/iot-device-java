@@ -4,17 +4,23 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
@@ -22,9 +28,14 @@ import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
+import com.tencent.iot.explorer.device.video.call.adapter.FrameRateListAdapter;
+import com.tencent.iot.explorer.device.video.call.adapter.ResolutionListAdapter;
 import com.tencent.iot.explorer.device.video.call.data_template.VideoDataTemplateSample;
 import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
+import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
+import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
+import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -33,6 +44,8 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
@@ -54,11 +67,22 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
     private String jsonFileName = "video_watch.json";
     private volatile VideoDataTemplateSample videoDataTemplateSample = null;
     private Handler handler = new Handler();
-    private String defaultAgent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
     private volatile Timer timer = new Timer();
     private volatile Timer callingTimer = new Timer();
     private long onlineClickedTime = 0L;
     private long offlineClickedTime = 0L;
+
+    private RecyclerView resolutionRv;
+    private ResolutionListAdapter resolutionAdapter = null;
+    private ArrayList<ResolutionEntity> resolutionDatas = new ArrayList<>();
+    private RecyclerView frameRateRv;
+    private FrameRateListAdapter frameRateAdapter = null;
+    private ArrayList<FrameRateEntity> frameRateDatas = new ArrayList<>();
+    private Button confirm;
+    private LinearLayout callParamLayout;
+
+    private ResolutionEntity selectedResolutionEntity;
+    private FrameRateEntity selectedFrameRateEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +100,9 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         logTv.setMovementMethod(ScrollingMovementMethod.getInstance());
         online = findViewById(R.id.connect);
         offline = findViewById(R.id.disconnect);
+
+        confirm = findViewById(R.id.confirm);
+        callParamLayout = findViewById(R.id.call_param_layout);
 
         DeviceConnectCondition values = getDeviceConnectCondition();
         if (values != null) {
@@ -114,7 +141,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         videoCall.setOnClickListener( v -> {
             if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
-                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_VIDEO_CALL);
+                startPhoneCall(CallingType.TYPE_VIDEO_CALL);
             } else {
                 updateLog("设备未上线");
             }
@@ -122,11 +149,64 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
 
         audioCall.setOnClickListener( v -> {
             if (videoDataTemplateSample != null && videoDataTemplateSample.isConnected()) {
-                startPhoneCall("1234567", defaultAgent, CallingType.TYPE_AUDIO_CALL);
+                startPhoneCall(CallingType.TYPE_AUDIO_CALL);
             } else {
                 updateLog("设备未上线");
             }
         });
+
+        resolutionRv = findViewById(R.id.rv_resolution);
+        getSupportedPreviewSizes();
+        LinearLayoutManager resolutionLayoutManager = new LinearLayoutManager(this);
+        resolutionRv.setLayoutManager(resolutionLayoutManager);
+        resolutionRv.setHasFixedSize(false);
+        resolutionAdapter = new ResolutionListAdapter(PushRealTimeStreamActivity.this, resolutionDatas);
+        resolutionRv.setAdapter(resolutionAdapter);
+
+        frameRateRv = findViewById(R.id.rv_frame_rate);
+        frameRateDatas = new ArrayList<FrameRateEntity>();
+        frameRateDatas.add(new FrameRateEntity(15, true));
+        frameRateDatas.add(new FrameRateEntity(30));
+        LinearLayoutManager frameLayoutManager = new LinearLayoutManager(this);
+        frameRateRv.setLayoutManager(frameLayoutManager);
+        frameRateRv.setHasFixedSize(false);
+        frameRateAdapter = new FrameRateListAdapter(PushRealTimeStreamActivity.this, frameRateDatas);
+        frameRateRv.setAdapter(frameRateAdapter);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedResolutionEntity = resolutionAdapter.selectedResolutionEntity();
+                selectedFrameRateEntity = frameRateAdapter.selectedFrameRateEntity();
+                callParamLayout.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    /**
+     * 获取设备支持的最大分辨率
+     */
+    private void getSupportedPreviewSizes() {
+        Camera camera = Camera.open(CameraConstants.facing.BACK);
+        //获取相机参数
+        Camera.Parameters parameters = camera.getParameters();
+        List<Camera.Size> list = parameters.getSupportedPreviewSizes();
+        resolutionDatas = new ArrayList<ResolutionEntity>();
+        for (Camera.Size size : list) {
+            Log.e(TAG, "****========== " + size.width + " " + size.height);
+            ResolutionEntity entity = new ResolutionEntity(size.width, size.height);
+            resolutionDatas.add(entity);
+        }
+        if (resolutionDatas.size() > 0) {
+            ResolutionEntity entity = resolutionDatas.get(resolutionDatas.size() - 1);
+            entity.setIsSelect(true);
+        } else {
+            Toast.makeText(PushRealTimeStreamActivity.this, "无法获取到设备Camera支持的分辨率", Toast.LENGTH_SHORT).show();
+        }
+        camera.setPreviewCallback(null);
+        camera.stopPreview();
+        camera.release();
+        camera = null;
     }
 
     private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
@@ -202,7 +282,7 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
                     String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
                     if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
                         Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                        Log.e(TAG, "reportCallStatusProperty status " + status);
+                        Log.e(TAG, "reportXp2pInfo status " + status);
                         break;
                     }
                 }
@@ -210,16 +290,17 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void startPhoneCall(String userid, String agent, Integer callType) {
+    private void startPhoneCall(Integer callType) {
         Log.e(TAG, "callType " + callType);
-        videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, callType, userid, agent);
         Intent intent = new Intent(PushRealTimeStreamActivity.this, RecordVideoActivity2.class);
         Bundle bundle = new Bundle();
         PhoneInfo phoneInfo = new PhoneInfo();
         phoneInfo.setCallType(callType);
-        phoneInfo.setAgent(agent);
-        phoneInfo.setUserid(userid);
         bundle.putString(PhoneInfo.TAG, JSON.toJSONString(phoneInfo));
+        if (selectedResolutionEntity != null)
+            bundle.putString(ResolutionEntity.TAG, JSON.toJSONString(selectedResolutionEntity));
+        if (selectedFrameRateEntity != null)
+            bundle.putString(FrameRateEntity.TAG, JSON.toJSONString(selectedFrameRateEntity));
         intent.putExtra(PhoneInfo.TAG, bundle);
         startActivityForResult(intent, 2);
     }
@@ -288,20 +369,5 @@ public class PushRealTimeStreamActivity extends AppCompatActivity {
         String value = sp.getString(DeviceConnectCondition.TAG, "");
         ret = JSON.parseObject(value, DeviceConnectCondition.class);
         return ret;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
-            Bundle bundle = data.getBundleExtra(PhoneInfo.TAG);
-            if (bundle != null) {
-                String jsonStr = bundle.getString(PhoneInfo.TAG);
-                Log.e(TAG, "jsonStr " + jsonStr);
-                PhoneInfo phoneInfo = JSON.parseObject(jsonStr, PhoneInfo.class);
-                if (phoneInfo == null) return;
-                videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, phoneInfo.getCallType(), phoneInfo.getUserid(), phoneInfo.getAgent());
-            }
-        }
     }
 }

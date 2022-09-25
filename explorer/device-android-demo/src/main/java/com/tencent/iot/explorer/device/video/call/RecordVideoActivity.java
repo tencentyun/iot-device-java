@@ -46,7 +46,6 @@ import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
-import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoFormat;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
@@ -76,11 +75,11 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private TextView tvVCache;
     private TextView tvACache;
     private TextView tvFPS;
+    private TextView tvStreamStatus;
     private volatile PhoneInfo phoneInfo;
     private Handler handler = new Handler();
     private Button recordBtn;
     private Button hangupBtn;
-    private ReadByteIO io;
 
     private long lastClickTime = 0L;
     //两次点击间隔不少于1000ms
@@ -101,6 +100,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registVideoOverBrodcast();
         path = getFilesDir().getAbsolutePath();
         Intent intent = getIntent();
         if (intent != null) {
@@ -125,6 +125,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         tvVCache = findViewById(R.id.tv_v_cache);
         tvACache = findViewById(R.id.tv_a_cache);
         tvFPS = findViewById(R.id.tv_fps);
+        tvStreamStatus = findViewById(R.id.tv_stream_status);
         hangupBtn = findViewById(R.id.btn_hang_up);
         hangupBtn.setOnClickListener(v -> {
             new Thread(this::finishActivity).start();
@@ -132,7 +133,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         recordBtn.setText("Record \n path:" + path);
         surfaceView = findViewById(R.id.cameraView);
         holder = surfaceView.getHolder();
-        holder.addCallback(this);
         btnSwitch = findViewById(R.id.btnSwitch);
         playView = findViewById(R.id.v_play);
         playView.setSurfaceTextureListener(this);
@@ -147,11 +147,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 lastClickTime = System.currentTimeMillis();
             }
         });
-        VideoNativeInteface.getInstance().setCallback(xP2PCallback);
-        registVideoOverBrodcast();
-        io = new ReadByteIO();
-        io.reset();
-        io.setPlayType(phoneInfo.getCallType());
+        ReadByteIO.Companion.getInstance().reset();
+        ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
         initAudioEncoder();
         initVideoEncoder();
         VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
@@ -199,6 +196,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     protected void onResume() {
         super.onResume();
+        holder.addCallback(this);
     }
 
     @Override
@@ -206,32 +204,32 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         super.onPause();
     }
 
-    private final XP2PCallback xP2PCallback = new XP2PCallback() {
-
-        @Override
-        public void avDataRecvHandle(byte[] data, int len) {
-//            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
-            io.addLast(data);
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void avDataMsgHandle(int type, String msg) {
-            Log.e(TAG, "avDataMsgHandle type " + type);
-            if (type == 0) {
-                Log.e(TAG, "start send video data");
-                handler.post(() -> startRecord());
-                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
-            } else if (type == 1) {
-                Log.e(TAG, "this call over");
-                handler.post(() -> stopRecord());
-                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
-                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> finishActivity()).start();
-                }
-            }
-        }
-    };
+//    private final XP2PCallback xP2PCallback = new XP2PCallback() {
+//
+//        @Override
+//        public void avDataRecvHandle(byte[] data, int len) {
+////            Log.e(TAG, "=======datalen: " + len + "bytes: " + ByteUtils.Companion.bytesToHex(data));
+//            io.addLast(data);
+//        }
+//
+//        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+//        @Override
+//        public void avDataMsgHandle(int type, String msg) {
+//            Log.e(TAG, "*========avDataMsgHandle type " + type);
+//            if (type == 0) {
+//                Log.e(TAG, "*======start send video data");
+//                handler.post(() -> startRecord());
+//                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
+//            } else if (type == 1) {
+//                Log.e(TAG, "*======this call over");
+//                handler.post(() -> stopRecord());
+//                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
+//                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+//                    new Thread(() -> finishActivity()).start();
+//                }
+//            }
+//        }
+//    };
 
     @Override
     protected void onDestroy() {
@@ -241,8 +239,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             mHandler.removeMessages(MSG_UPDATE_HUD);
             player.stop();
         }
-        io.close();
+        ReadByteIO.Companion.getInstance().close();
         executor.shutdown();
+        releaseCamera(camera);
     }
 
     @Override
@@ -286,9 +285,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
         player.setFrameSpeed(1.5f);
         player.setSurface(this.surface);
-        player.setAndroidIOCallback(io);
+        player.setAndroidIOCallback(ReadByteIO.Companion.getInstance());
 
-        Uri uri = Uri.parse("ijkio:androidio:" + io.getURL_SUFFIX());
+        Uri uri = Uri.parse("ijkio:androidio:" + ReadByteIO.Companion.getURL_SUFFIX());
         try {
             player.setDataSource(uri.toString());
         } catch (IOException e) {
@@ -319,10 +318,22 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     BroadcastReceiver recevier = new BroadcastReceiver() {
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public void onReceive(Context context, Intent intent) {
             int refreshTag = intent.getIntExtra(Utils.VIDEO_OVER, 0);
             if (refreshTag == 9) {
+                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
+                    new Thread(() -> finishActivity()).start();
+                }
+            } else if (refreshTag == 1) {
+                Log.e(TAG, "*====== 开始推流");
+                handler.post(() -> startRecord());
+                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
+            } else if (refreshTag == 2) {
+                Log.e(TAG, "*====== 结束推流");
+                handler.post(() -> stopRecord());
+                runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
                 if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
                     new Thread(() -> finishActivity()).start();
                 }
@@ -365,18 +376,19 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface created.");
         openCamera();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+        Log.d(TAG, "surface changed.");
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        Log.d(TAG, "surface destroyed.");
         surfaceHolder.removeCallback(this);
-        releaseCamera(camera);
     }
 
     /**
@@ -483,10 +495,23 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                             CommonUtils.formatedSize(videoCachedBytes)));
                     tvVideoWH.setText(player.getVideoWidth() + " x " + player.getVideoHeight());
                     tvFPS.setText(String.format(Locale.US, "%.2f / %.2f", vdps, vfps));
+                    tvStreamStatus.setText(String.format(Locale.US, "%s", getSendStreamStatus()));
                     removeMessages(MSG_UPDATE_HUD);
                     sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
             }
         }
     };
+
+    private String getSendStreamStatus() {
+        switch (VideoNativeInteface.getInstance().getSendStreamStatus(0)) {
+            case 0:
+                return "Unkown";
+            case 1:
+                return "Direct";
+            case 2:
+                return "Turn";
+        }
+        return "Unkown";
+    }
 
 }
