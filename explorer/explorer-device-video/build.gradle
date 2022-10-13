@@ -56,7 +56,7 @@ dependencies {
     api 'com.tencent.iot.thirdparty.android:ijkplayer-java:2.0.7-SNAPSHOT'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-armv7a:2.0.7-SNAPSHOT'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-arm64:2.0.7-SNAPSHOT'
-    api 'io.github.sundoggynew:iot-speexdsp:1.0.0'
+    api 'io.github.sundoggynew:iot-speexdsp:1.0.1-SNAPSHOT'
     api project(':explorer:explorer-media-common')
     //xxxapi project(':explorer:explorer//xxx-media-common')
     if (findProject(':explorer:explorer-device-android') != null) {

@@ -161,7 +161,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
-                .setAudioSource(MediaRecorder.AudioSource.MIC)
+                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
                 .setSampleRateInHz(8000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
@@ -173,6 +173,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 if (player != null && player.isPlaying()) {
                     byte[] data = new byte[204800];
                     int len = player._getPcmData(data);
+                    if (len > 2*length) { len = 2*length; }
                     byte[] playerBytes = new byte[len];
                     System.arraycopy(data, 0, playerBytes, 0, len);
                     List<Byte> tmpList = new ArrayList<>();
