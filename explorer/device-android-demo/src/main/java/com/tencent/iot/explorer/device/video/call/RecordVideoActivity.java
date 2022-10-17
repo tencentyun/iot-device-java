@@ -12,6 +12,7 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -103,7 +104,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private int vh = 240;
     private int frameRate = 15;
 
-    private LinkedBlockingDeque<Byte> playPcmData = new LinkedBlockingDeque<>();  // 内存队列，用于缓存获取到的播放器音频pcm
+    private String audioCacheFilePath = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/audio1_cache_file";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,37 +168,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true, new OnReadPlayerPlayPcmListener() {
-            @Override
-            public byte[] onReadPlayerPlayPcm(int length) {
-                if (player != null && player.isPlaying()) {
-                    byte[] data = new byte[204800];
-                    int len = player._getPcmData(data);
-                    if (len > 2*length) { len = 2*length; }
-                    byte[] playerBytes = new byte[len];
-                    System.arraycopy(data, 0, playerBytes, 0, len);
-                    List<Byte> tmpList = new ArrayList<>();
-                    for (byte b : playerBytes){
-                        tmpList.add(b);
-                    }
-                    playPcmData.addAll(tmpList);
-                    if (playPcmData.size() > length) {
-                        byte[] res = new byte[length];
-                        try {
-                            for (int i = 0 ; i < length ; i++) {
-                                res[i] = playPcmData.take();
-                            }
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        return res;
-                    } else {
-                        return new byte[length];
-                    }
-                }
-                return new byte[length];
-            }
-        });
+        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true);
+        audioEncoder.setAudioCacheFilePath(audioCacheFilePath);
         audioEncoder.setOnEncodeListener(this);
     }
 
@@ -278,7 +250,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             videoEncoder.stop();
         }
         startEncodeVideo = false;
-        playPcmData.clear();
         stopBitRateAdapter();
     }
 
@@ -451,6 +422,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 Log.e(TAG, "*====== 开始对讲");
                 releasePlayer();
                 play();
+                if (audioEncoder != null) audioEncoder.setPlayer(player);
             } else if (refreshTag == 4) { //结束对讲
                 Log.e(TAG, "*====== 结束对讲.");
                 releasePlayer();

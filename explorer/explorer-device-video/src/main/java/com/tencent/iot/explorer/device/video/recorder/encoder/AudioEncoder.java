@@ -27,8 +27,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
+
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class AudioEncoder {
 
@@ -74,16 +79,17 @@ public class AudioEncoder {
     private final int MESSAGE_AUDIO_ENCODE_FROM_BYTE = 3000;
 
     private volatile boolean denoise = false;
-    private OnReadPlayerPlayPcmListener mPlayPcmListener;
+
+    private IjkMediaPlayer player;
+    private LinkedBlockingDeque<Byte> playPcmData = new LinkedBlockingDeque<>();  // 内存队列，用于缓存获取到的播放器音频pcm
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam) {
         this(micParam, audioEncodeParam, false, false);
     }
 
-    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean denoise, OnReadPlayerPlayPcmListener playPcmListener) {
+    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean denoise) {
         this(micParam, audioEncodeParam, false, false);
         this.denoise = denoise;
-        this.mPlayPcmListener = playPcmListener;
         if (denoise) {
             SpeexJNIBridge.init(bufferSizeInBytes, micParam.getSampleRateInHz());
         }
@@ -104,6 +110,10 @@ public class AudioEncoder {
 
     public void setOnEncodeListener(OnEncodeListener listener) {
         this.encodeListener = listener;
+    }
+
+    public void setPlayer(IjkMediaPlayer player) {
+        this.player = player;
     }
 
     public void setAudioCacheFilePath(String audioCacheFilePath) {
@@ -136,6 +146,7 @@ public class AudioEncoder {
     }
 
     public void stop() {
+        playPcmData.clear();
         stopEncode = true;
     }
 
@@ -282,13 +293,9 @@ public class AudioEncoder {
                         if (AudioRecord.ERROR_INVALID_OPERATION != msg.arg1) {
                             if (fos1 != null && fos2 != null && fos3 != null) {
                                 try {
-//                                    jsonObject.put("micBytesData", audioRecordData);
-//                                    jsonObject.put("playerBytesData", playerBytes);
-//                                    jsonObject.put("cancellBytesData", cancell);
                                     byte[] micBytesData = (byte[]) jsonObject.get("micBytesData");
                                     byte[] playerBytesData = (byte[]) jsonObject.get("playerBytesData");
                                     byte[] cancellBytesData = (byte[]) jsonObject.get("cancellBytesData");
-                                    Log.i("audioRecordTest", "写录音数据->data:" + micBytesData.length + ", readSize:" + msg.arg1);
                                     fos1.write(micBytesData);
                                     fos1.flush();
                                     fos2.write(playerBytesData);
@@ -303,7 +310,6 @@ public class AudioEncoder {
                             }
                         }
                     }
-                    Log.e(TAG, "threadName--" +Thread.currentThread().getName() + "messageWhat-"+msg.what);
                 }
             };
             Looper.loop();
@@ -344,8 +350,8 @@ public class AudioEncoder {
                     }
                     if (readSize >= 0) {
                         inputBuffer.clear();
-                        if (denoise && mPlayPcmListener != null) {
-                            byte[] playerBytes = mPlayPcmListener.onReadPlayerPlayPcm(audioRecordData.length);
+                        if (denoise && player != null) {
+                            byte[] playerBytes = onReadPlayerPlayPcm(audioRecordData.length);
                             byte[] cancell = SpeexJNIBridge.cancellation(audioRecordData, playerBytes);
                             inputBuffer.put(cancell);
                             if (writeHandler != null) {
@@ -363,6 +369,7 @@ public class AudioEncoder {
                             }
                         } else {
                             inputBuffer.put(audioRecordData);
+                            Log.i("audioRecordTest", "---without cancel");
                         }
                         audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
                     }
@@ -386,5 +393,34 @@ public class AudioEncoder {
 
             Looper.loop();
         }
+    }
+
+    private byte[] onReadPlayerPlayPcm(int length) {
+        if (player != null && player.isPlaying()) {
+            byte[] data = new byte[204800];
+            int len = player._getPcmData(data);
+            if (len > 2*length) { len = 2*length; }
+            byte[] playerBytes = new byte[len];
+            System.arraycopy(data, 0, playerBytes, 0, len);
+            List<Byte> tmpList = new ArrayList<>();
+            for (byte b : playerBytes){
+                tmpList.add(b);
+            }
+            playPcmData.addAll(tmpList);
+            if (playPcmData.size() > length) {
+                byte[] res = new byte[length];
+                try {
+                    for (int i = 0 ; i < length ; i++) {
+                        res[i] = playPcmData.take();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return res;
+            } else {
+                return new byte[length];
+            }
+        }
+        return new byte[length];
     }
 }
