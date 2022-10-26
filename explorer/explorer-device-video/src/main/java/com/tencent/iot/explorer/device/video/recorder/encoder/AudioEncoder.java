@@ -399,14 +399,29 @@ public class AudioEncoder {
         if (player != null && player.isPlaying()) {
             byte[] data = new byte[204800];
             int len = player._getPcmData(data);
-            if (len > 2*length) { len = 2*length; }
-            byte[] playerBytes = new byte[len];
-            System.arraycopy(data, 0, playerBytes, 0, len);
-            List<Byte> tmpList = new ArrayList<>();
-            for (byte b : playerBytes){
-                tmpList.add(b);
+            if (playPcmData.size() > 8*length) {
+                if (len > 6*length) {
+                    len = 6*length;
+                } else if (len == 0) {
+
+                } else {
+                    int temp = playPcmData.size() - (6*length - len);
+                    for (int i = 0 ; i < temp ; i++) {
+                        playPcmData.remove();
+                    }
+                }
+            } else if (len > 8*length) {
+                len = 6*length;
             }
-            playPcmData.addAll(tmpList);
+            if (len > 0) {
+                byte[] playerBytes = new byte[len];
+                System.arraycopy(data, 0, playerBytes, 0, len);
+                List<Byte> tmpList = new ArrayList<>();
+                for (byte b : playerBytes){
+                    tmpList.add(b);
+                }
+                playPcmData.addAll(tmpList);
+            }
             if (playPcmData.size() > length) {
                 byte[] res = new byte[length];
                 try {
