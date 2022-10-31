@@ -25,7 +25,6 @@ ext {
 
 allprojects {
     repositories {
-        jcenter()
         google()
         mavenLocal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
