@@ -1,5 +1,6 @@
 package com.tencent.iot.explorer.device.video.call;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,13 +9,16 @@ import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.media.AudioFormat;
+import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Surface;
@@ -32,6 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.alibaba.fastjson.JSON;
+//import com.iot.gvoice.interfaces.GvoiceJNIBridge;
 import com.tencent.iot.explorer.device.android.app.R;
 import com.tencent.iot.explorer.device.android.app.utils.CommonUtils;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
@@ -44,14 +49,18 @@ import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraUtils;
 import com.tencent.iot.explorer.device.video.recorder.encoder.AudioEncoder;
 import com.tencent.iot.explorer.device.video.recorder.encoder.VideoEncoder;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
-import com.tencent.iot.explorer.device.video.recorder.listener.OnReadPlayerPlayPcmListener;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnReadAECProcessedPcmListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoFormat;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -104,7 +113,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private int vh = 240;
     private int frameRate = 15;
 
+    private LinkedBlockingDeque<Byte> playPcmData = new LinkedBlockingDeque<>();  // 内存队列，用于缓存获取到的播放器音频pcm
     private String audioCacheFilePath = Environment.getExternalStorageDirectory().getAbsolutePath()+ "/audio1_cache_file";
+    private Handler writeHandler;
+    private final int MESSAGE_AUDIO_ENCODE_FROM_BYTE = 3000;
+    private FileOutputStream fos1;
+    private FileOutputStream fos2;
+    private FileOutputStream fos3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,14 +178,88 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
-                .setSampleRateInHz(8000) // 采样率
+                .setSampleRateInHz(16000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, true);
-        audioEncoder.setAudioCacheFilePath(audioCacheFilePath);
+        audioEncoder = new AudioEncoder(micParam, audioEncodeParam, processedPcmListener);
         audioEncoder.setOnEncodeListener(this);
+    }
+
+    private OnReadAECProcessedPcmListener processedPcmListener = new OnReadAECProcessedPcmListener() {
+        @Override
+        public byte[] onReadAECProcessedPcmListener(byte[] micPcmBytes) {
+//            byte[] playerPcmBytes = onReadPlayerPlayPcm(micPcmBytes.length);
+//            byte[] cancell = new byte[micPcmBytes.length];
+//            for (int i = 0; i<4; i++) {
+//                byte[] tempAudioR = new byte[640];
+//                byte[] tempPlayer = new byte[640];
+//                System.arraycopy(micPcmBytes, i*640, tempAudioR, 0, 640);
+//                System.arraycopy(playerPcmBytes, i*640, tempPlayer, 0, 640);
+//                byte[] tempC = GvoiceJNIBridge.cancellation(tempAudioR, tempPlayer);
+//                System.arraycopy(tempC, 0, cancell, i*640, 640);
+//            }
+//
+//            if (writeHandler != null) {
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("micBytesData", micPcmBytes);
+//                    jsonObject.put("playerBytesData", playerPcmBytes);
+//                    jsonObject.put("cancellBytesData", cancell);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                Message message = writeHandler.obtainMessage(MESSAGE_AUDIO_ENCODE_FROM_BYTE, jsonObject);
+//                message.arg1 = micPcmBytes.length;
+//                writeHandler.sendMessage(message);
+//            }
+//            return cancell;
+            return micPcmBytes;
+        }
+    };
+
+    private byte[] onReadPlayerPlayPcm(int length) {
+        if (player != null && player.isPlaying()) {
+            byte[] data = new byte[204800];
+            int len = player._getPcmData(data);
+            if (playPcmData.size() > 8*length) {
+                if (len > 6*length) {
+                    len = 6*length;
+                } else if (len == 0) {
+                } else {
+                    int temp = playPcmData.size() - (6*length - len);
+                    for (int i = 0 ; i < temp ; i++) {
+                        playPcmData.remove();
+                    }
+                }
+            } else if (len > 8*length) {
+                len = 6*length;
+            }
+            if (len > 0) {
+                byte[] playerBytes = new byte[len];
+                System.arraycopy(data, 0, playerBytes, 0, len);
+                List<Byte> tmpList = new ArrayList<>();
+                for (byte b : playerBytes){
+                    tmpList.add(b);
+                }
+                playPcmData.addAll(tmpList);
+            }
+            if (playPcmData.size() > length) {
+                byte[] res = new byte[length];
+                try {
+                    for (int i = 0 ; i < length ; i++) {
+                        res[i] = playPcmData.take();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return res;
+            } else {
+                return new byte[length];
+            }
+        }
+        return new byte[length];
     }
 
     private void initVideoEncoder() {
@@ -236,7 +325,11 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             if (phoneInfo.getCallType() == CallingType.TYPE_VIDEO_CALL) {
                 startEncodeVideo = true;
             }
+            if (!TextUtils.isEmpty(audioCacheFilePath)) {
+                new WriteThread().start();
+            }
             audioEncoder.start();
+//            GvoiceJNIBridge.init();
 
             startBitRateAdapter();
         }
@@ -245,6 +338,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void stopRecord() {
         if (audioEncoder != null) {
             audioEncoder.stop();
+            playPcmData.clear();
+//            GvoiceJNIBridge.destory();
         }
         if (videoEncoder != null) {
             videoEncoder.stop();
@@ -410,7 +505,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 Log.e(TAG, "*====== 开始推流");
                 initAudioEncoder();
                 initVideoEncoder();
-                VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
+                VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).setAudioSampleRate(16000).build();
                 VideoNativeInteface.getInstance().initVideoFormat(format);
                 handler.post(() -> startRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
@@ -422,7 +517,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 Log.e(TAG, "*====== 开始对讲");
                 releasePlayer();
                 play();
-                if (audioEncoder != null) audioEncoder.setPlayer(player);
             } else if (refreshTag == 4) { //结束对讲
                 Log.e(TAG, "*====== 结束对讲.");
                 releasePlayer();
@@ -601,6 +695,72 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 return "Turn";
         }
         return "Unkown";
+    }
+
+    class WriteThread extends Thread {
+        @SuppressLint("HandlerLeak")
+        @Override
+        public void run() {
+            super.run();
+            Looper.prepare();
+            File file1 = new File(audioCacheFilePath+"_file1.pcm");
+            File file2 = new File(audioCacheFilePath+"_file2.pcm");
+            File file3 = new File(audioCacheFilePath+"_file3.pcm");
+            Log.i(TAG, "audio cache pcm file path:" + audioCacheFilePath);
+            if (file1.exists()) {
+                file1.delete();
+            }
+            if (file2.exists()) {
+                file2.delete();
+            }
+            if (file3.exists()) {
+                file3.delete();
+            }
+            try {
+                file1.createNewFile();
+                file2.createNewFile();
+                file3.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos1 = new FileOutputStream(file1);
+                fos2 = new FileOutputStream(file2);
+                fos3 = new FileOutputStream(file3);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Log.e(TAG, "临时缓存文件未找到");
+            }
+            writeHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    if (msg.what == MESSAGE_AUDIO_ENCODE_FROM_BYTE) {
+                        JSONObject jsonObject = (JSONObject) msg.obj;
+                        if (AudioRecord.ERROR_INVALID_OPERATION != msg.arg1) {
+                            if (fos1 != null && fos2 != null && fos3 != null) {
+                                try {
+                                    byte[] micBytesData = (byte[]) jsonObject.get("micBytesData");
+                                    byte[] playerBytesData = (byte[]) jsonObject.get("playerBytesData");
+                                    byte[] cancellBytesData = (byte[]) jsonObject.get("cancellBytesData");
+                                    fos1.write(micBytesData);
+                                    fos1.flush();
+                                    fos2.write(playerBytesData);
+                                    fos2.flush();
+                                    fos3.write(cancellBytesData);
+                                    fos3.flush();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            Looper.loop();
+        }
     }
 
 }

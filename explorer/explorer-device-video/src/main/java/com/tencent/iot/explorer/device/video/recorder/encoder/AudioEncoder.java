@@ -1,39 +1,23 @@
 package com.tencent.iot.explorer.device.video.recorder.encoder;
 
-import android.annotation.SuppressLint;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.media.audiofx.AutomaticGainControl;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.iot.speexdsp.interfaces.SpeexJNIBridge;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
-import com.tencent.iot.explorer.device.video.recorder.listener.OnReadPlayerPlayPcmListener;
+import com.tencent.iot.explorer.device.video.recorder.listener.OnReadAECProcessedPcmListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingDeque;
-
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class AudioEncoder {
 
@@ -71,28 +55,15 @@ public class AudioEncoder {
     private long seq = 0L;
     private int bufferSizeInBytes;
 
-    private Handler writeHandler;
-    private String audioCacheFilePath = "";
-    private FileOutputStream fos1;
-    private FileOutputStream fos2;
-    private FileOutputStream fos3;
-    private final int MESSAGE_AUDIO_ENCODE_FROM_BYTE = 3000;
-
-    private volatile boolean denoise = false;
-
-    private IjkMediaPlayer player;
-    private LinkedBlockingDeque<Byte> playPcmData = new LinkedBlockingDeque<>();  // 内存队列，用于缓存获取到的播放器音频pcm
+    private OnReadAECProcessedPcmListener mAECProcessedPcmListener;
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam) {
         this(micParam, audioEncodeParam, false, false);
     }
 
-    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean denoise) {
+    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, OnReadAECProcessedPcmListener listener) {
         this(micParam, audioEncodeParam, false, false);
-        this.denoise = denoise;
-        if (denoise) {
-            SpeexJNIBridge.init(bufferSizeInBytes, micParam.getSampleRateInHz());
-        }
+        this.mAECProcessedPcmListener = listener;
     }
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean enableAEC, boolean enableAGC) {
@@ -110,14 +81,6 @@ public class AudioEncoder {
 
     public void setOnEncodeListener(OnEncodeListener listener) {
         this.encodeListener = listener;
-    }
-
-    public void setPlayer(IjkMediaPlayer player) {
-        this.player = player;
-    }
-
-    public void setAudioCacheFilePath(String audioCacheFilePath) {
-        this.audioCacheFilePath = audioCacheFilePath;
     }
 
     private void initAudio() {
@@ -139,14 +102,10 @@ public class AudioEncoder {
     }
 
     public void start() {
-        if (!TextUtils.isEmpty(audioCacheFilePath)) {
-            new WriteThread().start();
-        }
         new CodecThread().start();
     }
 
     public void stop() {
-        playPcmData.clear();
         stopEncode = true;
     }
 
@@ -212,9 +171,6 @@ public class AudioEncoder {
             control.release();
             control = null;
         }
-        if (denoise) {
-            SpeexJNIBridge.destory();
-        }
     }
 
     private void addADTStoPacket(ByteBuffer outputBuffer) {
@@ -250,72 +206,6 @@ public class AudioEncoder {
         packet[6] = (byte) 0xFC;
     }
 
-    class WriteThread extends Thread {
-        @SuppressLint("HandlerLeak")
-        @Override
-        public void run() {
-            super.run();
-            Looper.prepare();
-            File file1 = new File(audioCacheFilePath+"_file1.pcm");
-            File file2 = new File(audioCacheFilePath+"_file2.pcm");
-            File file3 = new File(audioCacheFilePath+"_file3.pcm");
-            Log.i(TAG, "audio cache pcm file path:" + audioCacheFilePath);
-            if (file1.exists()) {
-                file1.delete();
-            }
-            if (file2.exists()) {
-                file2.delete();
-            }
-            if (file3.exists()) {
-                file3.delete();
-            }
-            try {
-                file1.createNewFile();
-                file2.createNewFile();
-                file3.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos1 = new FileOutputStream(file1);
-                fos2 = new FileOutputStream(file2);
-                fos3 = new FileOutputStream(file3);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Log.e(TAG, "临时缓存文件未找到");
-            }
-            writeHandler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    if (msg.what == MESSAGE_AUDIO_ENCODE_FROM_BYTE) {
-                        JSONObject jsonObject = (JSONObject) msg.obj;
-                        if (AudioRecord.ERROR_INVALID_OPERATION != msg.arg1) {
-                            if (fos1 != null && fos2 != null && fos3 != null) {
-                                try {
-                                    byte[] micBytesData = (byte[]) jsonObject.get("micBytesData");
-                                    byte[] playerBytesData = (byte[]) jsonObject.get("playerBytesData");
-                                    byte[] cancellBytesData = (byte[]) jsonObject.get("cancellBytesData");
-                                    fos1.write(micBytesData);
-                                    fos1.flush();
-                                    fos2.write(playerBytesData);
-                                    fos2.flush();
-                                    fos3.write(cancellBytesData);
-                                    fos3.flush();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            Looper.loop();
-        }
-    }
-
     class CodecThread extends Thread {
         @Override
         public void run() {
@@ -344,29 +234,16 @@ public class AudioEncoder {
                         inputBuffer = audioCodec.getInputBuffers()[audioInputBufferId];
                     }
                     int readSize = -1;
-                    byte[] audioRecordData = new byte[bufferSizeInBytes];
+                    int size = mAECProcessedPcmListener != null ? 2560 : bufferSizeInBytes;
+                    byte[] audioRecordData = new byte[size];
                     if (inputBuffer != null) {
-                        readSize = audioRecord.read(audioRecordData, 0, bufferSizeInBytes);
+                        readSize = audioRecord.read(audioRecordData, 0, size);
                     }
                     if (readSize >= 0) {
                         inputBuffer.clear();
-                        if (denoise && player != null) {
-                            byte[] playerBytes = onReadPlayerPlayPcm(audioRecordData.length);
-                            byte[] cancell = SpeexJNIBridge.cancellation(audioRecordData, playerBytes);
+                        if (mAECProcessedPcmListener != null) {
+                            byte[] cancell = mAECProcessedPcmListener.onReadAECProcessedPcmListener(audioRecordData);
                             inputBuffer.put(cancell);
-                            if (writeHandler != null) {
-                                JSONObject jsonObject = new JSONObject();
-                                try {
-                                    jsonObject.put("micBytesData", audioRecordData);
-                                    jsonObject.put("playerBytesData", playerBytes);
-                                    jsonObject.put("cancellBytesData", cancell);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                Message message = writeHandler.obtainMessage(MESSAGE_AUDIO_ENCODE_FROM_BYTE, jsonObject);
-                                message.arg1 = readSize;
-                                writeHandler.sendMessage(message);
-                            }
                         } else {
                             inputBuffer.put(audioRecordData);
                             Log.i("audioRecordTest", "---without cancel");
@@ -393,49 +270,5 @@ public class AudioEncoder {
 
             Looper.loop();
         }
-    }
-
-    private byte[] onReadPlayerPlayPcm(int length) {
-        if (player != null && player.isPlaying()) {
-            byte[] data = new byte[204800];
-            int len = player._getPcmData(data);
-            if (playPcmData.size() > 8*length) {
-                if (len > 6*length) {
-                    len = 6*length;
-                } else if (len == 0) {
-
-                } else {
-                    int temp = playPcmData.size() - (6*length - len);
-                    for (int i = 0 ; i < temp ; i++) {
-                        playPcmData.remove();
-                    }
-                }
-            } else if (len > 8*length) {
-                len = 6*length;
-            }
-            if (len > 0) {
-                byte[] playerBytes = new byte[len];
-                System.arraycopy(data, 0, playerBytes, 0, len);
-                List<Byte> tmpList = new ArrayList<>();
-                for (byte b : playerBytes){
-                    tmpList.add(b);
-                }
-                playPcmData.addAll(tmpList);
-            }
-            if (playPcmData.size() > length) {
-                byte[] res = new byte[length];
-                try {
-                    for (int i = 0 ; i < length ; i++) {
-                        res[i] = playPcmData.take();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return res;
-            } else {
-                return new byte[length];
-            }
-        }
-        return new byte[length];
     }
 }
