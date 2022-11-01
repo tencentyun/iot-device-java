@@ -217,6 +217,12 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 //            return cancell;
             return micPcmBytes;
         }
+
+        @Override
+        public void audioCodecRelease() {
+//            GvoiceJNIBridge.destory();
+//            playPcmData.clear();
+        }
     };
 
     private byte[] onReadPlayerPlayPcm(int length) {
@@ -338,8 +344,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void stopRecord() {
         if (audioEncoder != null) {
             audioEncoder.stop();
-            playPcmData.clear();
-//            GvoiceJNIBridge.destory();
         }
         if (videoEncoder != null) {
             videoEncoder.stop();

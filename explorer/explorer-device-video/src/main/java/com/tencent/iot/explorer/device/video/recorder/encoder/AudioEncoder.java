@@ -171,6 +171,9 @@ public class AudioEncoder {
             control.release();
             control = null;
         }
+        if (mAECProcessedPcmListener != null) {
+            mAECProcessedPcmListener.audioCodecRelease();
+        }
     }
 
     private void addADTStoPacket(ByteBuffer outputBuffer) {
