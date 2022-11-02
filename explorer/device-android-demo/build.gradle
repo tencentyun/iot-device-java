@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 rootProject.ext.configPath = "./src/main/assets/app-config.json"
 
 apply from: "../../parse_json.gradle"
@@ -40,6 +43,10 @@ android {
         buildConfigField 'String', 'TME_DEVICE_NAME', "\"${getValueById('TME_DEVICE_NAME')}\""
         buildConfigField 'String', 'TME_DEVICE_PSK', "\"${getValueById('TME_DEVICE_PSK')}\""
         buildConfigField 'String', 'TME_BROKER_URL', "\"${getValueById('TME_BROKER_URL')}\""
+        buildConfigField 'String', 'CENTRAL_PRODUCT_ID', "\"${getValueById('CENTRAL_PRODUCT_ID')}\""
+        buildConfigField 'String', 'CENTRAL_DEVICE_NAME', "\"${getValueById('CENTRAL_DEVICE_NAME')}\""
+        buildConfigField 'String', 'CENTRAL_DEVICE_PSK', "\"${getValueById('CENTRAL_DEVICE_PSK')}\""
+        buildConfigField 'String', 'CENTRAL_BROKER_URL', "\"${getValueById('CENTRAL_BROKER_URL')}\""
         buildConfigField 'String', 'SDKDemoCommitID', "\"${rootProject.ext.sdk.sdkdemoVersion}\""
     }
     buildTypes {
@@ -94,10 +101,13 @@ dependencies {
     implementation project(':explorer:explorer-device-android')
     implementation project(':explorer:explorer-device-face')
     implementation project(':explorer:explorer-device-rtc')
+    implementation project(':explorer:explorer-device-central')
     api project(':explorer:explorer-device-video')
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     testImplementation 'junit:junit:4.13'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     //依赖一个utils类
     implementation 'com.blankj:utilcode:1.25.9'

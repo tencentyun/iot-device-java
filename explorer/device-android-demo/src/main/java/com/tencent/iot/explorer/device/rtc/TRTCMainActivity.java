@@ -321,6 +321,9 @@ public class TRTCMainActivity extends AppCompatActivity {
                 }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
+                if (TextUtils.isEmpty(userId)) {
+                    userId = toCallIdText.getText().toString().trim();
+                }
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_VIDEO_CALL, userId, agent, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));
@@ -340,6 +343,9 @@ public class TRTCMainActivity extends AppCompatActivity {
                 }
                 TRTCUIManager.getInstance().callMobile = true;
                 String userId = selectedUserIds();
+                if (TextUtils.isEmpty(userId)) {
+                    userId = toCallIdText.getText().toString().trim();
+                }
                 String agent = String.format("device/3.3.1 (Android %d;%s %s;%s-%s)", android.os.Build.VERSION.SDK_INT, android.os.Build.BRAND, android.os.Build.MODEL, Locale.getDefault().getLanguage(), Locale.getDefault().getCountry());
                 mDataTemplateSample.reportCallStatusProperty(TRTCCallStatus.TYPE_CALLING, TRTCCalling.TYPE_AUDIO_CALL, userId, agent, null);//后续要从_sys_call_userlist选取传递userid
                 TRTCUIManager.getInstance().setSessionManager(new TRTCExplorerDemoSessionManager(mDataTemplateSample));

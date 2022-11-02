@@ -167,13 +167,21 @@ public class TXMqttDynreg {
                 } else {
                     Loggor.error(TAG, "Get error rc "+ rc);
                     conn.disconnect();
-                    mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
+                    if (mCallback != null) {
+                        mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
+                    } else {
+                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                    }
                     return;
                 }
             } catch (IOException e) {
                 Loggor.error(TAG, e.toString());
                 e.printStackTrace();
-                mCallback.onFailedDynreg(e);
+                if (mCallback != null) {
+                    mCallback.onFailedDynreg(e);
+                } else {
+                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                }
                 return;
             }
 
@@ -188,7 +196,11 @@ public class TXMqttDynreg {
             } catch (JSONException e) {
                 Loggor.error(TAG, e.toString());
                 e.printStackTrace();
-                mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
+                if (mCallback != null) {
+                    mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
+                } else {
+                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                }
                 return ;
             }
 
@@ -204,7 +216,11 @@ public class TXMqttDynreg {
                 plBytes = cipher.doFinal(Base64.decode(plStr, Base64.DEFAULT));
             } catch (NoSuchAlgorithmException|NoSuchPaddingException|InvalidKeyException|IllegalBlockSizeException|BadPaddingException|InvalidAlgorithmParameterException e) {
                 e.printStackTrace();
-                mCallback.onFailedDynreg(e);
+                if (mCallback != null) {
+                    mCallback.onFailedDynreg(e);
+                } else {
+                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                }
                 return;
             }
             String rspSb = new String(plBytes);
@@ -213,18 +229,35 @@ public class TXMqttDynreg {
                 JSONObject rspObj = new JSONObject(rspSb.toString());
                 int encryptionType = rspObj.getInt("encryptionType");
 
-                // Cert
                 if (encryptionType == 1) {
-                    mCallback.onGetDeviceCert(rspObj.getString("clientCert"), rspObj.getString("clientKey"));
+                    // Cert
+                    if (mCallback != null) {
+                        mCallback.onGetDeviceCert(rspObj.getString("clientCert"), rspObj.getString("clientKey"));
+                    } else {
+                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                    }
                 } else if (encryptionType == 2) {
-                    // PSK
-                    mCallback.onGetDevicePSK(rspObj.getString("psk"));
+                    if (mCallback != null) {
+                        // PSK
+                        mCallback.onGetDevicePSK(rspObj.getString("psk"));
+                    } else {
+                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                    }
+
                 } else {
-                    mCallback.onFailedDynreg(new Throwable("Get wrong encryption type:" + encryptionType));
+                    if (mCallback != null) {
+                        mCallback.onFailedDynreg(new Throwable("Get wrong encryption type:" + encryptionType));
+                    } else {
+                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                mCallback.onFailedDynreg(e);
+                if (mCallback != null) {
+                    mCallback.onFailedDynreg(e);
+                } else {
+                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
+                }
             }
         }
     }
@@ -288,7 +321,7 @@ public class TXMqttDynreg {
         }
 
         Loggor.info(TAG, "Register request " + obj + "; signSourceStr:" + signSourceStr);
-        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl,
+        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDynRegUrl,
                 String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
         httpThread.start();
 

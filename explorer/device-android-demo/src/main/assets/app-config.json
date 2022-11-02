@@ -11,5 +11,9 @@
   "TME_PRODUCT_ID":    "",
   "TME_DEVICE_NAME":   "",
   "TME_DEVICE_PSK":    "",
-  "TME_BROKER_URL":    ""
+  "TME_BROKER_URL":    "",
+  "CENTRAL_PRODUCT_ID":    "",
+  "CENTRAL_DEVICE_NAME":   "",
+  "CENTRAL_DEVICE_PSK":    "",
+  "CENTRAL_BROKER_URL":    ""
 }

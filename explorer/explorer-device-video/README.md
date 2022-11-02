@@ -64,7 +64,7 @@
 
 ### explorer-device-android SDK 设计说明
 
-explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/SDK%20API及参数说明.md)
+explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device-android/docs/zh/SDK%20API及参数说明.md)
 
 ### explorer-device-video SDK 设计说明
 
@@ -82,25 +82,27 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 |:-|:-|
 | int | 错误码 |
 
-2、发送音频数据 VideoNativeInteface#sendAudioData(byte[] dataBytes, long pts, long seq)
+2、发送音频数据 VideoNativeInteface#sendAudioData(byte[] dataBytes, long pts, long seq, int visitor)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | dataBytes | byte[] | 音频数据 |
 | pts| long | pts |
 | seq | long | 音频数据包的序号 |
+| visitor | int | 第几路观看者 |
 
 | 返回值 | 描述 |
 |:-|:-|
 | int | 错误码 |
 
-3、发送视频数据 VideoNativeInteface#sendFrameData(byte[] dataBytes, long pts, long seq)
+3、发送视频数据 VideoNativeInteface#sendFrameData(byte[] dataBytes, long pts, long seq, int visitor)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | dataBytes | byte[] | 视频数据 |
 | pts| long | pts |
 | seq | long | 视频数据包的序号 |
+| visitor | int | 第几路观看者 |
 
 | 返回值 | 描述 |
 |:-|:-|
@@ -120,6 +122,17 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 
 6、设置回调 VideoNativeInteface#setCallback(XP2PCallback callback)
 
+7、发送信令 VideoNativeInteface#sendMsgToPeer(int visitor, String msg, int timeoutMills)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| visitor | int | 第几路观看者 |
+| msg | String | 信令消息 |
+| timeoutMills | int | 超时时间（毫秒） |
+
+| 返回值 | 描述 |
+|:-|:-|
+| int | 错误码 0为成功 |
 
 ### explorer-device-video SDK 回调callback 设计说明
 

@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 
 android {
@@ -23,6 +25,9 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -145,6 +150,9 @@ dependencies {
     if (findProject(':hub:hub-device-android') != null) {
         api project(path: ':hub:hub-device-android')
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.alibaba:fastjson:1.2.73'
 }
 
 signing {

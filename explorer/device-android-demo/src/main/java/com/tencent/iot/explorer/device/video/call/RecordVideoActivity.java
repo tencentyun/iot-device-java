@@ -48,13 +48,15 @@ import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
 import com.tencent.iot.explorer.device.video.recorder.param.VideoEncodeParam;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoFormat;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
-import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -62,13 +64,14 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class RecordVideoActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback {
 
+    private static Timer bitRateTimer;
     private String TAG = RecordVideoActivity.class.getSimpleName();
     private SurfaceView surfaceView;
     private SurfaceHolder holder;
     private Camera camera;
     private Button btnSwitch;
     private String path; // 保存源文件的路径
-    private IjkMediaPlayer player;
+    private IjkMediaPlayer player = null;
     private Surface surface;
     private TextureView playView;
     private TextView tvVideoWH;
@@ -147,12 +150,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 lastClickTime = System.currentTimeMillis();
             }
         });
-        ReadByteIO.Companion.getInstance().reset();
+
         ReadByteIO.Companion.getInstance().setPlayType(phoneInfo.getCallType());
-        initAudioEncoder();
-        initVideoEncoder();
-        VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
-        VideoNativeInteface.getInstance().initVideoFormat(format);
     }
 
     private void initAudioEncoder() {
@@ -173,6 +172,55 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoEncoder.setEncoderListener(this);
     }
 
+    public class AdapterBitRateTask extends TimerTask {
+        @Override
+        public void run() {
+            System.out.println("检测时间到:" +new Date());
+
+
+            int bufsize = VideoNativeInteface.getInstance().getSendStreamBuf(0);
+//        return String.format(Locale.US, "buf=>%d<=", bufsize);
+
+//            videoEncoder.setVideoBitRate(10000);
+//            RecordVideoActivity.this.videoEncoder.setVideoBitRate(10000);
+
+            int p2p_wl_avg = VideoNativeInteface.getInstance().getAvgMaxMin(bufsize);
+
+            int now_video_rate = RecordVideoActivity.this.videoEncoder.getVideoBitRate();
+
+            Log.e(TAG,"send_bufsize==" + bufsize + ",now_video_rate==" + now_video_rate + ",avg_index==" + p2p_wl_avg);
+
+            // 降码率
+            // 当发现p2p的水线超过一定值时，降低视频码率，这是一个经验值，一般来说要大于 [视频码率/2]
+            // 实测设置为 80%视频码率 到 120%视频码率 比较理想
+            // 在10组数据中，获取到平均值，并将平均水位与当前码率比对。
+
+            int video_rate_byte = (now_video_rate / 8) * 3 / 4;
+            if (p2p_wl_avg > video_rate_byte) {
+
+                videoEncoder.setVideoBitRate(video_rate_byte);
+
+            }else if (p2p_wl_avg <  (now_video_rate / 8) / 3) {
+
+                // 升码率
+                // 测试发现升码率的速度慢一些效果更好
+                // p2p水线经验值一般小于[视频码率/2]，网络良好的情况会小于 [视频码率/3] 甚至更低
+                videoEncoder.setVideoBitRate(now_video_rate + 5);
+            }
+        }
+    }
+
+    private void startBitRateAdapter() {
+
+        VideoNativeInteface.getInstance().resetAvg();
+        bitRateTimer = new Timer();
+        bitRateTimer.schedule(new AdapterBitRateTask(),3000,1000);
+    }
+
+    private void stopBitRateAdapter() {
+        bitRateTimer.cancel();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startRecord() {
         if (phoneInfo != null) {
@@ -180,6 +228,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 startEncodeVideo = true;
             }
             audioEncoder.start();
+
+            startBitRateAdapter();
         }
     }
 
@@ -191,6 +241,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             videoEncoder.stop();
         }
         startEncodeVideo = false;
+
+        stopBitRateAdapter();
     }
 
     @Override
@@ -231,14 +283,23 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 //        }
 //    };
 
+    private void releasePlayer() {
+        if (player != null) {
+            mHandler.removeMessages(MSG_UPDATE_HUD);
+            if (player.isPlaying()) {
+                player.stop();
+            }
+            player.release();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregistVideoOverBrodcast();
-        if (player != null) {
-            mHandler.removeMessages(MSG_UPDATE_HUD);
-            player.stop();
-        }
+        releasePlayer();
+
+        ReadByteIO.Companion.getInstance().reset();
         ReadByteIO.Companion.getInstance().close();
         executor.shutdown();
         releaseCamera(camera);
@@ -248,7 +309,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         if (surface != null) {
             this.surface = new Surface(surface);
-            play();
+//            play();
         }
     }
 
@@ -267,12 +328,18 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player = new IjkMediaPlayer();
         player.reset();
         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
+        /*
+         * probesize & analyzeduration 可通过这两个参数进行首开延时优化
+         * 单位字节 & 单位微秒 表示探测多大数据和多长时间
+         * 如果推流端码率较小，可降低探测字节数，以及缩短探测时长
+         * https://github.com/tencentyun/iot-link-ios/blob/master/Source/SDK/LinkVideo/doc/IoTVideo%20常见问题指引.md
+         */
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 256);
         } else {
-//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 80000);
-            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 50 * 1024);
+//            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000000);
+            player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 25 * 1024);
         }
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0);
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1);
@@ -284,6 +351,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "ijkio,crypto,file,http,https,tcp,tls,udp");
 
         player.setFrameSpeed(1.5f);
+        player.setMaxPacketNum(2);
         player.setSurface(this.surface);
         player.setAndroidIOCallback(ReadByteIO.Companion.getInstance());
 
@@ -298,6 +366,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     }
 
     private void finishActivity() {
+        stopRecord();
+
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         if (phoneInfo != null) {
@@ -328,15 +398,23 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
                 }
             } else if (refreshTag == 1) {
                 Log.e(TAG, "*====== 开始推流");
+                initAudioEncoder();
+                initVideoEncoder();
+                VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
+                VideoNativeInteface.getInstance().initVideoFormat(format);
                 handler.post(() -> startRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "开始推流", Toast.LENGTH_LONG).show());
             } else if (refreshTag == 2) {
                 Log.e(TAG, "*====== 结束推流");
                 handler.post(() -> stopRecord());
                 runOnUiThread(() -> Toast.makeText(RecordVideoActivity.this, "停止推流", Toast.LENGTH_LONG).show());
-                if (!RecordVideoActivity.this.isDestroyed() && !RecordVideoActivity.this.isFinishing()) {
-                    new Thread(() -> finishActivity()).start();
-                }
+            } else if (refreshTag == 3) {
+                Log.e(TAG, "*====== 开始对讲");
+                releasePlayer();
+                play();
+            } else if (refreshTag == 4) { //结束对讲
+                Log.e(TAG, "*====== 结束对讲.");
+                releasePlayer();
             }
         }
     };

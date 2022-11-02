@@ -1,5 +1,9 @@
 package com.tencent.iot.explorer.device.video.recorder;
 
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
+import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,17 +22,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_CONTROL;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_GET_STATUS_REPLY;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.METHOD_PROPERTY_REPORT;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TOPIC_ACTION_DOWN_PREFIX;
-import static com.tencent.iot.explorer.device.java.data_template.TXDataTemplateConstants.TemplatePubTopic.PROPERTY_UP_STREAM_TOPIC;
 
 public class TXVideoDataTemplate extends TXCallDataTemplate {
     private String TAG = TXVideoDataTemplate.class.getSimpleName();
@@ -66,7 +62,7 @@ public class TXVideoDataTemplate extends TXCallDataTemplate {
             return Status.ERROR;
         }
 
-        Status status = sysPropertyReport(property, null);
+        Status status = sysPropertyReport(property, null, 1);
         if(Status.OK != status) {
             TXLog.e(TAG, "property report failed!");
         }

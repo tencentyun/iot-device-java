@@ -317,6 +317,16 @@ public class TXCallDataTemplate extends TXDataTemplate {
      * @return 结果
      */
     public Status sysPropertyReport(JSONObject property, JSONObject metadata) {
+        return sysPropertyReport(property, metadata, 0);
+    }
+
+    /**
+     * 系统属性上报， 不检查构造是否符合json文件中的定义
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
+     * @return 结果
+     */
+    public Status sysPropertyReport(JSONObject property, JSONObject metadata, int qos) {
         //不检查构造是否符合json文件中的定义
 
         //构造发布信息
@@ -337,7 +347,7 @@ public class TXCallDataTemplate extends TXDataTemplate {
         objectString = objectString.replace("\\/", "/");
 
         MqttMessage message = new MqttMessage();
-        message.setQos(0);
+        message.setQos(qos);
         message.setPayload(objectString.getBytes());
 
         return publishTemplateMessage(clientToken,PROPERTY_UP_STREAM_TOPIC, message);

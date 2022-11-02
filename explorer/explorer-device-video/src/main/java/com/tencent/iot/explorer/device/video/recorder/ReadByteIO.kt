@@ -2,7 +2,6 @@ package com.tencent.iot.explorer.device.video.recorder
 
 import android.util.Log
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType
-import com.tencent.iot.explorer.device.video.recorder.utils.ByteUtils
 import kotlinx.coroutines.*
 import tv.danmaku.ijk.media.player.misc.IAndroidIO
 import java.util.concurrent.LinkedBlockingQueue
@@ -34,10 +33,15 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
     var chaseFrameRate = 1000L // 默认的追帧扫描频率
     var chaseFrameThreshold = 6000L // 默认的触发追帧的阈值
     var playType = CallingType.TYPE_VIDEO_CALL
+    @Volatile
+    private var isOpened = false
 
     // 从队列头部取数据
-    private fun takeFirstWithLen(): ByteArray {
+    private fun takeFirstWithLen(readMaxLength: Int): ByteArray {
         var size = flvData.size
+        if (size > readMaxLength) {
+            size = readMaxLength
+        }
         var byteList = ByteArray(size)
         for (i in 0 until size) {
             byteList[i] = flvData.take()
@@ -47,6 +51,9 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     // 队列尾部增加新的数据
     fun addLast(bytes: ByteArray): Boolean {
+        if (!isOpened) {
+            Log.d(TAG, "===========addLast before open AndroidIO flvData.size:" + flvData.size)
+        }
         var tmpList:List<Byte> = bytes.toList()
         var test = flvData.addAll(tmpList)
 //        Log.e(TAG, "==== addLast return " + bytes.size)
@@ -75,6 +82,7 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun open(url: String?): Int {
         if (url == URL_SUFFIX) {
+            isOpened = true
             Log.d(TAG, "===========recv stream opened")
             return 1
         }
@@ -84,14 +92,14 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun read(buffer: ByteArray?, size: Int): Int {
 
-        var tmpBytes = takeFirstWithLen() // 阻塞式读取
+        var tmpBytes = takeFirstWithLen(size) // 阻塞式读取
         var readLen = tmpBytes.size
 //        Log.e(TAG, "*=============new read " + size + " buffer.len " + readLen)
         if (readLen == 0) {
             return 0;
         }
         System.arraycopy(tmpBytes, 0, buffer, 0, readLen)
-        startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
+//        startChaseFrameThread() // 只有在取到第一段数据以后，才会开启追帧功能，避免漏掉 flv 的文件头
         return readLen
     }
 
@@ -101,10 +109,13 @@ class ReadByteIO : CoroutineScope by MainScope(), IAndroidIO {
 
     override fun close(): Int {
         cancel()
+        isOpened = false
+        Log.d(TAG, "===========ReadByteIO close")
         return 0
     }
 
     fun reset() {
+        Log.d(TAG, "===========reset before flvData.size:" + flvData.size)
         flvData.clear()
 //        instance = null
     }

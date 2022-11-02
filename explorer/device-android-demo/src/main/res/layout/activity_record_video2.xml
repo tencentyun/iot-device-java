@@ -30,6 +30,17 @@
         android:text="停止"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/btnSendCommand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="20dp"
+        android:text="发送信令"
+        android:textAllCaps="false" />
+
 
     <SurfaceView
         android:id="@+id/cameraView"

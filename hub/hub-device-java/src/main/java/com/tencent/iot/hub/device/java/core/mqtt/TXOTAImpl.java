@@ -176,7 +176,9 @@ public class TXOTAImpl {
 		if (!topic.startsWith("$ota/")) {
 			return false;
 		}
-
+		if (mCallback == null) {
+			Loggor.debug(TAG, "mCallback=" + mCallback);
+		}
 		try {
 			byte[] payload = message.getPayload();
 			JSONObject jsonObject = new JSONObject(new String(payload));
@@ -189,7 +191,7 @@ public class TXOTAImpl {
 
 				Loggor.debug(TAG, "mStoragePath=" + mStoragePath);
 
-				if (!mCallback.onLastestFirmwareReady(firmwareURL, md5Sum, version)) {
+				if (mCallback != null && !mCallback.onLastestFirmwareReady(firmwareURL, md5Sum, version)) {
 					downloadFirmware(firmwareURL, mStoragePath + "/" + md5Sum, md5Sum, version);
 				}
 			} else if (type.equalsIgnoreCase("report_version_rsp")) {
@@ -201,7 +203,6 @@ public class TXOTAImpl {
 					mCallback.onReportFirmwareVersion(Integer.valueOf(resultCode), version, resultMsg);
 				}
 			}
-
 		} catch (JSONException e) {
 
 		}

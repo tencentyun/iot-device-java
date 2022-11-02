@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.Camera;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.common.stateflow.entity.RoomKey;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.entity.UserEntity;
+import com.tencent.iot.explorer.device.rtc.utils.NetWorkStateReceiver;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
 import com.tencent.iot.explorer.device.video.call.adapter.FrameRateListAdapter;
 import com.tencent.iot.explorer.device.video.call.adapter.ResolutionListAdapter;
@@ -101,11 +103,21 @@ public class MainActivity extends AppCompatActivity {
     private int callUserType = CallingType.TYPE_AUDIO_CALL;
     private ResolutionEntity selectedResolutionEntity;
     private FrameRateEntity selectedFrameRateEntity;
+    private TimerTask enterRoomTask = null;
+
+    private NetWorkStateReceiver netWorkStateReceiver = null;
+
+    private String currentHostIp = "";
+    private String currentXp2pInfo = "";
+    private volatile boolean mIsOnCall = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        netWorkStateReceiver = new NetWorkStateReceiver();
+        currentHostIp = getCurrentIp();
 
         qrImg = findViewById(R.id.iv_qrcode);
         brokerUrlEt = findViewById(R.id.et_broker_url);
@@ -149,6 +161,13 @@ public class MainActivity extends AppCompatActivity {
             if (videoDataTemplateSample == null) {
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_ON_THE_PHONE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -162,6 +181,13 @@ public class MainActivity extends AppCompatActivity {
             if (videoDataTemplateSample == null) {
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             int value = Integer.valueOf(callType.getText().toString());
             videoDataTemplateSample.reportCallStatusProperty(CallState.TYPE_IDLE_OR_REFUSE, value, callerUserId.getText().toString(), defaultAgent);
             try {
@@ -193,6 +219,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             callUser(CallingType.TYPE_VIDEO_CALL);
         });
 
@@ -201,6 +234,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "请输入用户ID", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            if (!netWorkStateReceiver.isConnected(getApplicationContext())) {
+                Toast toast = Toast.makeText(getApplicationContext(), "网络异常请重试", Toast.LENGTH_LONG);
+                toast.show();
+                return;
+            }
+
             callUser(CallingType.TYPE_AUDIO_CALL);
         });
 
@@ -258,6 +298,53 @@ public class MainActivity extends AppCompatActivity {
         camera = null;
     }
 
+    private String getCurrentIp() {
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+        int hostIp = wifiManager.getDhcpInfo().gateway;
+        return intToIp(hostIp);
+    }
+
+    /**
+     * xxxxxxxx 转成 xxx.xxx.xxx.xxx
+     * int转化为ip地址
+     */
+    public String intToIp(int ip)
+    {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(String.valueOf(ip>>>24)).append(".");
+        sb.append(String.valueOf((ip&0xFFFFFF) >>>16)).append(".");
+        sb.append(String.valueOf((ip&0xFFFF) >>>8 )).append(".");
+        sb.append(String.valueOf(ip&0xFF)).append(".");
+        return sb.toString();
+    }
+
+    private void checkoutIsEnterRoom60seconds(String message) {
+        if (enterRoomTask == null) {
+            enterRoomTask = new TimerTask(){
+                public void run(){
+                    //呼叫了60秒，对方未接听 显示对方无人接听，并退出，进入了就取消timertask
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "*========stop send video data over 60");
+                            Utils.sendVideoOverBroadcast(MainActivity.this);
+                        }
+                    });
+                }
+            };
+            Timer timer = new Timer();
+            timer.schedule(enterRoomTask, 60000);
+        }
+    }
+
+    private void removeIsEnterRoom60secondsTask() {
+        if (enterRoomTask != null) {
+            enterRoomTask.cancel();
+            enterRoomTask = null;
+        }
+    }
+
     private XP2PCallback xP2PCallback = new XP2PCallback() {
 
         @Override
@@ -268,15 +355,44 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void avDataMsgHandle(int type, String msg) {
             Log.e(TAG, "*========avDataMsgHandle type " + type);
-            if (type == 0) {
+            if (type == 0) { //开始预览
                 Log.e(TAG, "*========start send video data");
                 Utils.sendVideoBroadcast(MainActivity.this, 1);
-            } else if (type == 1) {
-                Log.e(TAG, "*========stop send video data");
+                removeIsEnterRoom60secondsTask();
+            } else if (type == 1) { //结束预览
+                checkoutIsEnterRoom60seconds("通话结束...");
+                updateLog("p2p通道断开");
                 Utils.sendVideoBroadcast(MainActivity.this, 2);
+            }else if (type == 2) { //开始对讲
+                ReadByteIO.Companion.getInstance().reset();
+                Utils.sendVideoBroadcast(MainActivity.this, 3);
+            } else if (type == 3) { //结束对讲
+                Utils.sendVideoBroadcast(MainActivity.this, 4);
+                ReadByteIO.Companion.getInstance().reset();
+            } else if (type == 4) { //command 自定义信令接收
+                Log.e(TAG, "*========command=="+msg);
+            } else if (type == 100) { //p2p ready
+                checkIfNeedReportXp2PInfo();
+            } else if (type > 100 && type < 104) {
+                VideoNativeInteface.getInstance().release();
+                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
             }
         }
     };
+
+    private void checkIfNeedReportXp2PInfo() {
+        String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
+        updateLog("xp2pInfo: "+xp2pInfo);
+        if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
+            if (!currentXp2pInfo.equals(xp2pInfo)) {
+                currentXp2pInfo = xp2pInfo;
+                Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
+                if (status == Status.OK) {
+                    updateLog("device ready with report xp2pInfo: "+xp2pInfo+ "status " + status);
+                }
+            }
+        }
+    }
 
     private TXDataTemplateDownStreamCallBack downStreamCallBack = new TXDataTemplateDownStreamCallBack() {
 
@@ -379,27 +495,6 @@ public class MainActivity extends AppCompatActivity {
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
-        new Thread(() -> {
-            int sleepTime = 0;
-            while (true) {
-                try {
-                    Thread.sleep((long) Math.pow(2, sleepTime) * 1000);
-                    if (sleepTime < 5) {
-                        sleepTime++;
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                String xp2pInfo = VideoNativeInteface.getInstance().getXp2pInfo();
-                if (!TextUtils.isEmpty(xp2pInfo) && videoDataTemplateSample != null) {
-                    Status status = videoDataTemplateSample.reportXp2pInfo(xp2pInfo);
-                    if (sleepTime == 1 && status == Status.OK) {
-                        updateLog("device ready.");
-                    }
-                    Log.e(TAG, "reportCallStatusProperty status " + status + " " + xp2pInfo);
-                }
-            }
-        }).start();
     }
 
     private TXVideoCallBack videoCallBack = new TXVideoCallBack() {
@@ -476,6 +571,7 @@ public class MainActivity extends AppCompatActivity {
             bundle.putString(FrameRateEntity.TAG, JSON.toJSONString(selectedFrameRateEntity));
         intent.putExtra(PhoneInfo.TAG, bundle);
         startActivityForResult(intent, 2);
+        mIsOnCall = true;
     }
 
     private void showNewCall(String userId, int callTypeInt) {
@@ -505,13 +601,19 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectCompleted(Status status, boolean reconnect, Object userContext, String msg, Throwable cause) {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
-                VideoNativeInteface.getInstance().release();
-                handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
-                updateLog("已自动重连 在线");
+                String hostIp = getCurrentIp();
+                if (!hostIp.equals(currentHostIp) || !mIsOnCall) {
+                    Log.e(TAG, "hostIp: " + hostIp + ", currentHostIp: " + currentHostIp);
+                    VideoNativeInteface.getInstance().release();
+                    handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
+                    currentHostIp = hostIp;
+                }
+                checkIfNeedReportXp2PInfo();
+                updateLog("已自动重连 在线状态"+status);
             } else {
                 Log.e(TAG, "TXMqttActionCallBack onConnectCompleted");
                 Log.e(TAG, "TXMqttActionCallBack " + Thread.currentThread().getId());
-                updateLog("在线");
+                updateLog("首次在线状态"+status);
                 if (videoDataTemplateSample == null) return;
                 handler.post(() -> qrImg.setImageBitmap(ZXingUtils.createQRCodeBitmap(videoDataTemplateSample.generateDeviceQRCodeContent(), 200, 200,"UTF-8","H", "1", Color.BLACK, Color.WHITE)));
                 videoDataTemplateSample.subscribeTopic();
@@ -583,6 +685,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mIsOnCall = false;
         if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) {
             Bundle bundle = data.getBundleExtra(PhoneInfo.TAG);
             if (bundle != null) {
