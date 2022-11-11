@@ -99,10 +99,11 @@ public class VideoEncoder {
             //将NV21编码成NV12
             byte[] bytes = NV21ToNV12(data, videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
             //视频顺时针旋转90度
-            byte[] nv12 = rotateNV290(bytes, videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
-
+            byte[] nv12;
             if (mirror) {
-                verticalMirror(nv12, videoEncodeParam.getHeight(), videoEncodeParam.getWidth());
+                nv12 = rotate270(bytes, videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
+            } else {
+                nv12 = rotateNV290(bytes, videoEncodeParam.getWidth(), videoEncodeParam.getHeight());
             }
 
             try {
@@ -217,6 +218,25 @@ public class VideoEncoder {
             }
         }
         return yuv;
+    }
+    private byte[] rotate270(byte[] data, int width, int height) {
+        int size = width * height;
+        byte[] temp = new byte[data.length];
+        int index = 0;
+        for (int i = width - 1; i >= 0; i--) {
+            for (int j = 0; j < height; j++) {
+                temp[index++] = data[j * width + i];
+            }
+        }
+
+        for (int i = width - 1; i >= 0; i -= 2) {
+            for (int j = 0; j < height / 2; j++) {
+                temp[index++] = data[size + j * width + i - 1];
+                temp[index++] = data[size + j * width + i];
+            }
+        }
+
+        return temp;
     }
 
     private void verticalMirror(byte[] src, int w, int h) { //src是原始yuv数组
