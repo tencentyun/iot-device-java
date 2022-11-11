@@ -82,6 +82,20 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 |:-|:-|
 | int | 错误码 |
 
+1.1、使用设备三元组初始化，并设置stun服务域名及端口 VideoNativeInteface#initWithDeviceHost(String productid, String devicename, String devicekey, String stunhost, int stunport)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| productid | String | 产品ID |
+| devicename| String | 设备名称 |
+| devicekey | String | 设备密钥 |
+| stunhost | String | stun服务域名 |
+| stunport | int | stun服务端口 |
+
+| 返回值 | 描述 |
+|:-|:-|
+| int | 错误码 |
+
 2、发送音频数据 VideoNativeInteface#sendAudioData(byte[] dataBytes, long pts, long seq, int visitor)
 
 | 参数 | 类型 | 描述 |
@@ -133,6 +147,16 @@ explorer-device-android 请参考 [SDK API及参数说明.md](../explorer-device
 | 返回值 | 描述 |
 |:-|:-|
 | int | 错误码 0为成功 |
+
+8、设备端结束当前发送的直播或者点播流 VideoNativeInteface#sendFinishStream(int visitor)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| visitor | int | 第几路观看者 |
+
+| 返回值 | 描述 |
+|:-|:-|
+| int | 缓存中实时数据量的大小,单位Byte |
 
 ### explorer-device-video SDK 回调callback 设计说明
 
