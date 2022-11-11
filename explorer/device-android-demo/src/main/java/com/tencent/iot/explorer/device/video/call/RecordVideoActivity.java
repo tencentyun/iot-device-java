@@ -73,6 +73,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class RecordVideoActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback {
@@ -177,7 +178,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+                .setAudioSource(MediaRecorder.AudioSource.MIC)
                 .setSampleRateInHz(16000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
@@ -417,7 +418,8 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         if (surface != null) {
             this.surface = new Surface(surface);
-//            play();
+            releasePlayer();
+            play();
         }
     }
 
@@ -433,6 +435,9 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
 
     private void play() {
+        if (this.surface == null) {
+            return;
+        }
         player = new IjkMediaPlayer();
         player.reset();
         mHandler.sendEmptyMessageDelayed(MSG_UPDATE_HUD, 500);
@@ -463,6 +468,13 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         player.setSurface(this.surface);
         player.setAndroidIOCallback(ReadByteIO.Companion.getInstance());
         player._setApmStatus(true);
+        player.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(IMediaPlayer mp, int what, int extra) {
+                Log.e(TAG, "*====== Error: " + what + "," + extra);
+                return false;
+            }
+        });
 
         Uri uri = Uri.parse("ijkio:androidio:" + ReadByteIO.Companion.getURL_SUFFIX());
         try {
