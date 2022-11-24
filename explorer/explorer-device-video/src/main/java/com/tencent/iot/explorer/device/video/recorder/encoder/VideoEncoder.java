@@ -71,7 +71,7 @@ public class VideoEncoder {
         int nowWidth   = videoEncodeParam.getWidth();
         int nowHeight  = videoEncodeParam.getHeight();
 
-        if ((bitRate > nowWidth * nowHeight) || (bitRate < 10000) || (nowBitrate == bitRate) || (bitRate > MAX_BITRATE_LENGTH)) {
+        if ((bitRate < 10000) || (nowBitrate == bitRate) || (bitRate > MAX_BITRATE_LENGTH)) {
             return;
         }
 
