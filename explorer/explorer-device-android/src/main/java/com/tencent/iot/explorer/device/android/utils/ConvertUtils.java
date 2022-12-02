@@ -23,6 +23,30 @@ public class ConvertUtils {
     }
 
     /**
+     * 将byte转为16进制
+     *
+     * @param bytes`
+     * @return
+     */
+    public static String byte2HexOnlyLatest8(byte[] bytes) {
+        StringBuffer stringBuffer = new StringBuffer();
+        String temp = null;
+        int count = bytes.length;
+        if (bytes.length > 8) {
+            count = 8;
+        }
+        for (int i = 0; i < count; i++) {
+            temp = Integer.toHexString(bytes[i] & 0xFF);
+            if (temp.length() == 1) {
+                // 1得到一位的进行补0操作
+                stringBuffer.append("0");
+            }
+            stringBuffer.append(temp);
+        }
+        return stringBuffer.toString();
+    }
+
+    /**
      * 16进制转10进制
      *
      * @param str

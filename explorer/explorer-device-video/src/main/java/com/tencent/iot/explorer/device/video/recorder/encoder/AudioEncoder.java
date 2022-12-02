@@ -1,5 +1,6 @@
 package com.tencent.iot.explorer.device.video.recorder.encoder;
 
+import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
@@ -18,6 +19,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2HexOnlyLatest8;
+import static com.tencent.iot.explorer.device.video.recorder.consts.LogConst.RTC_TAG;
 
 public class AudioEncoder {
 
@@ -53,6 +57,7 @@ public class AudioEncoder {
 
     private volatile boolean stopEncode = false;
     private long seq = 0L;
+    private long beforSeq = 0L;
     private int bufferSizeInBytes;
 
     private OnReadAECProcessedPcmListener mAECProcessedPcmListener;
@@ -89,6 +94,7 @@ public class AudioEncoder {
         audioRecord = new AudioRecord(micParam.getAudioSource(), micParam.getSampleRateInHz(), micParam.getChannelConfig(), micParam.getAudioFormat(), bufferSizeInBytes);
         try {
             audioCodec = MediaCodec.createEncoderByType(audioEncodeParam.getMime());
+            Log.i(RTC_TAG, "audioCodec MediaCodec createEncoderByType");
             MediaFormat format = MediaFormat.createAudioFormat(audioEncodeParam.getMime(), micParam.getSampleRateInHz(), 1);
             format.setInteger(MediaFormat.KEY_BIT_RATE, audioEncodeParam.getBitRate());
             format.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
@@ -186,6 +192,7 @@ public class AudioEncoder {
             return;
         }
         if (encodeListener != null) {
+            Log.i(RTC_TAG, "on audio encoded byte: "+byte2HexOnlyLatest8(dataBytes) + "; seq: " + seq);
             encodeListener.onAudioEncoded(dataBytes, System.currentTimeMillis(), seq);
             seq++;
         } else {
@@ -219,7 +226,11 @@ public class AudioEncoder {
             }
             stopEncode = false;
             audioRecord.startRecording();
+            Log.i(RTC_TAG, "audioRecord startRecording");
             audioCodec.start();
+            Log.i(RTC_TAG, String.format("audioCodec start with MediaFormat AudioSource: %d, SampleRateInHz: %d, IsChannelMono: %b, bitDepth: %d, encodeMime: %s, bitRate: %d, CodecProfileLevel: %d, KEY_MAX_INPUT_SIZE:%d",
+                    micParam.getAudioSource(), micParam.getSampleRateInHz(), micParam.getChannelConfig()==AudioFormat.CHANNEL_IN_MONO, micParam.getAudioFormat(),
+                    audioEncodeParam.getMime(), audioEncodeParam.getBitRate(), MediaCodecInfo.CodecProfileLevel.AACObjectLC, audioEncodeParam.getMaxInputSize()));
             MediaCodec.BufferInfo audioInfo = new MediaCodec.BufferInfo();
             while (true) {
                 if (stopEncode) {
@@ -245,10 +256,14 @@ public class AudioEncoder {
                     if (readSize >= 0) {
                         inputBuffer.clear();
                         if (mAECProcessedPcmListener != null) {
+                            Log.i(RTC_TAG, String.format("audioRecord read capture original frame data before other process:%s, seq:%d", byte2HexOnlyLatest8(audioRecordData), beforSeq));
                             byte[] cancell = mAECProcessedPcmListener.onReadAECProcessedPcmListener(audioRecordData);
+                            Log.i(RTC_TAG, String.format("audioRecord read capture original frame data after other process:%s, seq:%d", byte2HexOnlyLatest8(audioRecordData), beforSeq));
+                            beforSeq++;
                             inputBuffer.put(cancell);
                         } else {
                             inputBuffer.put(audioRecordData);
+                            Log.i(RTC_TAG, String.format("audioRecord read capture origina l frame data:%s", byte2HexOnlyLatest8(audioRecordData)));
                             Log.i("audioRecordTest", "---without cancel");
                         }
                         audioCodec.queueInputBuffer(audioInputBufferId, 0, readSize, System.nanoTime() / 1000, 0);
@@ -263,9 +278,12 @@ public class AudioEncoder {
                     } else {
                         outputBuffer = audioCodec.getOutputBuffers()[audioOutputBufferId];
                     }
-                    outputBuffer.position(audioInfo.offset);
-                    outputBuffer.limit(audioInfo.offset + audioInfo.size);
-                    addADTStoPacket(outputBuffer);
+                    if (audioInfo.size > 2) {
+                        outputBuffer.position(audioInfo.offset);
+                        outputBuffer.limit(audioInfo.offset + audioInfo.size);
+                        Log.i(RTC_TAG, String.format("audioCodec getOutputBuffer audioInfo.offset :%d + audioInfo.size :%d", audioInfo.offset, audioInfo.size));
+                        addADTStoPacket(outputBuffer);
+                    }
                     audioCodec.releaseOutputBuffer(audioOutputBufferId, false);
                     audioOutputBufferId = audioCodec.dequeueOutputBuffer(audioInfo, 0);
                 }

@@ -15,6 +15,9 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2HexOnlyLatest8;
+import static com.tencent.iot.explorer.device.video.recorder.consts.LogConst.RTC_TAG;
+
 
 public class VideoEncoder {
 
@@ -24,6 +27,7 @@ public class VideoEncoder {
     private MediaFormat mediaFormat;
     private OnEncodeListener encoderListener;
     private long seq = 0L;
+    private long beforeSeq = 0L;
     private int MAX_BITRATE_LENGTH = 1000000;
 
     public VideoEncoder(VideoEncodeParam param) {
@@ -34,6 +38,7 @@ public class VideoEncoder {
     private void initMediaCodec() {
         try {
             mediaCodec = MediaCodec.createEncoderByType("video/avc");
+            Log.i(RTC_TAG, "videoCodec MediaCodec createEncoderByType video/avc");
             //height和width一般都是照相机的height和width。
             //TODO 因为获取到的视频帧数据是逆时针旋转了90度的，所以这里宽高需要对调
             mediaFormat = MediaFormat.createVideoFormat("video/avc", videoEncodeParam.getHeight(), videoEncodeParam.getWidth());
@@ -59,6 +64,8 @@ public class VideoEncoder {
             mediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             //开始编码
             mediaCodec.start();
+            Log.i(RTC_TAG, String.format("videoCodec start with MediaFormat Width %d * Height %d, bitRate: %d, color-format: YUV420SemiPlanar, frameRate: %d, i-frame-interval: %d, bitrate-mode: VBR",
+                    videoEncodeParam.getWidth(), videoEncodeParam.getHeight(), bitRate, videoEncodeParam.getFrameRate(), videoEncodeParam.getiFrameInterval()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,8 +123,10 @@ public class VideoEncoder {
                 if (inputBufferIndex >= 0) {
                     ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
                     inputBuffer.clear();
+                    beforeSeq++;
                     //往输入缓冲区写入数据
                     inputBuffer.put(nv12);
+                    Log.i(RTC_TAG, "video origin frame send to codec nv12 data with byte" + byte2HexOnlyLatest8(nv12) + "， seq: " + beforeSeq);
                     //五个参数，第一个是输入缓冲区的索引，第二个数据是输入缓冲区起始索引，第三个是放入的数据大小，第四个是时间戳，保证递增就是
                     mediaCodec.queueInputBuffer(inputBufferIndex, 0, nv12.length, System.nanoTime() / 1000, 0);
                 }
@@ -148,6 +157,7 @@ public class VideoEncoder {
                         System.arraycopy(pps, 0, dataBytes, sps.length, pps.length);
                         System.arraycopy(outData, 0, dataBytes, pps.length + sps.length, outData.length);
                         if (encoderListener != null) {
+                            Log.i(RTC_TAG, "on video encoded i frame byte: "+byte2HexOnlyLatest8(dataBytes) + "; seq: " + seq);
                             encoderListener.onVideoEncoded(dataBytes, System.currentTimeMillis(), seq);
                             seq++;
                         }
@@ -155,6 +165,7 @@ public class VideoEncoder {
                         //outData就是输出的h264数据
 //                        Log.e("TAG", "==========P帧===============" + seq);
                         if (encoderListener != null) {
+                            Log.i(RTC_TAG, "on video encoded p frame byte: "+byte2HexOnlyLatest8(outData) + "; seq: " + seq);
                             encoderListener.onVideoEncoded(outData, System.currentTimeMillis(), seq);
                             seq++;
                         }

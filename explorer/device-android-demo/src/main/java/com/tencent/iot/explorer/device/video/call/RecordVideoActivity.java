@@ -76,6 +76,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
+import static com.tencent.iot.explorer.device.android.utils.ConvertUtils.byte2HexOnlyLatest8;
+import static com.tencent.iot.explorer.device.video.recorder.consts.LogConst.RTC_TAG;
+
 public class RecordVideoActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback {
 
     private static Timer bitRateTimer;
@@ -555,13 +558,19 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     @Override
     public void onAudioEncoded(byte[] datas, long pts, long seq) {
         if (executor.isShutdown()) return;
-        executor.submit(() -> VideoNativeInteface.getInstance().sendAudioData(datas, pts, seq, 0));
+        executor.submit(() -> {
+            Log.i(RTC_TAG, "VideoNativeInteface.getInstance sendAudioData: "+byte2HexOnlyLatest8(datas) + "; seq: " + seq);
+            VideoNativeInteface.getInstance().sendAudioData(datas, pts, seq, 0);
+        });
     }
 
     @Override
     public void onVideoEncoded(byte[] datas, long pts, long seq) {
         if (executor.isShutdown()) return;
-        executor.submit(() -> VideoNativeInteface.getInstance().sendVideoData(datas, pts, seq, 0));
+        executor.submit(() -> {
+            Log.i(RTC_TAG, "VideoNativeInteface.getInstance onVideoEncoded: "+byte2HexOnlyLatest8(datas) + "; seq: " + seq);
+            VideoNativeInteface.getInstance().sendVideoData(datas, pts, seq, 0);
+        });
     }
 
     private void createFile() {
@@ -596,6 +605,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
     private void openCamera() {
         releaseCamera(camera);
         camera = Camera.open(facing);
+        Log.i(RTC_TAG, String.format("camera open isFront: %b",facing == CameraConstants.facing.FRONT));
         //获取相机参数
         Camera.Parameters parameters = camera.getParameters();
 
@@ -638,6 +648,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         camera.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] data, Camera camera) {
+                Log.i(RTC_TAG, "camera onPreviewFrame capture original frame data: " + byte2HexOnlyLatest8(data));
                 if (startEncodeVideo && videoEncoder != null) {
                     videoEncoder.encoderH264(data, facing == CameraConstants.facing.FRONT);
                 }
@@ -645,6 +656,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         });
         //调用startPreview()用以更新preview的surface
         camera.startPreview();
+        Log.i(RTC_TAG, "camera startPreview with parameters: " + camera.getParameters());
     }
 
     // 默认摄像头方向
