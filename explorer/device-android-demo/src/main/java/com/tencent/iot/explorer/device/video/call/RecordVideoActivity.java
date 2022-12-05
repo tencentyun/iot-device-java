@@ -278,6 +278,7 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
         videoEncoder.setEncoderListener(this);
     }
 
+
     public class AdapterBitRateTask extends TimerTask {
         @Override
         public void run() {
@@ -289,7 +290,6 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
 
 //            videoEncoder.setVideoBitRate(10000);
 //            RecordVideoActivity.this.videoEncoder.setVideoBitRate(10000);
-
             int p2p_wl_avg = VideoNativeInteface.getInstance().getAvgMaxMin(bufsize);
 
             int now_video_rate = RecordVideoActivity.this.videoEncoder.getVideoBitRate();
@@ -304,14 +304,14 @@ public class RecordVideoActivity extends AppCompatActivity implements TextureVie
             int video_rate_byte = (now_video_rate / 8) * 3 / 4;
             if (p2p_wl_avg > video_rate_byte) {
 
-                videoEncoder.setVideoBitRate(video_rate_byte);
+                videoEncoder.setVideoBitRate(video_rate_byte*8);
 
             }else if (p2p_wl_avg <  (now_video_rate / 8) / 3) {
 
                 // 升码率
                 // 测试发现升码率的速度慢一些效果更好
                 // p2p水线经验值一般小于[视频码率/2]，网络良好的情况会小于 [视频码率/3] 甚至更低
-                videoEncoder.setVideoBitRate(now_video_rate + 5);
+                videoEncoder.setVideoBitRate(now_video_rate + (now_video_rate-p2p_wl_avg*8)/5);
             }
         }
     }
