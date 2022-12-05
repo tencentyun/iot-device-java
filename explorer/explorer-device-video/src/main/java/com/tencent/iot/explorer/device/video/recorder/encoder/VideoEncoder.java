@@ -29,6 +29,7 @@ public class VideoEncoder {
     private long seq = 0L;
     private long beforeSeq = 0L;
     private int MAX_BITRATE_LENGTH = 1000000;
+    private int beginBitRate = 0;
 
     public VideoEncoder(VideoEncodeParam param) {
         this.videoEncodeParam = param;
@@ -47,6 +48,7 @@ public class VideoEncoder {
             if (bitRate > MAX_BITRATE_LENGTH) {
                 bitRate = MAX_BITRATE_LENGTH;
             }
+            beginBitRate = bitRate;
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitRate);
             //描述视频格式的帧速率（以帧/秒为单位）的键。帧率，一般在15至30之内，太小容易造成视频卡顿。
             mediaFormat.setInteger(MediaFormat.KEY_FRAME_RATE, videoEncodeParam.getFrameRate());
@@ -75,11 +77,6 @@ public class VideoEncoder {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void setVideoBitRate(int bitRate) {
         int nowBitrate = videoEncodeParam.getBitRate();
-        int beginBitRate = videoEncodeParam.getBitRate();
-        if (beginBitRate > MAX_BITRATE_LENGTH) {
-            beginBitRate = MAX_BITRATE_LENGTH;
-        }
-
         if ((bitRate > beginBitRate) || (bitRate < 10000) || (nowBitrate == bitRate) || (bitRate > MAX_BITRATE_LENGTH)) {
             return;
         }
