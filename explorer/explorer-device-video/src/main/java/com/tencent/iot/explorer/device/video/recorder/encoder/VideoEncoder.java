@@ -75,10 +75,12 @@ public class VideoEncoder {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void setVideoBitRate(int bitRate) {
         int nowBitrate = videoEncodeParam.getBitRate();
-        int nowWidth   = videoEncodeParam.getWidth();
-        int nowHeight  = videoEncodeParam.getHeight();
+        int beginBitRate = videoEncodeParam.getBitRate();
+        if (beginBitRate > MAX_BITRATE_LENGTH) {
+            beginBitRate = MAX_BITRATE_LENGTH;
+        }
 
-        if ((bitRate < 10000) || (nowBitrate == bitRate) || (bitRate > MAX_BITRATE_LENGTH)) {
+        if ((bitRate > beginBitRate) || (bitRate < 10000) || (nowBitrate == bitRate) || (bitRate > MAX_BITRATE_LENGTH)) {
             return;
         }
 
