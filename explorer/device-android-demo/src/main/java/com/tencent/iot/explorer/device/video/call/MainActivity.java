@@ -602,12 +602,12 @@ public class MainActivity extends AppCompatActivity {
             if (reconnect) {
                 videoDataTemplateSample.subscribeTopic();
                 String hostIp = getCurrentIp();
-                if (!hostIp.equals(currentHostIp) || !mIsOnCall) {
+//                if (!hostIp.equals(currentHostIp) || !mIsOnCall) {
                     Log.e(TAG, "hostIp: " + hostIp + ", currentHostIp: " + currentHostIp);
                     VideoNativeInteface.getInstance().release();
                     handler.post(() -> initVideoModeul(getDeviceConnectCondition()));
-                    currentHostIp = hostIp;
-                }
+//                    currentHostIp = hostIp;
+//                }
                 checkIfNeedReportXp2PInfo();
                 updateLog("已自动重连 在线状态"+status);
             } else {

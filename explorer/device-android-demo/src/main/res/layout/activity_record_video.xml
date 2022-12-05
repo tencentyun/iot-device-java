@@ -21,11 +21,11 @@
 
     <include
         android:id="@+id/ll_dash_board"
-        android:layout_height="wrap_content"
+        layout="@layout/dash_board_layout"
         android:layout_width="200dp"
-        android:layout_alignParentRight="true"
+        android:layout_height="wrap_content"
         android:layout_below="@id/btnSwitch"
-        layout="@layout/dash_board_layout" />
+        android:layout_alignParentRight="true" />
 
     <Button
         android:id="@+id/btnRecord"

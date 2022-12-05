@@ -26,4 +26,11 @@
             android:layout_height="80dp"
             android:text="IoT Video Push Real Time Stream" />
 
+        <Button
+            android:layout_marginTop="50dp"
+            android:id="@+id/iot_video_device_and_device_communication"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text="IoT Video Device &amp; Device Communication" />
+
 </LinearLayout>

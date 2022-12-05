@@ -35,11 +35,14 @@ import com.tencent.iot.explorer.device.central.adapter.DevicePropertiesAdapter;
 import com.tencent.iot.explorer.device.central.callback.OnGetDeviceListListener;
 import com.tencent.iot.explorer.device.central.consts.Common;
 import com.tencent.iot.explorer.device.central.data_template.CentralDataTemplateSample;
-import com.tencent.iot.explorer.device.central.entity.Device;
 import com.tencent.iot.explorer.device.central.entity.DeviceDataEntity;
 import com.tencent.iot.explorer.device.central.entity.DeviceDataResponse;
+import com.tencent.iot.explorer.device.central.entity.DeviceEntity;
+import com.tencent.iot.explorer.device.central.entity.DeviceListResponse;
 import com.tencent.iot.explorer.device.central.entity.DeviceOnlineEntity;
 import com.tencent.iot.explorer.device.central.entity.DeviceOnlineResponse;
+import com.tencent.iot.explorer.device.central.entity.FamilyEntity;
+import com.tencent.iot.explorer.device.central.entity.FamilyListResponse;
 import com.tencent.iot.explorer.device.central.message.payload.Payload;
 import com.tencent.iot.explorer.device.central.utils.MessageParseUtils;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
@@ -93,7 +96,7 @@ public class CentralMainActivity extends AppCompatActivity {
     private String mAccessToken = "";
     private String mCurrentDeviceId = "";
 
-    private final ArrayList<Device> mDeviceList = new ArrayList<>();
+    private final ArrayList<DeviceEntity> mDeviceList = new ArrayList<>();
     private DeviceListAdapter mDeviceListAdapter;
 
     private CentralDataTemplateSample mDataTemplateSample;
@@ -104,14 +107,17 @@ public class CentralMainActivity extends AppCompatActivity {
     private RecyclerView mDeviceDetailListView;
     private DevicePropertiesAdapter mDevicePropertiesAdapter;
 
+    private FamilyListResponse familyListResponse;
+
     private final OnGetDeviceListListener onGetDeviceListListener = new OnGetDeviceListListener() {
         @Override
         public void onGetDeviceList(List<String> devices) {
-            mDeviceList.clear();
-            for (int i = 0; i < devices.size(); i++) {
-                mDeviceList.add(new Device(devices.get(i), 0));
-            }
-            HttpRequest.Companion.getInstance().deviceOnlineStatus((ArrayList<String>) devices, mCallback);
+//            mDeviceList.clear();
+//            for (int i = 0; i < devices.size(); i++) {
+//                mDeviceList.add(new Device(devices.get(i), 0));
+//            }
+            HttpRequest.Companion.getInstance().familyList(0, mCallback);
+//            HttpRequest.Companion.getInstance().deviceOnlineStatus((ArrayList<String>) devices, mCallback);
         }
     };
 
@@ -140,26 +146,42 @@ public class CentralMainActivity extends AppCompatActivity {
                         });
                     }
                     break;
-                case RequestCode.device_online_status:
-                    DeviceOnlineResponse resp = response.parse(DeviceOnlineResponse.class);
-                    if (resp != null) {
-                        List<DeviceOnlineEntity> deviceStatuses = resp.getDeviceStatuses();
-                        if (deviceStatuses != null) {
-                            for (int i = 0; i < mDeviceList.size(); i++) {
-                                for (int j = 0; j < deviceStatuses.size(); j++) {
-                                    if (mDeviceList.get(i).id.equals(deviceStatuses.get(j).getDeviceId())) {
-                                        mDeviceList.get(i).status = deviceStatuses.get(j).getOnline();
-                                    }
-                                }
-                            }
+                case RequestCode.family_list:
+                    familyListResponse = response.parse(FamilyListResponse.class);
+                    if (familyListResponse != null) {
+                        ArrayList<FamilyEntity> familyList = familyListResponse.getFamilyList();
+                        mDeviceList.clear();
+                        for (FamilyEntity family : familyList) {
+                            HttpRequest.Companion.getInstance().deviceList(family.getFamilyId(), "", 0, mCallback);
                         }
-                        runOnUiThread(() -> mDeviceListAdapter.notifyDataSetChanged());
                     }
                     break;
-                default:
+                case RequestCode.device_list:
+                    DeviceListResponse deviceListResponse = response.parse(DeviceListResponse.class);
+                    if (deviceListResponse != null) {
+                        ArrayList<DeviceEntity> deviceList = deviceListResponse.getDeviceList();
+                        mDeviceList.addAll(deviceList);
+                        mDeviceListAdapter.notifyDataSetChanged();
+                    }
                     break;
+//                case RequestCode.device_online_status:
+//                    DeviceOnlineResponse resp = response.parse(DeviceOnlineResponse.class);
+//                    if (resp != null) {
+//                        List<DeviceOnlineEntity> deviceStatuses = resp.getDeviceStatuses();
+//                        if (deviceStatuses != null) {
+//                            for (int i = 0; i < mDeviceList.size(); i++) {
+//                                for (int j = 0; j < deviceStatuses.size(); j++) {
+//                                    if (mDeviceList.get(i).getDeviceId().equals(deviceStatuses.get(j).getDeviceId())) {
+//                                        mDeviceList.get(i).setOnline(deviceStatuses.get(j).getOnline());
+//                                    }
+//                                }
+//                            }
+//                        }
+//                        runOnUiThread(() -> mDeviceListAdapter.notifyDataSetChanged());
+//                    }
+//                    break;
+                default:
             }
-
         }
     };
 
@@ -180,7 +202,7 @@ public class CentralMainActivity extends AppCompatActivity {
                         String productId = mCurrentDeviceId.split("/")[0];
                         String deviceName = mCurrentDeviceId.split("/")[1];
                         int propertyValue = Integer.parseInt(deviceDatas.get(position).getValue()) == 0 ? 1 : 0;
-                        String data = String.format("{\"%s\":\"%s\"}", deviceDatas.get(position).getId(), propertyValue);
+                        String data = String.format("{\"%s\":%d}", deviceDatas.get(position).getId(), propertyValue);
                         HttpRequest.Companion.getInstance().controlDevice(productId, deviceName, data, new MyCallback() {
                             @Override
                             public void fail(@Nullable String msg, int reqCode) {
@@ -229,10 +251,10 @@ public class CentralMainActivity extends AppCompatActivity {
         mDeviceListView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
         mDeviceListAdapter = new DeviceListAdapter(this, mDeviceList);
         mDeviceListAdapter.setOnItemClickListener((view, position) -> {
-            mCurrentDeviceId = mDeviceList.get(position).id;
+            mCurrentDeviceId = mDeviceList.get(position).getDeviceId();
             String productId = mCurrentDeviceId.split("/")[0];
             String deviceName = mCurrentDeviceId.split("/")[1];
-            Toast.makeText(this, mDeviceList.get(position).id + " is clicked.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, mDeviceList.get(position).getDeviceId() + " is clicked.", Toast.LENGTH_SHORT).show();
             HttpRequest.Companion.getInstance().deviceData(productId, deviceName, mCallback);
         });
         mDeviceListView.setAdapter(mDeviceListAdapter);
@@ -418,25 +440,34 @@ public class CentralMainActivity extends AppCompatActivity {
                     String subType = payload.getSubtype();
                     if (subType.equalsIgnoreCase("Online") || subType.equalsIgnoreCase("Offline")) {
                         for (int i = 0; i < mDeviceList.size(); i++) {
-                            String id = mDeviceList.get(i).id;
-                            if (mDeviceList.get(i).id.equals(payload.getDeviceId())) {
-                                mDeviceList.get(i).status = subType.equals("Online") ? 1 : 0;
+                            String id = mDeviceList.get(i).getDeviceId();
+                            if (mDeviceList.get(i).getDeviceId().equals(payload.getDeviceId())) {
+                                mDeviceList.get(i).setOnline(subType.equals("Online") ? 1 : 0);
                             }
                         }
                     }
                     if (subType.equalsIgnoreCase("Bind")) {
                         //新设备添加至设备列表，并获取在线状态
-                        mDeviceList.add(new Device(payload.getDeviceId(), 0));
-                        ArrayList<String> devices = new ArrayList<>();
-                        devices.add(payload.getDeviceId());
-                        HttpRequest.Companion.getInstance().deviceOnlineStatus(devices, mCallback);
+//                        DeviceEntity device = new DeviceEntity();
+//                        device.setDeviceId(payload.getDeviceId());
+//                        mDeviceList.add(device);
+//                        ArrayList<String> devices = new ArrayList<>();
+//                        devices.add(payload.getDeviceId());
+//                        HttpRequest.Companion.getInstance().deviceOnlineStatus(devices, mCallback);
+                        if (familyListResponse != null) {
+                            ArrayList<FamilyEntity> familyList = familyListResponse.getFamilyList();
+                            mDeviceList.clear();
+                            for (FamilyEntity family : familyList) {
+                                HttpRequest.Companion.getInstance().deviceList(family.getFamilyId(), "", 0, mCallback);
+                            }
+                        }
                     }
                     if (subType.equalsIgnoreCase("Unbind")) {
                         //将设备从设备列表移除
-                        Iterator<Device> itr = mDeviceList.iterator();
+                        Iterator<DeviceEntity> itr = mDeviceList.iterator();
                         while (itr.hasNext()) {
-                            Device x = itr.next();
-                            if (x.id.equals(payload.getDeviceId())) {
+                            DeviceEntity x = itr.next();
+                            if (x.getDeviceId().equals(payload.getDeviceId())) {
                                 itr.remove();
                             }
                         }

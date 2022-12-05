@@ -1160,14 +1160,12 @@ public class TXMqttConnection implements MqttCallbackExtended {
         return subscribe(topic, qos, userContext);
     }
 
-    private Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
+    public Status publishRRPCToCloud(Object userContext, String processId, Map<String, String> replyMsg) {
         // 应答topic格式: $rrpc/txd/${ProductId}/${DeviceName}/${messageid}
         String topic  = String.format("$rrpc/txd/%s/%s/%s", mProductId, mDeviceName, processId);
-        //TODO 通过replyMsg构建mqtt messge
         MqttMessage message = new MqttMessage();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("test-key", "test-value"); // for test
             for (Map.Entry<String, String> entrys : replyMsg.entrySet()) {
                 jsonObject.put(entrys.getKey(), entrys.getValue());
             }
@@ -1342,9 +1340,7 @@ public class TXMqttConnection implements MqttCallbackExtended {
         if (topic != null && topic.contains("rrpc/rxd")) {
             String[] items = topic.split("/");
             String processId = items[items.length-1];
-            //TODO：数据格式暂不确定
-            Map<String, String> replyMessage = new HashMap<>();
-            publishRRPCToCloud(null, processId, replyMessage);
+            Loggor.debug(TAG, String.format("Call publishRRPCToCloud method to reply when a rrpc msg received in onMessageArrived method, args: processId=%s, replyMsg=user-define", processId));
         }
 
         if (topic != null && topic.contains("sys/operation/result/")) {

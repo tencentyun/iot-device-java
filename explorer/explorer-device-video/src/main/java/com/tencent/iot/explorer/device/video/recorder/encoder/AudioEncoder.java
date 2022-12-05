@@ -4,9 +4,10 @@ import android.media.AudioRecord;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaFormat;
+import android.media.audiofx.AcousticEchoCanceler;
+import android.media.audiofx.AutomaticGainControl;
 import android.util.Log;
 
-import com.tencent.iot.explorer.device.video.recorder.RecordThread;
 import com.tencent.iot.explorer.device.video.recorder.listener.OnEncodeListener;
 import com.tencent.iot.explorer.device.video.recorder.param.AudioEncodeParam;
 import com.tencent.iot.explorer.device.video.recorder.param.MicParam;
@@ -38,9 +39,11 @@ public class AudioEncoder {
         samplingFrequencyIndexMap.put(8000, 11);
     }
 
-    private final String TAG = RecordThread.class.getSimpleName();
+    private final String TAG = AudioEncoder.class.getSimpleName();
     private MediaCodec audioCodec;
     private AudioRecord audioRecord;
+    private AcousticEchoCanceler canceler;
+    private AutomaticGainControl control;
 
     private final MicParam micParam;
     private final AudioEncodeParam audioEncodeParam;
@@ -52,9 +55,21 @@ public class AudioEncoder {
 
 
     public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam) {
+        this(micParam, audioEncodeParam, false, false);
+    }
+
+
+    public AudioEncoder(MicParam micParam, AudioEncodeParam audioEncodeParam, boolean enableAEC, boolean enableAGC) {
         this.micParam = micParam;
         this.audioEncodeParam = audioEncodeParam;
         initAudio();
+        int audioSessionId = audioRecord.getAudioSessionId();
+        if (enableAEC && audioSessionId != 0) {
+            Log.e(TAG, "=====initAEC result: " + initAEC(audioSessionId));
+        }
+        if (enableAGC && audioSessionId != 0) {
+            Log.e(TAG, "=====initAGC result: " + initAGC(audioSessionId));
+        }
     }
 
     public void setOnEncodeListener(OnEncodeListener listener) {
@@ -87,6 +102,44 @@ public class AudioEncoder {
         stopEncode = true;
     }
 
+    public boolean isDevicesSupportAEC() {
+        return AcousticEchoCanceler.isAvailable();
+    }
+
+    private boolean initAEC(int audioSession) {
+
+        boolean isDevicesSupportAEC = isDevicesSupportAEC();
+        Log.e(TAG, "isDevicesSupportAEC: "+isDevicesSupportAEC);
+        if (!isDevicesSupportAEC) {
+            return false;
+        }
+        if (canceler != null) {
+            return false;
+        }
+        canceler = AcousticEchoCanceler.create(audioSession);
+        canceler.setEnabled(true);
+        return canceler.getEnabled();
+    }
+
+    public boolean isDevicesSupportAGC() {
+        return AutomaticGainControl.isAvailable();
+    }
+
+    private boolean initAGC(int audioSession) {
+
+        boolean isDevicesSupportAGC = isDevicesSupportAGC();
+        Log.e(TAG, "isDevicesSupportAGC: "+isDevicesSupportAGC);
+        if (!isDevicesSupportAGC) {
+            return false;
+        }
+        if (control != null) {
+            return false;
+        }
+        control = AutomaticGainControl.create(audioSession);
+        control.setEnabled(true);
+        return control.getEnabled();
+    }
+
     private void release() {
         if (audioRecord != null) {
             audioRecord.stop();
@@ -98,6 +151,18 @@ public class AudioEncoder {
             audioCodec.stop();
             audioCodec.release();
             audioCodec = null;
+        }
+
+        if (canceler != null) {
+            canceler.setEnabled(false);
+            canceler.release();
+            canceler = null;
+        }
+
+        if (control != null) {
+            control.setEnabled(false);
+            control.release();
+            control = null;
         }
     }
 

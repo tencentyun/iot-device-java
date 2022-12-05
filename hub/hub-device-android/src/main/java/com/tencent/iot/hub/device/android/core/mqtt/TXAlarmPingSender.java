@@ -84,7 +84,12 @@ public class TXAlarmPingSender implements MqttPingSender {
             if(pendingIntent != null){
                 // Cancel Alarm.
                 AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.cancel(pendingIntent);
+                try {
+                    alarmManager.cancel(pendingIntent);
+                } catch (Exception e) {
+                    TXLog.e(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
             }
 
             hasStarted = false;

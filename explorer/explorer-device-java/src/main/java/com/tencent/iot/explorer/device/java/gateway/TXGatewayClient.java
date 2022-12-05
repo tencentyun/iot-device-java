@@ -225,12 +225,23 @@ public class TXGatewayClient extends TXDataTemplateClient {
      * @return 结果
      */
     public Status subDevPropertyReport(String subProductID, String subDeviceName,JSONObject property, JSONObject metadata) {
+        return subDevPropertyReport(subProductID, subDeviceName, property, metadata, true);
+    }
+
+    /**
+     * 属性上报
+     * @param property 属性的json
+     * @param metadata 属性的metadata，目前只包含各个属性对应的时间戳
+     * @param automation 是否触发自动场景
+     * @return 结果
+     */
+    public Status subDevPropertyReport(String subProductID, String subDeviceName,JSONObject property, JSONObject metadata, boolean automation) {
         TXGatewaySubdev subdev = findSubdev(subProductID, subDeviceName);
         if(null != subdev){
             if(Status.SUBDEV_STAT_ONLINE == subdev.getSubdevStatus()) {
-                return  subdev.propertyReport(property, metadata);
+                return subdev.propertyReport(property, metadata, true, automation);
             } else {
-                return  Status.SUBDEV_STAT_OFFLINE;
+                return Status.SUBDEV_STAT_OFFLINE;
             }
         }
         return Status.SUBDEV_STAT_NOT_EXIST;
