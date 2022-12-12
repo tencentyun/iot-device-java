@@ -60,6 +60,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
 import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
@@ -111,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
     private String currentHostIp = "";
     private String currentXp2pInfo = "";
     private volatile boolean mIsOnCall = false;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -350,7 +354,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void avDataRecvHandle(byte[] data, int len) {
-            ReadByteIO.Companion.getInstance().addLast(data);
+            executor.submit(() -> {
+                ReadByteIO.Companion.getInstance().addLast(data);
+            });
         }
 
         @Override
