@@ -1,8 +1,7 @@
-package com.tencent.iot.hub.device.java.core.dynreg;
+package com.tencent.iot.explorer.device.java.dynreg;
 
+import com.tencent.iot.hub.device.java.core.dynreg.TXMqttDynregCallback;
 import com.tencent.iot.hub.device.java.core.util.Base64;
-import com.tencent.iot.hub.device.java.core.util.HmacSha256;
-import com.tencent.iot.hub.device.java.utils.Loggor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,12 +15,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.BadPaddingException;
@@ -34,12 +30,12 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 /**
- * MQTT 动态注册类
+ * The type Tx iothub dynreg.
  */
 public class TXMqttDynreg {
-    private static final String TAG = TXMqttDynreg.class.getSimpleName();
-    private static final Logger logger = LoggerFactory.getLogger(TXMqttDynreg.class);
-    private static final String HMAC_ALGO = "hmacsha256";
+    private static final String TAG = "TXMQTT";
+    private static final Logger LOG = LoggerFactory.getLogger(TXMqttDynreg.class);
+    private static final String HMAC_ALGO = "HmacSHA1";
     private static final String DECRYPT_MODE = "AES/CBC/NoPadding";
 
     private String mProductKey;
@@ -49,19 +45,18 @@ public class TXMqttDynreg {
 
     private TXMqttDynregCallback mCallback;
 
-    // 默认的动态注册 URL，文档链接：https://cloud.tencent.com/document/product/634/47225
-    private final String mDefaultDynRegUrl ="https://ap-guangzhou.gateway.tencentdevices.com/device/register";
+    // 默认的动态注册URL，文档链接：https://cloud.tencent.com/document/product/1081/47612
+    private final String mDefaultDynRegUrl ="http://ap-guangzhou.gateway.tencentdevices.com/register/dev";
 
-    static { Loggor.setLogger(logger); }
 
     /**
-     * 构造函数
+     * Instantiates a new Tx iothub dynreg.
      *
-     * @param dynregUrl 动态注册 url
-     * @param productId 产品 ID
-     * @param productKey 产品密钥
-     * @param deviceName 设备名
-     * @param callback 动态注册结果回调 {@link TXMqttDynregCallback}
+     * @param dynregUrl  the dynreg url
+     * @param productId  the product id
+     * @param productKey the product key
+     * @param deviceName the device name
+     * @param callback    the callback for operation result
      */
     public TXMqttDynreg(String dynregUrl, String productId, String productKey, String deviceName, TXMqttDynregCallback callback) {
         this.mDynRegUrl = dynregUrl;
@@ -72,12 +67,12 @@ public class TXMqttDynreg {
     }
 
     /**
-     * 构造函数
+     * Instantiates a new Tx iothub dynreg.
      *
-     * @param productId 产品 ID
-     * @param productKey 产品密钥
-     * @param deviceName 设备名
-     * @param callback 动态注册结果回调 {@link TXMqttDynregCallback}
+     * @param productId  the product id
+     * @param productKey the product key
+     * @param deviceName the device name
+     * @param callback callback for operation result
      */
     public TXMqttDynreg(String productId, String productKey, String deviceName, TXMqttDynregCallback callback) {
         this.mDynRegUrl = mDefaultDynRegUrl;
@@ -110,31 +105,20 @@ public class TXMqttDynreg {
     private class HttpPostThread extends Thread {
         private String postData;
         private String url;
-        private String timestamp;
-        private String nonce;
-        private String signature;
 
         /**
          * Instantiates a new Http post thread.
          *
-         * @param upStr 请求body
-         * @param upUrl 请求url
-         * @param timestamp 时间戳
-         * @param nonce 随机数
-         * @param signature 签名
+         * @param upStr the up str
+         * @param upUrl the up url
          */
-        HttpPostThread(String upStr, String upUrl, String timestamp, String nonce, String signature) {
+        HttpPostThread(String upStr, String upUrl) {
             this.postData = upStr;
             this.url = upUrl;
-            this.timestamp = timestamp;
-            this.nonce = nonce;
-            this.signature = signature;
         }
 
         @Override
         public void run() {
-            this.setName("tencent-dynreg-http-post-thread");
-
             StringBuffer serverRsp = new StringBuffer();
             try {
                 URL url = new URL(mDynRegUrl);
@@ -142,20 +126,15 @@ public class TXMqttDynreg {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                 conn.setRequestProperty("Accept","application/json");
-                conn.setRequestProperty("X-TC-Algorithm", HMAC_ALGO);
-                conn.setRequestProperty("X-TC-Timestamp", timestamp);
-                conn.setRequestProperty("X-TC-Nonce", nonce);
-                conn.setRequestProperty("X-TC-Signature", signature);
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 conn.setConnectTimeout(2000);
-                Loggor.info(TAG, "HttpURLConnection header: "+ conn.getRequestProperties());
 
                 DataOutputStream os = new DataOutputStream(conn.getOutputStream());
                 os.writeBytes(postData);
                 os.flush();
                 os.close();
-                Loggor.info(TAG, "TXMqttDynreg postData "+ postData);
+                LOG.info("TXMqttDynreg postData "+ postData);
 
                 int rc = conn.getResponseCode();
                 String line;
@@ -166,42 +145,29 @@ public class TXMqttDynreg {
                     }
                     conn.disconnect();
                 } else {
-                    Loggor.error(TAG, "Get error rc "+ rc);
+                    LOG.error("Get error rc "+ rc);
                     conn.disconnect();
-                    if (mCallback != null) {
-                        mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
-                    } else {
-                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                    }
+                    mCallback.onFailedDynreg(new Throwable("Failed to get response from server, rc is " + rc));
                     return;
                 }
             } catch (IOException e) {
-                Loggor.error(TAG, e.toString());
+                LOG.error(e.toString());
                 e.printStackTrace();
-                if (mCallback != null) {
-                    mCallback.onFailedDynreg(e);
-                } else {
-                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                }
+                mCallback.onFailedDynreg(e);
                 return;
             }
 
             String plStr;
             int actLen;
-            Loggor.info(TAG, "Get response string " + serverRsp);
+            LOG.info("Get response string " + serverRsp);
             try {
                 JSONObject rspObj = new JSONObject(serverRsp.toString());
-                rspObj = rspObj.getJSONObject("Response");
-                plStr = rspObj.getString("Payload");
-                actLen = rspObj.getInt("Len");
+                plStr = rspObj.getString("payload");
+                actLen = rspObj.getInt("len");
             } catch (JSONException e) {
-                Loggor.error(TAG, e.toString());
+                LOG.error(e.toString());
                 e.printStackTrace();
-                if (mCallback != null) {
-                    mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
-                } else {
-                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                }
+                mCallback.onFailedDynreg(e, "receive Msg " + serverRsp);
                 return ;
             }
 
@@ -217,11 +183,7 @@ public class TXMqttDynreg {
                 plBytes = cipher.doFinal(Base64.decode(plStr, Base64.DEFAULT));
             } catch (NoSuchAlgorithmException|NoSuchPaddingException|InvalidKeyException|IllegalBlockSizeException|BadPaddingException|InvalidAlgorithmParameterException e) {
                 e.printStackTrace();
-                if (mCallback != null) {
-                    mCallback.onFailedDynreg(e);
-                } else {
-                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                }
+                mCallback.onFailedDynreg(e);
                 return;
             }
             String rspSb = new String(plBytes);
@@ -230,43 +192,26 @@ public class TXMqttDynreg {
                 JSONObject rspObj = new JSONObject(rspSb.toString());
                 int encryptionType = rspObj.getInt("encryptionType");
 
+                // Cert
                 if (encryptionType == 1) {
-                    // Cert
-                    if (mCallback != null) {
-                        mCallback.onGetDeviceCert(rspObj.getString("clientCert"), rspObj.getString("clientKey"));
-                    } else {
-                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                    }
+                    mCallback.onGetDeviceCert(rspObj.getString("clientCert"), rspObj.getString("clientKey"));
                 } else if (encryptionType == 2) {
-                    if (mCallback != null) {
-                        // PSK
-                        mCallback.onGetDevicePSK(rspObj.getString("psk"));
-                    } else {
-                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                    }
-
+                    // PSK
+                    mCallback.onGetDevicePSK(rspObj.getString("psk"));
                 } else {
-                    if (mCallback != null) {
-                        mCallback.onFailedDynreg(new Throwable("Get wrong encryption type:" + encryptionType));
-                    } else {
-                        Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                    }
+                    mCallback.onFailedDynreg(new Throwable("Get wrong encryption type:" + encryptionType));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                if (mCallback != null) {
-                    mCallback.onFailedDynreg(e);
-                } else {
-                    Loggor.warn(TAG, "TXMqttDynregCallback is null.");
-                }
+                mCallback.onFailedDynreg(e);
             }
         }
     }
 
     /**
-     * 动态注册
+     * Do dynamic register
      *
-     * @return 动态注册结果；true：OK；false：ERROR
+     * @return true for register OK, false for register ERROR
      */
     public boolean doDynamicRegister() {
         Mac mac = null;
@@ -282,61 +227,38 @@ public class TXMqttDynreg {
         int timestamp = (int)(System.currentTimeMillis() / 1000);
         SecretKeySpec signKey = new SecretKeySpec(mProductKey.getBytes(), HMAC_ALGO);
 
-        final JSONObject obj = new JSONObject();
-        try {
-            obj.put("ProductId", mProductId);
-            obj.put("DeviceName", mDeviceName);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-        String originRequest = obj.toString();
-        String hashedRequest = "";
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedhash = digest.digest(originRequest.getBytes(Charset.forName("UTF-8")));
-            hashedRequest = HmacSha256.bytesToHexString(encodedhash);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        @SuppressWarnings("DefaultLocale")
-        String signSourceStr = String.format("%s\n%s\n%s\n%s\n%s\n%d\n%d\n%s",
-                "POST",
-                getHost(mDynRegUrl),
-                "/device/register",
-                "",
-                HMAC_ALGO,
-                timestamp,
-                randNum,
-                hashedRequest
-                );
+        String signSourceStr = String.format("deviceName=%s&nonce=%d&productId=%s&timestamp=%d", mDeviceName, randNum, mProductId, timestamp);
 
         try {
             mac.init(signKey);
             byte[] rawHmac = mac.doFinal(signSourceStr.getBytes());
-            hmacSign = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
+            StringBuffer sBuffer = new StringBuffer();
+            for (int i = 0; i < rawHmac.length; i++) {
+                sBuffer.append(String.format("%02x", rawHmac[i] & 0xff));
+            }
+
+            hmacSign = Base64.encodeToString(sBuffer.toString().getBytes(), Base64.NO_WRAP);
         } catch (InvalidKeyException e) {
             e.printStackTrace();
             return false;
         }
 
-        Loggor.info(TAG, "Register request " + obj + "; signSourceStr:" + signSourceStr);
-        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDynRegUrl,
-                String.valueOf(timestamp), String.valueOf(randNum), hmacSign);
+        final JSONObject obj = new JSONObject();
+        try {
+            obj.put("deviceName", mDeviceName);
+            obj.put("nonce", randNum);
+            obj.put("productId", mProductId);
+            obj.put("timestamp", timestamp);
+            obj.put("signature", hmacSign);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        LOG.info("Register request " + obj);
+        HttpPostThread httpThread = new HttpPostThread(obj.toString(), mDefaultDynRegUrl);
         httpThread.start();
 
         return true;
-    }
-
-    private String getHost(String url_) {
-        URL url;
-        try {
-            url = new URL(url_);
-            return url.getHost();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }

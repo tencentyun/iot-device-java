@@ -1,8 +1,5 @@
 package com.tencent.iot.explorer.device.video.call;
 
-import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
-import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,6 +46,7 @@ import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
 import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
+import com.tencent.iot.thirdparty.android.device.video.p2p.VideoFormat;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
 import com.tencent.iot.thirdparty.android.device.video.p2p.XP2PCallback;
 
@@ -62,6 +60,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST;
+import static com.tencent.iot.explorer.device.common.stateflow.entity.TXCallDataTemplateConstants.PROPERTY_SYS_CALL_USERLIST_USERID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -495,6 +496,8 @@ public class MainActivity extends AppCompatActivity {
                 condition.getDevName(), condition.getDevPsk());
         updateLog("init video module return " + initRet);
         VideoNativeInteface.getInstance().setCallback(xP2PCallback);
+        VideoFormat format = new VideoFormat.Builder().setVideoWidth(selectedResolutionEntity.getWidth()).setVideoHeight(selectedResolutionEntity.getHeight()).setAudioSampleRate(16000).build();
+        VideoNativeInteface.getInstance().initVideoFormat(format);
     }
 
     private TXVideoCallBack videoCallBack = new TXVideoCallBack() {
