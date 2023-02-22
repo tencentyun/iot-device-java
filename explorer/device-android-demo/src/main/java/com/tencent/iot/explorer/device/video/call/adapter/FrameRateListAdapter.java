@@ -1,14 +1,13 @@
 package com.tencent.iot.explorer.device.video.call.adapter;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tencent.iot.explorer.device.android.app.R;
@@ -34,15 +33,14 @@ public class FrameRateListAdapter extends RecyclerView.Adapter<FrameRateListAdap
         return vewHolder;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final FrameRateEntity entity = mDatas.get(position);
         holder.tv.setText(String.format("%d", entity.getRate()));
         if (entity.getIsSelect()) {
-            holder.selectIv.setBackground(mContext.getDrawable(R.drawable.selected));
+            holder.selectIv.setBackground(ContextCompat.getDrawable(mContext,R.drawable.selected));
         } else {
-            holder.selectIv.setBackground(mContext.getDrawable(R.drawable.unselect));
+            holder.selectIv.setBackground(ContextCompat.getDrawable(mContext,R.drawable.unselect));
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
