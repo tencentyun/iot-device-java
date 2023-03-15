@@ -59,7 +59,7 @@ public class TXOTAImpl {
 	private final int DEFAULT_READ_TIMEOUT = 10000; // 毫秒
 	private final int MAX_TRY_TIMES = 3;
 	private static List<X509Certificate> serverCertList = null;
-	private static String[] mCosServerCaCrtList = CA.cosServerCaCrtList;
+	private static String[] mCosServerCaCrtList = {};
 
 	// 加载服务器证书
 	private static void prepareOTAServerCA() {
@@ -443,7 +443,7 @@ public class TXOTAImpl {
 	 */
 	private HttpURLConnection createURLConnection(String firmwareURL) throws Exception {
 
-		if (firmwareURL.toLowerCase().startsWith("https://")) {
+		if (mCosServerCaCrtList.length > 0 && firmwareURL.toLowerCase().startsWith("https://")) {
 			URL url = new URL(firmwareURL);
 
 			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
