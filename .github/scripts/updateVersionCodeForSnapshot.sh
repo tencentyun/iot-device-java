@@ -15,7 +15,7 @@ secondtag=${vtaglist[1]}
 thirdtag=${vtaglist[2]}
 thirdtag=`expr $thirdtag + 1`
 
-new_version=$firsttag.$secondtag.$thirdtag
+new_version=$firsttag.$secondtag.$thirdtag.$(date "+%Y%m%d")
 
 echo ">>>new version: $new_version"
 

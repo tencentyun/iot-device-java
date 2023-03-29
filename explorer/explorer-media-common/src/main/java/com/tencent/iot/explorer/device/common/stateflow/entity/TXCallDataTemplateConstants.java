@@ -25,4 +25,5 @@ public interface TXCallDataTemplateConstants {
      * sys action
      */
     String ACTION_SYS_TRTC_JOIN_ROOM = "_sys_trtc_join_room";
+    String ACTION_TRTC_JOIN_ROOM = "trtc_join_room";
 }

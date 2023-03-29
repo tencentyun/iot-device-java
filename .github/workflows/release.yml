@@ -25,9 +25,9 @@ jobs:
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/explorer-device-java/unit_test_config.json.asc > explorer/explorer-device-java/src/test/resources/unit_test_config.json
           gpg -d --passphrase "$GPG_DECRYPT_PASSPHRASE" --batch --quiet .github/sdk/secring.gpg.asc > secring.gpg
           cp -r explorer/explorer-media-common/src/main/java/* explorer/explorer-device-rtc/src/main/java/
-          cp -r explorer/explorer-media-common/src/main/java/* explorer/explorer-device-video/src/main/java/
+          cp -r explorer/explorer-media-common/src/main/java/* video/video-advanced-device-android/src/main/java/
           sed -i '/explorer-media-common/, +d' explorer/explorer-device-rtc/build.gradle
-          sed -i '/explorer-media-common/, +d' explorer/explorer-device-video/build.gradle
+          sed -i '/explorer-media-common/, +d' video/video-advanced-device-android/build.gradle
           sh .github/scripts/updateValuesForTme.sh
         env:
           GIT_ACCESS_TOKEN: ${{ secrets.IOT_GITHUB_ACCESS_TOKEN }}
@@ -88,10 +88,10 @@ jobs:
         run: ./gradlew publish
       - name: Build Demo App
         run: |
-          rm -rf explorer/explorer-device-video/src/main/java/com/tencent/iot/explorer/device/common/stateflow/*
+          rm -rf video/video-advanced-device-android/src/main/java/com/tencent/iot/explorer/device/common/stateflow/*
           rm -rf explorer/explorer-device-rtc/src/main/java/com/tencent/iot/explorer/device/common/stateflow/*
           sed -i 's#//xxx##g' explorer/explorer-device-rtc/build.gradle
-          sed -i 's#//xxx##g' explorer/explorer-device-video/build.gradle
+          sed -i 's#//xxx##g' video/video-advanced-device-android/build.gradle
           ./gradlew :explorer:device-android-demo:build
 #      - name: Archive the apks
 #        uses: actions/upload-artifact@v2

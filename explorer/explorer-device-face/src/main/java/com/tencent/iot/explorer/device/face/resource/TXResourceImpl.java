@@ -66,7 +66,7 @@ public class TXResourceImpl {
     private final int MAX_TRY_TIMES = 3;
 
     private static List<X509Certificate> serverCertList = null;
-    private static String[] mCosServerCaCrtList = {};
+    private static String[] mCosServerCaCrtList = CA.cosServerCaCrtList;
 
     /**
      * AI FACE SDK 存储本地feature的文件夹
@@ -405,7 +405,7 @@ public class TXResourceImpl {
      * @return HttpURLConnection或HttpsURLConnection对象
      */
     private HttpURLConnection createURLConnection(String resourceURL) throws Exception {
-        if (mCosServerCaCrtList.length > 0 && resourceURL.toLowerCase().startsWith("https://")) {
+        if (resourceURL.toLowerCase().startsWith("https://")) {
             URL url = new URL(resourceURL);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             SSLContext sslContext = SSLContext.getInstance("SSL");

@@ -102,7 +102,7 @@ dependencies {
     implementation project(':explorer:explorer-device-face')
     implementation project(':explorer:explorer-device-rtc')
     implementation project(':explorer:explorer-device-central')
-    api project(':explorer:explorer-device-video')
+    api project(':video:video-advanced-device-android')
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     testImplementation 'junit:junit:4.13'

@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tencent.iot.explorer.device.android.utils.TXLog;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.java.mqtt.TXMqttRequest;
-import com.tencent.iot.explorer.device.video.recorder.TXVideoCallBack;
-import com.tencent.iot.explorer.device.video.recorder.TXVideoTemplateClient;
+import com.tencent.iot.device.video.advanced.recorder.TXVideoCallBack;
+import com.tencent.iot.device.video.advanced.recorder.TXVideoTemplateClient;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttConstants;
@@ -95,6 +95,10 @@ public class VideoDataTemplateSample {
 
     public Status reportXp2pInfo(String p2pInfo) {
         return mMqttConnection.reportXp2pInfo(p2pInfo);
+    }
+
+    public Status callOtherDevice(String calledProductID, String calledDeviceName) {
+        return mMqttConnection.callOtherDevice(calledProductID, calledDeviceName);
     }
 
     public Status reportCallStatusProperty(Integer callStatus, Integer callType, String userId, String agent) {

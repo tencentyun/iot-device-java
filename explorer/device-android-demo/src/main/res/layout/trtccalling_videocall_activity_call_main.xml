@@ -171,7 +171,8 @@
             android:id="@+id/iv_handsfree"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/trtccalling_bg_handsfree" />
+            android:src="@drawable/trtccalling_bg_handsfree"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 

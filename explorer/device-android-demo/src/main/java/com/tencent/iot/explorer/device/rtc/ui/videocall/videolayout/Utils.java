@@ -27,26 +27,31 @@ public class Utils {
         // 底部最大的布局
         RelativeLayout.LayoutParams layoutParams0 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         list.add(layoutParams0);
+        //右下角布局
+        RelativeLayout.LayoutParams layoutParams1 = new RelativeLayout.LayoutParams(Utils.dip2px(context, 100), Utils.dip2px(context, 100));
+        layoutParams1.leftMargin = layoutWidth - Utils.dip2px(context, 105);
+        layoutParams1.topMargin = layoutHeight - Utils.dip2px(context, 105);
+        list.add(layoutParams1);
 
-        final int midMargin    = Utils.dip2px(context, 10);
-        final int lrMargin     = Utils.dip2px(context, 15);
-        final int bottomMargin = Utils.dip2px(context, 50);
-        final int subWidth     = Utils.dip2px(context, 120);
-        final int subHeight    = Utils.dip2px(context, 180);
-
-        for (int i = 2; i >= 0; i--) {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(subWidth, subHeight);
-            layoutParams.leftMargin = layoutWidth - lrMargin - subWidth;
-            layoutParams.topMargin = layoutHeight - (bottomMargin + midMargin * (i + 1) + subHeight * i) - subHeight;
-            list.add(layoutParams);
-        }
-
-        for (int i = 2; i >= 0; i--) {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(subWidth, subHeight);
-            layoutParams.leftMargin = lrMargin;
-            layoutParams.topMargin = layoutHeight - (bottomMargin + midMargin * (i + 1) + subHeight * i) - subHeight;
-            list.add(layoutParams);
-        }
+//        final int midMargin    = Utils.dip2px(context, 10);
+//        final int lrMargin     = Utils.dip2px(context, 15);
+//        final int bottomMargin = Utils.dip2px(context, 50);
+//        final int subWidth     = Utils.dip2px(context, 120);
+//        final int subHeight    = Utils.dip2px(context, 180);
+//
+//        for (int i = 2; i >= 0; i--) {
+//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(subWidth, subHeight);
+//            layoutParams.leftMargin = layoutWidth - lrMargin - subWidth;
+//            layoutParams.topMargin = layoutHeight - (bottomMargin + midMargin * (i + 1) + subHeight * i) - subHeight;
+//            list.add(layoutParams);
+//        }
+//
+//        for (int i = 2; i >= 0; i--) {
+//            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(subWidth, subHeight);
+//            layoutParams.leftMargin = lrMargin;
+//            layoutParams.topMargin = layoutHeight - (bottomMargin + midMargin * (i + 1) + subHeight * i) - subHeight;
+//            list.add(layoutParams);
+//        }
         return list;
     }
 

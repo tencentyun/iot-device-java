@@ -1,6 +1,5 @@
 package com.tencent.iot.explorer.device.video.push_stream;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -24,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.tencent.iot.explorer.device.android.app.R;
-import com.tencent.iot.explorer.device.common.stateflow.CallState;
 import com.tencent.iot.explorer.device.common.stateflow.entity.CallingType;
 import com.tencent.iot.explorer.device.java.data_template.TXDataTemplateDownStreamCallBack;
 import com.tencent.iot.explorer.device.rtc.utils.ZXingUtils;
@@ -35,7 +33,7 @@ import com.tencent.iot.explorer.device.video.call.entity.DeviceConnectCondition;
 import com.tencent.iot.explorer.device.video.call.entity.FrameRateEntity;
 import com.tencent.iot.explorer.device.video.call.entity.PhoneInfo;
 import com.tencent.iot.explorer.device.video.call.entity.ResolutionEntity;
-import com.tencent.iot.explorer.device.video.recorder.core.camera.CameraConstants;
+import com.tencent.iot.device.video.advanced.recorder.core.camera.CameraConstants;
 import com.tencent.iot.hub.device.java.core.common.Status;
 import com.tencent.iot.hub.device.java.core.mqtt.TXMqttActionCallBack;
 import com.tencent.iot.thirdparty.android.device.video.p2p.VideoNativeInteface;
@@ -46,7 +44,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Timer;
 
 
