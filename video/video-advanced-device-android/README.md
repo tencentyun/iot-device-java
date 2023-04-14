@@ -89,26 +89,31 @@ TXVideoTemplateClient初始化中TXVideoCallBack 回调callback主要接口说�
 
 #### com.tencent.iot.device.video.advanced.recorder.rtc.VideoNativeInteface
 
-1、初始化开始链接 VideoNativeInteface#initWithDevice(Context context, RoomKey roomKey)
+1、初始化 VideoNativeInteface#initWithDevice(Context context)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | context | Context | 上下文 |
-| roomKey | RoomKey | 链接房间参数 |
 
 | 返回值 | 描述 |
 |:-|:-|
 | VideoNativeInteface | VideoNativeInteface实例 |
 
-2、设置回调 VideoNativeInteface#setCallback(XP2PCallback callback)
+2、开始进房 VideoNativeInteface#enterRoom(RoomKey roomKey)
+
+| 参数 | 类型 | 描述 |
+|:-|:-|:-|
+| roomKey | RoomKey | 链接房间参数 |
+
+3、设置回调 VideoNativeInteface#setCallback(XP2PCallback callback)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | callback | XP2PCallback | 回调 |
 
-3、释放链接 VideoNativeInteface#release()
+4、释放链接 VideoNativeInteface#release()
 
-4、发送信令 VideoNativeInteface#sendMsgToPeer(String msg)
+5、发送信令 VideoNativeInteface#sendMsgToPeer(String msg)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
@@ -118,41 +123,41 @@ TXVideoTemplateClient初始化中TXVideoCallBack 回调callback主要接口说�
 |:-|:-|
 | boolean | 发送是否成功 |
 
-5、打开摄像头预览 VideoNativeInteface#openCamera(boolean isFrontCamera, TXCloudVideoView txCloudVideoView)
+6、打开摄像头预览 VideoNativeInteface#openCamera(boolean isFrontCamera, TXCloudVideoView txCloudVideoView)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | isFrontCamera | boolean | 是否是前置摄像头 |
 | txCloudVideoView | TXCloudVideoView | 承载视频画面的控件 |
 
-6、开始推流 VideoNativeInteface#sendStreamToServer()
+7、开始推流 VideoNativeInteface#sendStreamToServer()
 
-7、绑定远端视频渲染控件 VideoNativeInteface#startRemoteView(String userId, TXCloudVideoView txCloudVideoView)
+8、绑定远端视频渲染控件 VideoNativeInteface#startRemoteView(String userId, TXCloudVideoView txCloudVideoView)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | userId | String | 远端用户id |
 | txCloudVideoView | TXCloudVideoView | 承载视频画面的控件 |
 
-8、切换摄像头 VideoNativeInteface#switchCamera(boolean isFrontCamera)
+9、切换摄像头 VideoNativeInteface#switchCamera(boolean isFrontCamera)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | isFrontCamera | boolean | 是否是前置摄像头 |
 
-9、设置麦克风是否静音 VideoNativeInteface#setMicMute(boolean isMute)
+10、设置麦克风是否静音 VideoNativeInteface#setMicMute(boolean isMute)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | isMute | boolean | 是否静音 |
 
-10、设置是否免提 VideoNativeInteface#setHandsFree(boolean isHandsFree)
+11、设置是否免提 VideoNativeInteface#setHandsFree(boolean isHandsFree)
 
 | 参数 | 类型 | 描述 |
 |:-|:-|:-|
 | isHandsFree | boolean | 是否免提 |
 
-11、关闭摄像头预览 VideoNativeInteface#closeCamera()
+12、关闭摄像头预览 VideoNativeInteface#closeCamera()
 
 
 ### iot-device-video-advanced SDK 回调callback 设计说明

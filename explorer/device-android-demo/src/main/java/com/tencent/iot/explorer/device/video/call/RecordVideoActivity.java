@@ -274,8 +274,9 @@ public class RecordVideoActivity extends AppCompatActivity {
         mCallType = intent.getIntExtra(PARAM_TYPE, TYPE_BEING_CALLED);
 
         // 初始化成员变量
-        VideoNativeInteface.getInstance().initWithDevice(this, roomKey);
+        VideoNativeInteface.getInstance().initWithDevice(this);
         VideoNativeInteface.getInstance().setCallback(mXP2PCallback);
+        VideoNativeInteface.getInstance().enterRoom(roomKey);
         mTimeHandlerThread = new HandlerThread("tencent-time-count-thread");
         mTimeHandlerThread.start();
         mTimeHandler = new Handler(mTimeHandlerThread.getLooper());

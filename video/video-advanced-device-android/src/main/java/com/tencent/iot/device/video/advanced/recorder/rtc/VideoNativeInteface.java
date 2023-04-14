@@ -39,21 +39,20 @@ public class VideoNativeInteface {
         return instance;
     }
 
-    public void initWithDevice(Context context, RoomKey roomKey) {
+    public void initWithDevice(Context context) {
         this.mContext = context;
         mRTCCloud = TRTCCloud.sharedInstance(mContext);
         mRTCCloud.setListener(mRTCCloudListener);
         enableAGC(false);
         enableAEC(true);
         enableANS(true);
-        enterRTCRoom(roomKey);
     }
 
     public void setCallback(XP2PCallback mXP2PCallback) {
         this.mXP2PCallback = mXP2PCallback;
     }
 
-    public TRTCCloudListener getmRTCCloudListener() {
+    public TRTCCloudListener getRTCCloudListener() {
         return mRTCCloudListener;
     }
 
@@ -141,7 +140,7 @@ public class VideoNativeInteface {
     /**
      * rtc 进房
      */
-    private void enterRTCRoom(RoomKey roomKey) {
+    public void enterRoom(RoomKey roomKey) {
         if (roomKey == null) return;
 
         // 进房前需要设置一下关键参数
