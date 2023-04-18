@@ -61,7 +61,7 @@ public class VideoEncoder {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mediaFormat.setInteger(MediaFormat.KEY_LEVEL, MediaCodecInfo.CodecProfileLevel.AVCLevel3);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mediaFormat.setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.AVCProfileMain);
+//                mediaFormat.setInteger(MediaFormat.KEY_PROFILE, MediaCodecInfo.CodecProfileLevel.AVCProfileMain);
             }
             mediaCodec.configure(mediaFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE);
             //开始编码
@@ -291,5 +291,7 @@ public class VideoEncoder {
 
     public void stop() {
         executor.shutdown();
+        mediaCodec.stop();
+        mediaCodec.release();
     }
 }

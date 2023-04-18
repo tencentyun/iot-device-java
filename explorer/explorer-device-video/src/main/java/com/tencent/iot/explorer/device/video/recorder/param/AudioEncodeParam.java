@@ -7,7 +7,7 @@ import android.media.MediaFormat;
  */
 public class AudioEncodeParam {
 
-    private int bitRate = 96000; // 比特率
+    private int bitRate = 16000; // 比特率
     private int maxInputSize = 1024 * 1024; // 最大输入数据大小
     private String mime = MediaFormat.MIMETYPE_AUDIO_AAC; // 编码格式: 默认 AAC
 

@@ -52,7 +52,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.alibaba:fastjson:1.2.73'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.4'
-    api 'com.tencent.iot.thirdparty.android:xp2p-sdk:2.4.34'
+    api 'com.tencent.iot.thirdparty.android:xp2p-sdk:2.4.34-SNAPSHOT'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-java:2.0.7'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-armv7a:2.0.7'
     api 'com.tencent.iot.thirdparty.android:ijkplayer-arm64:2.0.7'
