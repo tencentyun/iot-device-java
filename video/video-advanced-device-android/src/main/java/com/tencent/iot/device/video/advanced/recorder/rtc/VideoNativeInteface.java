@@ -170,7 +170,6 @@ public class VideoNativeInteface {
         mRTCCloud.enableAudioVolumeEvaluation(300);
         mRTCCloud.setGSensorMode(TRTC_GSENSOR_MODE_DISABLE);
         mRTCCloud.setAudioRoute(TRTCCloudDef.TRTC_AUDIO_ROUTE_SPEAKER);
-        mRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
         // 收到来电，开始监听 trtc 的消息
         mRTCCloud.setListener(mRTCCloudListener);
         mRTCCloud.muteLocalAudio(true);
@@ -208,6 +207,7 @@ public class VideoNativeInteface {
     }
 
     public void sendStreamToServer() {
+        mRTCCloud.startLocalAudio(TRTCCloudDef.TRTC_AUDIO_QUALITY_SPEECH);
         mRTCCloud.muteLocalAudio(false);
         mRTCCloud.muteLocalVideo(0, false);
     }
