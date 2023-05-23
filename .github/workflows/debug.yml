@@ -75,8 +75,19 @@ jobs:
       - name: Setup NDK
 #        if: steps.ndk-cache.outputs.cache-hit != 'true'
         run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
+      - name: Fix App Version
+        run: |
+          rb=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          rc=$(git rev-parse --short HEAD)
+          video_tag=$(git describe --tags --match "*video*" --abbrev=0 HEAD)
+          other_tag=$(git describe --tags --match "v[0-9].[0-9].[0-9]" --abbrev=0 HEAD)
+          echo "latest_video_tag=$video_tag" >> $GITHUB_ENV
+          echo "latest_other_tag=$other_tag" >> $GITHUB_ENV
       - name: Update SDK Version
-        run: bash .github/scripts/updateVersionCodeForSnapshot.sh
+        run: |
+          export LATEST_VIDEO_TAG=${{env.latest_video_tag}}
+          export LATEST_OTHER_TAG=${{env.latest_other_tag}}
+          bash .github/scripts/updateVersionCodeForSnapshot.sh
 #      - name: Test with Gradle
 #        run: ./gradlew test
       - name: Build with Gradle
