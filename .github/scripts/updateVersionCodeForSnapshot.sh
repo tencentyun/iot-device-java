@@ -1,7 +1,5 @@
 #!/bin/bash
 
-latest_tag=$LATEST_OTHER_TAG
-
 # 最新tag，例如：v1.0.0
 latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
 echo ">>>latest tag: $latest_tag"
