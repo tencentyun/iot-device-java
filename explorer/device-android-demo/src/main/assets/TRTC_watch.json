@@ -1,1 +1,365 @@
-{"version":"1.0","profile":{"ProductId":"PJRWOV6FDV","CategoryId":"1"},"properties":[{"id":"_sys_video_call_status","name":"视频呼叫","desc":"","mode":"rw","define":{"type":"enum","mapping":{"0":"空闲或拒绝","1":"呼叫中","2":"通话中"}},"required":false},{"id":"_sys_userid","name":"呼叫的手机用户","desc":"","mode":"rw","define":{"type":"string","min":"0","max":"2048"},"required":false},{"id":"_sys_call_userlist","name":"呼叫的用户列表","desc":"","mode":"rw","define":{"type":"string","min":"0","max":"2048"},"required":false},{"id":"_sys_audio_call_status","name":"语音呼叫","desc":"","mode":"rw","define":{"type":"enum","mapping":{"0":"空闲或拒绝","1":"呼叫中","2":"通话中"}},"required":false}],"events":[],"actions":[{"id":"_sys_trtc_join_room","name":"设备加房间","desc":"http://tapd.oa.com/NEW_IOT/markdown_wikis/show/#1220393192001751795","input":[{"id":"SdkAppId","name":"SdkAppId","define":{"type":"int","min":"0","max":"4300000000","start":"0","step":"1","unit":""}},{"id":"UserId","name":"UserId","define":{"type":"string","min":"0","max":"128"}},{"id":"UserSig","name":"UserSig","define":{"type":"string","min":"0","max":"256"}},{"id":"StrRoomId","name":"StrRoomId","define":{"type":"string","min":"0","max":"2048"}},{"id":"PrivateMapKey","name":"PrivateMapKey","define":{"type":"string","min":"0","max":"2048"}}],"output":[{"id":"Code","name":"Code","define":{"type":"int","min":"-100","max":"100","start":"0","step":"1","unit":""}}],"required":false}]}
+{
+  "version": "1.0",
+  "properties": [
+    {
+      "id": "Cell_Info",
+      "name": "蜂窝定位",
+      "desc": "LAC代码为基站小区号；cellId为基站ID；signal为基站信号强度；采集时间为设备采集基站信息时间",
+      "mode": "rw",
+      "define": {
+        "type": "struct",
+        "specs": [
+          {
+            "id": "mcc",
+            "name": "国家代码",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "999",
+              "start": "460",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "mnc",
+            "name": "基站网络码",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "9999999",
+              "start": "460",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "lac",
+            "name": "LAC代码",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "9999999",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "cid",
+            "name": "cellId",
+            "dataType": {
+              "type": "int",
+              "min": "0",
+              "max": "999999999",
+              "start": "0",
+              "step": "1",
+              "unit": ""
+            }
+          },
+          {
+            "id": "rss",
+            "name": "signal",
+            "dataType": {
+              "type": "int",
+              "min": "-99999",
+              "max": "99999",
+              "start": "0",
+              "step": "1",
+              "unit": "dbm"
+            }
+          },
+          {
+            "id": "networkType",
+            "name": "设备网络制式",
+            "dataType": {
+              "type": "enum",
+              "mapping": {
+                "1": "GSM",
+                "2": "CDMA",
+                "3": "WCDMA",
+                "4": "TD_CDMA",
+                "5": "LTE"
+              }
+            }
+          },
+          {
+            "id": "collect_time",
+            "name": "采集时间",
+            "dataType": {
+              "type": "timestamp"
+            }
+          }
+        ]
+      },
+      "required": false
+    },
+    {
+      "id": "talk_user",
+      "name": "当前通话中的userid",
+      "desc": "当前与用户通话的用户信息，目前置UserId",
+      "mode": "rw",
+      "define": {
+        "max": "2048",
+        "min": "0",
+        "type": "string"
+      },
+      "required": false
+    },
+    {
+      "id": "call_picurl",
+      "name": "呼叫抓拍图片",
+      "desc": "设备端呼叫时的抓拍图片，呼叫时可间隔5秒进行抓拍上传",
+      "mode": "rw",
+      "define": {
+        "max": "2048",
+        "min": "0",
+        "type": "string"
+      },
+      "required": false
+    },
+    {
+      "id": "call_target",
+      "name": "房间号",
+      "desc": "",
+      "mode": "rw",
+      "define": {
+        "max": "128",
+        "min": "0",
+        "type": "string"
+      },
+      "required": false
+    },
+    {
+      "id": "unlock",
+      "name": "远程开锁",
+      "desc": "1:开门",
+      "mode": "rw",
+      "define": {
+        "max": "1",
+        "min": "0",
+        "start": "0",
+        "step": "1",
+        "type": "int",
+        "unit": ""
+      },
+      "required": false
+    },
+    {
+      "id": "call_target_project",
+      "name": "目标项目",
+      "desc": "呼叫目标所在项目ID（小区ID）",
+      "mode": "rw",
+      "define": {
+        "max": "64",
+        "min": "0",
+        "type": "string"
+      },
+      "required": false
+    },
+    {
+      "id": "call_state",
+      "name": "呼叫业务状态",
+      "desc": "描述最后一次呼叫业务的结果状态",
+      "mode": "rw",
+      "define": {
+        "mapping": {
+          "0": "初始状态",
+          "1": "呼叫超时",
+          "2": "已接听",
+          "3": "拒绝接听"
+        },
+        "type": "enum"
+      },
+      "required": false
+    },
+    {
+      "id": "call_result",
+      "name": "呼叫结果情况描述",
+      "desc": "业务终止后需置此值为空闲",
+      "mode": "rw",
+      "define": {
+        "mapping": {
+          "0": "业务空闲状态",
+          "1": "呼叫振铃成功",
+          "2": "房间欠费",
+          "3": "查无此房",
+          "4": "房间没有开通trtc功能",
+          "5": "房间没有入住",
+          "6": "呼叫忙"
+        },
+        "type": "enum"
+      },
+      "required": false
+    },
+    {
+      "id": "talk_time",
+      "name": "通话时长",
+      "desc": "当前通话时长",
+      "mode": "rw",
+      "define": {
+        "max": "1000",
+        "min": "0",
+        "start": "0",
+        "step": "1",
+        "type": "int",
+        "unit": "秒"
+      },
+      "required": false
+    },
+    {
+      "id": "call_userlist",
+      "name": "呼叫用户列表",
+      "desc": "当前呼叫的用户列表信息",
+      "mode": "rw",
+      "define": {
+        "arrayInfo": {
+          "max": "2048",
+          "min": "0",
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "required": false
+    },
+    {
+      "id": "sessionid",
+      "name": "会话id",
+      "desc": "会话id，由平台产生（保证唯一），给设备第一次回应时带给设备，以后设备按此sessionid 发上来",
+      "mode": "rw",
+      "define": {
+        "max": "64",
+        "min": "0",
+        "type": "string"
+      },
+      "required": false
+    }
+  ],
+  "events": [],
+  "actions": [
+    {
+      "id": "unlock_door",
+      "name": "远程开锁暂不用",
+      "desc": "1：开门；result：０；成功；其他值失败",
+      "input": [
+        {
+          "id": "action",
+          "name": "开门动作",
+          "define": {
+            "type": "enum",
+            "mapping": {
+              "1": "开门"
+            }
+          }
+        },
+        {
+          "id": "userid",
+          "name": "开门用户ID",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "64"
+          }
+        },
+        {
+          "id": "roomid",
+          "name": "房号",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "128"
+          }
+        }
+      ],
+      "output": [
+        {
+          "id": "result",
+          "name": "开门结果",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    },
+    {
+      "id": "trtc_join_broadcast",
+      "name": "trtc_join_broadcast",
+      "desc": "",
+      "input": [
+        {
+          "id": "SdkAppId",
+          "name": "SdkAppId",
+          "define": {
+            "type": "int",
+            "min": "0",
+            "max": "4300000000",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        },
+        {
+          "id": "UserId",
+          "name": "UserId",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "128"
+          }
+        },
+        {
+          "id": "UserSig",
+          "name": "UserSig",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "1280"
+          }
+        },
+        {
+          "id": "StrRoomId",
+          "name": "StrRoomId",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "128"
+          }
+        },
+        {
+          "id": "PrivateMapKey",
+          "name": "PrivateMapKey",
+          "define": {
+            "type": "string",
+            "min": "0",
+            "max": "1280"
+          }
+        }
+      ],
+      "output": [
+        {
+          "id": "Code",
+          "name": "Code",
+          "define": {
+            "type": "int",
+            "min": "-100",
+            "max": "100",
+            "start": "0",
+            "step": "1",
+            "unit": ""
+          }
+        }
+      ],
+      "required": false
+    }
+  ],
+  "profile": {
+    "ProductId": "7I7PNT6O2G",
+    "CategoryId": "1"
+  }
+}

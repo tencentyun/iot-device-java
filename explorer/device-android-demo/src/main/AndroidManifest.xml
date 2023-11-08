@@ -58,6 +58,7 @@
         <activity android:name="com.tencent.iot.explorer.device.face.AuthActivity" />
         <activity android:name="com.tencent.iot.explorer.device.face.RetrieveWithAndroidCameraActivity" />
         <activity android:name="com.tencent.iot.explorer.device.rtc.TRTCMainActivity" />
+        <activity android:name="com.tencent.iot.explorer.device.broadcast.BroadCastMainActivity" />
         <activity android:name="com.tencent.iot.explorer.device.video.call.MainActivity" />
         <activity
             android:name="com.tencent.iot.explorer.device.video.call.RecordVideoActivity"
@@ -76,6 +77,10 @@
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name="com.tencent.iot.explorer.device.rtc.ui.audiocall.TRTCAudioCallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <activity
+            android:name="com.tencent.iot.explorer.device.broadcast.ui.broadcastcall.BroadcastAudioCallActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
     </application>
 
