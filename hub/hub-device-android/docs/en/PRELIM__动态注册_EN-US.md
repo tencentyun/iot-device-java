@@ -6,7 +6,7 @@
 ## Overview
 This feature assigns the same key to all devices under the same product, and a device gets a device certificate/key through a registration request for authentication. You can burn the same configuration information for the same batch of devices. For more information on the three authentication schemes provided by IoT Hub, please see [Overview](https://cloud.tencent.com/document/product/634/35272). For more information on the dynamic registration request, please see [Dynamic Registration API Description](https://cloud.tencent.com/document/product/634/47225).
 
-If you enable automatic device creation in the console, you don't need to create devices in advance, but you must guarantee that device names are unique under the same product ID, which are generally unique device identifiers (such as MAC address). This method is more flexible. If you disable it in the console, you must create devices in advance and enter the same device names during dynamic registration, which is more secure but less convenient.
+Users need to create a device in advance on the console. During dynamic registration, the device reports the pre-created device name to obtain the device key.
 
 ## Running demo for dynamic registration
 Before running the demo, you need to configure `PRODUCT_ID` (product ID), `DEVICE_NAME` (device name), and `PRODUCT_KEY` (`ProductSecret` in the console) in the [app-config.json](../../../hub-android-demo/src/main/assets/app-config.json) file.
