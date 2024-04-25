@@ -93,7 +93,7 @@ jobs:
           sed -i 's#//xxx##g' explorer/explorer-device-rtc/build.gradle
           sed -i 's#//xxx##g' explorer/explorer-device-video/build.gradle
           ./gradlew clean
-          ./gradlew :explorer:device-android-demo:build
+          ./gradlew :explorer:device-android-demo:build :hub:hub-android-demo:build
       - name: Archive the apks
         uses: actions/upload-artifact@v2
         with:
