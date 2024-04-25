@@ -237,7 +237,7 @@ public class RecordVideoActivity4 extends AppCompatActivity implements TextureVi
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam);
+        audioEncoder = new AudioEncoder(this, micParam, audioEncodeParam);
         audioEncoder.setOnEncodeListener(this);
     }
 

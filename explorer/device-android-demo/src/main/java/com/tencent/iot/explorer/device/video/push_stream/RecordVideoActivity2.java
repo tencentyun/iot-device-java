@@ -51,9 +51,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class RecordVideoActivity2 extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback {
+public class RecordVideoActivity2 extends AppCompatActivity implements TextureView.SurfaceTextureListener, OnEncodeListener, SurfaceHolder.Callback, IMediaPlayer.OnInfoListener {
 
     private static final String TAG = RecordVideoActivity2.class.getSimpleName();
     private static final int MAX_CONNECT_NUM = 4;
@@ -131,20 +132,21 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
         }
         initAudioEncoder();
         initVideoEncoder();
-        VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).build();
+        VideoFormat format = new VideoFormat.Builder().setVideoWidth(vw).setVideoHeight(vh).setAudioSampleRate(16000).build();
         VideoNativeInteface.getInstance().initVideoFormat(format);
     }
 
     private void initAudioEncoder() {
         MicParam micParam = new MicParam.Builder()
                 .setAudioSource(MediaRecorder.AudioSource.MIC)
-                .setSampleRateInHz(8000) // 采样率
+                .setSampleRateInHz(16000) // 采样率
                 .setChannelConfig(AudioFormat.CHANNEL_IN_MONO)
                 .setAudioFormat(AudioFormat.ENCODING_PCM_16BIT) // PCM
                 .build();
         AudioEncodeParam audioEncodeParam = new AudioEncodeParam.Builder().build();
-        audioEncoder = new AudioEncoder(micParam, audioEncodeParam);
+        audioEncoder = new AudioEncoder(this, micParam, audioEncodeParam, true, true);
         audioEncoder.setOnEncodeListener(this);
+        audioEncoder.recordPcmFile(true);
     }
 
     private void initVideoEncoder() {
@@ -253,6 +255,7 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     private void play() {
         player = new IjkMediaPlayer();
         player.reset();
+        player.setOnInfoListener(this);
         if (phoneInfo.getCallType() == CallingType.TYPE_AUDIO_CALL) {
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1000);
             player.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 64);
@@ -418,6 +421,23 @@ public class RecordVideoActivity2 extends AppCompatActivity implements TextureVi
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         Log.d(TAG, "surface destroyed.");
+    }
+
+    @Override
+    public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    public boolean onInfoSEI(IMediaPlayer mp, int what, int extra, String sei_content) {
+        return false;
+    }
+
+    @Override
+    public void onInfoAudioPcmData(IMediaPlayer mp, byte[] arrPcm, int length) {
+        if (audioEncoder != null && length > 0) {
+            audioEncoder.setPlayerPcmData(arrPcm);
+        }
     }
 }
 
