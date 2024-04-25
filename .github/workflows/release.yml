@@ -76,7 +76,7 @@ jobs:
 #          key: ndk-cache-22.0.7026061
       - name: Setup NDK
 #        if: steps.ndk-cache.outputs.cache-hit != 'true'
-        run: echo "y" | sudo ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
+        run: echo "y" | ${ANDROID_HOME}/tools/bin/sdkmanager --install "ndk;22.0.7026061"
 #      - name: Test with Gradle
 #        run: ./gradlew test
       - name: Remove snapshot dependency
