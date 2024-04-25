@@ -60,7 +60,9 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: install fir
-        run: sudo gem install fir-cli
+        run: |
+          sudo gem uninstall fastlane
+          sudo gem install fir-cli
       - name: Update SdkDemo Version
         run: |
           rb=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')

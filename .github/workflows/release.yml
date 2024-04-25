@@ -48,7 +48,9 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
       - name: install fir
-        run: sudo gem install fir-cli
+        run: |
+          sudo gem uninstall fastlane
+          sudo gem install fir-cli
       - name: Fix SDKs Version
         run: |
           rtt=$(git describe --tags `git rev-list --tags --max-count=1`)
