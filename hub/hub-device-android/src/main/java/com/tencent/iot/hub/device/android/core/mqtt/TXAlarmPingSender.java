@@ -67,7 +67,11 @@ public class TXAlarmPingSender implements MqttPingSender {
             mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action));
         }
 
-        pendingIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(action), PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_IMMUTABLE;
+        }
+        pendingIntent = PendingIntent.getBroadcast(mContext, 0, new Intent(action), flags);
 
         schedule(mComms.getKeepAlive());
         hasStarted = true;
