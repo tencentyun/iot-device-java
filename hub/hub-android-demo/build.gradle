@@ -5,12 +5,12 @@ rootProject.ext.configPath = "./src/main/assets/app-config.json"
 apply from: "../../parse_json.gradle"
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     buildToolsVersion "26.0.0"
     defaultConfig {
         applicationId "com.tencent.iot.hub.device.android.app"
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName rootProject.ext.sdk.sdkdemoVersion
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
