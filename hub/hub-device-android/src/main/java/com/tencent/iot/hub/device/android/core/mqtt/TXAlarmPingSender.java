@@ -1,5 +1,7 @@
 package com.tencent.iot.hub.device.android.core.mqtt;
 
+import static android.content.Context.RECEIVER_NOT_EXPORTED;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -64,7 +66,7 @@ public class TXAlarmPingSender implements MqttPingSender {
         String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
         TXLog.d(TAG, "Register alarmreceiver to Context " + action);
         if (mContext != null && mAlarmReceiver != null) {
-            mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action));
+            mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action), RECEIVER_NOT_EXPORTED);
         }
 
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
