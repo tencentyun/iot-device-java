@@ -66,7 +66,11 @@ public class TXAlarmPingSender implements MqttPingSender {
         String action = TAG + TXMqttConstants.PING_SENDER + mComms.getClient().getClientId();
         TXLog.d(TAG, "Register alarmreceiver to Context " + action);
         if (mContext != null && mAlarmReceiver != null) {
-            mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action), RECEIVER_NOT_EXPORTED);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action), RECEIVER_NOT_EXPORTED);
+            } else {
+                mContext.registerReceiver(mAlarmReceiver, new IntentFilter(action));
+            }
         }
 
         int flags = PendingIntent.FLAG_UPDATE_CURRENT;
