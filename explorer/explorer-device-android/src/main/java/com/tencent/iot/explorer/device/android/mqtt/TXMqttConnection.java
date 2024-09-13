@@ -50,6 +50,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
 
     protected TXAlarmPingSender mPingSender = null;
 
+    private long mExpiredTime = Integer.MAX_VALUE;
 
     /**
      * @param context    用户上下文（这个参数在回调函数时透传给用户）
@@ -206,6 +207,10 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
         return null;
     }
 
+    public void setExpiredTime(long expiredTime) {
+        this.mExpiredTime = Math.max(expiredTime, System.currentTimeMillis() / 1000 + 600);
+    }
+
     /**
      * 连接 MQTT 服务器，结果通过回调函数通知，无需设置 username 和 password，内部会自动填充
      *
@@ -230,13 +235,7 @@ public class TXMqttConnection extends com.tencent.iot.hub.device.java.core.mqtt.
             return Status.PARAMETER_INVALID;
         }
 
-        Long timestamp;
-        if (options.isAutomaticReconnect()) {
-            timestamp = (long) Integer.MAX_VALUE;
-        } else {
-            timestamp = System.currentTimeMillis()/1000 + 600;
-        }
-        String userNameStr = mUserName + ";" + getConnectId() + ";" + timestamp;
+        String userNameStr = mUserName + ";" + getConnectId() + ";" + mExpiredTime;
 
         mConnOptions.setUserName(userNameStr);
 
