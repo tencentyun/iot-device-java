@@ -95,7 +95,7 @@ jobs:
           ./gradlew clean
           ./gradlew :explorer:device-android-demo:build :hub:hub-android-demo:build
       - name: Archive the apks
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           path: |
             'explorer/device-android-demo/build/outputs/apk/debug/*.apk'
