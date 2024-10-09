@@ -132,7 +132,7 @@ javadoc {
 
 dependencies {
     implementation 'net.iharder:base64:2.3.9'
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.11.0'
     if (findProject(':hub:hub-device-java') != null) {
         api project(path: ':hub:hub-device-java')
     }
