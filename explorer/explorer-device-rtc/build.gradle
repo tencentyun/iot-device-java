@@ -39,7 +39,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     api 'com.tencent.liteav:LiteAVSDK_TRTC:11.1.0.13141'
     api 'com.squareup.picasso:picasso:2.71828'
-    api 'com.alibaba:fastjson:1.2.73'
+    api 'com.alibaba:fastjson:2.0.31'
     api project(':explorer:explorer-media-common')
     //xxxapi project(':explorer:explorer//xxx-media-common')
 }

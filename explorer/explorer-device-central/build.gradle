@@ -41,7 +41,7 @@ dependencies {
         implementation project(':explorer:explorer-device-android')
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    api 'com.alibaba:fastjson:1.2.73'
+    api 'com.alibaba:fastjson:2.0.31'
 }
 
 task androidJavadocs(type: Javadoc) {
