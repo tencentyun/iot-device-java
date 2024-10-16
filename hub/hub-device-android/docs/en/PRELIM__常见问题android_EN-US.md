@@ -46,8 +46,8 @@ This error is caused by the version incompatibility between the two libraries (`
 ```
 dependencies {
 ...
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.57'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation ('com.tencent.iot.hub:hub-device-android-core:x.x.x') {// `x.x.x` is the version number of the imported SDK
         exclude group: 'org.bouncycastle'
     }

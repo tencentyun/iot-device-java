@@ -46,8 +46,8 @@ onConnectionLost回调已断开连接（32109），表示设备已断开连接�
 ```
 dependencies {
 ...
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.57'
-    implementation 'org.bouncycastle:bcpkix-jdk15on:1.57'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.65'
     implementation ('com.tencent.iot.hub:hub-device-android-core:x.x.x') {//x.x.x为引入sdk的版本号
         exclude group: 'org.bouncycastle'
     }
