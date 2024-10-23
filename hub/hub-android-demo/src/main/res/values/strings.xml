@@ -44,4 +44,6 @@
     <string name="request_permission_first">必要权限申请失败</string>
     <string name="subscribe_ntp_topic">订阅NTP主题</string>
     <string name="get_ntp_service">获取NTP时间</string>
+    <string name="text_ip_address">Ip地址:</string>
+    <string name="text_ip_address_tip">请输入IP地址：格式为（x.x.x.x:xxxx）</string>
 </resources>

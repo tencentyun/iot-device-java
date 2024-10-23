@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +56,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 import javax.net.SocketFactory;
 
@@ -74,6 +77,8 @@ public class IoTMqttFragment extends Fragment {
     private Button mConnectBtn;
 
     private Button mCloseConnectBtn;
+
+    private EditText mIPEdit;
 
     private Button mSubScribeBtn;
 
@@ -165,9 +170,14 @@ public class IoTMqttFragment extends Fragment {
             "Zcrqjyw+6baShrOfotoFDlFE/wqf6FjhgeRkOb5QlA==\n" +
             "-----END CERTIFICATE-----\n";
     // ssh 要访问的IP
-    private String sshHost = "***REMOVED***";
-    // ssh 端口号 
-    private int sshPort = 8022;
+    private String sshHost = "";
+    // ssh 端口号
+    private int sshPort = 0;
+
+    String pattern = "^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\."
+            + "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\."
+            + "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])\\."
+            + "(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])$";
 
     private volatile boolean mIsConnected;
 
@@ -264,27 +274,47 @@ public class IoTMqttFragment extends Fragment {
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!mIsConnected) {
-                    SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
-                    mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
-                    mProductID = settings.getString(PRODUCT_ID, mProductID);
-                    mDevName = settings.getString(DEVICE_NAME, mDevName);
-                    mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
-                    mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
-                    mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
-                    mSubDevPsk = settings.getString(SUB_DEVICE_PSK, mSubDevPsk);
-
-                    mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
-
-                    mDevCert = settings.getString(DEVICE_CERT, mDevCert);
-                    mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
-
-                    mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
-                            mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack(), sshHost, sshPort);
-                    mMQTTSample.setSubDevPsk(mSubDevPsk);
-                    mMQTTSample.connect();
+                Editable ip = mIPEdit.getText();
+                String[] ipInfo;
+                if (TextUtils.isEmpty(ip)) {
+                    Toast.makeText(requireContext(), "请输入ip", Toast.LENGTH_SHORT).show();
+                } else if ((ipInfo = ip.toString().split(":")).length != 2) {
+                    Toast.makeText(requireContext(), "ip与端口输入格式错误", Toast.LENGTH_SHORT).show();
                 } else {
-                    mParent.printLogInfo(TAG, "Mqtt has been connected, do not connect it again.", mLogInfoText, TXLog.LEVEL_INFO);
+                    if (!Pattern.compile(pattern).matcher(ipInfo[0]).matches()) {
+                        Toast.makeText(requireContext(), "ip地址输入格式错误", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        sshHost = ipInfo[0];
+                    }
+                    if (!Pattern.compile("^\\d{4}$").matcher(ipInfo[1]).matches()) {
+                        Toast.makeText(requireContext(), "端口号输入格式错误", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        sshPort = Integer.parseInt(ipInfo[1]);
+                    }
+                    if (!mIsConnected) {
+                        SharedPreferences settings = mParent.getSharedPreferences("config", Context.MODE_PRIVATE);
+                        mBrokerURL = settings.getString(BROKER_URL, mBrokerURL);
+                        mProductID = settings.getString(PRODUCT_ID, mProductID);
+                        mDevName = settings.getString(DEVICE_NAME, mDevName);
+                        mDevPSK = settings.getString(DEVICE_PSK, mDevPSK);
+                        mSubProductID = settings.getString(SUB_PRODUCID, mSubProductID);
+                        mSubDevName = settings.getString(SUB_DEVNAME, mSubDevName);
+                        mSubDevPsk = settings.getString(SUB_DEVICE_PSK, mSubDevPsk);
+
+                        mTestTopic = settings.getString(TEST_TOPIC, mTestTopic);
+
+                        mDevCert = settings.getString(DEVICE_CERT, mDevCert);
+                        mDevPriv = settings.getString(DEVICE_PRIV, mDevPriv);
+
+                        mMQTTSample = new MQTTSample(mParent, new SelfMqttActionCallBack(), mBrokerURL, mProductID, mDevName, mDevPSK,
+                                mDevCert, mDevPriv, mSubProductID, mSubDevName, mTestTopic, null, null, true, new SelfMqttLogCallBack(), sshHost, sshPort);
+                        mMQTTSample.setSubDevPsk(mSubDevPsk);
+                        mMQTTSample.connect();
+                    } else {
+                        mParent.printLogInfo(TAG, "Mqtt has been connected, do not connect it again.", mLogInfoText, TXLog.LEVEL_INFO);
+                    }
                 }
             }
         });
@@ -589,6 +619,7 @@ public class IoTMqttFragment extends Fragment {
     public void initView(View view) {
         mConnectBtn = view.findViewById(R.id.connect);
         mCloseConnectBtn = view.findViewById(R.id.close_connect);
+        mIPEdit = view.findViewById(R.id.ed_ip);
         mSubScribeBtn = view.findViewById(R.id.subscribe_topic);
         mUnSubscribeBtn = view.findViewById(R.id.unSubscribe_topic);
         mPublishBtn = view.findViewById(R.id.publish_topic);

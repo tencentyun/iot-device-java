@@ -16,216 +16,247 @@
         android:id="@+id/spinner4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/setup_items"/>
+        android:entries="@array/setup_items" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_ip_address"
+            android:textColor="#000"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/ed_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_ip_address_tip"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="200dp">
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/connect"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/connect_mqtt" />
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/close_connect"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/break_mqtt" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/dynreg"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/dynreg" />
+                <Button
+                    android:id="@+id/connect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/connect_mqtt" />
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/close_connect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/break_mqtt" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/dynreg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/dynreg" />
 
-        <Button
-            android:id="@+id/subscribe_topic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/subscribe_topic" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/unSubscribe_topic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.4"
-            android:text="@string/unsubscribe_topic" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/publish_topic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/publish_topic" />
+                <Button
+                    android:id="@+id/subscribe_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/subscribe_topic" />
 
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/subscribe_rrpc_topic"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/subscribe_rrpc_topic" />
-        <Button
-            android:id="@+id/subscribe_broadcast_topic"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="@string/subscribe_broadcast_topic" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/unSubscribe_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:text="@string/unsubscribe_topic" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/publish_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/publish_topic" />
 
-        <Button
-            android:id="@+id/subdev_online"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/subdev_online" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/subdev_offline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/subdev_offline" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/check_firmware"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/check_firmware" />
+                <Button
+                    android:id="@+id/subscribe_rrpc_topic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/subscribe_rrpc_topic" />
 
+                <Button
+                    android:id="@+id/subscribe_broadcast_topic"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/subscribe_broadcast_topic" />
+            </LinearLayout>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/subdev_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/subdev_online" />
 
-        <Button
-            android:id="@+id/mlog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/log_test" />
-        <Button
-            android:id="@+id/uploadlog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/upload_log" />
-        <Button
-            android:id="@+id/http_publish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/http_publish" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/subdev_offline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/subdev_offline" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/subdev_binded"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/bind_subdev" />
-
-        <Button
-            android:id="@+id/subdev_unbinded"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/unbind_subdev" />
-
-        <Button
-            android:id="@+id/check_subdev_relation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/check_subdev_relation" />
+                <Button
+                    android:id="@+id/check_firmware"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/check_firmware" />
 
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/websocket_connect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/websocket_connect" />
+                <Button
+                    android:id="@+id/mlog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/log_test" />
 
-        <Button
-            android:id="@+id/websocket_disconnect"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/websocket_disconnect" />
+                <Button
+                    android:id="@+id/uploadlog"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/upload_log" />
 
-        <Button
-            android:id="@+id/websocket_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/websocket_status" />
+                <Button
+                    android:id="@+id/http_publish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/http_publish" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/subdev_binded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/bind_subdev" />
+
+                <Button
+                    android:id="@+id/subdev_unbinded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/unbind_subdev" />
+
+                <Button
+                    android:id="@+id/check_subdev_relation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/check_subdev_relation" />
 
 
-    </LinearLayout>
+            </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/get_remote_config"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/get_remote_config" />
-        <Button
-            android:id="@+id/concern_remote_config"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/concern_remote_config" />
-        <Button
-            android:id="@+id/report_sub_dev_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="@string/report_sub_dev_version" />
-    </LinearLayout>
+                <Button
+                    android:id="@+id/websocket_connect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/websocket_connect" />
+
+                <Button
+                    android:id="@+id/websocket_disconnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/websocket_disconnect" />
+
+                <Button
+                    android:id="@+id/websocket_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/websocket_status" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/get_remote_config"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/get_remote_config" />
+
+                <Button
+                    android:id="@+id/concern_remote_config"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/concern_remote_config" />
+
+                <Button
+                    android:id="@+id/report_sub_dev_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="@string/report_sub_dev_version" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -237,6 +268,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:text="@string/subscribe_ntp_topic" />
+
                 <Button
                     android:id="@+id/get_ntp_service"
                     android:layout_width="wrap_content"
@@ -245,18 +277,20 @@
                     android:text="@string/get_ntp_service" />
             </LinearLayout>
 
-    </LinearLayout>
+        </LinearLayout>
     </ScrollView>
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/print_log"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:textStyle="bold" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
             android:id="@+id/log_info"
             android:layout_width="match_parent"
