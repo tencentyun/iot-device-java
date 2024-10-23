@@ -145,8 +145,8 @@ dependencies {
     api "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.mqttJavaSdkVer}"
     api "com.squareup.okhttp3:okhttp:3.12.2"
     api 'org.json:json:20240303'
-    api 'org.bouncycastle:bcprov-jdk15on:1.65'
-    api 'org.bouncycastle:bcpkix-jdk15on:1.65'
+    api 'org.bouncycastle:bcprov-jdk15on:1.70'
+    api 'org.bouncycastle:bcpkix-jdk15on:1.70'
     //WebSocket
     api 'org.java-websocket:Java-WebSocket:1.5.2'
     testImplementation 'junit:junit:4.13'

@@ -96,7 +96,7 @@ class StringRequest private constructor() {
                     callback.success(response.body(), reqCode)
                 } else {
                     TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                    callback.success(response.errorBody().string(), reqCode)
+                    callback.success(response.errorBody()?.string(), reqCode)
                 }
             }
         })
@@ -127,7 +127,7 @@ class StringRequest private constructor() {
                         callback.success(response.body(), reqCode)
                     } else {
                         TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                        callback.success(response.errorBody().string(), reqCode)
+                        callback.success(response.errorBody()?.string(), reqCode)
                     }
                 }
 
@@ -159,7 +159,7 @@ class StringRequest private constructor() {
                         callback.success(response.body(), reqCode)
                     } else {
                         TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                        callback.success(response.errorBody().string(), reqCode)
+                        callback.success(response.errorBody()?.string(), reqCode)
                     }
                 }
 
@@ -191,7 +191,7 @@ class StringRequest private constructor() {
                         callback.success(response.body(), reqCode)
                     } else {
                         TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                        callback.success(response.errorBody().string(), reqCode)
+                        callback.success(response.errorBody()?.string(), reqCode)
                     }
                 }
 
@@ -239,7 +239,7 @@ class StringRequest private constructor() {
                         callback.success(response.body(), reqCode)
                     } else {
                         TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                        callback.success(response.errorBody().string(), reqCode)
+                        callback.success(response.errorBody()?.string(), reqCode)
                     }
                 }
 
@@ -280,7 +280,7 @@ class StringRequest private constructor() {
                         callback.success(response.body(), reqCode)
                     } else {
                         TXLog.d(TAG, "请求成功：${response.errorBody()}")
-                        callback.success(response.errorBody().string(), reqCode)
+                        callback.success(response.errorBody()?.string(), reqCode)
                     }
                 }
 

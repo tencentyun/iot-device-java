@@ -151,7 +151,7 @@ dependencies {
         api project(path: ':hub:hub-device-android')
     }
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.alibaba:fastjson:2.0.31'
 }
 
