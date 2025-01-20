@@ -14,10 +14,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: set up JDK 1.8
+      - name: set up JDK 17
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
       - name: Integration
         run: |
           git clone https://$GIT_ACCESS_TOKEN@github.com/archurcode/Integrationtesting.git
