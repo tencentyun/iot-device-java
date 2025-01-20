@@ -1,8 +1,12 @@
 package com.tencent.iot.explorer.device.central.message.payload
 
 import com.alibaba.fastjson.JSON
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class Payload {
+
+    private val LOG: Logger = LoggerFactory.getLogger(Payload::class.java)
 
     //设备监听到下发的数据字符串
     var json = ""
@@ -26,7 +30,7 @@ class Payload {
         try {
             return JSON.parseObject(data)?.keys
         } catch (e: Exception) {
-            e.printStackTrace()
+            LOG.error(e.message)
         }
         return null
     }
@@ -42,7 +46,7 @@ class Payload {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            LOG.error(e.message)
         }
         return "0"
     }

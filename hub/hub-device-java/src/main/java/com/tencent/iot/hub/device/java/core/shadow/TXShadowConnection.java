@@ -16,12 +16,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -148,7 +148,7 @@ public class TXShadowConnection {
         OPERATION_TOPIC = "$shadow/operation/" + productID + "/" + mMqttConnection.mDeviceName;
         OPERATION_RESULT_TOPIC = "$shadow/operation/result/" + productID + "/" + mMqttConnection.mDeviceName;
 
-        mPublishMessageId = new Random().nextInt(MAX_MESSAGE_ID);
+        mPublishMessageId = new SecureRandom().nextInt(MAX_MESSAGE_ID);
     }
 
     /**

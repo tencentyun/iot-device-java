@@ -22,7 +22,6 @@ import java.security.cert.X509Certificate;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateCrtKeySpec;
-import java.util.Random;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -39,7 +38,7 @@ public class AsymcSslUtils {
      */
     public static final String TAG = "iot.AsymcSslUtils";
 
-    private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
+    private static String PASSWORD = String.valueOf(new SecureRandom().nextInt());
 
     /**
      * 证书文件及 Key文件存放在 Android asset 目录下，通过 AssetManager 读取文件内容获取输入流，

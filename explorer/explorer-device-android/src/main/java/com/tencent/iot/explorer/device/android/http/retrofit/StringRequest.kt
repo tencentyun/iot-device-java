@@ -299,7 +299,7 @@ class StringRequest private constructor() {
             isSuccess = (process.waitFor() == 0)
         } catch (e: Exception) {
             isSuccess = false
-            e.printStackTrace()
+            TXLog.d(TAG, e.message)
             process?.destroy()
         } finally {
             process?.destroy()

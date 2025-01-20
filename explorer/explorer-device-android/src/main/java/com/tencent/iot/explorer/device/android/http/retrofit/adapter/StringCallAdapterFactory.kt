@@ -1,13 +1,17 @@
 package com.tencent.iot.explorer.device.android.http.retrofit.adapter
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
-import retrofit2.Call
-import java.lang.Exception
 
 
 class StringCallAdapterFactory private constructor() : CallAdapter.Factory() {
+
+    private val LOG: Logger = LoggerFactory.getLogger(StringCallAdapterFactory::class.java)
+
     override fun get(
         type: Type?,
         array: Array<out Annotation>?,
@@ -23,7 +27,7 @@ class StringCallAdapterFactory private constructor() : CallAdapter.Factory() {
             try {
                 return call.execute().body().toString()
             } catch (e: Exception) {
-                e.printStackTrace()
+                LOG.error(e.message)
             }
             return ""
         }

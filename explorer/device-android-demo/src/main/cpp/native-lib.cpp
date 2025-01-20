@@ -18,13 +18,14 @@ char sg_cse_test_pic_path[256];
 
 static void *thd_fn(void *arg) {
     pthread_detach(pthread_self());
-    char *args[8] = {NULL, sg_dev_path, sg_flv_path, sg_cs_recv_talk_path, sg_cs_aac_path, sg_cs_video_path,sg_cse_srcipt_path,sg_cse_test_pic_path};
+    char *args[8] = {NULL, sg_dev_path, sg_flv_path, sg_cs_recv_talk_path, sg_cs_aac_path,
+                     sg_cs_video_path, sg_cse_srcipt_path, sg_cse_test_pic_path};
     iot_video_main(8, args);
 }
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_tencent_iot_explorer_device_video_push_1stream_PushStreamActivity_nativeDemo(
-        JNIEnv* env,
+        JNIEnv *env,
         jobject /* this */,
         jstring dir) {
     const char *dir_path = env->GetStringUTFChars(dir, 0);

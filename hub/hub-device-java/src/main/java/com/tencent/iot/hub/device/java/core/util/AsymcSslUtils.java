@@ -17,6 +17,7 @@ import java.security.KeyFactory;
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -27,7 +28,6 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Random;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -56,7 +56,7 @@ public class AsymcSslUtils {
     private static final String TAG = AsymcSslUtils.class.getName();
     private static final Logger logger = LoggerFactory.getLogger(AsymcSslUtils.class);
     static { Loggor.setLogger(logger); }
-    private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
+    private static String PASSWORD = String.valueOf(new SecureRandom().nextInt());
 
     /**
      * 读取 resouce 文件证书文件及 Key 文件存放在 Android asset 目录

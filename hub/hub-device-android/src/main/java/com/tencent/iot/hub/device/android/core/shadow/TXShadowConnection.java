@@ -12,9 +12,10 @@ import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 /**
  * 影子连接类
@@ -139,7 +140,7 @@ public class TXShadowConnection {
         OPERATION_TOPIC = "$shadow/operation/" + productID + "/" + mMqttConnection.mDeviceName;
         OPERATION_RESULT_TOPIC = "$shadow/operation/result/" + productID + "/" + mMqttConnection.mDeviceName;
 
-        mPublishMessageId = new Random().nextInt(MAX_MESSAGE_ID);
+        mPublishMessageId = new SecureRandom().nextInt(MAX_MESSAGE_ID);
 
         mTXShadowConn.setMqttConnection(mMqttConnection);
     }

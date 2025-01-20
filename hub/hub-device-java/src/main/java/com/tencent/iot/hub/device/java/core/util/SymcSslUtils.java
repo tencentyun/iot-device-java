@@ -14,11 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyStore;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Random;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -34,7 +34,7 @@ public class SymcSslUtils {
     private static final Logger logger = LoggerFactory.getLogger(SymcSslUtils.class);
     static { Loggor.setLogger(logger); }
 
-    private static String PASSWORD = String.valueOf(new Random(System.currentTimeMillis()).nextInt());
+    private static String PASSWORD = String.valueOf(new SecureRandom().nextInt());
 
     /**
      * 获取 socket SSL
